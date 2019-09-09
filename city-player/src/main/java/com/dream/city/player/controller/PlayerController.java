@@ -1,8 +1,8 @@
-package com.dream.city.controller;
+package com.dream.city.player.controller;
 
-import com.dream.city.domain.Message;
-import com.dream.city.domain.entity.User;
-import com.dream.city.service.UserService;
+import com.dream.city.base.model.Message;
+import com.dream.city.player.domain.entity.Player;
+import com.dream.city.player.service.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,9 +18,10 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/user")
-public class UserController {
+public class PlayerController {
+
     @Autowired
-    UserService userService;
+    PlayerService playerService;
 
     /**
      * 用户注册
@@ -55,13 +56,13 @@ public class UserController {
         if (null == nick){
             nick = userName;
         }
-        User u = new User();
-        u.setUId("0");
-        u.setUName(userName);
-        u.setUPass(userPass);
-        u.setUInvite(invite);
-        u.setUNick(nick);
-        boolean ret = userService.saveUser(u);
+
+        Player u = new Player();
+        u.setUsername(userName);
+        u.setUserpass(userPass);
+        u.setInvited(invite);
+        u.setNick(nick);
+        boolean ret = playerService.save(u);
         if (ret){
             tip=  "success";
         }
@@ -75,24 +76,17 @@ public class UserController {
             return "Hello str...";
         }
 
-        userService.deleteUser("555");
+        playerService.delete(str);
         return "Hello "+ str;
     }
 
     @RequestMapping("/get/{id}")
-    public List getUser(@PathVariable(value = "id")Integer id){
-        List<User> users = new ArrayList<>();
-        users = userService.getUsers(null);
-        if(id != null){
-            return users;
-        }
+    public List getUser(@PathVariable(value = "id")String id){
+        Player player = new Player();
+        player.setPlayerId(id);
+        List<Player> players = playerService.getPlayers(player);
 
-        users.add(new User("1","Wvv1","123456","w1","2541s"));
-        users.add(new User("2","Wvv2","123456","w2","2441s"));
-        users.add(new User("3","Wvv3","123456","w3","2941s"));
-
-        userService.deleteUser("555");
-        return users;
+        return players;
     }
 
 

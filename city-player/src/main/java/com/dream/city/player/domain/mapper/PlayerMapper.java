@@ -1,7 +1,7 @@
-package com.dream.city.domain.mapper;
+package com.dream.city.player.domain.mapper;
 
 
-import com.dream.city.domain.entity.Player;
+import com.dream.city.player.domain.entity.Player;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

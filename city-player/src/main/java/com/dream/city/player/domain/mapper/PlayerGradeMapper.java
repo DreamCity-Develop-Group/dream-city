@@ -1,4 +1,4 @@
-package com.dream.city.domain.mapper;
+package com.dream.city.player.domain.mapper;
 
 
 import com.dream.city.domain.entity.PlayerGrade;

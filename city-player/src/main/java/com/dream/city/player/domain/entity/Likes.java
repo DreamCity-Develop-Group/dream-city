@@ -1,18 +1,16 @@
-package com.dream.city.domain.entity;
+package com.dream.city.player.domain.entity;
 
 import java.io.Serializable;
 import java.util.Date;
 
-public class PlayerGrade implements Serializable {
+public class Likes implements Serializable {
     private Long id;
 
     private String playerId;
 
-    private String grade;
+    private Integer likes;
 
     private Date createDate;
-
-    private Date updateDate;
 
     public Long getId() {
         return id;
@@ -30,12 +28,12 @@ public class PlayerGrade implements Serializable {
         this.playerId = playerId == null ? null : playerId.trim();
     }
 
-    public String getGrade() {
-        return grade;
+    public Integer getLikes() {
+        return likes;
     }
 
-    public void setGrade(String grade) {
-        this.grade = grade == null ? null : grade.trim();
+    public void setLikes(Integer likes) {
+        this.likes = likes;
     }
 
     public Date getCreateDate() {
@@ -44,13 +42,5 @@ public class PlayerGrade implements Serializable {
 
     public void setCreateDate(Date createDate) {
         this.createDate = createDate;
-    }
-
-    public Date getUpdateDate() {
-        return updateDate;
-    }
-
-    public void setUpdateDate(Date updateDate) {
-        this.updateDate = updateDate;
     }
 }
