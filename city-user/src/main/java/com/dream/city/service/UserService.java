@@ -13,7 +13,7 @@ public interface UserService {
 
     boolean saveUser(User user);
 
-    void deleteUser(String uId);
+    void deleteUser(int uId);
 
     User updateUser(User user);
 
