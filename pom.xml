@@ -24,7 +24,12 @@
         <module>city-user</module>
         <module>city-message</module>
         <module>city-consumer</module>
+        <module>city-base</module>
+        <module>city-comm</module>
+        <module>city-gateway</module>
+        <module>city-player</module>
     </modules>
+
 
     <properties>
         <java.version>1.8</java.version>
