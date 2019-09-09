@@ -1,14 +1,25 @@
 server:
-  port: 8060
+  port: 8061
+
 spring:
   application:
-    name: city-user
+    name: city-player
+  devtools:
+    restart:
+      enabled: true
+      additional-paths: src/main/java
+      exclude: static/**
+      additional-exclude: static/**,public/**
+
   datasource:
     #driver-class-name: com.mysql.jdbc.Driver
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/dreamcity?serverTimezone=UTC&useUnicode=true&characterEncoding=UTF-8&transformedBitIsBoolean=true&autoReconnect=true&failOverReadOnly=false&allowMultiQueries=true&useSSL=false
-    username: dreamcity
-    password: Root@123
+    url: jdbc:mysql://localhost:3306/player?serverTimezone=UTC&useUnicode=true&characterEncoding=UTF-8&transformedBitIsBoolean=true&autoReconnect=true&failOverReadOnly=false&allowMultiQueries=true&useSSL=false
+    username: root
+    password: 123456
+#    url: jdbc:mysql://localhost:3306/dreamcity?serverTimezone=UTC&useUnicode=true&characterEncoding=UTF-8&transformedBitIsBoolean=true&autoReconnect=true&failOverReadOnly=false&allowMultiQueries=true&useSSL=false
+#    username: dreamcity
+#    password: Root@123
 
 eureka:
   instance:
@@ -20,9 +31,8 @@ eureka:
 
 
 #datasource
-
 mybatis:
-  type-aliases-package: com.dream.city.domain.mapper
+  type-aliases-package: com.dream.city.player.domain.mapper
   mapper-locations: classpath:/mybatis/mappers/*.xml
 
 
