@@ -1,7 +1,7 @@
 package com.dream.city.player.domain.mapper;
 
 
-import com.dream.city.domain.entity.GameSetting;
+import com.dream.city.player.domain.entity.GameSetting;
 
 public interface GameSettingMapper {
     int deleteByPrimaryKey(Long id);

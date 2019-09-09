@@ -1,7 +1,7 @@
 package com.dream.city.player.domain.mapper;
 
 
-import com.dream.city.domain.entity.Friends;
+import com.dream.city.player.domain.entity.Friends;
 
 public interface FriendsMapper {
     int deleteByPrimaryKey(Long id);

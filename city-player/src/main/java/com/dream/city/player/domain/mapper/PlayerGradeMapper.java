@@ -1,7 +1,7 @@
 package com.dream.city.player.domain.mapper;
 
 
-import com.dream.city.domain.entity.PlayerGrade;
+import com.dream.city.player.domain.entity.PlayerGrade;
 
 public interface PlayerGradeMapper {
     int deleteByPrimaryKey(Long id);

@@ -23,6 +23,8 @@ public class Message implements Serializable{
     private String target;
     // 消息时间
     private String createtime;
+    // 操作结果
+    private int code;
     // 其他信息
     private String desc;
 
@@ -47,4 +49,57 @@ public class Message implements Serializable{
                 + ", infoSourceIP=" + infoSourceIP + ", createtime="
                 + createtime + ", otherContent=" + otherContent + "]";
     }*/
+
+
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
+    }
+
+    public MessageData getData() {
+        return data;
+    }
+
+    public void setData(MessageData data) {
+        this.data = data;
+    }
+
+    public String getTarget() {
+        return target;
+    }
+
+    public void setTarget(String target) {
+        this.target = target;
+    }
+
+    public String getCreatetime() {
+        return createtime;
+    }
+
+    public void setCreatetime(String createtime) {
+        this.createtime = createtime;
+    }
+
+    public int getCode() {
+        return code;
+    }
+
+    public void setCode(int code) {
+        this.code = code;
+    }
+
+    public String getDesc() {
+        return desc;
+    }
+
+    public void setDesc(String desc) {
+        this.desc = desc;
+    }
 }

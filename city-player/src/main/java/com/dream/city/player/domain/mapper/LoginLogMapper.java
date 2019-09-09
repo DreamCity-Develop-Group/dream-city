@@ -1,7 +1,7 @@
 package com.dream.city.player.domain.mapper;
 
 
-import com.dream.city.domain.entity.LoginLog;
+import com.dream.city.player.domain.entity.LoginLog;
 
 public interface LoginLogMapper {
     int deleteByPrimaryKey(Long id);

@@ -1,7 +1,7 @@
 package com.dream.city.player.domain.mapper;
 
 
-import com.dream.city.domain.entity.Likes;
+import com.dream.city.player.domain.entity.Likes;
 
 public interface LikesMapper {
     int deleteByPrimaryKey(Long id);

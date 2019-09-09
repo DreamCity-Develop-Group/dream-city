@@ -1,23 +1,25 @@
 package com.dream.city.player.controller;
 
 import com.dream.city.base.model.Message;
+import com.dream.city.base.model.ResultCode;
 import com.dream.city.player.domain.entity.Player;
 import com.dream.city.player.service.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 /**
+ * 玩家
  * @author Wvv
  */
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/player")
 public class PlayerController {
 
     @Autowired
@@ -32,39 +34,42 @@ public class PlayerController {
     @RequestMapping("/reg")
     public Message reg(@RequestBody Message message){
         Message msg = new Message();
-        String tip = "";
+        String tip = "fail";
         if (message == null){
-            tip= "fail";
+            message.setCode(ResultCode.fail.hashCode());
+            return msg;
         }
 
-        Map<String,String> user = (Map<String, String>) message.getData().getT();
-        String userName = user.get("username");
-        String userPass = user.get("userpass");
-        String code = user.get("code");
-        String nick = user.get("nick");
-        String invite = user.get("invite");
+        Map<String,String> player = (Map<String, String>) message.getData().getT();
+        String playerName = player.get("username");
+        String playerPass = player.get("userpass");
+        String code = player.get("code");
+        String nick = player.get("nick");
+        String invite = player.get("invite");
 
-        if(null==userName || null == userPass ){
+        if(StringUtils.isEmpty(playerName)){
             tip=  "用户名或密码为空";
         }
-        if(null == code){
+        if(StringUtils.isEmpty(code)){
             tip = "短信验证码为空";
         }
-        if(null == invite){
+        // 邀请码：为选填项，可填写可不填；
+        /*if(StringUtils.isEmpty(invite)){
             tip = "邀请码为空";
-        }
-        if (null == nick){
-            nick = userName;
+        }*/
+        if (StringUtils.isEmpty(nick)){
+            nick = playerName;
         }
 
-        Player u = new Player();
-        u.setUsername(userName);
-        u.setUserpass(userPass);
-        u.setInvited(invite);
-        u.setNick(nick);
-        boolean ret = playerService.save(u);
+        Player playerSave = new Player();
+        playerSave.setUsername(playerName);
+        playerSave.setUserpass(playerPass);
+        playerSave.setInvited(invite);
+        playerSave.setNick(nick);
+        boolean ret = playerService.save(playerSave);
         if (ret){
             tip=  "success";
+            message.setCode(ResultCode.success.hashCode());
         }
         return msg;
 

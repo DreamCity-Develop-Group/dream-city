@@ -1,7 +1,7 @@
 package com.dream.city.player.domain.mapper;
 
 
-import com.dream.city.domain.entity.PlayerExt;
+import com.dream.city.player.domain.entity.PlayerExt;
 
 public interface PlayerExtMapper {
     int deleteByPrimaryKey(Long id);
