@@ -24,7 +24,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArraySet;
-import java.util.concurrent.TimeUnit;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -147,26 +146,9 @@ public class WebSocketServer {
         //根据sid 到服务上找对应的数据，=》校验 =》 推送数据到客户端
         try {
             //如果客户端发心跳包,回复success
-            //ping_username  [jim5524]
-            String ping = message.substring(0,4);
-            if (ping.equals("ping")) {
+            if (message.equals("ping")) {
                 System.out.println("心跳消息接收...");
                 sendMessage("success");
-                // 如果用户持续在线，认证续期...
-                //TODO ===== 如果用户持续在线，认证续期... =======
-                String usrname = message.substring(5);
-                String tokenKey = "token_"+usrname;
-                String tokenTimeKey = "token_time_"+usrname;
-
-                String uTime = redisTampate.opsForValue().get(tokenTimeKey);
-                Long start = Long.valueOf(uTime);
-                Long now = System.currentTimeMillis();
-                Long nowPre = Long.valueOf(now-999L*1L*60L*30L);
-                if ((nowPre).compareTo(start)>0){
-                    //TODO == 现在给你[tokenKey]续命！！！ ====
-                    redisTampate.expire(tokenKey,30, TimeUnit.MINUTES);
-                    redisTampate.expire(tokenTimeKey,30, TimeUnit.MINUTES);
-                }
                 return;
             }
 

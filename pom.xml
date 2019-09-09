@@ -13,6 +13,7 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>dream-city</name>
     <description>DreamCity project for Spring Boot</description>
+    <packaging>pom</packaging>
 
     <modules>
         <!--注册中心服务-->
@@ -22,6 +23,7 @@
         <!--服务提供者-->
         <module>city-user</module>
         <module>city-message</module>
+        <module>city-consumer</module>
     </modules>
 
     <properties>

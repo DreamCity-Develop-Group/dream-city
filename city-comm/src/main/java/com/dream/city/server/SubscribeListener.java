@@ -30,7 +30,7 @@ public class SubscribeListener implements MessageListener {
         if(null!=session){
             try {
                 RemoteEndpoint.Basic endpoint = session.getBasicRemote();
-                if (null != _msg && _msg.getTarget().equals(session.getId())){
+                if (_msg.getTarget().equals(session.getId())){
                     endpoint.sendText(msg);
                 }
                 //session.getBasicRemote().sendText(msg);

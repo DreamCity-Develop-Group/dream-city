@@ -18,6 +18,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/consumer")
 public class ConsumerUserController {
+
     @Autowired
     CityUserService cityUserService;
 

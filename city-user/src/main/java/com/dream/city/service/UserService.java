@@ -13,10 +13,10 @@ public interface UserService {
 
     boolean saveUser(User user);
 
-    void deleteUser(Integer uId);
+    void deleteUser(String uId);
 
     User updateUser(User user);
 
-    List<User> getUsers();
+    List<User> getUsers(User user);
 
 }

@@ -2,19 +2,22 @@ package com.dream.city.domain.entity;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * @author Wvv
  */
 @Data
-public class User {
+public class User implements Serializable {
 
-    private Integer uId;
+    //private Integer uId;
+    private String uId;
     private String uName;
     private String uPass;
     private String uNick;
     private String uInvite;
 
-    public User(Integer uId, String uName, String uPass, String nick, String invite){
+    public User(String uId, String uName, String uPass, String nick, String invite){
         this.uId =uId;
         this.uName = uName;
         this.uPass = uPass;

@@ -14,6 +14,4 @@ public interface AuthService {
     Map<String, Claim> verifyToken(String token);
 
     String getUsername(String token);
-
-    String valiUser(String username);
 }

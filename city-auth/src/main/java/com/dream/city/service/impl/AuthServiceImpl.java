@@ -65,9 +65,6 @@ public class AuthServiceImpl implements AuthService {
             redisTemplate.opsForValue().set("token_"+username,token);
             redisTemplate.expire("token_"+username,30, TimeUnit.MINUTES);
 
-            redisTemplate.opsForValue().set("token_time_"+username,String.valueOf(System.currentTimeMillis()));
-            redisTemplate.expire("token_"+username,30, TimeUnit.MINUTES);
-
             return token;
         } catch (IllegalArgumentException | UnsupportedEncodingException e) {
             e.printStackTrace();
@@ -109,16 +106,6 @@ public class AuthServiceImpl implements AuthService {
             // token 校验失败, 抛出Token验证非法异常
         }
         return userClaim.asString();
-    }
-
-    @Override
-    public String valiUser(String username) {
-        String tokenKey = "token_"+username;
-        String value = redisTemplate.opsForValue().get(tokenKey);
-        if (StringUtils.isEmpty(value)){
-            return "fail";
-        }
-        return "success";
     }
 
 }

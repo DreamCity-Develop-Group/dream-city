@@ -17,11 +17,7 @@ public class AuthController {
     AuthService authService;
 
 
-    /**
-     * 获得token
-     * @param username
-     * @return
-     */
+
     @RequestMapping("/get/{username}")
     public String getAuth(@PathVariable("username") String username){
         String token = authService.generiteToken(username);
@@ -29,21 +25,11 @@ public class AuthController {
         return token;
     }
 
-    /**
-     * 查看token对应的用户名
-     * @param token
-     * @return
-     */
     @RequestMapping("/token/{token}")
     public String getUser(@PathVariable("token")String token){
         String user = authService.getUsername(token);
 
         return user;
-    }
-
-    @RequestMapping("/valid/{username}")
-    public String validUser(@PathVariable("username") String username){
-        return authService.valiUser(username);
     }
 
 }
