@@ -1,0 +1,11 @@
+#注册密码salt
+dreamcity:
+  register:
+    password:
+      salt: DREAM_CITY_890@#$%
+
+
+
+
+
+
