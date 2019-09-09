@@ -19,7 +19,7 @@ public class UserMapperTests {
     @Test
     public void save() {
         User user = new User();
-        user.setUId(0);
+        user.setUId("0");
         user.setUName("wvv1");
         user.setUPass("123456");
         user.setUNick("18826***047");
@@ -31,7 +31,7 @@ public class UserMapperTests {
     @Test
     public void update() {
         User user = new User();
-        user.setUId(1);
+        user.setUId("1");
         user.setUPass("newpassword");
         // 返回更新的记录数 ，期望是1条 如果实际不是一条则抛出异常
         Assert.assertEquals(1,userMapper.update(user));

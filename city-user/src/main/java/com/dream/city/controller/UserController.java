@@ -75,7 +75,7 @@ public class UserController {
             return "Hello str...";
         }
 
-        userService.deleteUser("555");
+        userService.deleteUser(555);
         return "Hello "+ str;
     }
 
@@ -91,7 +91,7 @@ public class UserController {
         users.add(new User("2","Wvv2","123456","w2","2441s"));
         users.add(new User("3","Wvv3","123456","w3","2941s"));
 
-        userService.deleteUser("555");
+        userService.deleteUser(555);
         return users;
     }
 
