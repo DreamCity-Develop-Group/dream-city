@@ -1,6 +1,8 @@
 package com.dream.city.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.dream.city.domain.Message;
+import com.dream.city.domain.MessageData;
 import com.dream.city.domain.entity.User;
 import com.dream.city.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +33,7 @@ public class UserController {
     @RequestMapping("/reg")
     public Message reg(@RequestBody Message message){
         Message msg = new Message();
+        msg.setData(new MessageData());
         String tip = "";
         if (message == null){
             tip= "fail";
@@ -61,10 +64,15 @@ public class UserController {
         u.setUPass(userPass);
         u.setUInvite(invite);
         u.setUNick(nick);
-        boolean ret = userService.saveUser(u);
+        /*boolean ret = userService.saveUser(u);
         if (ret){
             tip=  "success";
-        }
+        }*/
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("desc","注册成功");
+        msg.getData().setT(jsonObject);
+        System.out.println("**************************************");
         return msg;
 
     }

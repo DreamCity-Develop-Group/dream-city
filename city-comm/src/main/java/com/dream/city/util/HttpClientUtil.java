@@ -1,5 +1,7 @@
 package com.dream.city.util;
 
+import com.alibaba.fastjson.JSONObject;
+import com.dream.city.domain.MessageData;
 import com.dream.city.server.WebSocketServer;
 import com.dream.city.domain.Message;
 import com.dream.city.service.HttpClientService;
@@ -74,6 +76,16 @@ public class HttpClientUtil {
                 System.out.println("响应内容为:" + resp);
 
                 Message message = JSON.parseObject(resp, Message.class);
+                message.setData(new MessageData());
+                message.setSource("server");
+                message.setTarget(msg.getSource());
+                message.getData().setType(msg.getData().getType());
+                message.getData().setModel(msg.getData().getModel());
+
+                if (resp.contains("data") && resp.contains("t")){
+                    Object jsonObject = JSON.parseObject(JSON.toJSONString(JSON.parseObject(resp).get("data"))).get("t");
+                    message.getData().setT(jsonObject);
+                }
 
                 WebSocketServer.sendInfo(message);
             }

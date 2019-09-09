@@ -28,6 +28,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import org.springframework.util.StringUtils;
 
 
 /**
@@ -151,32 +152,55 @@ public class WebSocketServer {
                 sendMessage("success");
                 return;
             }
-
+            //解析出客户端发来的消息
             Message msg = JSONObject.parseObject(message, Message.class);
 
-            if (((String) msg.getData().getT()).equals("order")) {
+            if (null != msg.getData().getT()) {
+                String strT = "";
+                if (msg.getData().getT() instanceof String){
+                    strT = (String)msg.getData().getT();
+                }else if (msg.getData().getT() instanceof Integer){
+                    Integer intT = (Integer)msg.getData().getT();
+                    if (null != intT){
+                        strT = String.valueOf(intT);
+                    }
 
-                Map<String, Object> data = new HashMap<>();
-                data.put("orderId", "oid_12547");
-                data.put("order_good", "一支铅笔");
+                }else if (msg.getData().getT() instanceof JSONObject){
+                    JSONObject jsonObjectT = (JSONObject)msg.getData().getT();
+                    if (null != jsonObjectT){
+                        strT = String.valueOf(jsonObjectT);
+                    }
+                    if ("{}".equals(strT)){
+                        strT = null;
+                    }
+                }
 
-                msg.setSource("server");
-                msg.setTarget(msg.getSource());
-                msg.setDesc("下单成功");
-                msg.setCreatetime(String.valueOf(System.currentTimeMillis()));
+                if (!StringUtils.isEmpty(strT) && (strT).equals("order")) {
+                    Map<String, Object> data = new HashMap<>();
+                    data.put("orderId", "oid_12547");
+                    data.put("order_good", "一支铅笔");
 
-                MessageData dataMsg = new MessageData();
-                dataMsg.setType("createOrder");
-                dataMsg.setModel("order");
-                dataMsg.setT(data);
-                msg.setData(dataMsg);
+                    msg.setSource("server");
+                    msg.setTarget(msg.getSource());
+                    msg.setDesc("下单成功");
+                    msg.setCreatetime(String.valueOf(System.currentTimeMillis()));
 
-                String msgRet = JSON.toJSON(msg).toString();
-                sendMessage(msgRet);
-                return;
+                    MessageData dataMsg = new MessageData();
+                    dataMsg.setType("createOrder");
+                    dataMsg.setModel("order");
+                    dataMsg.setT(data);
+                    msg.setData(dataMsg);
+
+                    String msgRet = JSON.toJSON(msg).toString();
+
+
+                    sendMessage(msgRet);
+                    return;
+                }
+
             }
 
-            //请求restful接口，将数据发送给客户端
+            //请求网关的restful接口，将数据发送给客户端
             HttpClientUtil.post((Message) msg);
             //new HttpClientUtil().postService(msg);
             //httpClientService.post(msg);
@@ -244,7 +268,7 @@ public class WebSocketServer {
     }
 
     /**
-     * 群发自定义消息
+     * 发自定义消息
      */
     public static void sendInfo(Message message) throws IOException {
         log.info("推送消息到窗口" + message.getTarget() + "，推送内容:" + message);

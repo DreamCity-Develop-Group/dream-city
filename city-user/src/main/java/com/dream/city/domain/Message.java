@@ -49,4 +49,48 @@ public class Message implements Serializable{
                 + ", infoSourceIP=" + infoSourceIP + ", createtime="
                 + createtime + ", otherContent=" + otherContent + "]";
     }*/
+
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
+    }
+
+    public MessageData getData() {
+        return data;
+    }
+
+    public void setData(MessageData data) {
+        this.data = data;
+    }
+
+    public String getTarget() {
+        return target;
+    }
+
+    public void setTarget(String target) {
+        this.target = target;
+    }
+
+    public String getCreatetime() {
+        return createtime;
+    }
+
+    public void setCreatetime(String createtime) {
+        this.createtime = createtime;
+    }
+
+    public String getDesc() {
+        return desc;
+    }
+
+    public void setDesc(String desc) {
+        this.desc = desc;
+    }
 }

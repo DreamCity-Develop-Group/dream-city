@@ -30,8 +30,11 @@ public class ConsumerUserController {
         return messageService.getCode();
     }
 
-    @RequestMapping("/get/user/{id}")
-    public Object getUser(@PathVariable("id")String id){
+    @RequestMapping("/get/user")
+    public Object getUser(@RequestBody Message msg){
+        Map<String,Object> data = (Map<String, Object>) msg.getData().getT();
+        String id = data.get("id").toString();
+
         return cityUserService.users(id);
     }
 
@@ -50,6 +53,7 @@ public class ConsumerUserController {
      */
     @RequestMapping("/reg")
     public Message reg(@RequestBody Message message){
+        System.out.println("**************************************");
         Message msg = new Message();
         String retUser = cityUserService.reg(message);
         String retMsg = messageService.validCode();
