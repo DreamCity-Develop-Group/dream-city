@@ -1,0 +1,44 @@
+server:
+  port: 8011
+spring:
+  application:
+    name: city-comm
+    port: 8888
+  profiles:
+    active: dev
+  #thymeleaf配置
+  thymeleaf:
+    cache: false
+     #是否为Web框架启用Thymeleaf视图解析。
+    enabled: true
+    #在SpringEL表达式中启用SpringEL编译器。
+    enable-spring-el-compiler: true
+    #模板文件编码。
+    encoding: UTF-8
+    #要应用于模板的模板模式。另请参见Thymeleaf的TemplateMode枚举。
+    mode: HTML5
+    #在构建URL时添加前缀以查看名称的前缀。
+    prefix: classpath:/templates/
+    #Content-Type写入HTTP响应的值。
+    servlet:
+       content-type: text/html
+    #在构建URL时附加到视图名称的后缀。
+    suffix: .html
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    pool:
+      max-active: 300
+      max-wait: -1
+      max-idle: 100
+      min-idle: 20
+    database: 0
+    timeout: 60000
+
+eureka:
+  instance:
+    hostname: localhost
+    instance-id: ${spring.application.name}-${server.port}
+  client:
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname}:8888/eureka/,http://${eureka.instance.hostname}:9999/eureka/

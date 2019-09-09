@@ -1,0 +1,29 @@
+server:
+  port: 8020
+spring:
+  application:
+    name: city-gateway
+
+zuul:
+  routes:
+    city-consumer:
+      path: /consumer/**
+      serviceId: city-consumer
+    city-user:
+      path: /user/**
+      serviceId: city-user
+    city-message:
+      path: /message/**
+      serviceId: city-message
+    city-comm:
+      path: /comm/**
+      serviceId: city-comm
+
+
+eureka:
+  instance:
+    hostname: localhost
+    instance-id: ${spring.application.name}-${server.port}
+  client:
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname}:8888/eureka/,http://${eureka.instance.hostname}:9999/eureka/

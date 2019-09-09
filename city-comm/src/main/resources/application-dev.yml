@@ -1,0 +1,18 @@
+gate:
+  zuul:
+    url: localhost:8020
+
+props: #自定义的属性和值
+  simpleProp: simplePropValue #单个值
+  arrayProps: 1,2,3,4,5 #数组
+  listProp1: #List集合
+  - name: abc
+    value: abcValue
+  - name: efg
+    value: efgValue
+  listProp2:
+  - config2Value1
+  - config2Vavlue2
+  mapProps: #Map集合
+    key1: value1
+    key2: value2
