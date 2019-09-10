@@ -2,11 +2,11 @@ package com.dream.city.player.domain.mapper;
 
 
 import com.dream.city.player.domain.entity.LoginLog;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface LoginLogMapper {
     int deleteByPrimaryKey(Long id);
-
-    int insert(LoginLog record);
 
     int insertSelective(LoginLog record);
 
@@ -14,5 +14,4 @@ public interface LoginLogMapper {
 
     int updateByPrimaryKeySelective(LoginLog record);
 
-    int updateByPrimaryKey(LoginLog record);
 }

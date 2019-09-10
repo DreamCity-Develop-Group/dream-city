@@ -11,10 +11,9 @@ public interface PlayerMapper {
 
     int deleteByPlayerId(String playerId);
 
-    int insertPlayer(Player record);
+    int insertSelective(Player record);
 
-
-    Player getByPlayerId(String playerId);
+    Player getPlayerById(String playerId);
 
     List<Player> getPlayers(Player player);
 

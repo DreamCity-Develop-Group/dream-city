@@ -6,30 +6,28 @@
     <result column="player_id" jdbcType="VARCHAR" property="playerId" />
     <result column="imei" jdbcType="VARCHAR" property="imei" />
     <result column="ip" jdbcType="VARCHAR" property="ip" />
-    <result column="login_time" jdbcType="TIMESTAMP" property="loginTime" />
-    <result column="logout_time" jdbcType="TIMESTAMP" property="logoutTime" />
+    <result column="descr" jdbcType="VARCHAR" property="descr" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
   </resultMap>
+
   <sql id="Base_Column_List">
-    id, player_id, imei, ip, login_time, logout_time
+    id, player_id, imei, ip, descr, type, create_time
   </sql>
+
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from t_login_log
     where id = #{id,jdbcType=BIGINT}
   </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from t_login_log
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.dream.city.player.domain.entity.LoginLog">
-    insert into t_login_log (id, player_id, imei, 
-      ip, login_time, logout_time
-      )
-    values (#{id,jdbcType=BIGINT}, #{playerId,jdbcType=VARCHAR}, #{imei,jdbcType=VARCHAR}, 
-      #{ip,jdbcType=VARCHAR}, #{loginTime,jdbcType=TIMESTAMP}, #{logoutTime,jdbcType=TIMESTAMP}
-      )
-  </insert>
+
+
   <insert id="insertSelective" parameterType="com.dream.city.player.domain.entity.LoginLog">
     insert into t_login_log
     <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -45,11 +43,11 @@
       <if test="ip != null">
         ip,
       </if>
-      <if test="loginTime != null">
-        login_time,
+      <if test="create_time != null">
+        create_time,
       </if>
-      <if test="logoutTime != null">
-        logout_time,
+      <if test="type != null">
+        type,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -65,14 +63,15 @@
       <if test="ip != null">
         #{ip,jdbcType=VARCHAR},
       </if>
-      <if test="loginTime != null">
-        #{loginTime,jdbcType=TIMESTAMP},
+      <if test="create_time != null">
+        #{create_time,jdbcType=TIMESTAMP},
       </if>
-      <if test="logoutTime != null">
-        #{logoutTime,jdbcType=TIMESTAMP},
+      <if test="type != null">
+        #{type,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
+
   <update id="updateByPrimaryKeySelective" parameterType="com.dream.city.player.domain.entity.LoginLog">
     update t_login_log
     <set>
@@ -85,23 +84,15 @@
       <if test="ip != null">
         ip = #{ip,jdbcType=VARCHAR},
       </if>
-      <if test="loginTime != null">
-        login_time = #{loginTime,jdbcType=TIMESTAMP},
+      <if test="create_time != null">
+        create_time = #{create_time,jdbcType=TIMESTAMP},
       </if>
-      <if test="logoutTime != null">
-        logout_time = #{logoutTime,jdbcType=TIMESTAMP},
+      <if test="type != null">
+        type = #{type,jdbcType=VARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.dream.city.player.domain.entity.LoginLog">
-    update t_login_log
-    set player_id = #{playerId,jdbcType=VARCHAR},
-      imei = #{imei,jdbcType=VARCHAR},
-      ip = #{ip,jdbcType=VARCHAR},
-      login_time = #{loginTime,jdbcType=TIMESTAMP},
-      logout_time = #{logoutTime,jdbcType=TIMESTAMP}
-    where id = #{id,jdbcType=BIGINT}
-  </update>
+
 
 </mapper>

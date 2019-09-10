@@ -8,9 +8,11 @@ public class GameSetting implements Serializable {
 
     private String playerId;
 
-    private String game;
+    private String type;
 
-    private String bg;
+    private String val;
+
+    private String status;
 
     private Date createDate;
 
@@ -32,22 +34,6 @@ public class GameSetting implements Serializable {
         this.playerId = playerId == null ? null : playerId.trim();
     }
 
-    public String getGame() {
-        return game;
-    }
-
-    public void setGame(String game) {
-        this.game = game == null ? null : game.trim();
-    }
-
-    public String getBg() {
-        return bg;
-    }
-
-    public void setBg(String bg) {
-        this.bg = bg == null ? null : bg.trim();
-    }
-
     public Date getCreateDate() {
         return createDate;
     }
@@ -62,5 +48,29 @@ public class GameSetting implements Serializable {
 
     public void setUpdateDate(Date updateDate) {
         this.updateDate = updateDate;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getVal() {
+        return val;
+    }
+
+    public void setVal(String val) {
+        this.val = val;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

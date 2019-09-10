@@ -12,9 +12,11 @@ public class LoginLog implements Serializable {
 
     private String ip;
 
-    private Date loginTime;
+    private String descr;
 
-    private Date logoutTime;
+    private String type;
+
+    private Date createTime;
 
     public Long getId() {
         return id;
@@ -48,19 +50,27 @@ public class LoginLog implements Serializable {
         this.ip = ip == null ? null : ip.trim();
     }
 
-    public Date getLoginTime() {
-        return loginTime;
+    public String getType() {
+        return type;
     }
 
-    public void setLoginTime(Date loginTime) {
-        this.loginTime = loginTime;
+    public void setType(String type) {
+        this.type = type;
     }
 
-    public Date getLogoutTime() {
-        return logoutTime;
+    public Date getCreateTime() {
+        return createTime;
     }
 
-    public void setLogoutTime(Date logoutTime) {
-        this.logoutTime = logoutTime;
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    public String getDescr() {
+        return descr;
+    }
+
+    public void setDescr(String descr) {
+        this.descr = descr;
     }
 }

@@ -10,7 +10,6 @@ import java.io.Serializable;
 @Data
 public class User implements Serializable {
 
-    //private Integer uId;
     private String uId;
     private String uName;
     private String uPass;

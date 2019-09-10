@@ -4,12 +4,9 @@ server:
 spring:
   application:
     name: city-player
-  devtools:
-    restart:
-      enabled: true
-      additional-paths: src/main/java
-      exclude: static/**
-      additional-exclude: static/**,public/**
+  profiles:
+    active: dev
+
 
   datasource:
     #driver-class-name: com.mysql.jdbc.Driver

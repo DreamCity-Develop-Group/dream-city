@@ -10,6 +10,8 @@ public class PlayerGrade implements Serializable {
 
     private String grade;
 
+    private int integral;
+
     private Date createDate;
 
     private Date updateDate;
@@ -52,5 +54,13 @@ public class PlayerGrade implements Serializable {
 
     public void setUpdateDate(Date updateDate) {
         this.updateDate = updateDate;
+    }
+
+    public int getIntegral() {
+        return integral;
+    }
+
+    public void setIntegral(int integral) {
+        this.integral = integral;
     }
 }

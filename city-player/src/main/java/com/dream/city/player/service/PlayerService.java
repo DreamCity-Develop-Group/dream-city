@@ -1,6 +1,5 @@
 package com.dream.city.player.service;
 
-import com.dream.city.base.model.Message;
 import com.dream.city.player.domain.entity.Player;
 import org.springframework.stereotype.Repository;
 
@@ -12,11 +11,6 @@ import java.util.List;
 @Repository
 public interface PlayerService {
 
-    /**
-     * 注册
-     * @return
-     */
-    Message reg(Message message);
 
     /**
      *修改密码
@@ -35,6 +29,10 @@ public interface PlayerService {
     void delete(String playerId);
 
     Player update(Player player);
+
+    Player getPlayer(Player player);
+
+    Player getPlayerById(String playerId);
 
     /**
      * 玩家列表

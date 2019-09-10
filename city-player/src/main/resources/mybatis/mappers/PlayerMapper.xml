@@ -17,11 +17,11 @@
     id, player_id, username, nick, userpass, pwshop, invite, invited, create_date, update_date
   </sql>
 
-  <select id="getByPlayerId" parameterType="java.lang.String" resultMap="BaseResultMap">
+  <select id="getPlayerById" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from t_player
-    where player_id = #{playerId,jdbcType=BIGINT}
+    where player_id = #{playerId,jdbcType=VARCHAR}
   </select>
 
   <select id="getPlayers" parameterType="com.dream.city.player.domain.entity.Player" resultMap="BaseResultMap">
@@ -30,11 +30,14 @@
     from t_player
     <where>
         1=1
-      <if test="nick != null and nick != ''">
-        and player_id = #{playerId,jdbcType=BIGINT}
+      <if test="playerId != null and playerId != ''">
+        and player_id = #{playerId,jdbcType=VARCHAR}
+      </if>
+      <if test="username != null and username != ''">
+        and username = #{username,jdbcType=VARCHAR}
       </if>
       <if test="nick != null and nick != ''">
-        and nick = #{nick,jdbcType=BIGINT}
+        and nick = #{nick,jdbcType=VARCHAR}
       </if>
 
     </where>
@@ -45,7 +48,7 @@
     where player_id = #{playerId,jdbcType=BIGINT}
   </delete>
 
-  <insert id="insertPlayer" parameterType="com.dream.city.player.domain.entity.Player">
+  <insert id="insertSelective" parameterType="com.dream.city.player.domain.entity.Player">
     insert into t_player
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">

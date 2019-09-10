@@ -5,28 +5,27 @@
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="player_id" jdbcType="VARCHAR" property="playerId" />
     <result column="grade" jdbcType="VARCHAR" property="grade" />
+    <result column="integral" jdbcType="INTEGER" property="integral" />
     <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
     <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, player_id, grade, create_date, update_date
+    id, player_id, grade, integral, create_date, update_date
   </sql>
+
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from t_player_grade
     where id = #{id,jdbcType=BIGINT}
   </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from t_player_grade
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.dream.city.player.domain.entity.PlayerGrade">
-    insert into t_player_grade (id, player_id, grade, 
-      create_date, update_date)
-    values (#{id,jdbcType=BIGINT}, #{playerId,jdbcType=VARCHAR}, #{grade,jdbcType=VARCHAR}, 
-      #{createDate,jdbcType=TIMESTAMP}, #{updateDate,jdbcType=TIMESTAMP})
-  </insert>
+
+
   <insert id="insertSelective" parameterType="com.dream.city.player.domain.entity.PlayerGrade">
     insert into t_player_grade
     <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -38,6 +37,9 @@
       </if>
       <if test="grade != null">
         grade,
+      </if>
+      <if test="integral != null">
+        integral,
       </if>
       <if test="createDate != null">
         create_date,
@@ -56,6 +58,9 @@
       <if test="grade != null">
         #{grade,jdbcType=VARCHAR},
       </if>
+      <if test="integral != null">
+        #{integral,jdbcType=INTEGER},
+      </if>
       <if test="createDate != null">
         #{createDate,jdbcType=TIMESTAMP},
       </if>
@@ -64,14 +69,19 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.dream.city.player.domain.entity.PlayerGrade">
+
+
+  <update id="updateByPlayerId" parameterType="com.dream.city.player.domain.entity.PlayerGrade">
     update t_player_grade
     <set>
-      <if test="playerId != null">
+      <!--<if test="playerId != null">
         player_id = #{playerId,jdbcType=VARCHAR},
-      </if>
+      </if>-->
       <if test="grade != null">
         grade = #{grade,jdbcType=VARCHAR},
+      </if>
+      <if test="integral != null">
+        integral = #{integral,jdbcType=INTEGER},
       </if>
       <if test="createDate != null">
         create_date = #{createDate,jdbcType=TIMESTAMP},
@@ -80,15 +90,7 @@
         update_date = #{updateDate,jdbcType=TIMESTAMP},
       </if>
     </set>
-    where id = #{id,jdbcType=BIGINT}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.dream.city.player.domain.entity.PlayerGrade">
-    update t_player_grade
-    set player_id = #{playerId,jdbcType=VARCHAR},
-      grade = #{grade,jdbcType=VARCHAR},
-      create_date = #{createDate,jdbcType=TIMESTAMP},
-      update_date = #{updateDate,jdbcType=TIMESTAMP}
-    where id = #{id,jdbcType=BIGINT}
+    where player_id = #{playerId,jdbcType=BIGINT}
   </update>
 
 

@@ -2,11 +2,11 @@ package com.dream.city.player.domain.mapper;
 
 
 import com.dream.city.player.domain.entity.GameSetting;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface GameSettingMapper {
     int deleteByPrimaryKey(Long id);
-
-    int insert(GameSetting record);
 
     int insertSelective(GameSetting record);
 
@@ -14,5 +14,6 @@ public interface GameSettingMapper {
 
     int updateByPrimaryKeySelective(GameSetting record);
 
-    int updateByPrimaryKey(GameSetting record);
+    int updateByType(GameSetting record);
+
 }

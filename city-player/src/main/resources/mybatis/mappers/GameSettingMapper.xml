@@ -4,32 +4,28 @@
   <resultMap id="BaseResultMap" type="com.dream.city.player.domain.entity.GameSetting" >
     <id column="id" property="id" jdbcType="BIGINT" />
     <result column="player_id" property="playerId" jdbcType="VARCHAR" />
-    <result column="game" property="game" jdbcType="VARCHAR" />
-    <result column="bg" property="bg" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="VARCHAR" />
+    <result column="val" property="val" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
     <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
     <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, player_id, game, bg, create_date, update_date
+    id, player_id, type, val, status,create_date, update_date
   </sql>
+
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
     from t_game_setting
     where id = #{id,jdbcType=BIGINT}
   </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from t_game_setting
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.dream.city.player.domain.entity.GameSetting" >
-    insert into t_game_setting (id, player_id, game, 
-      bg, create_date, update_date
-      )
-    values (#{id,jdbcType=BIGINT}, #{playerId,jdbcType=VARCHAR}, #{game,jdbcType=VARCHAR}, 
-      #{bg,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, #{updateDate,jdbcType=TIMESTAMP}
-      )
-  </insert>
+
   <insert id="insertSelective" parameterType="com.dream.city.player.domain.entity.GameSetting" >
     insert into t_game_setting
     <trim prefix="(" suffix=")" suffixOverrides="," >
@@ -39,11 +35,14 @@
       <if test="playerId != null" >
         player_id,
       </if>
-      <if test="game != null" >
-        game,
+      <if test="type != null" >
+        type,
       </if>
-      <if test="bg != null" >
-        bg,
+      <if test="val != null" >
+        val,
+      </if>
+      <if test="status != null" >
+        status,
       </if>
       <if test="createDate != null" >
         create_date,
@@ -59,11 +58,14 @@
       <if test="playerId != null" >
         #{playerId,jdbcType=VARCHAR},
       </if>
-      <if test="game != null" >
-        #{game,jdbcType=VARCHAR},
+      <if test="type != null" >
+        #{type,jdbcType=VARCHAR},
       </if>
-      <if test="bg != null" >
-        #{bg,jdbcType=VARCHAR},
+      <if test="val != null" >
+        #{val,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=VARCHAR},
       </if>
       <if test="createDate != null" >
         #{createDate,jdbcType=TIMESTAMP},
@@ -73,17 +75,21 @@
       </if>
     </trim>
   </insert>
+
   <update id="updateByPrimaryKeySelective" parameterType="com.dream.city.player.domain.entity.GameSetting" >
     update t_game_setting
     <set >
       <if test="playerId != null" >
         player_id = #{playerId,jdbcType=VARCHAR},
       </if>
-      <if test="game != null" >
-        game = #{game,jdbcType=VARCHAR},
+      <if test="type != null" >
+        type = #{type,jdbcType=VARCHAR},
       </if>
-      <if test="bg != null" >
-        bg = #{bg,jdbcType=VARCHAR},
+      <if test="val != null" >
+        val = #{val,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=VARCHAR},
       </if>
       <if test="createDate != null" >
         create_date = #{createDate,jdbcType=TIMESTAMP},
@@ -94,13 +100,27 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.dream.city.player.domain.entity.GameSetting" >
+
+  <update id="updateByType" parameterType="com.dream.city.player.domain.entity.GameSetting" >
     update t_game_setting
-    set player_id = #{playerId,jdbcType=VARCHAR},
-      game = #{game,jdbcType=VARCHAR},
-      bg = #{bg,jdbcType=VARCHAR},
-      create_date = #{createDate,jdbcType=TIMESTAMP},
-      update_date = #{updateDate,jdbcType=TIMESTAMP}
-    where id = #{id,jdbcType=BIGINT}
+    <set >
+      <if test="val != null" >
+        val = #{val,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null" >
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where player_id = #{playerId,jdbcType=BIGINT}
+    <if test="type != null and type ！= ''" >
+      and type = #{type,jdbcType=VARCHAR},
+    </if>
   </update>
+
 </mapper>

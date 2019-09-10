@@ -23,8 +23,6 @@ public class Message implements Serializable{
     private String target;
     // 消息时间
     private String createtime;
-    // 操作结果
-    private int code;
     // 其他信息
     private String desc;
 
@@ -85,14 +83,6 @@ public class Message implements Serializable{
 
     public void setCreatetime(String createtime) {
         this.createtime = createtime;
-    }
-
-    public int getCode() {
-        return code;
-    }
-
-    public void setCode(int code) {
-        this.code = code;
     }
 
     public String getDesc() {

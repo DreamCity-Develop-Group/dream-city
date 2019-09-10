@@ -2,7 +2,9 @@ package com.dream.city.player.domain.mapper;
 
 
 import com.dream.city.player.domain.entity.Friends;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface FriendsMapper {
     int deleteByPrimaryKey(Long id);
 
