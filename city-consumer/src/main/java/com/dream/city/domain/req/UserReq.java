@@ -22,6 +22,8 @@ public class UserReq implements Serializable {
 
     private String invited;
 
+    private String code;
+
     public UserReq(){
     }
 
@@ -85,5 +87,13 @@ public class UserReq implements Serializable {
 
     public void setInvited(String invited) {
         this.invited = invited;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 }

@@ -34,7 +34,7 @@ public class PlayerController {
      * @param jsonReq(用户名，用户密码)
      * @return
      */
-    @PostMapping("/reg")
+    @RequestMapping("/reg")
     public Result reg(@RequestParam("json") String jsonReq){
         Result<JSONObject> result = new Result<>();
         if (StringUtils.isEmpty(jsonReq) || (!StringUtils.isEmpty(jsonReq) && "{}".equals(jsonReq))){
@@ -51,7 +51,7 @@ public class PlayerController {
         String invite = player.get("invite");
 
         String tip = "";
-        if(StringUtils.isEmpty(playerName)){
+        if(StringUtils.isEmpty(playerName) || StringUtils.isEmpty(playerPass)){
             tip=  "用户名或密码为空";
         }
         if(StringUtils.isEmpty(code)){
@@ -73,6 +73,7 @@ public class PlayerController {
             playerSave.setNick(nick);
             boolean ret = playerService.save(playerSave);
             if (ret){
+                tip = "注册成功";
                 result.setSuccess(Boolean.TRUE);
                 result.setCode(CityGlobal.ResultCode.success.getStatus());
             }

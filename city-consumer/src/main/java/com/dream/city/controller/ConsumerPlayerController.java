@@ -106,6 +106,7 @@ public class ConsumerPlayerController {
             userReq.setPwshop(map.containsKey("pwshop")?(String) map.get("pwshop"):null);
             userReq.setUsername(map.containsKey("username")?(String) map.get("username"):null);
             userReq.setUserpass(map.containsKey("userpass")?(String) map.get("userpass"):null);
+            userReq.setCode(map.containsKey("code")?(String) map.get("code"):null);
         }
         return userReq;
     }
