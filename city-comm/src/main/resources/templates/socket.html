@@ -54,16 +54,27 @@
         }
         
         function send() {
-            var msg = "{\"source\":\"+clientId+"\"," +
-                "\"createtime\":\"Wed Sep 04 14:31:01 CST 2019\"," +
-                "\"data\":{\"type\":\"reg\",\"model\":\"user\",\"t\":{\"username\":\"123\",\"userpass\":\"123\",\"code\":\"123\",\"nick\":\"123\",\"invite\":\"123\"}}," +
-                "\"desc\":\"\",\"target\":\"reg\"}";
+            var msg = "{\"source\":\""+clientId+"\"," +
+						"\"target\":\"server\","+
+						"\"createtime\":\"Wed Sep 04 14:31:01 CST 2019\","+
+						"\"desc\":\"\","+
+						"\"data\":{"+
+								"\"type\":\"reg\","+
+								"\"model\":\"consumer\","+
+								"\"t\":{"+
+									"\"username\":\"123\","+
+									"\"userpass\":\"123\","+
+									"\"code\":\"123\","+
+									"\"nick\":\"123\","+
+									"\"invited\":\"123\"}"+
+									"}" +
+						"}";
 				
 			//var msg = "{\"source\":\""+clientId+"\"," +
             //    "\"createtime\":\"Wed Sep 04 14:31:01 CST 2019\"," +
             //    "\"data\":{\"type\":\"reg\",\"model\":\"user\",\"t\":{}}," +
             //   "\"desc\":\"\",\"target\":\"reg\"}";
-
+			console.log(msg);
 
             socket.send(msg);
         }

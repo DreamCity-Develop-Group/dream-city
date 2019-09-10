@@ -1,7 +1,7 @@
-package com.dream.city.player.domain.mapper;
+package com.dream.city.domain.mapper;
 
 
-import com.dream.city.player.domain.entity.GameSetting;
+import com.dream.city.domain.entity.GameSetting;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -15,5 +15,7 @@ public interface GameSettingMapper {
     int updateByPrimaryKeySelective(GameSetting record);
 
     int updateByType(GameSetting record);
+
+    GameSetting selectByType(String type);
 
 }

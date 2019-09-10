@@ -1,7 +1,7 @@
-package com.dream.city.player.controller;
+package com.dream.city.controller;
 
 import com.dream.city.base.model.Result;
-import com.dream.city.player.service.GameSettingService;
+import com.dream.city.service.GameSettingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
  * 游戏设置
  */
 @RestController
-@RequestMapping("/player")
+@RequestMapping("/set")
 public class GameSettingController {
 
 

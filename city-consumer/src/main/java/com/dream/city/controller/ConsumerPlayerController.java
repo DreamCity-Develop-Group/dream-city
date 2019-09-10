@@ -38,20 +38,21 @@ public class ConsumerPlayerController {
 
     @RequestMapping("/get/users")
     public Object getUsers(@RequestBody Message msg){
-        UserReq jsonReq = jsonReq(msg);
+        UserReq userReq = getUserReq(msg);
+        String jsonReq = JSON.toJSONString(userReq);
         return consumerPlayerService.getPlayers(jsonReq);
     }
 
 
     @RequestMapping("/forget")
     public Object forget(@RequestBody Message msg){
-        UserReq jsonReq = jsonReq(msg);
+        UserReq jsonReq = getUserReq(msg);
         return consumerPlayerService.resetLoginPwd(jsonReq.getPlayerId(),jsonReq.getUserpass());
     }
 
     @RequestMapping("/expwshop")
     public Object expwshop(@RequestBody Message msg){
-        UserReq jsonReq = jsonReq(msg);
+        UserReq jsonReq = getUserReq(msg);
         return consumerPlayerService.resetTraderPwd(jsonReq.getPlayerId(),jsonReq.getPwshop());
     }
 
@@ -69,8 +70,8 @@ public class ConsumerPlayerController {
     @RequestMapping("/reg")
     public Message reg(@RequestBody Message message){
         Message msg = new Message();
-        UserReq jsonReq = jsonReq(message);
-
+        UserReq userReq = getUserReq(message);
+        String jsonReq = JSON.toJSONString(userReq);
         String reg = consumerPlayerService.reg(jsonReq);
         String retMsg = messageService.validCode();
         if (retMsg.equals("success") && reg.equals("success")){
@@ -82,25 +83,31 @@ public class ConsumerPlayerController {
 
     @RequestMapping("/login")
     public Object login(@RequestBody Message msg){
-        UserReq jsonReq = jsonReq(msg);
+        UserReq userReq = getUserReq(msg);
+        String jsonReq = JSON.toJSONString(userReq);
         return consumerPlayerService.login(jsonReq);
     }
 
     @RequestMapping("/quit")
     public Object quit(@RequestBody Message msg){
-        UserReq jsonReq = jsonReq(msg);
+        UserReq jsonReq = getUserReq(msg);
         consumerPlayerService.quit(jsonReq.getPlayerId());
         return null;
     }
 
 
-    private UserReq jsonReq(Message message){
-        Object t = message.getData().getT();
-        String json = null;
-        if (t != null) {
-            json = String.valueOf(t);
+    private UserReq getUserReq(Message message){
+        Map map = (Map)message.getData().getT();
+        UserReq userReq = new UserReq();
+        if (map != null) {
+            userReq.setInvited(map.containsKey("invited")?(String) map.get("invited"):null);
+            userReq.setNick(map.containsKey("nick")?(String) map.get("nick"):null);
+            userReq.setPlayerId(map.containsKey("playerId")?(String) map.get("playerId"):null);
+            userReq.setPwshop(map.containsKey("pwshop")?(String) map.get("pwshop"):null);
+            userReq.setUsername(map.containsKey("username")?(String) map.get("username"):null);
+            userReq.setUserpass(map.containsKey("userpass")?(String) map.get("userpass"):null);
         }
-        return JSON.parseObject(json,UserReq.class);
+        return userReq;
     }
 
 }

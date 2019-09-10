@@ -34,9 +34,8 @@ public class PlayerController {
      * @param jsonReq(用户名，用户密码)
      * @return
      */
-
-    @RequestMapping(method = RequestMethod.POST, value = "/reg")
-    public Result reg(@RequestParam String jsonReq){
+    @PostMapping("/reg")
+    public Result reg(@RequestParam("json") String jsonReq){
         Result<JSONObject> result = new Result<>();
         if (StringUtils.isEmpty(jsonReq) || (!StringUtils.isEmpty(jsonReq) && "{}".equals(jsonReq))){
             result.setSuccess(Boolean.FALSE);

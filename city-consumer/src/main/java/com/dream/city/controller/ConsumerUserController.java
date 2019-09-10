@@ -25,7 +25,7 @@ public class ConsumerUserController {
     @Autowired
     CityMessageService messageService;
 
-    @RequestMapping("/getcode")
+    /*@RequestMapping("/getcode")
     public Object getCode(){
         return messageService.getCode();
     }
@@ -48,9 +48,9 @@ public class ConsumerUserController {
         return map;
     }
 
-    /**
+    *//**
      * 用户注册
-     */
+     *//*
     @RequestMapping("/reg")
     public Message reg(@RequestBody Message message){
         System.out.println("**************************************");
@@ -61,6 +61,6 @@ public class ConsumerUserController {
             return msg;
         }
         return msg;
-    }
+    }*/
 
 }

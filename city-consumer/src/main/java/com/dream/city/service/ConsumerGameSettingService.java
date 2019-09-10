@@ -5,14 +5,14 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@FeignClient(value = "city-player", fallback = FallBackPlayer.class)
+@FeignClient(value = "city-set", fallback = FallBackPlayer.class)
 public interface ConsumerGameSettingService {
 
     /**
      * 游戏音效
      * @return
      */
-    @RequestMapping("/player/settingGameVioce")
+    @RequestMapping("/set/settingGameVioce")
     String settingGameVioce(@RequestParam String playerId, @RequestParam Boolean isOpen);
 
 
@@ -21,7 +21,7 @@ public interface ConsumerGameSettingService {
      * @param isOpen
      * @return
      */
-    @RequestMapping("/player/settingBgVioce")
+    @RequestMapping("/set/settingBgVioce")
     String settingBgVioce(@RequestParam String playerId,@RequestParam Boolean isOpen);
 
 }

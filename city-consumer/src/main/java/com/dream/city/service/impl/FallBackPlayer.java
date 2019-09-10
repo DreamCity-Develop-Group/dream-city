@@ -8,23 +8,24 @@ import com.dream.city.service.ConsumerPlayerService;
  */
 public class FallBackPlayer implements ConsumerPlayerService {
 
+
     @Override
     public String getPlayer(String playerId) {
         return null;
     }
 
     @Override
-    public String getPlayers(UserReq jsonReq) {
+    public String getPlayers(String jsonReq) {
         return null;
     }
 
     @Override
-    public String reg(UserReq jsonReq) {
+    public String reg(String jsonReq) {
         return null;
     }
 
     @Override
-    public String login(UserReq jsonReq) {
+    public String login(String jsonReq) {
         return null;
     }
 

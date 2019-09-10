@@ -9,15 +9,6 @@ zuul:
     city-consumer:
       path: /consumer/**
       serviceId: city-consumer
-    city-user:
-      path: /user/**
-      serviceId: city-user
-    city-message:
-      path: /message/**
-      serviceId: city-message
-    city-comm:
-      path: /comm/**
-      serviceId: city-comm
 
 
 eureka:

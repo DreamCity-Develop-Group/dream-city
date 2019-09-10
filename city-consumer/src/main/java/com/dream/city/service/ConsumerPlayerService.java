@@ -18,18 +18,21 @@ public interface ConsumerPlayerService {
     String getPlayer(@PathVariable("playerId") String playerId);
 
     @RequestMapping("/player/get/")
-    String getPlayers(@RequestBody UserReq jsonReq);
+    String getPlayers(@RequestParam String jsonReq);
+
     /**
      * 用户注册
+     * @param jsonReq
+     * @return
      */
     @RequestMapping("/player/reg")
-    String reg(@RequestBody UserReq jsonReq);
+    String reg(@RequestParam("json") String jsonReq);
 
     /**
      * 用户登录
      */
     @RequestMapping("/player/login")
-    String login(@RequestBody UserReq jsonReq);
+    String login(@RequestParam String jsonReq);
 
     /**
      * 用户退出

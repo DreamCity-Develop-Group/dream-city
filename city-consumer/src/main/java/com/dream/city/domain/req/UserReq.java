@@ -22,6 +22,8 @@ public class UserReq implements Serializable {
 
     private String invited;
 
+    public UserReq(){
+    }
 
     public UserReq(String playerId, String username, String userpass){
         this.playerId =playerId;
