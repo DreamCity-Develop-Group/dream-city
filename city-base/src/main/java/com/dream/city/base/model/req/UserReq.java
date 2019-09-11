@@ -20,6 +20,9 @@ public class UserReq implements Serializable {
 
     private String pwshop;
 
+    private String oldpw;
+    private String newpw;
+
     private String invited;
 
     private String code;
@@ -95,5 +98,21 @@ public class UserReq implements Serializable {
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public String getOldpw() {
+        return oldpw;
+    }
+
+    public void setOldpw(String oldpw) {
+        this.oldpw = oldpw;
+    }
+
+    public String getNewpw() {
+        return newpw;
+    }
+
+    public void setNewpw(String newpw) {
+        this.newpw = newpw;
     }
 }

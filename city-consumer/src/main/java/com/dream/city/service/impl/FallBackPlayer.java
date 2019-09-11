@@ -35,12 +35,19 @@ public class FallBackPlayer implements ConsumerPlayerService {
     }
 
     @Override
-    public Result resetLoginPwd(String playerId, String userpass) {
+    public Result forgetPwd(String username, String oldPwd) {
         return null;
     }
 
     @Override
-    public Result resetTraderPwd(String playerId, String pwshop) {
+    public Result resetLoginPwd(String playerId, String oldPwd, String newPwd) {
         return null;
     }
+
+    @Override
+    public Result resetTraderPwd(String playerId, String oldPwd, String newPwd) {
+        return null;
+    }
+
+
 }

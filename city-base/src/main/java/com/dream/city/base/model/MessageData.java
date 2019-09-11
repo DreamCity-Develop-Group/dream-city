@@ -1,11 +1,13 @@
 package com.dream.city.base.model;
 
 import lombok.Data;
+import lombok.ToString;
 
 /**
  * @author WVv
  */
 @Data
+@ToString
 public class MessageData<T> {
     //事件类型
     String type;
@@ -18,8 +20,9 @@ public class MessageData<T> {
 
     }
 
-    public MessageData(T t){
-        this.t = t;
+    public MessageData(String type,String model){
+        this.type = type;
+        this.model = model;
     }
 
     public MessageData(String type,String model,T t){

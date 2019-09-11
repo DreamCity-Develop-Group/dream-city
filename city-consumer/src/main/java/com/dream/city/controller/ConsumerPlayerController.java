@@ -8,6 +8,8 @@ import com.dream.city.base.model.Result;
 import com.dream.city.base.model.req.UserReq;
 import com.dream.city.service.CityMessageService;
 import com.dream.city.service.ConsumerPlayerService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +25,8 @@ import java.util.Map;
 @RestController
 @RequestMapping("/consumer")
 public class ConsumerPlayerController {
+
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private ConsumerPlayerService consumerPlayerService;
@@ -41,8 +45,10 @@ public class ConsumerPlayerController {
         Map<String,Object> map= new HashMap<>();
         Message code = messageService.getCode(msg);
         map.put("code",code.getData().getT());
-        return new Message(msg.getSource(),msg.getTarget(),
-                new MessageData(map));
+        MessageData messageData = new MessageData();
+        messageData.setT(map);
+        Message message = new Message(msg.getSource(),msg.getTarget(),messageData);
+        return message;
     }
 
 
@@ -53,11 +59,16 @@ public class ConsumerPlayerController {
      */
     @RequestMapping("/get/user")
     public Message getUser(@RequestBody Message msg){
-        Map<String,Object> data = (Map<String, Object>) msg.getData().getT();
-        String id = data.get("id").toString();
+        Map<String,Object> map = (Map<String, Object>) msg.getData().getT();
+        String id = map.get("id").toString();
         Result player = consumerPlayerService.getPlayer(id);
-        return new Message(msg.getSource(),msg.getTarget(),
-                new MessageData(player.getData()));
+
+        Map<String,Object> t = new HashMap<>();
+        t.put("user",player.getData());
+        MessageData messageData = new MessageData();
+        messageData.setT(t);
+        Message message = new Message(msg.getSource(),msg.getTarget(),messageData);
+        return message;
     }
 
 
@@ -71,8 +82,13 @@ public class ConsumerPlayerController {
         UserReq userReq = getUserReq(msg);
         String jsonReq = JSON.toJSONString(userReq);
         Result players = consumerPlayerService.getPlayers(jsonReq);
-        return new Message(msg.getSource(),msg.getTarget(),
-                new MessageData(players.getData()));
+
+        Map<String,Object> t = new HashMap<>();
+        t.put("users",players.getData());
+        MessageData data = new MessageData();
+        data.setT(t);
+        Message message = new Message(msg.getSource(),msg.getTarget(),data);
+        return message;
     }
 
 
@@ -84,9 +100,36 @@ public class ConsumerPlayerController {
     @RequestMapping("/forget")
     public Message forget(@RequestBody Message msg){
         UserReq jsonReq = getUserReq(msg);
-        Result result = consumerPlayerService.resetLoginPwd(jsonReq.getPlayerId(), jsonReq.getUserpass());
-        return new Message(msg.getSource(),msg.getTarget(),
-                new MessageData(result.getMsg()));
+        Result result = consumerPlayerService.forgetPwd(jsonReq.getUsername(), jsonReq.getOldpw());
+
+        logger.info("##################### 忘记密码 ",msg);
+
+        Map<String,String> t = new HashMap<>();
+        t.put("desc",result.getMsg());
+        MessageData data = new MessageData();
+        data.setT(t);
+        Message message = new Message(msg.getSource(),msg.getTarget(),data);
+        return message;
+    }
+
+    /**
+     * 修改密码
+     * @param msg
+     * @return
+     */
+    @RequestMapping("/expw")
+    public Message resetLoginPwd(@RequestBody Message msg){
+        UserReq jsonReq = getUserReq(msg);
+        Result result = consumerPlayerService.resetLoginPwd(jsonReq.getPlayerId(), jsonReq.getOldpw(),jsonReq.getNewpw());
+
+        logger.info("##################### 修改密码 ",msg);
+        Map<String,String> t = new HashMap<>();
+        t.put("desc",result.getMsg());
+
+        MessageData data = new MessageData();
+        data.setT(t);
+        Message message = new Message(msg.getSource(),msg.getTarget(),data);
+        return message;
     }
 
     /**
@@ -97,9 +140,15 @@ public class ConsumerPlayerController {
     @RequestMapping("/expwshop")
     public Message expwshop(@RequestBody Message msg){
         UserReq jsonReq = getUserReq(msg);
-        Result result = consumerPlayerService.resetTraderPwd(jsonReq.getPlayerId(), jsonReq.getPwshop());
-        return new Message(msg.getSource(),msg.getTarget(),
-                new MessageData(result.getMsg()));
+        Result result = consumerPlayerService.resetTraderPwd(jsonReq.getPlayerId(), jsonReq.getOldpw(),jsonReq.getNewpw());
+        logger.info("##################### 修改交易密码 ",msg);
+        Map<String,String> t = new HashMap<>();
+        t.put("desc",result.getMsg());
+
+        MessageData data = new MessageData();
+        data.setT(t);
+        Message message = new Message(msg.getSource(),msg.getTarget(),data);
+        return message;
     }
 
 
@@ -111,16 +160,28 @@ public class ConsumerPlayerController {
     @RequestMapping("/reg")
     public Message reg(@RequestBody Message message){
         Message msg = new Message();
-        msg.setData(new MessageData(CityGlobal.Constant.REG_FAIL));
+        MessageData data = new MessageData();
+        msg.setData(data);
+        Map<String,String> t = new HashMap<>();
 
         UserReq userReq = getUserReq(message);
         String jsonReq = JSON.toJSONString(userReq);
-        Message retMsg = messageService.validCode(message);
+
+        /*Message retMsg = messageService.validCode(message);
+        if (!(Boolean) retMsg.getData().getT()){
+            msg.getData().setT(new MessageData(CityGlobal.Constant.REG_FAIL));
+            return msg;
+        }*/
+
         Result reg = consumerPlayerService.reg(jsonReq);
-        if ((Boolean) retMsg.getData().getT() && reg.getSuccess()){
-            msg.setData(new MessageData(CityGlobal.Constant.REG_SUCCESS));
+        if (reg.getSuccess()){
+            t.put("desc",CityGlobal.Constant.REG_SUCCESS);
+            msg.getData().setT(t);
+            logger.info("##################### 用户注册成功 ",msg);
             return msg;
         }
+
+        msg.getData().setT(t.put("desc",CityGlobal.Constant.REG_FAIL));
         return msg;
     }
 
@@ -135,9 +196,14 @@ public class ConsumerPlayerController {
         UserReq userReq = getUserReq(msg);
         String jsonReq = JSON.toJSONString(userReq);
         Result result = consumerPlayerService.login(jsonReq);
+        logger.info("##################### 用户登录 ",msg);
 
-        return new Message(msg.getSource(),msg.getTarget(),
-                new MessageData(result.getMsg()));
+        Map<String,String> t = new HashMap<>();
+        t.put("desc",result.getMsg());
+        MessageData data = new MessageData();
+        data.setT(t);
+        Message message = new Message(msg.getSource(),msg.getTarget(),data);
+        return message;
     }
 
     /**
@@ -149,8 +215,15 @@ public class ConsumerPlayerController {
     public Message exit(@RequestBody Message msg){
         UserReq jsonReq = getUserReq(msg);
         Result result = consumerPlayerService.quit(jsonReq.getPlayerId());
-        return new Message(msg.getSource(),msg.getTarget(),
-                new MessageData(result.getMsg()));
+        logger.info("##################### 用户登出 ",msg);
+
+        Map<String,String> t = new HashMap<>();
+        t.put("desc",result.getMsg());
+        MessageData data = new MessageData();
+        data.setT(t);
+        Message message = new Message(msg.getSource(),msg.getTarget(),data);
+        return message;
+
     }
 
 
@@ -165,6 +238,8 @@ public class ConsumerPlayerController {
             userReq.setUsername(map.containsKey("username")?(String) map.get("username"):null);
             userReq.setUserpass(map.containsKey("userpass")?(String) map.get("userpass"):null);
             userReq.setCode(map.containsKey("code")?(String) map.get("code"):null);
+            userReq.setOldpw(map.containsKey("oldpw")?(String) map.get("oldpw"):null);
+            userReq.setNewpw(map.containsKey("newpw")?(String) map.get("newpw"):null);
         }
         return userReq;
     }

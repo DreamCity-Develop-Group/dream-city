@@ -76,7 +76,8 @@ public class HttpClientUtil {
                 System.out.println("响应内容为:" + resp);
 
                 Message message = JSON.parseObject(resp, Message.class);
-                message.setData(new MessageData());
+                System.out.println(message.toString());
+                //message.setData(new MessageData());
                 message.setSource("server");
                 message.setTarget(msg.getSource());
                 message.getData().setType(msg.getData().getType());

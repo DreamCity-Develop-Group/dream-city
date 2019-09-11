@@ -39,19 +39,32 @@ public interface ConsumerPlayerService {
     @RequestMapping("/player/quit")
     Result quit(@RequestParam("playerId") String playerId);
 
+
+    /**
+     * 用户忘记密码重置
+     */
+    @RequestMapping("/player/forgetPwd")
+    Result forgetPwd(@RequestParam("username") String username,@RequestParam("oldPwd") String oldPwd);
+
+
+
     /**
      * 用户忘记密码重置
      */
     @RequestMapping("/player/resetLoginPwd")
-    Result resetLoginPwd(@RequestParam("playerId") String playerId,@RequestParam("userpass") String userpass);
+    Result resetLoginPwd(@RequestParam("playerId") String playerId,
+                         @RequestParam("oldPwd") String oldPwd,
+                         @RequestParam("newPwd")  String newPwd);
 
     /**
      * 重置交易密码
      * @param playerId
-     * @param pwshop
+     * @param oldPwd
      * @return
      */
     @RequestMapping("/player/resetTraderPwd")
-    Result resetTraderPwd(@RequestParam("playerId") String playerId,@RequestParam("pwshop") String pwshop);
+    Result resetTraderPwd(@RequestParam("playerId") String playerId,
+                          @RequestParam("oldPwd") String oldPwd,
+                          @RequestParam("newPwd")  String newPwd);
 
 }

@@ -60,16 +60,16 @@ public class PlayerController {
             tip=  "用户名或密码为空";
         }
         // 用户是否存在
-        Player playerReq = new Player();
+        /*Player playerReq = new Player();
         playerReq.setUsername(playerName);
         Player playerExit = playerService.getPlayer(playerReq);
         if (playerExit != null){
             tip = CityGlobal.Constant.REG_USER_EXIT + ",请直接登录！";
-        }
+        }*/
 
-        if(StringUtils.isBlank(code)){
+        /*if(StringUtils.isBlank(code)){
             tip = "短信验证码为空";
-        }
+        }*/
         // 邀请码：为选填项，可填写可不填；
         /*if(StringUtils.isBlank(invite)){
             tip = "邀请码为空";
@@ -195,44 +195,46 @@ public class PlayerController {
         return result;
     }
 
+
+    /**
+     * 忘记密码
+     * @param username
+     * @param oldPwd
+     * @return
+     */
+    @RequestMapping("/forgetPwd")
+    public Result forgetPwd(@RequestParam("username")String username,
+                                @RequestParam("oldPwd") String oldPwd){
+        return playerService.forgetPwd(username, oldPwd);
+    }
+
     /**
      * 重置登录密码
      * @param playerId
-     * @param userpass
+     * @param oldPwd
+     * @param newPwd
      * @return
      */
     @RequestMapping("/resetLoginPwd")
     public Result resetLoginPwd(@RequestParam("playerId")String playerId,
-                                @RequestParam("userpass")String userpass){
-
-        boolean b = playerService.resetLoginPwd(playerId, userpass);
-        Result result = null;
-        if (b){
-            result = new Result("重置交易密码成功", CityGlobal.ResultCode.success.getStatus());
-        }else {
-            result = new Result("重置交易密码失败", CityGlobal.ResultCode.fail.getStatus());
-        }
-        return result;
+                                @RequestParam("oldPwd") String oldPwd,
+                                @RequestParam("newPwd")  String newPwd){
+        return playerService.resetLoginPwd(playerId, oldPwd,newPwd);
     }
 
 
     /**
      * 重置交易密码
      * @param playerId
-     * @param pwshop
+     * @param oldPwd
+     * @param newPwd
      * @return
      */
     @RequestMapping("/resetTraderPwd")
     public Result resetTraderPwd(@RequestParam("playerId")String playerId,
-                                @RequestParam("pwshop")String pwshop){
-        boolean b = playerService.resetTraderPwd(playerId, pwshop);
-        Result result = null;
-        if (b){
-            result = new Result("重置交易密码成功", CityGlobal.ResultCode.success.getStatus());
-        }else {
-            result = new Result("重置交易密码失败", CityGlobal.ResultCode.fail.getStatus());
-        }
-        return result;
+                                 @RequestParam("oldPwd") String oldPwd,
+                                 @RequestParam("newPwd")  String newPwd){
+        return playerService.resetTraderPwd(playerId, oldPwd,newPwd);
     }
 
     /**

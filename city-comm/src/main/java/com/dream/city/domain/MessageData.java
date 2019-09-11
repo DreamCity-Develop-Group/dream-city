@@ -1,11 +1,13 @@
 package com.dream.city.domain;
 
 import lombok.Data;
+import lombok.ToString;
 
 /**
  * @author WVv
  */
 @Data
+@ToString
 public class MessageData<T> {
     //事件类型
     String type;

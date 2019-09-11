@@ -18,4 +18,5 @@ public interface PlayerMapper {
     List<Player> getPlayers(Player player);
 
     int updateByPlayerId(Player record);
+
 }

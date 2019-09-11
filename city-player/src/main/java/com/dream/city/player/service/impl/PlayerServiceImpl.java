@@ -1,5 +1,7 @@
 package com.dream.city.player.service.impl;
 
+import com.dream.city.base.model.CityGlobal;
+import com.dream.city.base.model.Result;
 import com.dream.city.base.utils.KeyGenerator;
 import com.dream.city.player.domain.entity.Player;
 import com.dream.city.player.domain.mapper.PlayerMapper;
@@ -27,21 +29,72 @@ public class PlayerServiceImpl implements PlayerService {
 
 
     @Override
-    public boolean resetLoginPwd(String playerId, String userpass) {
+    public Result forgetPwd(String username, String newPwd) {
         Player player = new Player();
-        player.setPlayerId(playerId);
-        player.setUserpass(userpass);
-        int i = playerMapper.updateByPlayerId(player);
-        return i > 0? Boolean.TRUE: Boolean.FALSE;
+        player.setUsername(username);
+        List<Player> players = playerMapper.getPlayers(player);
+        if (CollectionUtils.isEmpty(players)){
+            return new Result(Boolean.FALSE, CityGlobal.Constant.USER_NOT_EXIT);
+        }
+
+        return changePwd(players.get(0).getPlayerId(), newPwd);
     }
 
     @Override
-    public boolean resetTraderPwd(String playerId, String pwshop) {
+    public Result resetLoginPwd(String playerId, String oldPwd, String newPwd) {
+        Result result = changePwdVelid(playerId, oldPwd);
+        if (!result.getSuccess()){
+            return result;
+        }
+
+        return changePwd(playerId, newPwd);
+    }
+
+    private Result changePwd(String playerId, String newPwd){
         Player player = new Player();
         player.setPlayerId(playerId);
-        player.setPwshop(pwshop);
+        player.setUserpass(newPwd);
         int i = playerMapper.updateByPlayerId(player);
-        return i > 0? Boolean.TRUE: Boolean.FALSE;
+        if (i>0){
+            // 修改密码成功
+            return new Result(Boolean.TRUE, CityGlobal.Constant.USER_CHANGE_PWD_SUCCESS);
+        }
+        return new Result(Boolean.FALSE, CityGlobal.Constant.USER_CHANGE_PWD_FAIL);
+    }
+
+
+    @Override
+    public Result resetTraderPwd(String playerId, String oldPwd, String newPwd) {
+        Result result = changePwdVelid(playerId, oldPwd);
+        if (!result.getSuccess()){
+            return result;
+        }
+
+        Player player = new Player();
+        player.setPlayerId(playerId);
+        player.setPwshop(newPwd);
+        int i = playerMapper.updateByPlayerId(player);
+        if (i>0){
+            // 修改密码成功
+            return new Result(Boolean.TRUE, CityGlobal.Constant.USER_CHANGE_PWD_SUCCESS);
+        }
+        return new Result(Boolean.FALSE, CityGlobal.Constant.USER_CHANGE_TRADERPWD_FAIL);
+    }
+
+    private Result changePwdVelid(String playerId, String oldPwd){
+        Player playerExit = playerMapper.getPlayerById(playerId);
+
+        // 用户不存在
+        if(playerExit == null){
+            return new Result(Boolean.FALSE, CityGlobal.Constant.USER_NOT_EXIT);
+        }
+
+        // 旧密码不正确
+        if (playerExit.getUserpass().equals(oldPwd)){
+            return new Result(Boolean.FALSE, CityGlobal.Constant.USER_OLD_PWD_ERROR);
+        }
+
+        return new Result(Boolean.TRUE, CityGlobal.Constant.USER_OLD_PWD_ERROR);
     }
 
     @Override
