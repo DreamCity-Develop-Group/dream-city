@@ -43,12 +43,10 @@
       <if test="ip != null">
         ip,
       </if>
-      <if test="create_time != null">
-        create_time,
-      </if>
       <if test="type != null">
         type,
       </if>
+      create_time
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -63,12 +61,10 @@
       <if test="ip != null">
         #{ip,jdbcType=VARCHAR},
       </if>
-      <if test="create_time != null">
-        #{create_time,jdbcType=TIMESTAMP},
-      </if>
       <if test="type != null">
         #{type,jdbcType=VARCHAR},
       </if>
+      now()
     </trim>
   </insert>
 

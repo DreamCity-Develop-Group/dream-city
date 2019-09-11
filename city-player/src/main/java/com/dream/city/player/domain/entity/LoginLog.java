@@ -1,8 +1,11 @@
 package com.dream.city.player.domain.entity;
 
+import lombok.Data;
+
 import java.io.Serializable;
 import java.util.Date;
 
+@Data
 public class LoginLog implements Serializable {
     private Long id;
 
@@ -73,4 +76,6 @@ public class LoginLog implements Serializable {
     public void setDescr(String descr) {
         this.descr = descr;
     }
+
+
 }

@@ -1,6 +1,5 @@
 package com.dream.city.player.service.impl;
 
-import com.dream.city.base.utils.SecurityUtil;
 import com.dream.city.player.domain.entity.LoginLog;
 import com.dream.city.player.domain.mapper.LoginLogMapper;
 import com.dream.city.player.service.LoginLogServcie;
