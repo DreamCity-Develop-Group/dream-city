@@ -9,6 +9,7 @@ import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 @SpringBootApplication
 @EnableEurekaClient
 @MapperScan("com.dream.city.domain.mapper")
+@EnableCaching
 public class CitySetApplication {
 
     public static void main(String[] args) {
