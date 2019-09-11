@@ -29,6 +29,7 @@
         <module>city-gateway</module>
         <module>city-player</module>
         <module>city-set</module>
+        <module>city-auth</module>
     </modules>
 
 
