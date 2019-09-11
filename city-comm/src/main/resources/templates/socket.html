@@ -54,26 +54,23 @@
         }
         
         function send() {
-            var msg = "{\"source\":\""+clientId+"\"," +
+            var msg = "{\"source\":\"53875-b\"," +
 						"\"target\":\"server\","+
 						"\"createtime\":\"Wed Sep 04 14:31:01 CST 2019\","+
 						"\"desc\":\"\","+
 						"\"data\":{"+
-								"\"type\":\"reg\","+
+								"\"type\":\"login\","+
 								"\"model\":\"consumer\","+
 								"\"t\":{"+
 									"\"username\":\"123\","+
 									"\"userpass\":\"123\","+
-									"\"code\":\"123\","+
+									"\"code\":\"950884\","+
 									"\"nick\":\"123\","+
 									"\"invited\":\"123\"}"+
 									"}" +
 						"}";
 				
-			//var msg = "{\"source\":\""+clientId+"\"," +
-            //    "\"createtime\":\"Wed Sep 04 14:31:01 CST 2019\"," +
-            //    "\"data\":{\"type\":\"reg\",\"model\":\"user\",\"t\":{}}," +
-            //   "\"desc\":\"\",\"target\":\"reg\"}";
+			
 			console.log(msg);
 
             socket.send(msg);

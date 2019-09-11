@@ -1,16 +1,13 @@
 package com.dream.city.base.model.req;
 
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.io.Serializable;
 
 /**
  * @author Wvv
  */
-@Setter
-@Getter
+@Data
 public class UserReq implements Serializable {
 
     private String playerId;
@@ -23,7 +20,6 @@ public class UserReq implements Serializable {
 
     private String pwshop;
 
-    @Setter
     private String invited;
 
     private String code;
@@ -91,5 +87,13 @@ public class UserReq implements Serializable {
 
     public void setInvited(String invited) {
         this.invited = invited;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 }

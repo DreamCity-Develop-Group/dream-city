@@ -37,10 +37,15 @@ public interface CityGlobal {
         public static final String YES = "Y";
         public static final String NO = "N";
 
+        public static final String LINK_TIMEOUT = "链接超时!";
+
         // 登录
         public static final String LOGIN_SUCCESS = "登录成功!";
         public static final String LOGIN_FAIL = "登录失败!";
-        public static final String LOGIN_TIMEOUT = "登录超时!";
+
+        // 注册
+        public static final String REG_SUCCESS = "注册成功!";
+        public static final String REG_FAIL = "注册失败!";
 
         // 用户
         public static final String USER_NOT_EXIT = "用户不存在!";

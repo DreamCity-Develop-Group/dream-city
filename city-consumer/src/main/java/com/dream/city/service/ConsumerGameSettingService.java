@@ -1,5 +1,6 @@
 package com.dream.city.service;
 
+import com.dream.city.base.model.Result;
 import com.dream.city.service.impl.FallBackPlayer;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,7 +14,7 @@ public interface ConsumerGameSettingService {
      * @return
      */
     @RequestMapping("/set/settingGameVioce")
-    String settingGameVioce(@RequestParam String playerId, @RequestParam Boolean isOpen);
+    Result settingGameVioce(@RequestParam String playerId, @RequestParam Boolean isOpen);
 
 
     /**
@@ -22,6 +23,6 @@ public interface ConsumerGameSettingService {
      * @return
      */
     @RequestMapping("/set/settingBgVioce")
-    String settingBgVioce(@RequestParam String playerId,@RequestParam Boolean isOpen);
+    Result settingBgVioce(@RequestParam String playerId,@RequestParam Boolean isOpen);
 
 }

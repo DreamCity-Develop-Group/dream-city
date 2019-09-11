@@ -1,7 +1,7 @@
 package com.dream.city.controller;
 
 
-import com.dream.city.domain.Message;
+import com.dream.city.base.model.Message;
 import com.dream.city.service.ConsumerGameSettingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;

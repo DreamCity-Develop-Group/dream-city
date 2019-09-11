@@ -1,6 +1,6 @@
 package com.dream.city.service.impl;
 
-import com.dream.city.domain.req.UserReq;
+import com.dream.city.base.model.Result;
 import com.dream.city.service.ConsumerPlayerService;
 
 /**
@@ -10,37 +10,37 @@ public class FallBackPlayer implements ConsumerPlayerService {
 
 
     @Override
-    public String getPlayer(String playerId) {
+    public Result getPlayer(String playerId) {
         return null;
     }
 
     @Override
-    public String getPlayers(String jsonReq) {
+    public Result getPlayers(String jsonReq) {
         return null;
     }
 
     @Override
-    public String reg(String jsonReq) {
+    public Result reg(String jsonReq) {
         return null;
     }
 
     @Override
-    public String login(String jsonReq) {
+    public Result login(String jsonReq) {
         return null;
     }
 
     @Override
-    public String quit(String playerId) {
+    public Result quit(String playerId) {
         return null;
     }
 
     @Override
-    public String resetLoginPwd(String playerId, String userpass) {
+    public Result resetLoginPwd(String playerId, String userpass) {
         return null;
     }
 
     @Override
-    public String resetTraderPwd(String playerId, String pwshop) {
+    public Result resetTraderPwd(String playerId, String pwshop) {
         return null;
     }
 }

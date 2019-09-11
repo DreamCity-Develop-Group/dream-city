@@ -89,7 +89,7 @@ public class PlayerController {
      * @return
      */
     @RequestMapping(method = RequestMethod.POST, value = "/login")
-    public Result login(@RequestParam String jsonReq){
+    public Result login(@RequestParam("json") String jsonReq){
         Player player = JSON.parseObject(jsonReq,Player.class);
         Result result = new Result();
         result.setCode(CityGlobal.ResultCode.fail.getStatus());
@@ -151,7 +151,7 @@ public class PlayerController {
      * @return
      */
     @RequestMapping(method = RequestMethod.POST, value = "/quit")
-    public Result quit(@RequestParam(value = "playerId")String playerId){
+    public Result quit(@RequestParam("playerId")String playerId){
         LoginLog record = new LoginLog();
         record.setDescr("用户退出");
         record.setPlayerId(playerId);
@@ -167,8 +167,8 @@ public class PlayerController {
      * @return
      */
     @RequestMapping(method = RequestMethod.POST, value = "/resetLoginPwd")
-    public Result resetLoginPwd(@RequestParam(value = "playerId")String playerId,
-                                @RequestParam(value = "userpass")String userpass){
+    public Result resetLoginPwd(@RequestParam("playerId")String playerId,
+                                @RequestParam("userpass")String userpass){
 
         boolean b = playerService.resetLoginPwd(playerId, userpass);
         Result result = null;
@@ -188,8 +188,8 @@ public class PlayerController {
      * @return
      */
     @RequestMapping(method = RequestMethod.POST, value = "/resetTraderPwd")
-    public Result resetTraderPwd(@RequestParam(value = "playerId")String playerId,
-                                @RequestParam(value = "pwshop")String pwshop){
+    public Result resetTraderPwd(@RequestParam("playerId")String playerId,
+                                @RequestParam("pwshop")String pwshop){
         boolean b = playerService.resetTraderPwd(playerId, pwshop);
         Result result = null;
         if (b){
@@ -206,7 +206,7 @@ public class PlayerController {
      * @return
      */
     @RequestMapping(method = RequestMethod.GET, value = "/get/{playerId}")
-    public Result getPlayer(@PathVariable(value = "playerId")String playerId){
+    public Result getPlayer(@PathVariable("playerId")String playerId){
         Player player = playerService.getPlayerById(playerId);
         Result result = null;
         if (player != null){
@@ -223,7 +223,7 @@ public class PlayerController {
      * @return
      */
     @RequestMapping(method = RequestMethod.GET, value = "/get")
-    public Result getPlayers(@RequestParam String jsonReq){
+    public Result getPlayers(@RequestParam("json") String jsonReq){
         Player player = JSON.parseObject(jsonReq,Player.class);
         List<Player> players = playerService.getPlayers(player);
         Result result = null;

@@ -26,27 +26,19 @@ public class Message implements Serializable{
     // 其他信息
     private String desc;
 
+    public Message() {
+    }
 
-    /*public Message(String sourse, String messageType, String msgContent,
-                       String target, String infoSourceIP, String createtime,
-                       String otherContent) {
+    public Message(String source, String target,
+                   MessageData data,String desc,
+                   String createtime) {
         super();
-        this.sourse = sourse;
-        this.messageType = messageType;
-        this.msgContent = msgContent;
+        this.source = source;
+        this.data = data;
+        this.desc = desc;
         this.target = target;
-        this.infoSourceIP = infoSourceIP;
         this.createtime = createtime;
-        this.otherContent = otherContent;
-    }*/
-
-    /*@Override
-    public String toString() {
-        return "Message [sourse=" + sourse + ", messageType=" + messageType
-                + ", msgContent=" + msgContent + ", target=" + target
-                + ", infoSourceIP=" + infoSourceIP + ", createtime="
-                + createtime + ", otherContent=" + otherContent + "]";
-    }*/
+    }
 
 
     public static long getSerialVersionUID() {

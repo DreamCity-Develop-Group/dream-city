@@ -4,6 +4,33 @@ spring:
   application:
     name: city-message
     port: 8888
+  cache:
+    type: redis
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    database: 0
+    password:
+    timeout: 0
+    ssl: false
+    jedis:
+      pool:
+        max-active: 300
+        max-wait: -1
+        max-idle: 300
+        min-idle: 1
+
+  datasource:
+    #driver-class-name: com.mysql.jdbc.Driver
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/message?serverTimezone=UTC&useUnicode=true&characterEncoding=UTF-8&transformedBitIsBoolean=true&autoReconnect=true&failOverReadOnly=false&allowMultiQueries=true&useSSL=false
+    username: root
+    password: 123456
+
+#datasource
+mybatis:
+  type-aliases-package: com.dream.city.domain.mapper
+  mapper-locations: classpath:/mybatis/mappers/*.xml
 
 eureka:
   instance:
@@ -12,3 +39,6 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://${eureka.instance.hostname}:8888/eureka/,http://${eureka.instance.hostname}:9999/eureka/
+
+
+

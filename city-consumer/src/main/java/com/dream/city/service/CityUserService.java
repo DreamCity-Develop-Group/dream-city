@@ -1,6 +1,6 @@
 package com.dream.city.service;
 
-import com.dream.city.domain.Message;
+import com.dream.city.base.model.Message;
 import com.dream.city.service.impl.FallBackCityUser;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;

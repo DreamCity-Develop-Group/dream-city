@@ -1,4 +1,4 @@
-package com.dream.city.player.domain.entity;
+package com.dream.city.domain.entity;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -8,7 +8,9 @@ public class AuthCode implements Serializable {
 
     private String code;
 
-    private Integer userId;
+    private String phone;
+
+    private String userId;
 
     private Date createDate;
 
@@ -28,11 +30,11 @@ public class AuthCode implements Serializable {
         this.code = code == null ? null : code.trim();
     }
 
-    public Integer getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(Integer userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 
@@ -42,5 +44,13 @@ public class AuthCode implements Serializable {
 
     public void setCreateDate(Date createDate) {
         this.createDate = createDate;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 }

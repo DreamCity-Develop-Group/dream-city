@@ -13,4 +13,14 @@ public class MessageData<T> {
     String model;
     //具体业务数据
     T t;
+
+    public MessageData(){
+
+    }
+
+    public MessageData(String type,String model,T t){
+        this.type = type;
+        this.model = model;
+        this.t = t;
+    }
 }

@@ -1,6 +1,6 @@
 package com.dream.city.service.impl;
 
-import com.dream.city.domain.Message;
+import com.dream.city.base.model.Message;
 import com.dream.city.service.CityUserService;
 import org.springframework.stereotype.Component;
 

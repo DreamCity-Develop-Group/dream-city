@@ -3,7 +3,8 @@ server:
 spring:
   application:
     name: city-consumer
-
+  profiles:
+    active: dev
 
 eureka:
   instance:

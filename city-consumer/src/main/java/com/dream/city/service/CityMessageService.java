@@ -1,7 +1,8 @@
 package com.dream.city.service;
 
-import com.dream.city.domain.Message;
+import com.dream.city.base.model.Message;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
@@ -14,9 +15,9 @@ public interface CityMessageService {
      * 获取验证码
      * @return
      */
-    @RequestMapping("/message/get/code")
-    public Object getCode();
+    @RequestMapping("/message/getCode")
+    Message getCode(@RequestBody Message message);
 
-    @RequestMapping("/message/valid")
-    public String validCode();
+    @RequestMapping("/message/valiCode")
+    Message validCode(@RequestBody Message message);
 }

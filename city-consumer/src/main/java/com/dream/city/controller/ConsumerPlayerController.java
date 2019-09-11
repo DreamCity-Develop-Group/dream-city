@@ -1,13 +1,14 @@
 package com.dream.city.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.dream.city.domain.Message;
-import com.dream.city.domain.req.UserReq;
+import com.dream.city.base.model.CityGlobal;
+import com.dream.city.base.model.Message;
+import com.dream.city.base.model.MessageData;
+import com.dream.city.base.model.Result;
+import com.dream.city.base.model.req.UserReq;
 import com.dream.city.service.CityMessageService;
-import com.dream.city.service.CityUserService;
 import com.dream.city.service.ConsumerPlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -56,11 +57,11 @@ public class ConsumerPlayerController {
         return consumerPlayerService.resetTraderPwd(jsonReq.getPlayerId(),jsonReq.getPwshop());
     }
 
-    @RequestMapping("/get/code")
-    public Object getCode(){
+    @RequestMapping("/getcode")
+    public Object getCode(@RequestBody Message msg){
         Map<String,Object> map= new HashMap<>();
-        Object code = messageService.getCode();
-        map.put("code",code);
+        Message code = messageService.getCode(msg);
+        map.put("code",code.getData().getT());
         return map;
     }
 
@@ -70,11 +71,18 @@ public class ConsumerPlayerController {
     @RequestMapping("/reg")
     public Message reg(@RequestBody Message message){
         Message msg = new Message();
+        msg.setData(new MessageData(message.getData().getType(),
+                message.getData().getModel(),
+                CityGlobal.Constant.REG_FAIL));
+
         UserReq userReq = getUserReq(message);
         String jsonReq = JSON.toJSONString(userReq);
-        String reg = consumerPlayerService.reg(jsonReq);
-        String retMsg = messageService.validCode();
-        if (retMsg.equals("success") && reg.equals("success")){
+        Message retMsg = messageService.validCode(message);
+        Result reg = consumerPlayerService.reg(jsonReq);
+        if ((Boolean) retMsg.getData().getT() && reg.getSuccess()){
+            msg.setData(new MessageData(message.getData().getType(),
+                    message.getData().getModel(),
+                    CityGlobal.Constant.REG_SUCCESS));
             return msg;
         }
         return msg;

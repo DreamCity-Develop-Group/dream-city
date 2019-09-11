@@ -1,7 +1,7 @@
 package com.dream.city;
 
-import com.dream.city.domain.Message;
-import com.dream.city.domain.MessageData;
+import com.dream.city.base.model.Message;
+import com.dream.city.base.model.MessageData;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
