@@ -4,13 +4,15 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.dream.city.base.model.CityGlobal;
 import com.dream.city.base.model.Result;
+import com.dream.city.base.utils.RedisKeys;
+import com.dream.city.base.utils.RedisUtils;
 import com.dream.city.player.domain.entity.LoginLog;
 import com.dream.city.player.domain.entity.Player;
 import com.dream.city.player.service.LoginLogServcie;
 import com.dream.city.player.service.PlayerService;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,6 +30,9 @@ public class PlayerController {
     PlayerService playerService;
     @Autowired
     LoginLogServcie loginLogServcie;
+    @Autowired
+    RedisUtils redisUtils;
+
 
     /**
      * 用户注册
@@ -37,7 +42,7 @@ public class PlayerController {
     @RequestMapping("/reg")
     public Result reg(@RequestParam("json") String jsonReq){
         Result<JSONObject> result = new Result<>();
-        if (StringUtils.isEmpty(jsonReq) || (!StringUtils.isEmpty(jsonReq) && "{}".equals(jsonReq))){
+        if (StringUtils.isBlank(jsonReq) || (StringUtils.isNotBlank(jsonReq) && "{}".equals(jsonReq))){
             result.setSuccess(Boolean.FALSE);
             result.setCode(CityGlobal.ResultCode.fail.getStatus());
             return result;
@@ -51,21 +56,29 @@ public class PlayerController {
         String invite = player.get("invite");
 
         String tip = "";
-        if(StringUtils.isEmpty(playerName) || StringUtils.isEmpty(playerPass)){
+        if(StringUtils.isBlank(playerName) || StringUtils.isBlank(playerPass)){
             tip=  "用户名或密码为空";
         }
-        if(StringUtils.isEmpty(code)){
+        // 用户是否存在
+        Player playerReq = new Player();
+        playerReq.setUsername(playerName);
+        Player playerExit = playerService.getPlayer(playerReq);
+        if (playerExit != null){
+            tip = CityGlobal.Constant.REG_USER_EXIT + ",请直接登录！";
+        }
+
+        if(StringUtils.isBlank(code)){
             tip = "短信验证码为空";
         }
         // 邀请码：为选填项，可填写可不填；
-        /*if(StringUtils.isEmpty(invite)){
+        /*if(StringUtils.isBlank(invite)){
             tip = "邀请码为空";
         }*/
-        if (StringUtils.isEmpty(nick)){
+        if (StringUtils.isBlank(nick)){
             nick = playerName;
         }
 
-        if (StringUtils.isEmpty(tip)){
+        if (StringUtils.isBlank(tip)){
             Player playerSave = new Player();
             playerSave.setUsername(playerName);
             playerSave.setUserpass(playerPass);
@@ -76,6 +89,10 @@ public class PlayerController {
                 tip = "注册成功";
                 result.setSuccess(Boolean.TRUE);
                 result.setCode(CityGlobal.ResultCode.success.getStatus());
+
+                redisUtils.set(RedisKeys.CURRENT_USER+playerName,
+                        JSON.toJSONString(playerSave));
+                redisUtils.incr(RedisKeys.CURRENT_LOGIN_USER_COUNT);
             }
         }
 
@@ -88,7 +105,7 @@ public class PlayerController {
      * @param jsonReq
      * @return
      */
-    @RequestMapping(method = RequestMethod.POST, value = "/login")
+    @RequestMapping("/login")
     public Result login(@RequestParam("json") String jsonReq){
         Player player = JSON.parseObject(jsonReq,Player.class);
         Result result = new Result();
@@ -99,14 +116,14 @@ public class PlayerController {
         String playerId = null;
 
         StringBuilder tip = new StringBuilder();
-        if (StringUtils.isEmpty(username)){
+        if (StringUtils.isBlank(username)){
             tip.append(CityGlobal.Constant.USER_NAME_NULL);
         }
-        if (StringUtils.isEmpty(userpass)){
+        if (StringUtils.isBlank(userpass)){
             tip.append(CityGlobal.Constant.USER_PWD_NULL);
         }
         boolean login = Boolean.TRUE;
-        if (!StringUtils.isEmpty(tip)){
+        if (StringUtils.isNotBlank(tip.toString())){
             result.setMsg(tip.toString());
         }else {
             // 用户是否存在
@@ -117,18 +134,22 @@ public class PlayerController {
             }else {
                 playerId = playerExit.getPlayerId();
                 // 用户名
-                if (playerExit.getUsername().equals(username)){
+                if (!playerExit.getUsername().equalsIgnoreCase(username)){
                     login = Boolean.FALSE;
                 }
                 // 密码
-                if (playerExit.getUserpass().equals(userpass)){
+                if (!playerExit.getUserpass().equals(userpass)){
                     login = Boolean.FALSE;
                 }
                 if (login) {
                     tip.append(CityGlobal.Constant.LOGIN_SUCCESS);
-                    result.setMsg(CityGlobal.Constant.LOGIN_SUCCESS);
+                    result.setMsg(tip.toString());
                     result.setSuccess(login);
                     result.setCode(CityGlobal.ResultCode.success.getStatus());
+
+                    redisUtils.set(RedisKeys.CURRENT_USER + username,
+                            JSON.toJSONString(playerExit));
+                    redisUtils.incr(RedisKeys.CURRENT_LOGIN_USER_COUNT);
                 }
             }
         }
@@ -150,14 +171,28 @@ public class PlayerController {
      * @param playerId
      * @return
      */
-    @RequestMapping(method = RequestMethod.POST, value = "/quit")
+    @RequestMapping("/quit")
     public Result quit(@RequestParam("playerId")String playerId){
+        Result result = new Result(Boolean.TRUE,"退出成功",CityGlobal.ResultCode.success.getStatus());
+        // 用户是否存在
+        Player player = new Player();
+        player.setPlayerId(playerId);
+        Player playerExit = playerService.getPlayer(player);
+        if (playerExit == null){
+            return result;
+        }
+
         LoginLog record = new LoginLog();
         record.setDescr("用户退出");
         record.setPlayerId(playerId);
         record.setType("quit");
         loginLogServcie.insertLoginLog(record);
-        return null;
+
+        if (redisUtils.hasKey(RedisKeys.CURRENT_USER + playerExit.getUsername())) {
+            redisUtils.del(RedisKeys.CURRENT_USER + playerExit.getUsername());
+            redisUtils.decr(RedisKeys.CURRENT_LOGIN_USER_COUNT);
+        }
+        return result;
     }
 
     /**
@@ -166,7 +201,7 @@ public class PlayerController {
      * @param userpass
      * @return
      */
-    @RequestMapping(method = RequestMethod.POST, value = "/resetLoginPwd")
+    @RequestMapping("/resetLoginPwd")
     public Result resetLoginPwd(@RequestParam("playerId")String playerId,
                                 @RequestParam("userpass")String userpass){
 
@@ -187,7 +222,7 @@ public class PlayerController {
      * @param pwshop
      * @return
      */
-    @RequestMapping(method = RequestMethod.POST, value = "/resetTraderPwd")
+    @RequestMapping("/resetTraderPwd")
     public Result resetTraderPwd(@RequestParam("playerId")String playerId,
                                 @RequestParam("pwshop")String pwshop){
         boolean b = playerService.resetTraderPwd(playerId, pwshop);
@@ -205,7 +240,7 @@ public class PlayerController {
      * @param playerId
      * @return
      */
-    @RequestMapping(method = RequestMethod.GET, value = "/get/{playerId}")
+    @RequestMapping("/get/{playerId}")
     public Result getPlayer(@PathVariable("playerId")String playerId){
         Player player = playerService.getPlayerById(playerId);
         Result result = null;
@@ -222,7 +257,7 @@ public class PlayerController {
      * @param jsonReq
      * @return
      */
-    @RequestMapping(method = RequestMethod.GET, value = "/get")
+    @RequestMapping("/get")
     public Result getPlayers(@RequestParam("json") String jsonReq){
         Player player = JSON.parseObject(jsonReq,Player.class);
         List<Player> players = playerService.getPlayers(player);

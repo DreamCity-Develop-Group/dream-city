@@ -30,6 +30,14 @@ public class Message implements Serializable{
     }
 
     public Message(String source, String target,
+                   MessageData data) {
+        super();
+        this.source = source;
+        this.target = target;
+        this.data = data;
+    }
+
+    public Message(String source, String target,
                    MessageData data,String desc,
                    String createtime) {
         super();

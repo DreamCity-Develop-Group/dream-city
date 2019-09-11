@@ -8,10 +8,12 @@ import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.data.redis.support.atomic.RedisAtomicLong;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import redis.clients.jedis.Jedis;
 
+import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -24,6 +26,8 @@ import java.util.concurrent.TimeUnit;
  */
 @Component
 public class RedisUtils {
+
+    private static final Charset CODE = Charset.forName("UTF-8");
 
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
@@ -477,6 +481,44 @@ public class RedisUtils {
         } catch (Exception e) {
             e.printStackTrace();
             return 0;
+        }
+    }
+
+    /*public Long incr(String key, long liveTime) {
+        RedisAtomicLong entityIdCounter = new RedisAtomicLong(key, redisTemplate.getConnectionFactory());
+        Long increment = entityIdCounter.getAndIncrement();
+
+        //初始设置过期时间
+        if ((null == increment || increment.longValue() == 0) && liveTime > 0) {
+            entityIdCounter.expire(liveTime, TimeUnit.SECONDS);
+        }
+
+        return increment;
+    }*/
+
+    public Long incr(String key) {
+        return incr(key, 1L);
+    }
+    public Long decr(String key) {
+        return incr(key, -1L);
+    }
+    public Long incr(String key, long add) {
+        return stringRedisTemplate.execute((RedisCallback<Long>) con -> {
+            Long record = con.incrBy(toBytes(key), add);
+            return record == null ? 0L : record;
+        });
+    }
+
+    private byte[] toBytes(String key) {
+        nullCheck(key);
+        return key.getBytes(CODE);
+    }
+
+    private void nullCheck(Object... args) {
+        for (Object obj : args) {
+            if (obj == null) {
+                throw new IllegalArgumentException("redis argument can not be null!");
+            }
         }
     }
 

@@ -1,4 +1,4 @@
-package com.dream.city.config;
+package com.dream.city.player.config;
 
 import com.dream.city.base.utils.RedisUtils;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
@@ -221,9 +221,9 @@ public class RedisCacheConfig extends CachingConfigurerSupport {
         return new Jedis(host,port);
     }
 
-//    @Bean
-//    public RedisUtils redisUtils(){
-//        return new RedisUtils();
-//    }
+    @Bean
+    public RedisUtils redisUtils(){
+        return new RedisUtils();
+    }
 
 }

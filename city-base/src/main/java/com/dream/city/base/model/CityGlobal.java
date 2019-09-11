@@ -46,6 +46,7 @@ public interface CityGlobal {
         // 注册
         public static final String REG_SUCCESS = "注册成功!";
         public static final String REG_FAIL = "注册失败!";
+        public static final String REG_USER_EXIT = "用户已存在";
 
         // 用户
         public static final String USER_NOT_EXIT = "用户不存在!";

@@ -20,6 +20,9 @@ spring:
         max-idle: 300
         min-idle: 1
 
+  main:
+    allow-bean-definition-overriding: true
+
   datasource:
     #driver-class-name: com.mysql.jdbc.Driver
     driver-class-name: com.mysql.cj.jdbc.Driver

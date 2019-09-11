@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * 玩家Controller
  * @author Wvv
  */
 @RestController
@@ -29,78 +30,127 @@ public class ConsumerPlayerController {
     private CityMessageService messageService;
 
 
-    @RequestMapping("/get/user")
-    public Object getUser(@RequestBody Message msg){
-        Map<String,Object> data = (Map<String, Object>) msg.getData().getT();
-        String id = data.get("id").toString();
-        return consumerPlayerService.getPlayer(id);
-    }
 
-
-    @RequestMapping("/get/users")
-    public Object getUsers(@RequestBody Message msg){
-        UserReq userReq = getUserReq(msg);
-        String jsonReq = JSON.toJSONString(userReq);
-        return consumerPlayerService.getPlayers(jsonReq);
-    }
-
-
-    @RequestMapping("/forget")
-    public Object forget(@RequestBody Message msg){
-        UserReq jsonReq = getUserReq(msg);
-        return consumerPlayerService.resetLoginPwd(jsonReq.getPlayerId(),jsonReq.getUserpass());
-    }
-
-    @RequestMapping("/expwshop")
-    public Object expwshop(@RequestBody Message msg){
-        UserReq jsonReq = getUserReq(msg);
-        return consumerPlayerService.resetTraderPwd(jsonReq.getPlayerId(),jsonReq.getPwshop());
-    }
-
+    /**
+     * 获取认证码
+     * @param msg
+     * @return
+     */
     @RequestMapping("/getcode")
-    public Object getCode(@RequestBody Message msg){
+    public Message getCode(@RequestBody Message msg){
         Map<String,Object> map= new HashMap<>();
         Message code = messageService.getCode(msg);
         map.put("code",code.getData().getT());
-        return map;
+        return new Message(msg.getSource(),msg.getTarget(),
+                new MessageData(map));
+    }
+
+
+    /**
+     * 获取当前用户
+     * @param msg
+     * @return
+     */
+    @RequestMapping("/get/user")
+    public Message getUser(@RequestBody Message msg){
+        Map<String,Object> data = (Map<String, Object>) msg.getData().getT();
+        String id = data.get("id").toString();
+        Result player = consumerPlayerService.getPlayer(id);
+        return new Message(msg.getSource(),msg.getTarget(),
+                new MessageData(player.getData()));
+    }
+
+
+    /**
+     * 玩家列表
+     * @param msg
+     * @return
+     */
+    @RequestMapping("/get/users")
+    public Message getUsers(@RequestBody Message msg){
+        UserReq userReq = getUserReq(msg);
+        String jsonReq = JSON.toJSONString(userReq);
+        Result players = consumerPlayerService.getPlayers(jsonReq);
+        return new Message(msg.getSource(),msg.getTarget(),
+                new MessageData(players.getData()));
+    }
+
+
+    /**
+     * 忘记密码
+     * @param msg
+     * @return
+     */
+    @RequestMapping("/forget")
+    public Message forget(@RequestBody Message msg){
+        UserReq jsonReq = getUserReq(msg);
+        Result result = consumerPlayerService.resetLoginPwd(jsonReq.getPlayerId(), jsonReq.getUserpass());
+        return new Message(msg.getSource(),msg.getTarget(),
+                new MessageData(result.getMsg()));
     }
 
     /**
+     * 修改交易密码
+     * @param msg
+     * @return
+     */
+    @RequestMapping("/expwshop")
+    public Message expwshop(@RequestBody Message msg){
+        UserReq jsonReq = getUserReq(msg);
+        Result result = consumerPlayerService.resetTraderPwd(jsonReq.getPlayerId(), jsonReq.getPwshop());
+        return new Message(msg.getSource(),msg.getTarget(),
+                new MessageData(result.getMsg()));
+    }
+
+
+    /**
      * 用户注册
+     * @param message
+     * @return
      */
     @RequestMapping("/reg")
     public Message reg(@RequestBody Message message){
         Message msg = new Message();
-        msg.setData(new MessageData(message.getData().getType(),
-                message.getData().getModel(),
-                CityGlobal.Constant.REG_FAIL));
+        msg.setData(new MessageData(CityGlobal.Constant.REG_FAIL));
 
         UserReq userReq = getUserReq(message);
         String jsonReq = JSON.toJSONString(userReq);
         Message retMsg = messageService.validCode(message);
         Result reg = consumerPlayerService.reg(jsonReq);
         if ((Boolean) retMsg.getData().getT() && reg.getSuccess()){
-            msg.setData(new MessageData(message.getData().getType(),
-                    message.getData().getModel(),
-                    CityGlobal.Constant.REG_SUCCESS));
+            msg.setData(new MessageData(CityGlobal.Constant.REG_SUCCESS));
             return msg;
         }
         return msg;
     }
 
 
+    /**
+     * 登录
+     * @param msg
+     * @return
+     */
     @RequestMapping("/login")
-    public Object login(@RequestBody Message msg){
+    public Message login(@RequestBody Message msg){
         UserReq userReq = getUserReq(msg);
         String jsonReq = JSON.toJSONString(userReq);
-        return consumerPlayerService.login(jsonReq);
+        Result result = consumerPlayerService.login(jsonReq);
+
+        return new Message(msg.getSource(),msg.getTarget(),
+                new MessageData(result.getMsg()));
     }
 
-    @RequestMapping("/quit")
-    public Object quit(@RequestBody Message msg){
+    /**
+     * 登出
+     * @param msg
+     * @return
+     */
+    @RequestMapping("/exit")
+    public Message exit(@RequestBody Message msg){
         UserReq jsonReq = getUserReq(msg);
-        consumerPlayerService.quit(jsonReq.getPlayerId());
-        return null;
+        Result result = consumerPlayerService.quit(jsonReq.getPlayerId());
+        return new Message(msg.getSource(),msg.getTarget(),
+                new MessageData(result.getMsg()));
     }
 
 

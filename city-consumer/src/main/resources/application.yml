@@ -5,7 +5,8 @@ spring:
     name: city-consumer
   profiles:
     active: dev
-
+  main:
+    allow-bean-definition-overriding: true
 eureka:
   instance:
     hostname: localhost

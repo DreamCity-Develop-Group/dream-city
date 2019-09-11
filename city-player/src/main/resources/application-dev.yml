@@ -6,7 +6,21 @@ spring:
       exclude: static/**
       additional-exclude: static/**,public/**
 
-
+  cache:
+    type: redis
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    database: 0
+    password:
+    timeout: 0
+    ssl: false
+    jedis:
+      pool:
+        max-active: 300
+        max-wait: -1
+        max-idle: 300
+        min-idle: 1
 
 
 

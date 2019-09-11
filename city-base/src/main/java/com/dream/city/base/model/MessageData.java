@@ -18,6 +18,10 @@ public class MessageData<T> {
 
     }
 
+    public MessageData(T t){
+        this.t = t;
+    }
+
     public MessageData(String type,String model,T t){
         this.type = type;
         this.model = model;
