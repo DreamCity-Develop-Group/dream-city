@@ -1,7 +1,6 @@
-package com.dream.city.domain;
+package com.dream.city.base.model;
 
 import lombok.Data;
-import org.bouncycastle.math.raw.Mod;
 
 /**
  * @author WVv
