@@ -47,4 +47,6 @@ public interface PlayerService {
      */
     List<Player> getPlayers(Player player);
 
+    Player getPlayerByName(String username);
+
 }

@@ -8,21 +8,19 @@ public class Player implements Serializable {
 
     private String playerId;
 
-    private String username;
+    private String playerName;
 
-    private String nick;
+    private String playerNick;
 
-    private String userpass;
+    private String playerPass;
 
-    private String pwshop;
+    private String playerTradePass;
 
-    private String invite;
+    private String playerInvite;
 
-    private String invited;
+    private Date createTime;
 
-    private Date createDate;
-
-    private Date updateDate;
+    private Date updateTime;
 
     public Long getId() {
         return id;
@@ -40,67 +38,59 @@ public class Player implements Serializable {
         this.playerId = playerId == null ? null : playerId.trim();
     }
 
-    public String getUsername() {
-        return username;
+    public String getPlayerName() {
+        return playerName;
     }
 
-    public void setUsername(String username) {
-        this.username = username == null ? null : username.trim();
+    public void setPlayerName(String playerName) {
+        this.playerName = playerName;
     }
 
-    public String getNick() {
-        return nick;
+    public String getPlayerNick() {
+        return playerNick;
     }
 
-    public void setNick(String nick) {
-        this.nick = nick == null ? null : nick.trim();
+    public void setPlayerNick(String playerNick) {
+        this.playerNick = playerNick;
     }
 
-    public String getUserpass() {
-        return userpass;
+    public String getPlayerPass() {
+        return playerPass;
     }
 
-    public void setUserpass(String userpass) {
-        this.userpass = userpass == null ? null : userpass.trim();
+    public void setPlayerPass(String playerPass) {
+        this.playerPass = playerPass;
     }
 
-    public String getPwshop() {
-        return pwshop;
+    public String getPlayerTradePass() {
+        return playerTradePass;
     }
 
-    public void setPwshop(String pwshop) {
-        this.pwshop = pwshop == null ? null : pwshop.trim();
+    public void setPlayerTradePass(String playerTradePass) {
+        this.playerTradePass = playerTradePass;
     }
 
-    public String getInvite() {
-        return invite;
+    public String getPlayerInvite() {
+        return playerInvite;
     }
 
-    public void setInvite(String invite) {
-        this.invite = invite == null ? null : invite.trim();
+    public void setPlayerInvite(String playerInvite) {
+        this.playerInvite = playerInvite;
     }
 
-    public String getInvited() {
-        return invited;
+    public Date getCreateTime() {
+        return createTime;
     }
 
-    public void setInvited(String invited) {
-        this.invited = invited == null ? null : invited.trim();
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 
-    public Date getCreateDate() {
-        return createDate;
+    public Date getUpdateTime() {
+        return updateTime;
     }
 
-    public void setCreateDate(Date createDate) {
-        this.createDate = createDate;
-    }
-
-    public Date getUpdateDate() {
-        return updateDate;
-    }
-
-    public void setUpdateDate(Date updateDate) {
-        this.updateDate = updateDate;
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
     }
 }

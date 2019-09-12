@@ -160,13 +160,17 @@ public class ConsumerPlayerController {
     @RequestMapping("/reg")
     public Message reg(@RequestBody Message message){
         Message msg = new Message();
+        msg.setSource(message.getSource());
+        msg.setTarget(message.getTarget());
         MessageData data = new MessageData();
-        msg.setData(data);
+        data.setType("reg");
+        data.setModel("consumer");
         Map<String,String> t = new HashMap<>();
 
         UserReq userReq = getUserReq(message);
         String jsonReq = JSON.toJSONString(userReq);
 
+        // 校验码  todo
         /*Message retMsg = messageService.validCode(message);
         if (!(Boolean) retMsg.getData().getT()){
             msg.getData().setT(new MessageData(CityGlobal.Constant.REG_FAIL));
@@ -176,12 +180,15 @@ public class ConsumerPlayerController {
         Result reg = consumerPlayerService.reg(jsonReq);
         if (reg.getSuccess()){
             t.put("desc",CityGlobal.Constant.REG_SUCCESS);
-            msg.getData().setT(t);
+            data.setT(t);
+            msg.setData(data);
             logger.info("##################### 用户注册成功 ",msg);
             return msg;
         }
-
-        msg.getData().setT(t.put("desc",CityGlobal.Constant.REG_FAIL));
+        t.put("desc",CityGlobal.Constant.REG_FAIL);
+        data.setT(t);
+        msg.setData(data);
+        msg.setDesc(reg.getMsg());
         return msg;
     }
 

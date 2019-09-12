@@ -37,7 +37,7 @@ mybatis:
 
 eureka:
   instance:
-    hostname: 192.168.0.103
+    hostname: localhost
     instance-id: ${spring.application.name}-${server.port}
   client:
     serviceUrl:

@@ -60,12 +60,10 @@ public class PlayerController {
             tip=  "用户名或密码为空";
         }
         // 用户是否存在
-        /*Player playerReq = new Player();
-        playerReq.setUsername(playerName);
-        Player playerExit = playerService.getPlayer(playerReq);
+        Player playerExit = playerService.getPlayerByName(playerName);
         if (playerExit != null){
             tip = CityGlobal.Constant.REG_USER_EXIT + ",请直接登录！";
-        }*/
+        }
 
         /*if(StringUtils.isBlank(code)){
             tip = "短信验证码为空";
@@ -80,10 +78,10 @@ public class PlayerController {
 
         if (StringUtils.isBlank(tip)){
             Player playerSave = new Player();
-            playerSave.setUsername(playerName);
-            playerSave.setUserpass(playerPass);
-            playerSave.setInvited(invite);
-            playerSave.setNick(nick);
+            playerSave.setPlayerName(playerName);
+            playerSave.setPlayerPass(playerPass);
+            playerSave.setPlayerInvite(invite);
+            playerSave.setPlayerNick(nick);
             boolean ret = playerService.save(playerSave);
             if (ret){
                 tip = "注册成功";
@@ -111,8 +109,8 @@ public class PlayerController {
         Result result = new Result();
         result.setCode(CityGlobal.ResultCode.fail.getStatus());
 
-        String username = player.getUsername();
-        String userpass = player.getUserpass();
+        String username = player.getPlayerName();
+        String userpass = player.getPlayerPass();
         String playerId = null;
 
         StringBuilder tip = new StringBuilder();
@@ -127,18 +125,18 @@ public class PlayerController {
             result.setMsg(tip.toString());
         }else {
             // 用户是否存在
-            Player playerExit = playerService.getPlayer(player);
+            Player playerExit = playerService.getPlayerByName(username);
             if (playerExit == null){
                 result.setMsg(CityGlobal.Constant.USER_NOT_EXIT);
                 tip.append(CityGlobal.Constant.USER_NOT_EXIT);
             }else {
                 playerId = playerExit.getPlayerId();
                 // 用户名
-                if (!playerExit.getUsername().equalsIgnoreCase(username)){
+                if (!playerExit.getPlayerName().equalsIgnoreCase(username)){
                     login = Boolean.FALSE;
                 }
                 // 密码
-                if (!playerExit.getUserpass().equals(userpass)){
+                if (!playerExit.getPlayerPass().equals(userpass)){
                     login = Boolean.FALSE;
                 }
                 if (login) {
@@ -188,8 +186,8 @@ public class PlayerController {
         record.setType("quit");
         loginLogServcie.insertLoginLog(record);
 
-        if (redisUtils.hasKey(RedisKeys.CURRENT_USER + playerExit.getUsername())) {
-            redisUtils.del(RedisKeys.CURRENT_USER + playerExit.getUsername());
+        if (redisUtils.hasKey(RedisKeys.CURRENT_USER + playerExit.getPlayerName())) {
+            redisUtils.del(RedisKeys.CURRENT_USER + playerExit.getPlayerName());
             redisUtils.decr(RedisKeys.CURRENT_LOGIN_USER_COUNT);
         }
         return result;

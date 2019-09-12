@@ -4,17 +4,17 @@
   <resultMap id="BaseResultMap" type="com.dream.city.player.domain.entity.Player">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="player_id" jdbcType="VARCHAR" property="playerId" />
-    <result column="username" jdbcType="VARCHAR" property="username" />
-    <result column="nick" jdbcType="VARCHAR" property="nick" />
-    <result column="userpass" jdbcType="VARCHAR" property="userpass" />
-    <result column="pwshop" jdbcType="VARCHAR" property="pwshop" />
-    <result column="invite" jdbcType="VARCHAR" property="invite" />
-    <result column="invited" jdbcType="VARCHAR" property="invited" />
-    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
-    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="player_name" jdbcType="VARCHAR" property="playerName" />
+    <result column="player_nick" jdbcType="VARCHAR" property="playerNick" />
+    <result column="player_pass" jdbcType="VARCHAR" property="playerPass" />
+    <result column="player_trade_pass" jdbcType="VARCHAR" property="playerTradePass" />
+    <result column="player_invite" jdbcType="VARCHAR" property="playerInvite" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, player_id, username, nick, userpass, pwshop, invite, invited, create_date, update_date
+    id, player_id, player_name, player_nick, player_pass, player_trade_pass, player_invite,
+    create_time, update_time
   </sql>
 
   <select id="getPlayerById" parameterType="java.lang.String" resultMap="BaseResultMap">
@@ -23,6 +23,7 @@
     from t_player
     where player_id = #{playerId,jdbcType=VARCHAR}
   </select>
+
 
   <select id="getPlayers" parameterType="com.dream.city.player.domain.entity.Player" resultMap="BaseResultMap">
     select
@@ -33,11 +34,11 @@
       <if test="playerId != null and playerId != ''">
         and player_id = #{playerId,jdbcType=VARCHAR}
       </if>
-      <if test="username != null and username != ''">
-        and username = #{username,jdbcType=VARCHAR}
+      <if test="playerName != null and playerName != ''">
+        and player_name = #{playerName,jdbcType=VARCHAR}
       </if>
-      <if test="nick != null and nick != ''">
-        and nick = #{nick,jdbcType=VARCHAR}
+      <if test="playerNick != null and playerNick != ''">
+        and player_nick = #{playerNick,jdbcType=VARCHAR}
       </if>
 
     </where>
@@ -48,106 +49,82 @@
     where player_id = #{playerId,jdbcType=BIGINT}
   </delete>
 
-  <insert id="insertSelective" parameterType="com.dream.city.player.domain.entity.Player">
+  <insert id="insertSelective" parameterType="com.dream.city.player.domain.entity.Player" >
     insert into t_player
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
         id,
       </if>
-      <if test="playerId != null">
+      <if test="playerId != null" >
         player_id,
       </if>
-      <if test="username != null">
-        username,
+      <if test="playerName != null" >
+        player_name,
       </if>
-      <if test="nick != null">
-        nick,
+      <if test="playerNick != null" >
+        player_nick,
       </if>
-      <if test="userpass != null">
-        userpass,
+      <if test="playerPass != null" >
+        player_pass,
       </if>
-      <if test="pwshop != null">
-        pwshop,
+      <if test="playerTradePass != null" >
+        player_trade_pass,
       </if>
-      <if test="invite != null">
-        invite,
+      <if test="playerInvite != null" >
+        player_invite,
       </if>
-      <if test="invited != null">
-        invited,
-      </if>
-      <if test="createDate != null">
-        create_date,
-      </if>
-      <if test="updateDate != null">
-        update_date,
+      <if test="createTime != null" >
+        create_time,
       </if>
     </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
         #{id,jdbcType=BIGINT},
       </if>
-      <if test="playerId != null">
+      <if test="playerId != null" >
         #{playerId,jdbcType=VARCHAR},
       </if>
-      <if test="username != null">
-        #{username,jdbcType=VARCHAR},
+      <if test="playerName != null" >
+        #{playerName,jdbcType=VARCHAR},
       </if>
-      <if test="nick != null">
-        #{nick,jdbcType=VARCHAR},
+      <if test="playerNick != null" >
+        #{playerNick,jdbcType=VARCHAR},
       </if>
-      <if test="userpass != null">
-        #{userpass,jdbcType=VARCHAR},
+      <if test="playerPass != null" >
+        #{playerPass,jdbcType=VARCHAR},
       </if>
-      <if test="pwshop != null">
-        #{pwshop,jdbcType=VARCHAR},
+      <if test="playerTradePass != null" >
+        #{playerTradePass,jdbcType=VARCHAR},
       </if>
-      <if test="invite != null">
-        #{invite,jdbcType=VARCHAR},
+      <if test="playerInvite != null" >
+        #{playerInvite,jdbcType=VARCHAR},
       </if>
-      <if test="invited != null">
-        #{invited,jdbcType=VARCHAR},
-      </if>
-      <if test="createDate != null">
-        #{createDate,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateDate != null">
-        #{updateDate,jdbcType=TIMESTAMP},
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
 
   <update id="updateByPlayerId" parameterType="com.dream.city.player.domain.entity.Player">
     update t_player
-    <set>
-      <if test="playerId != null">
-        player_id = #{playerId,jdbcType=VARCHAR},
+    <set >
+      <if test="playerName != null" >
+        player_name = #{playerName,jdbcType=VARCHAR},
       </if>
-      <if test="username != null">
-        username = #{username,jdbcType=VARCHAR},
+      <if test="playerNick != null" >
+        player_nick = #{playerNick,jdbcType=VARCHAR},
       </if>
-      <if test="nick != null">
-        nick = #{nick,jdbcType=VARCHAR},
+      <if test="playerPass != null" >
+        player_pass = #{playerPass,jdbcType=VARCHAR},
       </if>
-      <if test="userpass != null">
-        userpass = #{userpass,jdbcType=VARCHAR},
+      <if test="playerTradePass != null" >
+        player_trade_pass = #{playerTradePass,jdbcType=VARCHAR},
       </if>
-      <if test="pwshop != null">
-        pwshop = #{pwshop,jdbcType=VARCHAR},
-      </if>
-      <if test="invite != null">
-        invite = #{invite,jdbcType=VARCHAR},
-      </if>
-      <if test="invited != null">
-        invited = #{invited,jdbcType=VARCHAR},
-      </if>
-      <if test="createDate != null">
-        create_date = #{createDate,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateDate != null">
-        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
       </if>
     </set>
-    where player_id = #{playerId,jdbcType=BIGINT}
+    where player_id = #{playerId,jdbcType=VARCHAR}
   </update>
 
 </mapper>

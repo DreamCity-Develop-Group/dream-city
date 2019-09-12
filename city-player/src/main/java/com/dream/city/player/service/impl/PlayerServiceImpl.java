@@ -30,14 +30,12 @@ public class PlayerServiceImpl implements PlayerService {
 
     @Override
     public Result forgetPwd(String username, String newPwd) {
-        Player player = new Player();
-        player.setUsername(username);
-        List<Player> players = playerMapper.getPlayers(player);
-        if (CollectionUtils.isEmpty(players)){
+        Player player = getPlayerByName(username);
+        if (player == null){
             return new Result(Boolean.FALSE, CityGlobal.Constant.USER_NOT_EXIT);
         }
 
-        return changePwd(players.get(0).getPlayerId(), newPwd);
+        return changePwd(player.getPlayerId(), newPwd);
     }
 
     @Override
@@ -53,7 +51,7 @@ public class PlayerServiceImpl implements PlayerService {
     private Result changePwd(String playerId, String newPwd){
         Player player = new Player();
         player.setPlayerId(playerId);
-        player.setUserpass(newPwd);
+        player.setPlayerPass(newPwd);
         int i = playerMapper.updateByPlayerId(player);
         if (i>0){
             // 修改密码成功
@@ -72,7 +70,7 @@ public class PlayerServiceImpl implements PlayerService {
 
         Player player = new Player();
         player.setPlayerId(playerId);
-        player.setPwshop(newPwd);
+        player.setPlayerTradePass(newPwd);
         int i = playerMapper.updateByPlayerId(player);
         if (i>0){
             // 修改密码成功
@@ -90,7 +88,7 @@ public class PlayerServiceImpl implements PlayerService {
         }
 
         // 旧密码不正确
-        if (playerExit.getUserpass().equals(oldPwd)){
+        if (playerExit.getPlayerPass().equals(oldPwd)){
             return new Result(Boolean.FALSE, CityGlobal.Constant.USER_OLD_PWD_ERROR);
         }
 
@@ -100,9 +98,11 @@ public class PlayerServiceImpl implements PlayerService {
     @Override
     public boolean save(Player player) {
         player.setPlayerId(KeyGenerator.getUUID());
-        player.setCreateDate(new Date());
+        player.setCreateTime(new Date());
         //加密  前端加密，后端不加密
-        player.setUserpass(player.getUserpass());
+        player.setPlayerPass(player.getPlayerPass());
+        // todo
+        player.setPlayerInvite("");
         return playerMapper.insertSelective(player)>0?Boolean.TRUE:Boolean.FALSE;
     }
 
@@ -134,13 +134,22 @@ public class PlayerServiceImpl implements PlayerService {
         return playerMapper.getPlayerById(playerId);
     }
 
+
     @Override
     public List<Player> getPlayers(Player player) {
         return playerMapper.getPlayers(player);
     }
 
-
-
+    @Override
+    public Player getPlayerByName(String playerName) {
+        Player player = new Player();
+        player.setPlayerName(playerName);
+        List<Player> players = playerMapper.getPlayers(player);
+        if (CollectionUtils.isEmpty(players)){
+            return null;
+        }
+        return players.get(0);
+    }
 
 
 }
