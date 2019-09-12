@@ -21,7 +21,7 @@
         <!--服务管理监控-->
         <module>city-admin</module>
         <!--服务提供者-->
-        <module>city-user</module>
+        <!--<module>city-user</module>-->
         <module>city-message</module>
         <module>city-consumer</module>
         <module>city-base</module>
