@@ -11,7 +11,7 @@
         }else{
             console.log("您的浏览器支持WebSocket");
             //实现化WebSocket对象，指定要连接的服务器地址与端口  建立连接
-            socket = new WebSocket("ws://localhost:8011/dream/city//");
+            socket = new WebSocket("ws://localhost:8010/dream/city/like/世界");
             //socket = new WebSocket("${basePath}websocket/${cid}".replace("http","ws"));
 
             //打开事件
@@ -54,7 +54,7 @@
         function send() {
             var msg = "{\"source\":\""+clientId+"\"," +
                 "\"createtime\":\"Wed Sep 04 14:31:01 CST 2019\"," +
-                "\"data\":{\"type\":\"getValiCode\",\"model\":\"message\",\"data\":{}}," +
+                "\"data\":{\"type\":\"modpass\",\"model\":\"consumer\",\"t\":{\"username\":\"Wvv\",\"token\":\"12345asdfwe\"}}," +
                 "\"desc\":\"验证码\",\"target\":\"server\"}";
 
             socket.send(msg);

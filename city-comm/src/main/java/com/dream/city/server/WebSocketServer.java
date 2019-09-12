@@ -84,6 +84,7 @@ public class WebSocketServer {
         this.session = session;
         //加入set中
         webSocketSet.add(this);
+
         //在线数加1
         addOnlineCount();
 
@@ -152,6 +153,7 @@ public class WebSocketServer {
                 sendMessage("success");
                 return;
             }
+
             //解析出客户端发来的消息
             Message msg = JSONObject.parseObject(message, Message.class);
 
