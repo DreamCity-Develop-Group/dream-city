@@ -6,7 +6,8 @@ spring:
     name: city-set
   profiles:
     active: dev
-
+  main:
+    allow-bean-definition-overriding: true
 
   datasource:
     #driver-class-name: com.mysql.jdbc.Driver
@@ -20,7 +21,7 @@ spring:
 
 eureka:
   instance:
-    hostname: localhost
+    hostname: 192.168.0.103
     instance-id: ${spring.application.name}-${server.port}
   client:
     service-url:

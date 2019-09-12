@@ -281,6 +281,7 @@ public class WebSocketServer {
                 } else if (item.clientId.equals(clientId)) {
                     item.sendAsyncObject(message);
                     item.sendMessage(JSONObject.toJSONString(message));
+                    System.out.println("##############"+ JSONObject.toJSONString(message));
                 }
             } catch (IOException e) {
                 e.printStackTrace();
