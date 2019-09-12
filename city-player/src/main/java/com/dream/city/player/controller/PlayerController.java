@@ -99,18 +99,18 @@ public class PlayerController {
     }
 
     /**
-     * 用户登录
+     * 用户密码登录
      * @param jsonReq
      * @return
      */
-    @RequestMapping("/login")
-    public Result login(@RequestParam("json") String jsonReq){
-        Player player = JSON.parseObject(jsonReq,Player.class);
+    @RequestMapping("/pwlog")
+    public Result pwlog(@RequestParam("json") String jsonReq){
+        Map map = JSON.parseObject(jsonReq,Map.class);
         Result result = new Result();
         result.setCode(CityGlobal.ResultCode.fail.getStatus());
 
-        String username = player.getPlayerName();
-        String userpass = player.getPlayerPass();
+        String username = (String)map.get("username");
+        String userpass = (String)map.get("userpass");
         String playerId = null;
 
         StringBuilder tip = new StringBuilder();
@@ -119,6 +119,65 @@ public class PlayerController {
         }
         if (StringUtils.isBlank(userpass)){
             tip.append(CityGlobal.Constant.USER_PWD_NULL);
+        }
+        if (StringUtils.isNotBlank(tip.toString())){
+            result.setMsg(tip.toString());
+        }else {
+            // 用户是否存在
+            Player playerExit = playerService.getPlayerByName(username);
+            if (playerExit == null){
+                result.setMsg(CityGlobal.Constant.USER_NOT_EXIT);
+                tip.append(CityGlobal.Constant.USER_NOT_EXIT);
+            }else {
+                playerId = playerExit.getPlayerId();
+                // 用户名
+                if (!playerExit.getPlayerName().equalsIgnoreCase(username)){
+                    tip.append(CityGlobal.Constant.USER_NOT_EXIT);
+                }
+                // 密码
+                if (!playerExit.getPlayerPass().equals(userpass)){
+                    tip.append(CityGlobal.Constant.USER_PWD_ERROR);
+                }
+                if (StringUtils.isBlank(tip.toString())) {
+                    tip.append(CityGlobal.Constant.LOGIN_SUCCESS);
+                    result.setCode(CityGlobal.ResultCode.success.getStatus());
+                    result.setSuccess(Boolean.TRUE);
+                    redisUtils.set(RedisKeys.CURRENT_USER + username,
+                            JSON.toJSONString(playerExit));
+                    redisUtils.incr(RedisKeys.CURRENT_LOGIN_USER_COUNT);
+                }
+            }
+        }
+        result.setMsg(tip.toString());
+
+        // 登录记录
+        LoginLog record = new LoginLog();
+        record.setDescr(tip.toString());
+        record.setPlayerId(playerId);
+        record.setType("login");
+        loginLogServcie.insertLoginLog(record);
+
+        return result;
+    }
+
+
+    /**
+     * 验证码登录
+     * @param jsonReq
+     * @return
+     */
+    @RequestMapping("/idlog")
+    public Result idlog(@RequestParam("json") String jsonReq){
+        Map map = JSON.parseObject(jsonReq,Map.class);
+        Result result = new Result();
+        result.setCode(CityGlobal.ResultCode.fail.getStatus());
+
+        String username = (String)map.get("username");
+        String playerId = null;
+
+        StringBuilder tip = new StringBuilder();
+        if (StringUtils.isBlank(username)){
+            tip.append(CityGlobal.Constant.USER_NAME_NULL);
         }
         boolean login = Boolean.TRUE;
         if (StringUtils.isNotBlank(tip.toString())){
@@ -133,10 +192,6 @@ public class PlayerController {
                 playerId = playerExit.getPlayerId();
                 // 用户名
                 if (!playerExit.getPlayerName().equalsIgnoreCase(username)){
-                    login = Boolean.FALSE;
-                }
-                // 密码
-                if (!playerExit.getPlayerPass().equals(userpass)){
                     login = Boolean.FALSE;
                 }
                 if (login) {

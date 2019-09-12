@@ -52,6 +52,9 @@ public interface CityGlobal {
         public static final String USER_NOT_EXIT = "用户不存在!";
         public static final String USER_NAME_NULL = "用户名不能为空！";
         public static final String USER_PWD_NULL = "用户密码不能为空！";
+        public static final String USER_PWD_ERROR = "用户密码不正确！";
+        public static final String USER_VLCODE_NULL = "验证码不能为空！";
+        public static final String USER_VLCODE_ERROR = "验证码不正确！";
         public static final String USER_OLD_PWD_ERROR = "旧密码不正确！";
         public static final String USER_CHANGE_PWD_SUCCESS = "修改密码成功！";
         public static final String USER_CHANGE_PWD_FAIL = "修改密码失败！";

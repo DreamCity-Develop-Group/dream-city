@@ -2,6 +2,7 @@ package com.dream.city.service.impl;
 
 import com.dream.city.base.model.Result;
 import com.dream.city.service.ConsumerPlayerService;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * @author Wvv
@@ -25,7 +26,12 @@ public class FallBackPlayer implements ConsumerPlayerService {
     }
 
     @Override
-    public Result login(String jsonReq) {
+    public Result pwlog(String jsonReq) {
+        return null;
+    }
+
+    @Override
+    public Result idlog(String jsonReq) {
         return null;
     }
 

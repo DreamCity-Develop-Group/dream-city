@@ -6,8 +6,11 @@ import com.dream.city.base.model.Message;
 import com.dream.city.base.model.MessageData;
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.req.UserReq;
+import com.dream.city.base.utils.RedisKeys;
+import com.dream.city.base.utils.RedisUtils;
 import com.dream.city.service.CityMessageService;
 import com.dream.city.service.ConsumerPlayerService;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +35,8 @@ public class ConsumerPlayerController {
     private ConsumerPlayerService consumerPlayerService;
     @Autowired
     private CityMessageService messageService;
-
+    @Autowired
+    private RedisUtils redisUtils;
 
 
     /**
@@ -194,24 +198,89 @@ public class ConsumerPlayerController {
 
 
     /**
-     * 登录
+     * 密码登录
      * @param msg
      * @return
      */
-    @RequestMapping("/login")
-    public Message login(@RequestBody Message msg){
+    @RequestMapping("/pwlog")
+    public Message pwlog(@RequestBody Message msg){
         UserReq userReq = getUserReq(msg);
         String jsonReq = JSON.toJSONString(userReq);
-        Result result = consumerPlayerService.login(jsonReq);
-        logger.info("##################### 用户登录 ",msg);
-
+        Result result = consumerPlayerService.pwlog(jsonReq);
         Map<String,String> t = new HashMap<>();
-        t.put("desc",result.getMsg());
-        MessageData data = new MessageData();
+        if (result.getSuccess()){
+            t.put("desc",CityGlobal.Constant.LOGIN_SUCCESS);
+        }else {
+            t.put("desc",CityGlobal.Constant.LOGIN_FAIL);
+        }
+        logger.info("##################### 用户登录 ",msg);
+        MessageData data = new MessageData("pwlog","consumer");
         data.setT(t);
         Message message = new Message(msg.getSource(),msg.getTarget(),data);
+        message.setSource(msg.getSource());
+        message.setTarget(msg.getTarget());
+        message.setDesc(result.getMsg());
         return message;
     }
+
+    /**
+     * 验证码登录
+     * @param msg
+     * @return
+     */
+    @RequestMapping("/idlog")
+    public Message idlog(@RequestBody Message msg){
+        Message message = new Message();
+        message.setSource(msg.getSource());
+        message.setTarget(msg.getTarget());
+        MessageData data = new MessageData("idlog","consumer");
+        Map<String,String> t = new HashMap<>();
+
+        UserReq userReq = getUserReq(msg);
+        StringBuilder tip = new StringBuilder();
+
+        // 校验认证码
+        if (StringUtils.isBlank(userReq.getUserpass())){
+            tip.append(CityGlobal.Constant.USER_VLCODE_NULL);
+            t.put("desc",CityGlobal.Constant.LOGIN_FAIL);
+            data.setT(t);
+            message.setData(data);
+            message.setDesc(tip.toString());
+        }
+        String redisKey = RedisKeys.REDIS_KEY_VALIDCODE + msg.getSource();
+        if (redisUtils.hasKey(redisKey)){
+            String redisCode = redisUtils.getStr(RedisKeys.REDIS_KEY_VALIDCODE+msg.getSource());
+            if (!userReq.getUserpass().equals(redisCode)){
+                tip.append(CityGlobal.Constant.USER_VLCODE_ERROR);
+                t.put("desc",CityGlobal.Constant.LOGIN_FAIL);
+                data.setT(t);
+                message.setData(data);
+                message.setDesc(tip.toString());
+            }
+        }else {
+            // 校验码  todo
+            /*Message retMsg = messageService.validCode(message);
+            if (!(Boolean) retMsg.getData().getT()){
+                msg.getData().setT(new MessageData(CityGlobal.Constant.REG_FAIL));
+                return msg;
+            }*/
+        }
+        if (StringUtils.isNotBlank(tip.toString())){
+            return message;
+        }
+
+        Result idlog = consumerPlayerService.idlog(JSON.toJSONString(userReq));
+        if (idlog.getSuccess()){
+            t.put("desc",CityGlobal.Constant.LOGIN_SUCCESS);
+        }else {
+            t.put("desc",CityGlobal.Constant.LOGIN_FAIL);
+        }
+        data.setT(t);
+        message.setData(data);
+        message.setDesc(idlog.getMsg());
+        return message;
+    }
+
 
     /**
      * 登出

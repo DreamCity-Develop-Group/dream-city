@@ -35,7 +35,10 @@ public class ValiCodeController {
         String target = msg.getTarget();
         msg.setTarget(msg.getSource());
         msg.setSource(target);
-        msg.setData(new MessageData("getValiCode", "message", code));
+
+        MessageData data = new MessageData("getValiCode", "message");
+        data.setT(code);
+        msg.setData(data);
         return msg;
     }
 
@@ -59,18 +62,22 @@ public class ValiCodeController {
         }
 
         if (ret) {
+            MessageData data1 = new MessageData(message.getData().getType(), message.getData().getModel());
+            data1.setT(Boolean.TRUE);
             return new Message(
                     message.getTarget(),
                     message.getSource(),
-                    new MessageData(message.getData().getType(), message.getData().getModel(), Boolean.TRUE),
+                    data1,
                     "验证成功！",
                     String.valueOf(System.currentTimeMillis())
             );
         } else {
+            MessageData data2 = new MessageData(message.getData().getType(), message.getData().getModel());
+            data2.setT(Boolean.FALSE);
             return new Message(
                     message.getTarget(),
                     message.getSource(),
-                    new MessageData(message.getData().getType(), message.getData().getModel(), Boolean.FALSE),
+                    data2,
                     "验证失败！",
                     String.valueOf(System.currentTimeMillis())
             );
@@ -80,8 +87,10 @@ public class ValiCodeController {
     @RequestMapping("/getCode")
     public Message getCode(@RequestBody Message message) {
         String code = String.valueOf(new Random().nextInt(999999));
+        MessageData data = new MessageData("getcode", "message");
+        data.setT(null);
         Message msg = new Message("source", "server",
-                new MessageData("getcode", "message", null),
+                data,
                 "获取认证码",
                 String.valueOf(System.currentTimeMillis()));
 

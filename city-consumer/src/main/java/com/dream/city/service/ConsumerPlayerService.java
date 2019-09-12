@@ -30,8 +30,13 @@ public interface ConsumerPlayerService {
     /**
      * 用户登录
      */
-    @RequestMapping("/player/login")
-    Result login(@RequestParam("json") String jsonReq);
+    @RequestMapping("/player/pwlog")
+    Result pwlog(@RequestParam("json") String jsonReq);
+    /**
+     * 用户登录
+     */
+    @RequestMapping("/player/idlog")
+    Result idlog(@RequestParam("json") String jsonReq);
 
     /**
      * 用户退出

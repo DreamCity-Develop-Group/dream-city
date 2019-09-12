@@ -37,13 +37,13 @@ public class CityConsumerApplicationTests {
         System.out.println(msg);
 
         //////////////////////////////////////////
-        MessageData data1 = new MessageData(map);
-        System.out.println(data1);
-        Message message = new Message(data1);
-        System.out.println(message);
-
-        Message message1 = new Message(new MessageData(map));
-        System.out.println(message1);
+//        MessageData data1 = new MessageData(map);
+//        System.out.println(data1);
+//        Message message = new Message(data1);
+//        System.out.println(message);
+//
+//        Message message1 = new Message(new MessageData(map));
+//        System.out.println(message1);
 
 
     }
