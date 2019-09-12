@@ -26,14 +26,15 @@ public class FallBackPlayer implements ConsumerPlayerService {
     }
 
     @Override
-    public Result pwlog(String jsonReq) {
+    public Result pwLogoin(String jsonReq) {
         return null;
     }
 
     @Override
-    public Result idlog(String jsonReq) {
+    public Result codeLogoin(String jsonReq) {
         return null;
     }
+
 
     @Override
     public Result quit(String playerId) {

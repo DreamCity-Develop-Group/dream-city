@@ -89,9 +89,8 @@ public class PlayerController {
                 result.setSuccess(Boolean.TRUE);
                 result.setCode(CityGlobal.ResultCode.success.getStatus());
 
-                redisUtils.set(RedisKeys.CURRENT_USER+playerName,
-                        JSON.toJSONString(playerSave));
-                redisUtils.incr(RedisKeys.CURRENT_LOGIN_USER_COUNT);
+                // 登录成功保存redis
+                loginToRedis(playerSave);
             }
         }
 
@@ -104,8 +103,8 @@ public class PlayerController {
      * @param jsonReq
      * @return
      */
-    @RequestMapping("/pwlog")
-    public Result pwlog(@RequestParam("json") String jsonReq){
+    @RequestMapping("/pwlogoin")
+    public Result pwLogoin(@RequestParam("json") String jsonReq){
         Map map = JSON.parseObject(jsonReq,Map.class);
         Result result = new Result();
         result.setCode(CityGlobal.ResultCode.fail.getStatus());
@@ -125,27 +124,27 @@ public class PlayerController {
             result.setMsg(tip.toString());
         }else {
             // 用户是否存在
-            Player playerExit = playerService.getPlayerByName(username);
-            if (playerExit == null){
+            Player playerExists= playerService.getPlayerByName(username);
+            if (playerExists == null){
                 result.setMsg(CityGlobal.Constant.USER_NOT_EXIT);
                 tip.append(CityGlobal.Constant.USER_NOT_EXIT);
             }else {
-                playerId = playerExit.getPlayerId();
+                playerId = playerExists.getPlayerId();
                 // 用户名
-                if (!playerExit.getPlayerName().equalsIgnoreCase(username)){
+                if (!playerExists.getPlayerName().equalsIgnoreCase(username)){
                     tip.append(CityGlobal.Constant.USER_NOT_EXIT);
                 }
                 // 密码
-                if (!playerExit.getPlayerPass().equals(userpass)){
+                if (!playerExists.getPlayerPass().equals(userpass)){
                     tip.append(CityGlobal.Constant.USER_PWD_ERROR);
                 }
                 if (StringUtils.isBlank(tip.toString())) {
                     tip.append(CityGlobal.Constant.LOGIN_SUCCESS);
                     result.setCode(CityGlobal.ResultCode.success.getStatus());
                     result.setSuccess(Boolean.TRUE);
-                    redisUtils.set(RedisKeys.CURRENT_USER + username,
-                            JSON.toJSONString(playerExit));
-                    redisUtils.incr(RedisKeys.CURRENT_LOGIN_USER_COUNT);
+
+                    // 登录成功保存redis
+                    loginToRedis(playerExists);
                 }
             }
         }
@@ -161,14 +160,29 @@ public class PlayerController {
         return result;
     }
 
+    /**
+     * 登录成功保存redis
+     * @param player
+     */
+    private void loginToRedis(Player player){
+        String key = RedisKeys.CURRENT_USER + player.getPlayerName();
+        if (redisUtils.hasKey(key)){
+            redisUtils.del(key);
+        }
+
+        redisUtils.set(RedisKeys.CURRENT_USER + player.getPlayerName(),
+                JSON.toJSONString(player));
+
+        redisUtils.incr(RedisKeys.CURRENT_LOGIN_USER_COUNT);
+    }
 
     /**
      * 验证码登录
      * @param jsonReq
      * @return
      */
-    @RequestMapping("/idlog")
-    public Result idlog(@RequestParam("json") String jsonReq){
+    @RequestMapping("/codelogoin")
+    public Result codeLogoin(@RequestParam("json") String jsonReq){
         Map map = JSON.parseObject(jsonReq,Map.class);
         Result result = new Result();
         result.setCode(CityGlobal.ResultCode.fail.getStatus());
@@ -185,14 +199,14 @@ public class PlayerController {
             result.setMsg(tip.toString());
         }else {
             // 用户是否存在
-            Player playerExit = playerService.getPlayerByName(username);
-            if (playerExit == null){
+            Player playerExists = playerService.getPlayerByName(username);
+            if (playerExists == null){
                 result.setMsg(CityGlobal.Constant.USER_NOT_EXIT);
                 tip.append(CityGlobal.Constant.USER_NOT_EXIT);
             }else {
-                playerId = playerExit.getPlayerId();
+                playerId = playerExists.getPlayerId();
                 // 用户名
-                if (!playerExit.getPlayerName().equalsIgnoreCase(username)){
+                if (!playerExists.getPlayerName().equalsIgnoreCase(username)){
                     login = Boolean.FALSE;
                 }
                 if (login) {
@@ -201,9 +215,8 @@ public class PlayerController {
                     result.setSuccess(login);
                     result.setCode(CityGlobal.ResultCode.success.getStatus());
 
-                    redisUtils.set(RedisKeys.CURRENT_USER + username,
-                            JSON.toJSONString(playerExit));
-                    redisUtils.incr(RedisKeys.CURRENT_LOGIN_USER_COUNT);
+                    // 登录成功保存redis
+                    loginToRedis(playerExists);
                 }
             }
         }

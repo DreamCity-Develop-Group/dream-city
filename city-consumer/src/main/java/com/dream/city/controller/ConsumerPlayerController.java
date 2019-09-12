@@ -104,8 +104,8 @@ public class ConsumerPlayerController {
      * @param msg
      * @return
      */
-    @RequestMapping("/forget")
-    public Message forget(@RequestBody Message msg){
+    @RequestMapping("/pwforget")
+    public Message pwforget(@RequestBody Message msg){
         UserReq jsonReq = getUserReq(msg);
         Result result = consumerPlayerService.forgetPwd(jsonReq.getUsername(), jsonReq.getOldpw());
 
@@ -205,11 +205,11 @@ public class ConsumerPlayerController {
      * @param msg
      * @return
      */
-    @RequestMapping("/pwlog")
-    public Message pwlog(@RequestBody Message msg){
+    @RequestMapping("/pwlogoin")
+    public Message pwLogoin(@RequestBody Message msg){
         UserReq userReq = getUserReq(msg);
         String jsonReq = JSON.toJSONString(userReq);
-        Result result = consumerPlayerService.pwlog(jsonReq);
+        Result result = consumerPlayerService.pwLogoin(jsonReq);
 
         Map<String,String> t = new HashMap<>();
         if (result.getSuccess()){
@@ -234,8 +234,8 @@ public class ConsumerPlayerController {
      * @param msg
      * @return
      */
-    @RequestMapping("/idlog")
-    public Message idlog(@RequestBody Message msg){
+    @RequestMapping("/codelogoin")
+    public Message codeLogoin(@RequestBody Message msg){
         Message message = new Message();
         message.setSource(msg.getSource());
         message.setTarget(msg.getTarget());
@@ -275,7 +275,7 @@ public class ConsumerPlayerController {
             return message;
         }
 
-        Result idlog = consumerPlayerService.idlog(JSON.toJSONString(userReq));
+        Result idlog = consumerPlayerService.codeLogoin(JSON.toJSONString(userReq));
         if (idlog.getSuccess()){
             t.put("desc",CityGlobal.Constant.LOGIN_SUCCESS);
         }else {
