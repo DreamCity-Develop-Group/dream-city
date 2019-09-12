@@ -22,7 +22,7 @@ public class CityConsumerApplicationTests {
     @Test
     public void testUserReg(){
 
-        MessageData data = new MessageData();
+        MessageData data = new MessageData("login","user");
         Map<String,String> map = new HashMap<>();
         map.put("username","Wvv11");
         map.put("userpass","123456");
@@ -30,9 +30,20 @@ public class CityConsumerApplicationTests {
         map.put("nick","VVV");
         map.put("invite","saas223");
         data.setT(map);
+        System.out.println(data);
         Message msg = new Message();
         msg.setData(data);
 
+        System.out.println(msg);
+
+        //////////////////////////////////////////
+        MessageData data1 = new MessageData(map);
+        System.out.println(data1);
+        Message message = new Message(data1);
+        System.out.println(message);
+
+        Message message1 = new Message(new MessageData(map));
+        System.out.println(message1);
 
 
     }

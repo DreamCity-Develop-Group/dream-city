@@ -1,13 +1,12 @@
-package com.dream.city.base.model;
+package com.dream.city.domain;
 
 import lombok.Data;
-import lombok.ToString;
+import org.bouncycastle.math.raw.Mod;
 
 /**
  * @author WVv
  */
 @Data
-@ToString
 public class MessageData<T> {
     //事件类型
     String type;
@@ -16,18 +15,9 @@ public class MessageData<T> {
     //具体业务数据
     T t;
 
-    public MessageData(){
-
-    }
-
+    public MessageData(){}
     public MessageData(String type,String model){
         this.type = type;
         this.model = model;
-    }
-
-    public MessageData(String type,String model,T t){
-        this.type = type;
-        this.model = model;
-        this.t = t;
     }
 }
