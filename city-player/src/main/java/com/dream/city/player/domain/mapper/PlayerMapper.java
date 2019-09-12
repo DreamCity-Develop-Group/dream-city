@@ -2,11 +2,12 @@ package com.dream.city.player.domain.mapper;
 
 
 import com.dream.city.player.domain.entity.Player;
+import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository
+@Mapper
 public interface PlayerMapper {
 
     int deleteByPlayerId(String playerId);

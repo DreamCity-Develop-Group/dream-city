@@ -1,12 +1,9 @@
-package com.dream.city.player.domain.entity;
-
-import lombok.Data;
+package com.dream.city.player.domain.req;
 
 import java.io.Serializable;
 import java.util.Date;
 
-@Data
-public class Friends implements Serializable {
+public class FriendsReq implements Serializable {
     private Long id;
 
     private String playerId;

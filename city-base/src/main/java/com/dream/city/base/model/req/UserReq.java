@@ -23,7 +23,7 @@ public class UserReq implements Serializable {
     private String oldpw;
     private String newpw;
 
-    private String invited;
+    private String invite;
 
     private String code;
 
@@ -41,7 +41,7 @@ public class UserReq implements Serializable {
         this.username = username;
         this.userpass = userpass;
         this.nick = nick;
-        this.invited = invited;
+        this.invite = invite;
     }
 
     public String getPlayerId() {
@@ -84,12 +84,12 @@ public class UserReq implements Serializable {
         this.pwshop = pwshop;
     }
 
-    public String getInvited() {
-        return invited;
+    public String getInvite() {
+        return invite;
     }
 
-    public void setInvited(String invited) {
-        this.invited = invited;
+    public void setInvite(String invite) {
+        this.invite = invite;
     }
 
     public String getCode() {

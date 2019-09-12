@@ -313,7 +313,7 @@ public class ConsumerPlayerController {
         Map map = (Map)message.getData().getT();
         UserReq userReq = new UserReq();
         if (map != null) {
-            userReq.setInvited(map.containsKey("invited")?(String) map.get("invited"):null);
+            userReq.setInvite(map.containsKey("invited")?(String) map.get("invited"):null);
             userReq.setNick(map.containsKey("nick")?(String) map.get("nick"):null);
             userReq.setPlayerId(map.containsKey("playerId")?(String) map.get("playerId"):null);
             userReq.setPwshop(map.containsKey("pwshop")?(String) map.get("pwshop"):null);

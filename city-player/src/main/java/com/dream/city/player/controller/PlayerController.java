@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.dream.city.base.model.CityGlobal;
 import com.dream.city.base.model.Result;
+import com.dream.city.base.model.req.UserReq;
 import com.dream.city.base.utils.RedisKeys;
 import com.dream.city.base.utils.RedisUtils;
 import com.dream.city.player.domain.entity.LoginLog;
@@ -314,7 +315,8 @@ public class PlayerController {
      */
     @RequestMapping("/get")
     public Result getPlayers(@RequestParam("json") String jsonReq){
-        Player player = JSON.parseObject(jsonReq,Player.class);
+        Player player = getPlayerFromJsonReq(jsonReq);
+
         List<Player> players = playerService.getPlayers(player);
         Result result = null;
         if (!CollectionUtils.isEmpty(players)){
@@ -325,5 +327,16 @@ public class PlayerController {
         return result;
     }
 
+
+
+    private Player getPlayerFromJsonReq(String jsonReq){
+        UserReq userReq = JSON.parseObject(jsonReq,UserReq.class);
+        Player player = new Player();
+        player.setPlayerNick(userReq.getNick());
+        player.setPlayerInvite(userReq.getInvite());
+        player.setPlayerName(userReq.getUsername());
+        player.setPlayerId(userReq.getPlayerId());
+        return player;
+    }
 
 }

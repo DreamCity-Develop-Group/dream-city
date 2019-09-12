@@ -2,9 +2,10 @@ package com.dream.city.player.domain.mapper;
 
 
 import com.dream.city.player.domain.entity.Likes;
+import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
-@Repository
+@Mapper
 public interface LikesMapper {
     int deleteByPrimaryKey(Long id);
 

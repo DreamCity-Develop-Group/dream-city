@@ -32,7 +32,8 @@ eureka:
 mybatis:
   type-aliases-package: com.dream.city.player.domain.mapper
   mapper-locations: classpath:/mybatis/mappers/*.xml
-
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 
 

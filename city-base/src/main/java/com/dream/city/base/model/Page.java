@@ -1,11 +1,15 @@
 package com.dream.city.base.model;
 
+import lombok.Data;
+import org.springframework.util.CollectionUtils;
+
 import java.util.Collections;
 import java.util.List;
 
 /**
  * 分页类
  */
+@Data
 public class Page<T>
 {
     public static int DEFAULT_START = 1;//默认开始行
@@ -20,7 +24,7 @@ public class Page<T>
     
     private int pageNo;//当前页
     
-	private int count;//总纪录数
+	private int totalCount;//总纪录数
     
     private Object condition;//查询条件
     
@@ -76,7 +80,8 @@ public class Page<T>
 
     public int getStart()
     {
-    	this.start = this.pageSize * (this.pageNo - 1) + 1;
+    	//this.start = this.pageSize * (this.pageNo - 1) + 1;
+    	this.start = this.pageSize * (this.pageNo - 1);
         return this.start;
     }
 
@@ -85,15 +90,6 @@ public class Page<T>
         this.start = start;
     }
 
-    public int getCount()
-    {
-        return count;
-    }
-
-    public void setCount(int count)
-    {
-        this.count = count;
-    }
 
     public static int getDefaultStart() {
         return DEFAULT_START;
@@ -119,13 +115,24 @@ public class Page<T>
         DEFAULT_PAGE = defaultPage;
     }
 
+    public int getTotalCount() {
+        if (!CollectionUtils.isEmpty(result)){
+            this.totalCount = result.size();
+        }
+        return totalCount;
+    }
+
+    public void setTotalCount(int totalCount) {
+        this.totalCount = totalCount;
+    }
+
     @Override
     public String toString() {
         return "Page{" +
                 "start=" + start +
                 ", pageSize=" + pageSize +
                 ", pageNo=" + pageNo +
-                ", count=" + count +
+                ", totalCount=" + totalCount +
                 ", condition=" + condition +
                 ", result=" + result +
                 '}';

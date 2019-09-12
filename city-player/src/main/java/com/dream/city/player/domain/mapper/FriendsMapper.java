@@ -1,14 +1,18 @@
 package com.dream.city.player.domain.mapper;
 
 
+import com.dream.city.base.model.Page;
 import com.dream.city.player.domain.entity.Friends;
+import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
-@Repository
+import java.util.List;
+
+@Mapper
 public interface FriendsMapper {
+
     int deleteByPrimaryKey(Long id);
 
-    int insert(Friends record);
 
     int insertSelective(Friends record);
 
@@ -16,5 +20,5 @@ public interface FriendsMapper {
 
     int updateByPrimaryKeySelective(Friends record);
 
-    int updateByPrimaryKey(Friends record);
+    List<Friends> friendList(Page<Friends> page);
 }
