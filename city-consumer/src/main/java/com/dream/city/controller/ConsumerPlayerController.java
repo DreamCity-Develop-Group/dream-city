@@ -8,6 +8,7 @@ import com.dream.city.base.model.Result;
 import com.dream.city.base.model.req.UserReq;
 import com.dream.city.base.utils.RedisKeys;
 import com.dream.city.base.utils.RedisUtils;
+import com.dream.city.service.AuthService;
 import com.dream.city.service.CityMessageService;
 import com.dream.city.service.ConsumerPlayerService;
 import org.apache.commons.lang.StringUtils;
@@ -37,6 +38,8 @@ public class ConsumerPlayerController {
     private CityMessageService messageService;
     @Autowired
     private RedisUtils redisUtils;
+    @Autowired
+    AuthService authService;
 
 
     /**
@@ -207,9 +210,12 @@ public class ConsumerPlayerController {
         UserReq userReq = getUserReq(msg);
         String jsonReq = JSON.toJSONString(userReq);
         Result result = consumerPlayerService.pwlog(jsonReq);
+
         Map<String,String> t = new HashMap<>();
         if (result.getSuccess()){
             t.put("desc",CityGlobal.Constant.LOGIN_SUCCESS);
+            String token = authService.getAuth(userReq.getUsername());
+            t.put("token",token);
         }else {
             t.put("desc",CityGlobal.Constant.LOGIN_FAIL);
         }

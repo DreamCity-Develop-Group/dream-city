@@ -38,7 +38,7 @@ public class WebSocketFilter extends ZuulFilter {
 
 
         log.info(String.format("%s request to %s", request.getMethod(), request.getRequestURL().toString()));
-
+        
         Object accessToken = request.getParameter("accessToken");
 
         if (null == accessToken){
