@@ -95,6 +95,7 @@ public class ConsumerPlayerController {
         Map<String,String> condition = new HashMap<>();
         condition.put("playerName",jsonReq.getUsername());
         condition.put("playerNick",jsonReq.getNick());
+        condition.put("playerId",jsonReq.getPlayerId());
         PageReq<Map> pageReq = new PageReq<>((Map)msg.getData().getT());
         pageReq.setCondition(condition);
 
