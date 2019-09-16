@@ -18,6 +18,8 @@ public class Player implements Serializable {
 
     private String playerInvite;
 
+    private Integer isValid;
+
     private Date createTime;
 
     private Date updateTime;
@@ -92,5 +94,13 @@ public class Player implements Serializable {
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public Integer getIsValid() {
+        return isValid;
+    }
+
+    public void setIsValid(Integer isValid) {
+        this.isValid = isValid;
     }
 }

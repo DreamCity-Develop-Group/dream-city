@@ -8,7 +8,9 @@ import com.dream.city.base.model.req.UserReq;
 import com.dream.city.base.utils.RedisKeys;
 import com.dream.city.base.utils.RedisUtils;
 import com.dream.city.player.domain.entity.Friends;
+import com.dream.city.player.domain.entity.Player;
 import com.dream.city.player.service.FriendsService;
+import com.dream.city.player.service.PlayerService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +24,8 @@ public class FriendsController {
 
     @Autowired
     private FriendsService friendsService;
+    @Autowired
+    private PlayerService playerService;
     @Autowired
     private RedisUtils redisUtils;
 
@@ -37,6 +41,7 @@ public class FriendsController {
         String nick = (String) map.get("nick");
         String username = (String) map.get("username");
 
+        Player player = playerService.getPlayerByName(username, null);
         // todo
         String playerId = (String) map.get("playerId");
         String friendId = (String) map.get("friendId");

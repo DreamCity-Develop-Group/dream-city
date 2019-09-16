@@ -189,6 +189,10 @@ public class ConsumerPlayerController {
             t.put("desc",CityGlobal.Constant.REG_SUCCESS);
             data.setT(t);
             msg.setData(data);
+
+            String token = saveToken(userReq.getUsername());
+            t.put("token",token);
+
             logger.info("##################### 用户注册成功 ",msg);
             return msg;
         }
@@ -214,7 +218,8 @@ public class ConsumerPlayerController {
         Map<String,String> t = new HashMap<>();
         if (result.getSuccess()){
             t.put("desc",CityGlobal.Constant.LOGIN_SUCCESS);
-            String token = authService.getAuth(userReq.getUsername());
+
+            String token = saveToken(userReq.getUsername());
             t.put("token",token);
         }else {
             t.put("desc",CityGlobal.Constant.LOGIN_FAIL);
@@ -227,6 +232,22 @@ public class ConsumerPlayerController {
         message.setTarget(msg.getTarget());
         message.setDesc(result.getMsg());
         return message;
+    }
+
+    /**
+     * 登录或注册成功后保存token
+     * @param username
+     */
+    private String saveToken(String username){
+        String token = authService.getAuth(username);
+
+        String redisKey = RedisKeys.LOGIN_USER_TOKEN + username;
+        if (redisUtils.hasKey(redisKey)) {
+            redisUtils.del(redisKey);
+        }
+        redisUtils.setStr(redisKey,token);
+
+        return token;
     }
 
     /**
@@ -278,6 +299,9 @@ public class ConsumerPlayerController {
         Result idlog = consumerPlayerService.codeLogoin(JSON.toJSONString(userReq));
         if (idlog.getSuccess()){
             t.put("desc",CityGlobal.Constant.LOGIN_SUCCESS);
+
+            String token = saveToken(userReq.getUsername());
+            t.put("token",token);
         }else {
             t.put("desc",CityGlobal.Constant.LOGIN_FAIL);
         }
@@ -299,13 +323,17 @@ public class ConsumerPlayerController {
         Result result = consumerPlayerService.quit(jsonReq.getPlayerId());
         logger.info("##################### 用户登出 ",msg);
 
+        String redisKey = RedisKeys.LOGIN_USER_TOKEN + jsonReq.getUsername();
+        if (redisUtils.hasKey(redisKey)) {
+            redisUtils.del(redisKey);
+        }
+
         Map<String,String> t = new HashMap<>();
         t.put("desc",result.getMsg());
         MessageData data = new MessageData();
         data.setT(t);
         Message message = new Message(msg.getSource(),msg.getTarget(),data);
         return message;
-
     }
 
 

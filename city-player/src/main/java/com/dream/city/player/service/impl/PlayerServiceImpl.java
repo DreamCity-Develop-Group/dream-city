@@ -6,11 +6,11 @@ import com.dream.city.base.utils.KeyGenerator;
 import com.dream.city.player.domain.entity.Player;
 import com.dream.city.player.domain.mapper.PlayerMapper;
 import com.dream.city.player.service.PlayerService;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 
 import java.util.Date;
 import java.util.List;
@@ -22,7 +22,7 @@ import java.util.List;
 public class PlayerServiceImpl implements PlayerService {
 
     @Autowired
-    PlayerMapper playerMapper;
+    private PlayerMapper playerMapper;
 
     @Value("${spring.application.name}")
     private String appName;
@@ -30,7 +30,7 @@ public class PlayerServiceImpl implements PlayerService {
 
     @Override
     public Result forgetPwd(String username, String newPwd) {
-        Player player = getPlayerByName(username);
+        Player player = getPlayerByName(username,null);
         if (player == null){
             return new Result(Boolean.FALSE, CityGlobal.Constant.USER_NOT_EXIT);
         }
@@ -128,7 +128,7 @@ public class PlayerServiceImpl implements PlayerService {
 
     @Override
     public Player getPlayerById(String playerId) {
-        if (StringUtils.isEmpty(playerId)){
+        if (StringUtils.isBlank(playerId)){
             return null;
         }
         return playerMapper.getPlayerById(playerId);
@@ -141,9 +141,12 @@ public class PlayerServiceImpl implements PlayerService {
     }
 
     @Override
-    public Player getPlayerByName(String playerName) {
+    public Player getPlayerByName(String playerName,String playerNick) {
         Player player = new Player();
         player.setPlayerName(playerName);
+        if (StringUtils.isNotBlank(playerNick)) {
+            player.setPlayerNick(playerNick);
+        }
         List<Player> players = playerMapper.getPlayers(player);
         if (CollectionUtils.isEmpty(players)){
             return null;

@@ -61,7 +61,7 @@ public class PlayerController {
             tip=  "用户名或密码为空";
         }
         // 用户是否存在
-        Player playerExit = playerService.getPlayerByName(playerName);
+        Player playerExit = playerService.getPlayerByName(playerName,null);
         if (playerExit != null){
             tip = CityGlobal.Constant.REG_USER_EXIT + ",请直接登录！";
         }
@@ -124,7 +124,7 @@ public class PlayerController {
             result.setMsg(tip.toString());
         }else {
             // 用户是否存在
-            Player playerExists= playerService.getPlayerByName(username);
+            Player playerExists= playerService.getPlayerByName(username,null);
             if (playerExists == null){
                 result.setMsg(CityGlobal.Constant.USER_NOT_EXIT);
                 tip.append(CityGlobal.Constant.USER_NOT_EXIT);
@@ -199,7 +199,7 @@ public class PlayerController {
             result.setMsg(tip.toString());
         }else {
             // 用户是否存在
-            Player playerExists = playerService.getPlayerByName(username);
+            Player playerExists = playerService.getPlayerByName(username,null);
             if (playerExists == null){
                 result.setMsg(CityGlobal.Constant.USER_NOT_EXIT);
                 tip.append(CityGlobal.Constant.USER_NOT_EXIT);
@@ -314,9 +314,22 @@ public class PlayerController {
         Player player = playerService.getPlayerById(playerId);
         Result result = null;
         if (player != null){
-            result = new Result(CityGlobal.ResultCode.success.getStatus(),player);
+            result = new Result(CityGlobal.ResultCode.success.getStatus(),JSONObject.toJSONString(player));
         }else {
-            result = new Result(CityGlobal.ResultCode.fail.getStatus(),player);
+            result = new Result(CityGlobal.ResultCode.fail.getStatus(),JSONObject.toJSONString(player));
+        }
+        return result;
+    }
+
+    @RequestMapping("/getPlayerByName")
+    public Result getPlayerByName(@PathVariable("playerName")String playerName,
+                                  @PathVariable("playerNick")String playerNick){
+        Player player = playerService.getPlayerByName(playerName,playerNick);
+        Result result = null;
+        if (player != null){
+            result = new Result(CityGlobal.ResultCode.success.getStatus(),JSONObject.toJSONString(player));
+        }else {
+            result = new Result(CityGlobal.ResultCode.fail.getStatus(),JSONObject.toJSONString(player));
         }
         return result;
     }
@@ -333,9 +346,9 @@ public class PlayerController {
         List<Player> players = playerService.getPlayers(player);
         Result result = null;
         if (!CollectionUtils.isEmpty(players)){
-            result = new Result(CityGlobal.ResultCode.success.getStatus(),players);
+            result = new Result(CityGlobal.ResultCode.success.getStatus(),JSONObject.toJSONString(players));
         }else {
-            result = new Result(CityGlobal.ResultCode.fail.getStatus(),players);
+            result = new Result(CityGlobal.ResultCode.fail.getStatus(),JSONObject.toJSONString(players));
         }
         return result;
     }

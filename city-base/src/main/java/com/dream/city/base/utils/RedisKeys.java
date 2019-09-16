@@ -9,6 +9,8 @@ public final class RedisKeys {
     // 当前登录用户 = CURRENT_USER + username
     public static final String CURRENT_USER = "CURRENT_USER_";
 
+    public static final String LOGIN_USER_TOKEN = "LOGIN_USER_TOKEN_";
+
     // 当前登录总人数
     public static final String CURRENT_LOGIN_USER_COUNT = "CURRENT_LOGIN_USER_COUNT_";
 

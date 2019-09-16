@@ -12,6 +12,10 @@ public class UserReq implements Serializable {
 
     private String playerId;
 
+    private String clientId;
+
+    private String token;
+
     private String username;
 
     private String nick;
@@ -114,5 +118,21 @@ public class UserReq implements Serializable {
 
     public void setNewpw(String newpw) {
         this.newpw = newpw;
+    }
+
+    public String getClientId() {
+        return clientId;
+    }
+
+    public void setClientId(String clientId) {
+        this.clientId = clientId;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }

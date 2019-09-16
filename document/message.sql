@@ -41,3 +41,28 @@ INSERT INTO `t_auth_code` VALUES ('7', '991977', '123', null, '2019-09-11 04:41:
 INSERT INTO `t_auth_code` VALUES ('8', '950884', '123', null, '2019-09-11 04:42:14');
 INSERT INTO `t_auth_code` VALUES ('9', '553626', '1231', null, '2019-09-12 07:13:25');
 INSERT INTO `t_auth_code` VALUES ('10', '757543', '1231', null, '2019-09-12 07:13:25');
+
+
+CREATE TABLE `t_message` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `player_id` varchar(64) CHARACTER SET utf8 DEFAULT NULL,
+  `friend_id` varchar(64) CHARACTER SET utf8 DEFAULT NULL,
+  `content` varchar(600) DEFAULT NULL COMMENT '消息内容',
+  `have_read` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT '0未读，1已读',
+  `create_time` datetime DEFAULT NULL,
+  `update_time` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+
+
+
+
+
+
+
+
+
+
+

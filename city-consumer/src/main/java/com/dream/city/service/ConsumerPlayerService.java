@@ -72,4 +72,13 @@ public interface ConsumerPlayerService {
                           @RequestParam("oldPwd") String oldPwd,
                           @RequestParam("newPwd")  String newPwd);
 
+    /**
+     *
+     * @param playerName
+     * @param playerNick
+     * @return
+     */
+    @RequestMapping("/player/getPlayerByName")
+    public Result getPlayerByName(@PathVariable("playerName")String playerName,
+                                  @PathVariable("playerNick")String playerNick);
 }
