@@ -20,8 +20,27 @@ public interface FriendsMapper {
 
     int updateByPrimaryKeySelective(Friends record);
 
+    /**
+     * 同意添加好友
+     * @param record
+     * @return
+     */
     int agreeAddFriend(Friends record);
 
-    Integer friendCount(String playerId);
+    /**
+     * 好友列表
+     * @param page
+     * @return
+     */
     List<Map> friendList(Page<Map> page);
+    Integer friendCount(String playerId);
+
+
+    /**
+     * 申请列表
+     * @param page
+     * @return
+     */
+    List<Map> applyFriendList(Page<Map> page);
+    Integer applyFriendCount(String playerId);
 }

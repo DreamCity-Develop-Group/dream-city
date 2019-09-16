@@ -20,15 +20,39 @@
     where id = #{id,jdbcType=BIGINT}
   </select>
 
+  <!-- 好友列表  -->
   <select id="friendList" parameterType="com.dream.city.base.model.Page" resultType="java.util.Map">
+    select a.id, a.player_id playerId, a.friend_id friendId, a.agree,
+       b.friend_name friendName,b.friend_nick friendNick,b.friendlink,b.imgurl FROM
+      (select f.id, f.player_id, f.friend_id , f.agree,f.create_time FROM
+        (select f1.* from t_friends f1
+        where f1.player_id = #{condition,jdbcType=VARCHAR} and f1.agree =1
+        )
+      f) a,
+      (SELECT p.player_id friend_id,p.player_name friend_name,p.player_nick friend_nick,e.friendlink,e.imgurl
+      FROM t_player p,t_player_ext e WHERE p.player_id=e.player_id) b
+    WHERE a.friend_id = b.friend_id
+    ORDER BY a.create_time DESC limit ${start},${pageSize}
+  </select>
+  <select id="friendCount" parameterType="java.lang.String" resultType="java.lang.Integer">
+    select COUNT(a.friend_id) FROM
+      (select f.friend_id FROM
+        (select f1.* from t_friends f1
+        where f1.player_id = #{_parameter} and f1.agree =1
+        )
+      f) a,
+      (SELECT p.player_id friend_id
+      FROM t_player p,t_player_ext e WHERE p.player_id=e.player_id) b
+    WHERE a.friend_id = b.friend_id
+  </select>
+
+  <!-- 申请列表  -->
+  <select id="applyFriendList" parameterType="com.dream.city.base.model.Page" resultType="java.util.Map">
     select a.id, a.player_id playerId, a.friend_id friendId, a.agree,
      b.friend_name friendName,b.friend_nick friendNick,b.friendlink,b.imgurl FROM
     (select f.id, f.player_id, f.friend_id , f.agree,f.create_time FROM
-      (select f1.* from t_friends f1
-      where f1.player_id = #{condition,jdbcType=VARCHAR} and f1.agree =1 and f1.invite is null
-      UNION
-      select f2.* from t_friends f2
-      where f2.player_id = #{condition,jdbcType=VARCHAR} and f2.agree =0 and f2.invite is not null
+      (select f2.* from t_friends f2
+      where f2.player_id = #{condition,jdbcType=VARCHAR} and f2.agree =0
       )
     f) a,
     (SELECT p.player_id friend_id,p.player_name friend_name,p.player_nick friend_nick,e.friendlink,e.imgurl
@@ -36,16 +60,13 @@
     WHERE a.friend_id = b.friend_id
     ORDER BY a.create_time DESC limit ${start},${pageSize}
   </select>
-  <select id="friendCount" parameterType="java.lang.String" resultType="java.lang.Integer">
-    select COUNT(*) FROM
-    (select f.friend_id FROM
-    (select f1.* from t_friends f1
-    where f1.player_id = #{_parameter} and f1.agree =1 and f1.invite is null
-    UNION select f2.* from t_friends f2
-    where f2.player_id = #{_parameter} and f2.agree =0 and f2.invite is not null
-    ) f) a,
-    (SELECT p.player_id friend_id FROM t_player p,t_player_ext e
-      WHERE p.player_id=e.player_id) b
+  <select id="applyFriendCount" parameterType="java.lang.String" resultType="java.lang.Integer">
+    select COUNT(a.friend_id) FROM
+      (select f.friend_id FROM
+        (select f2.* from t_friends f2 where f2.player_id = #{_parameter} and f2.agree =0)
+      f) a,
+      (SELECT p.player_id friend_id
+      FROM t_player p,t_player_ext e WHERE p.player_id=e.player_id) b
     WHERE a.friend_id = b.friend_id
   </select>
 

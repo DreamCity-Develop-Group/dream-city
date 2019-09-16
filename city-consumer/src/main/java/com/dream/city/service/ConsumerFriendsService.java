@@ -37,6 +37,12 @@ public interface ConsumerFriendsService {
     @RequestMapping("/friends/friendList")
     Page friendList(@RequestParam("playerId") String playerId);
 
-
+    /**
+     * 好友申请列表
+     * @param playerId
+     * @return
+     */
+    @RequestMapping("/friends/applyFriendList")
+    Page applyFriendList(@RequestParam("playerId") String playerId);
 
 }

@@ -74,6 +74,27 @@ public class ConsumerFriendsController {
     }
 
 
+    @RequestMapping("/applyfriend")
+    public Message applyfriend(@RequestBody Message msg){
+        logger.info("获取好友申请列表", JSONObject.toJSONString(msg));
+        Message message = new Message();
+        MessageData data = new MessageData("applyfriend","consumer");
+        String desc = "获取好友申请列表成功";
+        try {
+            Map map = getPlayerIdOrFriendId(msg);
+            String playerId = map.containsKey("playerId")?(String)map.get("playerId"):null;
+            Page page = consumerFriendsService.applyFriendList(playerId);
+            data.setT(page);
+        }catch (Exception e){
+            desc = "获取好友申请列表失败";
+            logger.error(desc,e);
+        }
+        message.setData(data);
+        message.setDesc(desc);
+        return message;
+    }
+
+
 
     /**
      * Message
