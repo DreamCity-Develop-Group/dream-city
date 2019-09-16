@@ -9,6 +9,8 @@ import com.dream.city.base.utils.RedisUtils;
 import com.dream.city.service.ConsumerGameSettingService;
 import com.dream.city.service.ConsumerPlayerService;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +22,8 @@ import java.util.Map;
 @RequestMapping("/consumer")
 public class ConsumerGameSettingController {
 
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
     @Autowired
     private ConsumerGameSettingService consumerGameSettingService;
     @Autowired
@@ -30,10 +34,10 @@ public class ConsumerGameSettingController {
 
     @RequestMapping("/voice")
     public Object voice(@RequestBody Message msg){
+        logger.info("游戏设置", JSONObject.toJSONString(msg));
         Map<String,Object> data = (Map<String, Object>) msg.getData().getT();
         String game = data.get("game").toString();
         String bg = data.get("bg").toString();
-        String token = data.get("token").toString();
         String username = data.get("username").toString();
 
         String redisKey = RedisKeys.CURRENT_USER + username;

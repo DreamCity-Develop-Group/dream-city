@@ -1,6 +1,7 @@
 package com.dream.city.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.dream.city.base.model.CityGlobal;
 import com.dream.city.base.model.Message;
 import com.dream.city.base.model.MessageData;
@@ -49,6 +50,7 @@ public class ConsumerPlayerController {
      */
     @RequestMapping("/getcode")
     public Message getCode(@RequestBody Message msg){
+        logger.info("获取认证码", JSONObject.toJSONString(msg));
         Map<String,Object> map= new HashMap<>();
         Message code = messageService.getCode(msg);
         map.put("code",code.getData().getT());
@@ -66,6 +68,7 @@ public class ConsumerPlayerController {
      */
     @RequestMapping("/get/user")
     public Message getUser(@RequestBody Message msg){
+        logger.info("获取用户", JSONObject.toJSONString(msg));
         Map<String,Object> map = (Map<String, Object>) msg.getData().getT();
         String id = map.get("id").toString();
         Result player = consumerPlayerService.getPlayer(id);
@@ -80,32 +83,13 @@ public class ConsumerPlayerController {
 
 
     /**
-     * 玩家列表
-     * @param msg
-     * @return
-     */
-    @RequestMapping("/get/users")
-    public Message getUsers(@RequestBody Message msg){
-        UserReq userReq = getUserReq(msg);
-        String jsonReq = JSON.toJSONString(userReq);
-        Result players = consumerPlayerService.getPlayers(jsonReq);
-
-        Map<String,Object> t = new HashMap<>();
-        t.put("users",players.getData());
-        MessageData data = new MessageData();
-        data.setT(t);
-        Message message = new Message(msg.getSource(),msg.getTarget(),data);
-        return message;
-    }
-
-
-    /**
      * 忘记密码
      * @param msg
      * @return
      */
     @RequestMapping("/pwforget")
     public Message pwforget(@RequestBody Message msg){
+        logger.info("忘记密码", JSONObject.toJSONString(msg));
         UserReq jsonReq = getUserReq(msg);
         Result result = consumerPlayerService.forgetPwd(jsonReq.getUsername(), jsonReq.getOldpw());
 
@@ -126,6 +110,7 @@ public class ConsumerPlayerController {
      */
     @RequestMapping("/expw")
     public Message resetLoginPwd(@RequestBody Message msg){
+        logger.info("修改密码", JSONObject.toJSONString(msg));
         UserReq jsonReq = getUserReq(msg);
         Result result = consumerPlayerService.resetLoginPwd(jsonReq.getPlayerId(), jsonReq.getOldpw(),jsonReq.getNewpw());
 
@@ -146,6 +131,7 @@ public class ConsumerPlayerController {
      */
     @RequestMapping("/expwshop")
     public Message expwshop(@RequestBody Message msg){
+        logger.info("修改交易密码", JSONObject.toJSONString(msg));
         UserReq jsonReq = getUserReq(msg);
         Result result = consumerPlayerService.resetTraderPwd(jsonReq.getPlayerId(), jsonReq.getOldpw(),jsonReq.getNewpw());
         logger.info("##################### 修改交易密码 ",msg);
@@ -166,6 +152,7 @@ public class ConsumerPlayerController {
      */
     @RequestMapping("/reg")
     public Message reg(@RequestBody Message message){
+        logger.info("用户注册", JSONObject.toJSONString(message));
         Message msg = new Message();
         msg.setSource(message.getSource());
         msg.setTarget(message.getTarget());
@@ -211,6 +198,7 @@ public class ConsumerPlayerController {
      */
     @RequestMapping("/pwlogoin")
     public Message pwLogoin(@RequestBody Message msg){
+        logger.info("密码登录", JSONObject.toJSONString(msg));
         UserReq userReq = getUserReq(msg);
         String jsonReq = JSON.toJSONString(userReq);
         Result result = consumerPlayerService.pwLogoin(jsonReq);
@@ -257,6 +245,7 @@ public class ConsumerPlayerController {
      */
     @RequestMapping("/codelogoin")
     public Message codeLogoin(@RequestBody Message msg){
+        logger.info("验证码登录", JSONObject.toJSONString(msg));
         Message message = new Message();
         message.setSource(msg.getSource());
         message.setTarget(msg.getTarget());
@@ -319,6 +308,7 @@ public class ConsumerPlayerController {
      */
     @RequestMapping("/exit")
     public Message exit(@RequestBody Message msg){
+        logger.info("登出", JSONObject.toJSONString(msg));
         UserReq jsonReq = getUserReq(msg);
         Result result = consumerPlayerService.quit(jsonReq.getPlayerId());
         logger.info("##################### 用户登出 ",msg);

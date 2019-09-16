@@ -1,5 +1,6 @@
 package com.dream.city.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.dream.city.base.model.*;
 import com.dream.city.service.ConsumerFriendsService;
 import com.dream.city.service.ConsumerPlayerService;
@@ -28,6 +29,7 @@ public class ConsumerFriendsController {
 
     @RequestMapping("/addfriend")
     public Message addFriend(@RequestBody Message msg){
+        logger.info("添加好友", JSONObject.toJSONString(msg));
         Map map = getPlayerIdOrFriendId(msg);
         String playerId = map.containsKey("playerId")?(String)map.get("playerId"):null;
         String friendId = map.containsKey("playerId")?(String)map.get("playerId"):null;
@@ -40,6 +42,7 @@ public class ConsumerFriendsController {
 
     @RequestMapping("/agreeAddFriend")
     public Message agreeAddFriend(@RequestBody Message msg){
+        logger.info("通过好友", JSONObject.toJSONString(msg));
         Map map = getPlayerIdOrFriendId(msg);
         String playerId = map.containsKey("playerId")?(String)map.get("playerId"):null;
         String friendId = map.containsKey("playerId")?(String)map.get("playerId"):null;
@@ -52,6 +55,7 @@ public class ConsumerFriendsController {
 
     @RequestMapping("/friendList")
     public Message friendList(@RequestBody Message msg){
+        logger.info("获取好友列表", JSONObject.toJSONString(msg));
         Message message = new Message();
         MessageData data = new MessageData("addfriend","consumer");
         String desc = "获取好友成功";
