@@ -22,7 +22,7 @@ import java.util.Map;
 @RequestMapping("/consumer")
 public class ConsumerGameSettingController {
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private ConsumerGameSettingService consumerGameSettingService;

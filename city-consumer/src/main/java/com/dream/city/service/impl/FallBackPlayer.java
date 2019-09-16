@@ -16,11 +16,6 @@ public class FallBackPlayer implements ConsumerPlayerService {
     }
 
     @Override
-    public Result getPlayers(String jsonReq) {
-        return null;
-    }
-
-    @Override
     public Result reg(String jsonReq) {
         return null;
     }

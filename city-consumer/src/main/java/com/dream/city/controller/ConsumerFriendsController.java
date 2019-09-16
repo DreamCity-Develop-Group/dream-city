@@ -18,7 +18,7 @@ import java.util.Map;
 @RequestMapping("/consumer")
 public class ConsumerFriendsController {
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     ConsumerFriendsService consumerFriendsService;

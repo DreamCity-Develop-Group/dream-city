@@ -16,8 +16,6 @@ public interface ConsumerPlayerService {
     @RequestMapping("/player/get/{playerId}")
     Result getPlayer(@PathVariable("playerId") String playerId);
 
-    @RequestMapping("/player/get/")
-    Result getPlayers(@RequestParam("json") String jsonReq);
 
     /**
      * 用户注册
@@ -27,16 +25,20 @@ public interface ConsumerPlayerService {
     @RequestMapping("/player/reg")
     Result reg(@RequestParam("json") String jsonReq);
 
+
     /**
      * 用户登录
      */
     @RequestMapping("/player/pwlogoin")
     Result pwLogoin(@RequestParam("json") String jsonReq);
+
+
     /**
      * 用户登录
      */
     @RequestMapping("/player/codelogoin")
     Result codeLogoin(@RequestParam("json") String jsonReq);
+
 
     /**
      * 用户退出
@@ -71,6 +73,7 @@ public interface ConsumerPlayerService {
     Result resetTraderPwd(@RequestParam("playerId") String playerId,
                           @RequestParam("oldPwd") String oldPwd,
                           @RequestParam("newPwd")  String newPwd);
+
 
     /**
      *

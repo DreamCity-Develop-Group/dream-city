@@ -1,10 +1,13 @@
 package com.dream.city.player.controller;
 
 
+import com.alibaba.fastjson.JSONObject;
 import com.dream.city.base.model.Page;
 import com.dream.city.player.domain.entity.Friends;
 import com.dream.city.player.service.FriendsService;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -14,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/friends")
 public class FriendsController {
+
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private FriendsService friendsService;
@@ -29,6 +34,7 @@ public class FriendsController {
     @RequestMapping("/addFriend")
     boolean addFriend(@RequestParam("playerId") String playerId,
                       @RequestParam("friendId") String friendId){
+        logger.info("addFriend，playerId：{},friendId:{}",playerId,friendId);
         Friends friend = getFriendFromUsername(playerId,friendId);
         return friendsService.addFriend(friend);
     }
@@ -50,6 +56,7 @@ public class FriendsController {
     @RequestMapping("/agreeAddFriend")
     boolean agreeAddFriend(@RequestParam("playerId") String playerId,
                            @RequestParam("friendId") String friendId){
+        logger.info("agreeAddFriend，playerId：{},friendId:{}",playerId,friendId);
         Friends friend = getFriendFromUsername(playerId,friendId);
         return friendsService.agreeAddFriend(friend);
     }
@@ -61,6 +68,7 @@ public class FriendsController {
      */
     @RequestMapping("/friendList")
     Page friendList(@RequestParam("playerId") String playerId){
+        logger.info("friendList，playerId：{}",playerId);
         if (StringUtils.isBlank(playerId)) {
             return new Page();
         }

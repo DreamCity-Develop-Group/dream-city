@@ -12,6 +12,8 @@ import com.dream.city.player.domain.entity.Player;
 import com.dream.city.player.service.LoginLogServcie;
 import com.dream.city.player.service.PlayerService;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +28,8 @@ import java.util.Map;
 @RestController
 @RequestMapping("/player")
 public class PlayerController {
+
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     PlayerService playerService;
@@ -42,6 +46,7 @@ public class PlayerController {
      */
     @RequestMapping("/reg")
     public Result reg(@RequestParam("json") String jsonReq){
+        logger.info("用户注册，{}",jsonReq);
         Result<JSONObject> result = new Result<>();
         if (StringUtils.isBlank(jsonReq) || (StringUtils.isNotBlank(jsonReq) && "{}".equals(jsonReq))){
             result.setSuccess(Boolean.FALSE);
@@ -105,6 +110,7 @@ public class PlayerController {
      */
     @RequestMapping("/pwlogoin")
     public Result pwLogoin(@RequestParam("json") String jsonReq){
+        logger.info("用户密码登录，{}",jsonReq);
         Map map = JSON.parseObject(jsonReq,Map.class);
         Result result = new Result();
         result.setCode(CityGlobal.ResultCode.fail.getStatus());
@@ -165,6 +171,7 @@ public class PlayerController {
      * @param player
      */
     private void loginToRedis(Player player){
+        logger.info("登录成功保存redis，{}",player);
         String key = RedisKeys.CURRENT_USER + player.getPlayerName();
         if (redisUtils.hasKey(key)){
             redisUtils.del(key);
@@ -183,6 +190,7 @@ public class PlayerController {
      */
     @RequestMapping("/codelogoin")
     public Result codeLogoin(@RequestParam("json") String jsonReq){
+        logger.info("验证码登录，{}",jsonReq);
         Map map = JSON.parseObject(jsonReq,Map.class);
         Result result = new Result();
         result.setCode(CityGlobal.ResultCode.fail.getStatus());
@@ -240,6 +248,7 @@ public class PlayerController {
      */
     @RequestMapping("/quit")
     public Result quit(@RequestParam("playerId")String playerId){
+        logger.info("用户退出，playerId:{}",playerId);
         Result result = new Result(Boolean.TRUE,"退出成功",CityGlobal.ResultCode.success.getStatus());
         // 用户是否存在
         Player player = new Player();
@@ -272,6 +281,7 @@ public class PlayerController {
     @RequestMapping("/forgetPwd")
     public Result forgetPwd(@RequestParam("username")String username,
                                 @RequestParam("oldPwd") String oldPwd){
+        logger.info("忘记密码，userName:{},oldPwd:{}",username,oldPwd);
         return playerService.forgetPwd(username, oldPwd);
     }
 
@@ -286,6 +296,7 @@ public class PlayerController {
     public Result resetLoginPwd(@RequestParam("playerId")String playerId,
                                 @RequestParam("oldPwd") String oldPwd,
                                 @RequestParam("newPwd")  String newPwd){
+        logger.info("重置登录密码，playerId:{},oldPwd:{},newPwd:{}",playerId,oldPwd,newPwd);
         return playerService.resetLoginPwd(playerId, oldPwd,newPwd);
     }
 
@@ -301,6 +312,7 @@ public class PlayerController {
     public Result resetTraderPwd(@RequestParam("playerId")String playerId,
                                  @RequestParam("oldPwd") String oldPwd,
                                  @RequestParam("newPwd")  String newPwd){
+        logger.info("重置交易密码，playerId:{},oldPwd:{},newPwd:{}",playerId,oldPwd,newPwd);
         return playerService.resetTraderPwd(playerId, oldPwd,newPwd);
     }
 
@@ -311,6 +323,7 @@ public class PlayerController {
      */
     @RequestMapping("/get/{playerId}")
     public Result getPlayer(@PathVariable("playerId")String playerId){
+        logger.info("获取玩家，playerId:{}",playerId);
         Player player = playerService.getPlayerById(playerId);
         Result result = null;
         if (player != null){
@@ -324,6 +337,7 @@ public class PlayerController {
     @RequestMapping("/getPlayerByName")
     public Result getPlayerByName(@PathVariable("playerName")String playerName,
                                   @PathVariable("playerNick")String playerNick){
+        logger.info("根据用户名或昵称获取玩家，playerName:{},playerNick:{}",playerName,playerNick);
         Player player = playerService.getPlayerByName(playerName,playerNick);
         Result result = null;
         if (player != null){
@@ -333,26 +347,6 @@ public class PlayerController {
         }
         return result;
     }
-
-    /**
-     * 玩家列表
-     * @param jsonReq
-     * @return
-     */
-    @RequestMapping("/get")
-    public Result getPlayers(@RequestParam("json") String jsonReq){
-        Player player = getPlayerFromJsonReq(jsonReq);
-
-        List<Player> players = playerService.getPlayers(player);
-        Result result = null;
-        if (!CollectionUtils.isEmpty(players)){
-            result = new Result(CityGlobal.ResultCode.success.getStatus(),JSONObject.toJSONString(players));
-        }else {
-            result = new Result(CityGlobal.ResultCode.fail.getStatus(),JSONObject.toJSONString(players));
-        }
-        return result;
-    }
-
 
 
     private Player getPlayerFromJsonReq(String jsonReq){

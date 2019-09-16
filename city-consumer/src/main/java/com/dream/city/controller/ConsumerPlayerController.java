@@ -31,7 +31,7 @@ import java.util.Map;
 @RequestMapping("/consumer")
 public class ConsumerPlayerController {
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private ConsumerPlayerService consumerPlayerService;
