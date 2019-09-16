@@ -10,10 +10,29 @@ Target Server Type    : MYSQL
 Target Server Version : 50562
 File Encoding         : 65001
 
-Date: 2019-09-12 19:46:31
+Date: 2019-09-16 20:00:02
 */
 
 SET FOREIGN_KEY_CHECKS=0;
+
+-- ----------------------------
+-- Table structure for t_file
+-- ----------------------------
+DROP TABLE IF EXISTS `t_file`;
+CREATE TABLE `t_file` (
+  `id` bigint(20) NOT NULL,
+  `file_url` varchar(255) CHARACTER SET utf8 DEFAULT NULL COMMENT '文件访问路径',
+  `file_type` varchar(20) CHARACTER SET utf8 DEFAULT NULL COMMENT '文件类型',
+  `is_valid` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '是否可用的',
+  `from_id` varchar(64) CHARACTER SET utf8 DEFAULT NULL COMMENT '添加人id',
+  `create_time` datetime DEFAULT NULL,
+  `update_time` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ----------------------------
+-- Records of t_file
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for t_game_setting
@@ -33,5 +52,5 @@ CREATE TABLE `t_game_setting` (
 -- ----------------------------
 -- Records of t_game_setting
 -- ----------------------------
-INSERT INTO `t_game_setting` VALUES ('1', '123', 'game', 'false', '1', null, '2019-09-10 09:23:06');
-INSERT INTO `t_game_setting` VALUES ('2', '123', 'bg', 'true', '1', null, null);
+INSERT INTO `t_game_setting` VALUES ('1', '123', 'game', 'true', '1', null, '2019-09-16 08:25:39');
+INSERT INTO `t_game_setting` VALUES ('2', '123', 'bg', 'false', '1', null, '2019-09-16 08:26:33');

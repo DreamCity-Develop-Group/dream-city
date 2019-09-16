@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50562
 File Encoding         : 65001
 
-Date: 2019-09-12 19:46:46
+Date: 2019-09-16 19:59:34
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -42,7 +42,10 @@ INSERT INTO `t_auth_code` VALUES ('8', '950884', '123', null, '2019-09-11 04:42:
 INSERT INTO `t_auth_code` VALUES ('9', '553626', '1231', null, '2019-09-12 07:13:25');
 INSERT INTO `t_auth_code` VALUES ('10', '757543', '1231', null, '2019-09-12 07:13:25');
 
-
+-- ----------------------------
+-- Table structure for t_message
+-- ----------------------------
+DROP TABLE IF EXISTS `t_message`;
 CREATE TABLE `t_message` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `player_id` varchar(64) CHARACTER SET utf8 DEFAULT NULL,
@@ -54,15 +57,6 @@ CREATE TABLE `t_message` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-
-
-
-
-
-
-
-
-
-
-
-
+-- ----------------------------
+-- Records of t_message
+-- ----------------------------

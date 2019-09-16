@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50562
 File Encoding         : 65001
 
-Date: 2019-09-12 19:46:17
+Date: 2019-09-16 19:59:47
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -25,17 +25,19 @@ CREATE TABLE `t_friends` (
   `friend_id` varchar(64) CHARACTER SET utf8 NOT NULL COMMENT '好友id',
   `agree` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '同意添加',
   `invite` varchar(255) CHARACTER SET utf8 DEFAULT NULL COMMENT '邀请码（来自friend_id）',
+  `is_valid` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '是否可用的',
   `create_time` datetime DEFAULT NULL,
   `update_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COMMENT='好友';
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COMMENT='好友';
 
 -- ----------------------------
 -- Records of t_friends
 -- ----------------------------
-INSERT INTO `t_friends` VALUES ('1', '123', '17879502056', '1', null, '2019-09-11 17:04:40', '2019-09-12 09:44:19');
-INSERT INTO `t_friends` VALUES ('2', '123', '17879502056', '0', '123', '2019-09-12 17:21:09', null);
-INSERT INTO `t_friends` VALUES ('3', '123', '1231', '0', null, '2019-09-12 09:57:41', null);
+INSERT INTO `t_friends` VALUES ('1', 'FD826FE2E378445594D23CA84C0C485D', 'FD826FE2E378445594D23CA84C0C485D', '1', null, '0', '2019-09-11 17:04:40', '2019-09-12 09:44:19');
+INSERT INTO `t_friends` VALUES ('2', 'FD826FE2E378445594D23CA84C0C485D', 'FD826FE2E378445594D23CA84C0C485D', '0', '123', '0', '2019-09-12 17:21:09', null);
+INSERT INTO `t_friends` VALUES ('3', 'FD826FE2E378445594D23CA84C0C485D', 'FD826FE2E378445594D23CA84C0C485D', '0', null, '0', '2019-09-12 09:57:41', null);
+INSERT INTO `t_friends` VALUES ('4', '123', '1231', '1', null, '1', '2019-09-16 16:29:23', '2019-09-16 16:32:11');
 
 -- ----------------------------
 -- Table structure for t_likes
@@ -138,6 +140,7 @@ CREATE TABLE `t_player` (
   `player_pass` varchar(20) CHARACTER SET utf8 NOT NULL COMMENT '密码',
   `player_trade_pass` varchar(20) CHARACTER SET utf8 DEFAULT NULL COMMENT '交易密码',
   `player_invite` varchar(255) CHARACTER SET utf8 DEFAULT NULL COMMENT '邀请码',
+  `is_valid` tinyint(1) unsigned DEFAULT '1',
   `create_time` datetime DEFAULT NULL COMMENT ' 创建时间',
   `update_time` datetime DEFAULT NULL COMMENT '修改时间',
   PRIMARY KEY (`id`)
@@ -146,13 +149,13 @@ CREATE TABLE `t_player` (
 -- ----------------------------
 -- Records of t_player
 -- ----------------------------
-INSERT INTO `t_player` VALUES ('99', '55ACB2722E33436F81040D0C8F257BF3', '17879502056', 'sd', '12345678', null, null, '2019-09-11 12:23:10', null);
-INSERT INTO `t_player` VALUES ('100', 'FD826FE2E378445594D23CA84C0C485D', '123', '123', '123', null, '', '2019-09-12 02:37:37', null);
-INSERT INTO `t_player` VALUES ('102', 'A1351FDFF0E344908A6EBBDDAC7D506D', '17856454567', 'qw', '12345678', null, '', '2019-09-12 03:29:52', null);
-INSERT INTO `t_player` VALUES ('103', '758DEB6C0A854D569FF2FC8AC9B422C9', '17856457895', 'qwe', '12345678', null, '', '2019-09-12 03:33:02', null);
-INSERT INTO `t_player` VALUES ('104', '727311B48CB4404EB9CACA6B9B235251', '17845685468', 'wqe', '12345678', null, '', '2019-09-12 03:38:00', null);
-INSERT INTO `t_player` VALUES ('105', '8ABBDDFE576647F88B055214259F1E1B', '17879502059', 'wqe', '12345678', null, '', '2019-09-12 05:05:17', null);
-INSERT INTO `t_player` VALUES ('106', '035510F21E1F45FF87A25AE9C466BEFC', '17879502055', 'joj', '12345678', null, '', '2019-09-12 06:30:04', null);
+INSERT INTO `t_player` VALUES ('99', '55ACB2722E33436F81040D0C8F257BF3', '17879502056', 'sd', '12345678', null, null, '1', '2019-09-11 12:23:10', null);
+INSERT INTO `t_player` VALUES ('100', 'FD826FE2E378445594D23CA84C0C485D', '123', '123', '123', null, '', '1', '2019-09-12 02:37:37', null);
+INSERT INTO `t_player` VALUES ('102', 'A1351FDFF0E344908A6EBBDDAC7D506D', '17856454567', 'qw', '12345678', null, '', '1', '2019-09-12 03:29:52', null);
+INSERT INTO `t_player` VALUES ('103', '758DEB6C0A854D569FF2FC8AC9B422C9', '17856457895', 'qwe', '12345678', null, '', '1', '2019-09-12 03:33:02', null);
+INSERT INTO `t_player` VALUES ('104', '727311B48CB4404EB9CACA6B9B235251', '17845685468', 'wqe', '12345678', null, '', '1', '2019-09-12 03:38:00', null);
+INSERT INTO `t_player` VALUES ('105', '8ABBDDFE576647F88B055214259F1E1B', '17879502059', 'wqe', '12345678', null, '', '1', '2019-09-12 05:05:17', null);
+INSERT INTO `t_player` VALUES ('106', '035510F21E1F45FF87A25AE9C466BEFC', '17879502055', 'joj', '12345678', null, '', '1', '2019-09-12 06:30:04', null);
 
 -- ----------------------------
 -- Table structure for t_player_ext
@@ -166,11 +169,12 @@ CREATE TABLE `t_player_ext` (
   `create_date` datetime DEFAULT NULL,
   `update_date` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户扩展表（玩家）';
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COMMENT='用户扩展表（玩家）';
 
 -- ----------------------------
 -- Records of t_player_ext
 -- ----------------------------
+INSERT INTO `t_player_ext` VALUES ('1', 'FD826FE2E378445594D23CA84C0C485D', 'friendlink', 'imgurl', null, null);
 
 -- ----------------------------
 -- Table structure for t_player_grade
