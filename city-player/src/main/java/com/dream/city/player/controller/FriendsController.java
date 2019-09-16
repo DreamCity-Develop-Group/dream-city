@@ -2,12 +2,14 @@ package com.dream.city.player.controller;
 
 
 import com.dream.city.base.model.Page;
+import com.dream.city.base.model.req.PageReq;
 import com.dream.city.player.domain.entity.Friends;
 import com.dream.city.player.service.FriendsService;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -62,31 +64,25 @@ public class FriendsController {
 
     /**
      * 好友列表
-     * @param playerId
+     * @param pageReq
      * @return
      */
     @RequestMapping("/friendList")
-    Page friendList(@RequestParam("playerId") String playerId){
-        logger.info("friendList，playerId：{}",playerId);
-        if (StringUtils.isBlank(playerId)) {
-            return new Page();
-        }
-        return friendsService.friendList(playerId);
+    Page friendList(@RequestBody PageReq pageReq){
+        logger.info("friendList，pageReq：{}",pageReq);
+        return friendsService.friendList(pageReq);
     }
 
 
     /**
      * 好友申请列表
-     * @param playerId
+     * @param pageReq
      * @return
      */
     @RequestMapping("/applyFriendList")
-    Page applyFriendList(@RequestParam("playerId") String playerId){
-        logger.info("applyFriendList，playerId：{}",playerId);
-        if (StringUtils.isBlank(playerId)) {
-            return new Page();
-        }
-        return friendsService.applyFriendList(playerId);
+    Page applyFriendList(@RequestBody PageReq pageReq){
+        logger.info("applyFriendList，pageReq：{}",pageReq);
+        return friendsService.applyFriendList(pageReq);
     }
 
 
