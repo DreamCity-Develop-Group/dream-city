@@ -1,16 +1,9 @@
 package com.dream.city.player.controller;
 
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.dream.city.base.model.Page;
-import com.dream.city.base.model.req.UserReq;
-import com.dream.city.base.utils.RedisKeys;
-import com.dream.city.base.utils.RedisUtils;
 import com.dream.city.player.domain.entity.Friends;
-import com.dream.city.player.domain.entity.Player;
 import com.dream.city.player.service.FriendsService;
-import com.dream.city.player.service.PlayerService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,46 +17,41 @@ public class FriendsController {
 
     @Autowired
     private FriendsService friendsService;
-    @Autowired
-    private PlayerService playerService;
-    @Autowired
-    private RedisUtils redisUtils;
+
+
 
     /**
      * 添加好友
-     * @param jsonReq
+     * @param playerId
+     * @param friendId
      * @return
      */
     @RequestMapping("/addFriend")
-    boolean addFriend(@RequestParam("json")String jsonReq){
-        JSONObject map = JSON.parseObject(jsonReq, JSONObject.class);
-        String token = (String) map.get("token");
-        String nick = (String) map.get("nick");
-        String username = (String) map.get("username");
-
-        Player player = playerService.getPlayerByName(username, null);
-        // todo
-        String playerId = (String) map.get("playerId");
-        String friendId = (String) map.get("friendId");
-
-
-
-        Friends friend = new Friends();
-        friend.setPlayerId(playerId);
-        friend.setFriendId(friendId);
+    boolean addFriend(@RequestParam("playerId") String playerId,
+                      @RequestParam("friendId") String friendId){
+        Friends friend = getFriendFromUsername(playerId,friendId);
         return friendsService.addFriend(friend);
     }
 
 
+    private Friends getFriendFromUsername(String playerId,String friendId){
+        Friends friend = new Friends();
+        friend.setPlayerId(playerId);
+        friend.setFriendId(friendId);
+        return friend;
+    }
+
     /**
      * 同意添加好友
-     * @param id
+     * @param playerId
+     * @param friendId
      * @return
      */
     @RequestMapping("/agreeAddFriend")
-    boolean agreeAddFriend(@RequestParam("id")Long id){
-        // todo
-        return friendsService.agreeAddFriend(id);
+    boolean agreeAddFriend(@RequestParam("playerId") String playerId,
+                           @RequestParam("friendId") String friendId){
+        Friends friend = getFriendFromUsername(playerId,friendId);
+        return friendsService.agreeAddFriend(friend);
     }
 
     /**
@@ -73,7 +61,6 @@ public class FriendsController {
      */
     @RequestMapping("/friendList")
     Page friendList(@RequestParam("playerId") String playerId){
-        // todo
         if (StringUtils.isBlank(playerId)) {
             return new Page();
         }

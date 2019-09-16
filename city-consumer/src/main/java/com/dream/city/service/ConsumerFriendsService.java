@@ -11,19 +11,23 @@ public interface ConsumerFriendsService {
 
     /**
      * 添加好友
-     * @param jsonReq
+     * @param playerId
+     * @param friendId
      * @return
      */
     @RequestMapping("/friends/addFriend")
-    boolean addFriend(@RequestParam("json")String jsonReq);
+    boolean addFriend(@RequestParam("playerId") String playerId,
+                      @RequestParam("friendId") String friendId);
 
     /**
      * 同意添加好友
-     * @param id
+     * @param playerId
+     * @param friendId
      * @return
      */
     @RequestMapping("/friends/agreeAddFriend")
-    boolean agreeAddFriend(@RequestParam("id")Long id);
+    boolean agreeAddFriend(@RequestParam("playerId") String playerId,
+                           @RequestParam("friendId") String friendId);
 
     /**
      * 好友列表

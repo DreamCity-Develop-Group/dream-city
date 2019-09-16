@@ -3,7 +3,6 @@ package com.dream.city.player.service;
 import com.dream.city.base.model.Page;
 import com.dream.city.player.domain.entity.Friends;
 
-import java.util.List;
 
 public interface FriendsService {
 
@@ -16,10 +15,10 @@ public interface FriendsService {
 
     /**
      * 同意添加好友
-     * @param id
+     * @param friend
      * @return
      */
-    boolean agreeAddFriend(Long id);
+    boolean agreeAddFriend(Friends friend);
 
     /**
      * 好友列表
