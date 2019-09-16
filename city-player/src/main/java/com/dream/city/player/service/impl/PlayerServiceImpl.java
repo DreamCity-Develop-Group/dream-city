@@ -2,6 +2,7 @@ package com.dream.city.player.service.impl;
 
 import com.dream.city.base.model.CityGlobal;
 import com.dream.city.base.model.Result;
+import com.dream.city.base.model.req.PageReq;
 import com.dream.city.base.utils.KeyGenerator;
 import com.dream.city.player.domain.entity.Player;
 import com.dream.city.player.domain.mapper.PlayerMapper;
@@ -119,7 +120,9 @@ public class PlayerServiceImpl implements PlayerService {
 
     @Override
     public Player getPlayer(Player player) {
-        List<Player> players = playerMapper.getPlayers(player);
+        PageReq<Player> pageReq = new PageReq<>();
+        pageReq.setCondition(player);
+        List<Player> players = playerMapper.getPlayers(pageReq);
         if (!CollectionUtils.isEmpty(players)) {
             return players.get(0);
         }
@@ -136,8 +139,8 @@ public class PlayerServiceImpl implements PlayerService {
 
 
     @Override
-    public List<Player> getPlayers(Player player) {
-        return playerMapper.getPlayers(player);
+    public List<Player> getPlayers(PageReq pageReq) {
+        return playerMapper.getPlayers(pageReq);
     }
 
     @Override
@@ -147,7 +150,9 @@ public class PlayerServiceImpl implements PlayerService {
         if (StringUtils.isNotBlank(playerNick)) {
             player.setPlayerNick(playerNick);
         }
-        List<Player> players = playerMapper.getPlayers(player);
+        PageReq<Player> pageReq = new PageReq<>();
+        pageReq.setCondition(player);
+        List<Player> players = playerMapper.getPlayers(pageReq);
         if (CollectionUtils.isEmpty(players)){
             return null;
         }

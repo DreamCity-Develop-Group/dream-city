@@ -21,7 +21,7 @@
   </select>
 
   <!-- 好友列表  -->
-  <select id="friendList" parameterType="com.dream.city.base.model.Page" resultType="java.util.Map">
+  <select id="friendList" parameterType="com.dream.city.base.model.req.PageReq" resultType="java.util.Map">
     select a.id, a.player_id playerId, a.friend_id friendId, a.agree,
        b.friend_name friendName,b.friend_nick friendNick,b.friendlink,b.imgurl FROM
       (select f.id, f.player_id, f.friend_id , f.agree,f.create_time FROM
@@ -47,7 +47,7 @@
   </select>
 
   <!-- 申请列表  -->
-  <select id="applyFriendList" parameterType="com.dream.city.base.model.Page" resultType="java.util.Map">
+  <select id="applyFriendList" parameterType="com.dream.city.base.model.req.PageReq" resultType="java.util.Map">
     select a.id, a.player_id playerId, a.friend_id friendId, a.agree,
      b.friend_name friendName,b.friend_nick friendNick,b.friendlink,b.imgurl FROM
     (select f.id, f.player_id, f.friend_id , f.agree,f.create_time FROM

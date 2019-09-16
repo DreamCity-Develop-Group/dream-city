@@ -1,7 +1,9 @@
 package com.dream.city.service;
 
 import com.dream.city.base.model.Page;
+import com.dream.city.base.model.req.PageReq;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -31,18 +33,18 @@ public interface ConsumerFriendsService {
 
     /**
      * 好友列表
-     * @param playerId
+     * @param pageReq
      * @return
      */
     @RequestMapping("/friends/friendList")
-    Page friendList(@RequestParam("playerId") String playerId);
+    Page friendList(@RequestBody PageReq pageReq);
 
     /**
      * 好友申请列表
-     * @param playerId
+     * @param pageReq
      * @return
      */
     @RequestMapping("/friends/applyFriendList")
-    Page applyFriendList(@RequestParam("playerId") String playerId);
+    Page applyFriendList(@RequestBody PageReq pageReq);
 
 }

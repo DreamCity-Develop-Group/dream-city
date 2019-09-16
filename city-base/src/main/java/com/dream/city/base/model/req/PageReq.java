@@ -1,54 +1,59 @@
-package com.dream.city.base.model;
+package com.dream.city.base.model.req;
 
 import lombok.Data;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 分页类
  */
 @Data
-public class Page<T>{
+public class PageReq<T>{
 
     public static int DEFAULT_START = 1;//默认开始行
-    
+
     public static int DEFAULT_LIMIT = 20;//默认每页显示行数
-    
+
     public static int DEFAULT_PAGE = 1;//默认页
-    
+
     private int start;//开始行
-    
+
     private int pageSize;//每页显示纪录数
-    
+
     private int pageNo;//当前页
-    
+
 	private int totalCount;//总纪录数
-    
-    private Object condition;//查询条件
-    
-	private List<T> result = Collections.emptyList();//查询结果
-    
+
+    private T condition;//查询条件
+
+
     @SuppressWarnings("static-access")
-    public Page()
+    public PageReq()
     {
         this.start = DEFAULT_START;//默认开始行
         this.pageSize = DEFAULT_LIMIT;//默认每页显示行数
         this.pageNo = DEFAULT_PAGE;//默认页
     }
-    
-    public Page(int start,int pageSize)
+
+    public PageReq(int start, int pageSize)
     {
         this.start = start;
         this.pageSize = pageSize;
     }
 
-    public List<T> getResult()
+    public PageReq(Map map)
     {
-        return result;
+        this.start = map.containsKey("start")?(Integer) map.get("start"):DEFAULT_START;
+        this.pageSize = map.containsKey("pageSize")?(Integer) map.get("pageSize"):DEFAULT_LIMIT;
+        this.pageNo = map.containsKey("pageNo")?(Integer) map.get("pageNo"):DEFAULT_PAGE;
+        this.totalCount = map.containsKey("totalCount")?(Integer) map.get("totalCount"):0;
+        this.condition = map.containsKey("condition")?(T) map.get("condition"):null;
     }
-    
+
+
     public int getPageSize() {
 		return pageSize;
 	}
@@ -65,16 +70,12 @@ public class Page<T>{
 		this.pageNo = pageNo;
 	}
 
-	public void setResult(List<T> result)
-    {
-        this.result = result;
-    }
-    
-    public Object getCondition() {
+
+    public T getCondition() {
 		return condition;
 	}
 
-	public void setCondition(Object condition) {
+	public void setCondition(T condition) {
 		this.condition = condition;
 	}
 
@@ -116,9 +117,6 @@ public class Page<T>{
     }
 
     public int getTotalCount() {
-        if (!CollectionUtils.isEmpty(result)){
-            this.totalCount = result.size();
-        }
         return totalCount;
     }
 
@@ -134,7 +132,6 @@ public class Page<T>{
                 ", pageNo=" + pageNo +
                 ", totalCount=" + totalCount +
                 ", condition=" + condition +
-                ", result=" + result +
                 '}';
     }
 

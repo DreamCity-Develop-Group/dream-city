@@ -6,6 +6,7 @@ import com.dream.city.base.model.CityGlobal;
 import com.dream.city.base.model.Message;
 import com.dream.city.base.model.MessageData;
 import com.dream.city.base.model.Result;
+import com.dream.city.base.model.req.PageReq;
 import com.dream.city.base.model.req.UserReq;
 import com.dream.city.base.utils.RedisKeys;
 import com.dream.city.base.utils.RedisUtils;
@@ -83,6 +84,32 @@ public class ConsumerPlayerController {
 
 
     /**
+     * 广场玩家列表
+     * @param msg
+     * @return
+     */
+    @RequestMapping("/squarefriend")
+    public Message squareFriend(@RequestBody Message msg){
+        logger.info("获取用户", JSONObject.toJSONString(msg));
+        UserReq jsonReq = getUserReq(msg);
+        Map<String,String> condition = new HashMap<>();
+        condition.put("playerName",jsonReq.getUsername());
+        condition.put("playerNick",jsonReq.getNick());
+        PageReq<Map> pageReq = new PageReq<>((Map)msg.getData().getT());
+        pageReq.setCondition(condition);
+
+        Result players = consumerPlayerService.getPlayers(pageReq);
+
+        Map<String,Object> t = new HashMap<>();
+        t.put("userList",players.getData());
+        MessageData messageData = new MessageData();
+        messageData.setT(t);
+        Message message = new Message(msg.getSource(),msg.getTarget(),messageData);
+        return message;
+    }
+
+
+    /**
      * 忘记密码
      * @param msg
      * @return
@@ -92,8 +119,6 @@ public class ConsumerPlayerController {
         logger.info("忘记密码", JSONObject.toJSONString(msg));
         UserReq jsonReq = getUserReq(msg);
         Result result = consumerPlayerService.forgetPwd(jsonReq.getUsername(), jsonReq.getOldpw());
-
-        logger.info("##################### 忘记密码 ",msg);
 
         Map<String,String> t = new HashMap<>();
         t.put("desc",result.getMsg());

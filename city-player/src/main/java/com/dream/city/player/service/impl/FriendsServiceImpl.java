@@ -1,6 +1,7 @@
 package com.dream.city.player.service.impl;
 
 import com.dream.city.base.model.Page;
+import com.dream.city.base.model.req.PageReq;
 import com.dream.city.player.domain.entity.Friends;
 import com.dream.city.player.domain.mapper.FriendsMapper;
 import com.dream.city.player.service.FriendsService;
@@ -29,24 +30,24 @@ public class FriendsServiceImpl implements FriendsService {
     }
 
     @Override
-    public Page friendList(String playerId) {
+    public Page friendList(PageReq pageReq) {
         Page<Map> page = new Page<>();
-        page.setCondition(playerId);
+        page.setCondition(pageReq.getCondition());
 
-        Integer count = friendsMapper.friendCount(playerId);
-        List<Map> friendList = friendsMapper.friendList(page);
+        Integer count = friendsMapper.friendCount((String)pageReq.getCondition());
+        List<Map> friendList = friendsMapper.friendList(pageReq);
         page.setResult(friendList);
         page.setTotalCount( count== null?0:count);
         return page;
     }
 
     @Override
-    public Page applyFriendList(String playerId) {
+    public Page applyFriendList(PageReq pageReq) {
         Page<Map> page = new Page<>();
-        page.setCondition(playerId);
+        page.setCondition(pageReq.getCondition());
 
-        Integer count = friendsMapper.applyFriendCount(playerId);
-        List<Map> friendList = friendsMapper.applyFriendList(page);
+        Integer count = friendsMapper.applyFriendCount((String)pageReq.getCondition());
+        List<Map> friendList = friendsMapper.applyFriendList(pageReq);
         page.setResult(friendList);
         page.setTotalCount( count== null?0:count);
         return page;

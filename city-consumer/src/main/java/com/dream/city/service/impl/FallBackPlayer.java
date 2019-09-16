@@ -1,8 +1,8 @@
 package com.dream.city.service.impl;
 
 import com.dream.city.base.model.Result;
+import com.dream.city.base.model.req.PageReq;
 import com.dream.city.service.ConsumerPlayerService;
-import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * @author Wvv
@@ -12,6 +12,11 @@ public class FallBackPlayer implements ConsumerPlayerService {
 
     @Override
     public Result getPlayer(String playerId) {
+        return null;
+    }
+
+    @Override
+    public Result getPlayers(PageReq pageReq) {
         return null;
     }
 

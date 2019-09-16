@@ -2,6 +2,7 @@ package com.dream.city.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.dream.city.base.model.*;
+import com.dream.city.base.model.req.PageReq;
 import com.dream.city.service.ConsumerFriendsService;
 import com.dream.city.service.ConsumerPlayerService;
 import org.slf4j.Logger;
@@ -62,7 +63,10 @@ public class ConsumerFriendsController {
         try {
             Map map = getPlayerIdOrFriendId(msg);
             String playerId = map.containsKey("playerId")?(String)map.get("playerId"):null;
-            Page page = consumerFriendsService.friendList(playerId);
+            PageReq<String> pageReq = new PageReq<>((Map)msg.getData().getT());
+            pageReq.setCondition(playerId);
+
+            Page page = consumerFriendsService.friendList(pageReq);
             data.setT(page);
         }catch (Exception e){
             desc = "获取好友失败";
@@ -83,7 +87,10 @@ public class ConsumerFriendsController {
         try {
             Map map = getPlayerIdOrFriendId(msg);
             String playerId = map.containsKey("playerId")?(String)map.get("playerId"):null;
-            Page page = consumerFriendsService.applyFriendList(playerId);
+            PageReq<String> pageReq = new PageReq<>((Map)msg.getData().getT());
+            pageReq.setCondition(playerId);
+
+            Page page = consumerFriendsService.applyFriendList(pageReq);
             data.setT(page);
         }catch (Exception e){
             desc = "获取好友申请列表失败";

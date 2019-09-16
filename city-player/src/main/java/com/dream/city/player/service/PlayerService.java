@@ -1,6 +1,7 @@
 package com.dream.city.player.service;
 
 import com.dream.city.base.model.Result;
+import com.dream.city.base.model.req.PageReq;
 import com.dream.city.player.domain.entity.Player;
 import org.springframework.stereotype.Repository;
 
@@ -42,10 +43,10 @@ public interface PlayerService {
 
     /**
      * 玩家列表
-     * @param player
+     * @param pageReq
      * @return
      */
-    List<Player> getPlayers(Player player);
+    List<Player> getPlayers(PageReq pageReq);
 
     Player getPlayerByName(String username,String playerNick);
 

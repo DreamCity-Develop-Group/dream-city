@@ -2,6 +2,7 @@ package com.dream.city.player.domain.mapper;
 
 
 import com.dream.city.base.model.Page;
+import com.dream.city.base.model.req.PageReq;
 import com.dream.city.player.domain.entity.Friends;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -32,7 +33,7 @@ public interface FriendsMapper {
      * @param page
      * @return
      */
-    List<Map> friendList(Page<Map> page);
+    List<Map> friendList(PageReq page);
     Integer friendCount(String playerId);
 
 
@@ -41,6 +42,6 @@ public interface FriendsMapper {
      * @param page
      * @return
      */
-    List<Map> applyFriendList(Page<Map> page);
+    List<Map> applyFriendList(PageReq page);
     Integer applyFriendCount(String playerId);
 }

@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.dream.city.base.model.CityGlobal;
 import com.dream.city.base.model.Result;
+import com.dream.city.base.model.req.PageReq;
 import com.dream.city.base.model.req.UserReq;
 import com.dream.city.base.utils.RedisKeys;
 import com.dream.city.base.utils.RedisUtils;
@@ -20,6 +21,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+
+import static sun.audio.AudioPlayer.player;
 
 /**
  * 玩家
@@ -45,7 +48,7 @@ public class PlayerController {
      * @return
      */
     @RequestMapping("/reg")
-    public Result reg(@RequestParam("json") String jsonReq){
+    public Result reg(@RequestBody String jsonReq){
         logger.info("用户注册，{}",jsonReq);
         Result<JSONObject> result = new Result<>();
         if (StringUtils.isBlank(jsonReq) || (StringUtils.isNotBlank(jsonReq) && "{}".equals(jsonReq))){
@@ -109,7 +112,7 @@ public class PlayerController {
      * @return
      */
     @RequestMapping("/pwlogoin")
-    public Result pwLogoin(@RequestParam("json") String jsonReq){
+    public Result pwLogoin(@RequestBody String jsonReq){
         logger.info("用户密码登录，{}",jsonReq);
         Map map = JSON.parseObject(jsonReq,Map.class);
         Result result = new Result();
@@ -189,7 +192,7 @@ public class PlayerController {
      * @return
      */
     @RequestMapping("/codelogoin")
-    public Result codeLogoin(@RequestParam("json") String jsonReq){
+    public Result codeLogoin(@RequestBody String jsonReq){
         logger.info("验证码登录，{}",jsonReq);
         Map map = JSON.parseObject(jsonReq,Map.class);
         Result result = new Result();
@@ -333,6 +336,29 @@ public class PlayerController {
         }
         return result;
     }
+
+
+    /**
+     * 广场玩家列表
+     * @param pageReq
+     * @return
+     */
+    @RequestMapping("/getPlayers")
+    public Result getPlayers(@RequestBody PageReq pageReq){
+        logger.info("获取广场玩家列表，{}",pageReq);
+        Result result = null;
+        List<Player> players = null;
+
+        try {
+            players = playerService.getPlayers(pageReq);
+            result = new Result(CityGlobal.ResultCode.success.getStatus(),players);
+        }catch (Exception e){
+            result = new Result(CityGlobal.ResultCode.fail.getStatus(),null);
+        }
+
+        return result;
+    }
+
 
     @RequestMapping("/getPlayerByName")
     public Result getPlayerByName(@PathVariable("playerName")String playerName,

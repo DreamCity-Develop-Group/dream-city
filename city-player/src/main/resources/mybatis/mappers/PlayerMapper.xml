@@ -26,23 +26,24 @@
   </select>
 
 
-  <select id="getPlayers" parameterType="com.dream.city.player.domain.entity.Player" resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List" />
-    from t_player
+  <select id="getPlayers" parameterType="com.dream.city.base.model.req.PageReq" resultMap="BaseResultMap">
+    SELECT p.player_id playerId,p.player_name playerName,p.player_nick playerNick,p.create_time,
+        e.friendlink playerLink,e.imgurl
+    FROM t_player p,t_player_ext e WHERE p.player_id=e.player_id
     <where>
         1=1
-      <if test="playerId != null and playerId != ''">
-        and player_id = #{playerId,jdbcType=VARCHAR}
+      <if test="condition.playerId != null and condition.playerId != ''">
+        and p.player_id = #{condition.playerId,jdbcType=VARCHAR}
       </if>
-      <if test="playerName != null and playerName != ''">
-        and player_name = #{playerName,jdbcType=VARCHAR}
+      <if test="condition.playerName != null and condition.playerName != ''">
+        and p.player_name = #{condition.playerName,jdbcType=VARCHAR}
       </if>
-      <if test="playerNick != null and playerNick != ''">
-        and player_nick = #{playerNick,jdbcType=VARCHAR}
+      <if test="condition.playerNick != null and condition.playerNick != ''">
+        and p.player_nick = #{condition.playerNick,jdbcType=VARCHAR}
       </if>
 
     </where>
+    ORDER BY p.create_time DESC limit ${start},${pageSize}
   </select>
 
   <delete id="deleteByPlayerId" parameterType="java.lang.Long">

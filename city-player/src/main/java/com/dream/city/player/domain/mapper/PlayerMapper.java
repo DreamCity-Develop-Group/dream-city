@@ -1,9 +1,9 @@
 package com.dream.city.player.domain.mapper;
 
 
+import com.dream.city.base.model.req.PageReq;
 import com.dream.city.player.domain.entity.Player;
 import org.apache.ibatis.annotations.Mapper;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
@@ -16,7 +16,12 @@ public interface PlayerMapper {
 
     Player getPlayerById(String playerId);
 
-    List<Player> getPlayers(Player player);
+    /**
+     * 广场玩家列表
+     * @param pageReq
+     * @return
+     */
+    List<Player> getPlayers(PageReq pageReq);
 
     int updateByPlayerId(Player record);
 
