@@ -147,8 +147,8 @@
                     <target>1.8</target>
                     <encoding>UTF-8</encoding>
                     <testExcludes>
-                        <exclude>com/example/demo/**Test*</exclude>
-                        <exclude>com/example/demo/**/**Test*</exclude>
+                        <exclude>com/dream/city/**Test*</exclude>
+                        <exclude>com/dream/city/**/**Test*</exclude>
                     </testExcludes>
                 </configuration>
             </plugin>

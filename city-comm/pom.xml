@@ -20,6 +20,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <spring-boot-admin.version>2.1.5</spring-boot-admin.version>
         <spring-cloud.version>Greenwich.SR2</spring-cloud.version>
+        <skipTests>true</skipTests>
     </properties>
 
     <dependencies>
@@ -119,20 +120,6 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.0</version>
-                <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
-                    <encoding>UTF-8</encoding>
-                    <testExcludes>
-                        <exclude>com/dream/city/**Test*</exclude>
-                        <exclude>com/dream/city/*Tests</exclude>
-                    </testExcludes>
-                </configuration>
-            </plugin>
 
         </plugins>
     </build>

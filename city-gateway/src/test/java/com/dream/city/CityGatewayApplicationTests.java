@@ -31,7 +31,7 @@ public class CityGatewayApplicationTests {
     public void contextLoads() {
     }
 
-    @Test
+    /*@Test
     public void testSockJsJava() throws Exception {
         WebSocketClient webSocketClient = new StandardWebSocketClient();
         List<Transport> transports = new ArrayList<>();
@@ -116,6 +116,6 @@ public class CityGatewayApplicationTests {
             subscribeTopic("/topic/messages", session);
             sendJsonMessage(session);
         }
-    }
+    }*/
 
 }
