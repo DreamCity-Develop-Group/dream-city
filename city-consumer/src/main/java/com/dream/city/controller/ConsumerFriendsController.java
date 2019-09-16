@@ -54,7 +54,6 @@ public class ConsumerFriendsController {
     public Message friendList(@RequestBody Message msg){
         Message message = new Message();
         MessageData data = new MessageData("addfriend","consumer");
-        String t = CityGlobal.ResultCode.success.name();
         String desc = "获取好友成功";
         try {
             Map map = getPlayerIdOrFriendId(msg);
@@ -62,7 +61,6 @@ public class ConsumerFriendsController {
             Page page = consumerFriendsService.friendList(playerId);
             data.setT(page);
         }catch (Exception e){
-            t = CityGlobal.ResultCode.fail.name();
             desc = "获取好友失败";
             logger.error(desc,e);
         }
