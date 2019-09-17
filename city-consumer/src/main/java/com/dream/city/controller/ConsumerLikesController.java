@@ -42,7 +42,7 @@ public class ConsumerLikesController {
      */
     @RequestMapping("/likefriend")
     public Message playerLike(@RequestBody Message msg){
-        logger.info("添加好友", JSONObject.toJSONString(msg));
+        logger.info("点赞", JSONObject.toJSONString(msg));
         Message message = new Message(msg.getSource(), msg.getTarget(),
                 new MessageData<Integer>(msg.getData().getType(),msg.getData().getModel()));
 
