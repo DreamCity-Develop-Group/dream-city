@@ -1,6 +1,7 @@
 package com.dream.city.controller;
 
 import com.dream.city.base.model.Result;
+import com.dream.city.base.utils.RedisUtils;
 import com.dream.city.service.GameSettingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
+ * @author Wvv
  * 游戏设置
  */
 @RestController
@@ -21,6 +23,9 @@ public class GameSettingController {
 
     @Autowired
     private GameSettingService settingService;
+
+    @Autowired
+    RedisUtils redisUtils;
 
 
     /**

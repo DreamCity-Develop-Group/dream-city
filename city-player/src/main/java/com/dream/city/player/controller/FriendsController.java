@@ -6,7 +6,6 @@ import com.dream.city.base.model.req.PageReq;
 import com.dream.city.base.utils.RedisUtils;
 import com.dream.city.player.domain.entity.Friends;
 import com.dream.city.player.service.FriendsService;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +23,7 @@ public class FriendsController {
 
     @Autowired
     private FriendsService friendsService;
+
     @Autowired
     RedisUtils redisUtils;
 
