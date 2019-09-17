@@ -13,15 +13,15 @@ import javax.annotation.Resource;
  * @author Wvv
  * Redis Config
  */
-@Configuration
+/*@Configuration
 public class RedisConfig {
     @Resource
     private JedisConnectionFactory jedisConnecFactory;
 
-    /**
+    *//**
      * @author Wvv 描述：需要手动注册RedisMessageListenerContainer加入IOC容器
      * @return
-     */
+     *//*
     @Bean
     public RedisMessageListenerContainer redisMessageListenerContainer(RedisConnectionFactory connectionFactory) {
 
@@ -32,4 +32,4 @@ public class RedisConfig {
         return container;
 
     }
-}
+}*/

@@ -1,6 +1,5 @@
-package com.dream.city.config;
+package com.dream.city.base.config;
 
-import com.dream.city.base.utils.RedisUtils;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,6 +15,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.cache.RedisCacheWriter;
+import org.springframework.data.redis.connection.RedisConfiguration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisClientConfiguration;
@@ -37,7 +37,7 @@ import java.net.UnknownHostException;
  */
 @Configuration
 @EnableCaching
-public class RedisCacheConfig extends CachingConfigurerSupport {
+public class RedisConfig extends CachingConfigurerSupport {
 
     @Value("${spring.redis.host:127.0.0.1}")
     private String host;
@@ -46,7 +46,7 @@ public class RedisCacheConfig extends CachingConfigurerSupport {
     @Value("${spring.redis.password:123456}")
     private String password;
     @Value("${spring.redis.database:0}")
-    private String database;
+    private int database;
     @Value("${spring.redis.jedis.pool.max-active:300}")
     private int maxActive;
     @Value("${spring.redis.jedis.pool.max-wait:-1}")
@@ -61,8 +61,8 @@ public class RedisCacheConfig extends CachingConfigurerSupport {
     @Bean
     public CacheManager cacheManager(RedisConnectionFactory redisConnectionFactory) {
         RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig();
-                //.entryTtl(Duration.ofHours(1))       // 设置缓存有效期一小时
-                //.disableCachingNullValues();         // 不缓存空值
+        //.entryTtl(Duration.ofHours(1))       // 设置缓存有效期一小时
+        //.disableCachingNullValues();         // 不缓存空值
         return RedisCacheManager.builder(RedisCacheWriter.nonLockingRedisCacheWriter(redisConnectionFactory))
                 .cacheDefaults(redisCacheConfiguration).build();
     }
@@ -96,6 +96,7 @@ public class RedisCacheConfig extends CachingConfigurerSupport {
         redisStandaloneConfiguration.setHostName(host);
         redisStandaloneConfiguration.setPort(port);
         redisStandaloneConfiguration.setPassword(password);
+        redisStandaloneConfiguration.setDatabase(database);
 
         //获得默认的连接池构造
         //这里需要注意的是，edisConnectionFactoryJ对于Standalone模式的没有（RedisStandaloneConfiguration，JedisPoolConfig）的构造函数，对此
@@ -126,6 +127,7 @@ public class RedisCacheConfig extends CachingConfigurerSupport {
         Jackson2JsonRedisSerializer jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer(Object.class);
         jackson2JsonRedisSerializer.setObjectMapper(om);
         RedisSerializer<String> redisSerializer = new StringRedisSerializer();
+
         template.setHashKeySerializer(redisSerializer);
         template.setHashValueSerializer(jackson2JsonRedisSerializer);
         template.setKeySerializer(redisSerializer);

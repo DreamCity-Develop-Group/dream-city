@@ -1,0 +1,22 @@
+server:
+  port: 7010
+spring:
+  application:
+    name: city-worker
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: mysql://localhost:3306/city_quartz?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true
+    username: dreamcity
+    password: Root@123
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+logging:
+  level:
+    root: info
+    org.hibernate: info
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    org.hibernate.type.descriptor.sql.BasicExtractor: TRACE
+    com.springms: DEBUG
