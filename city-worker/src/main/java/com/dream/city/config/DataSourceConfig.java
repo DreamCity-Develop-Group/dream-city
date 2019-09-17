@@ -5,13 +5,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 
 import javax.annotation.Resource;
+import javax.sql.DataSource;
 
 @Configuration
 public class DataSourceConfig {
 
     @Resource
     Environment environment;
-
-    @Bean
-    public DataSource
 }

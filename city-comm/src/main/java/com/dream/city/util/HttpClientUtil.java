@@ -1,10 +1,8 @@
 package com.dream.city.util;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import com.dream.city.domain.MessageData;
+import com.alibaba.fastjson.JSON;
+import com.dream.city.base.model.Message;
 import com.dream.city.server.WebSocketServer;
-import com.dream.city.domain.Message;
 import com.dream.city.service.HttpClientService;
 import com.dream.city.service.impl.HttpClientServiceImpl;
 import org.apache.http.HttpEntity;
@@ -16,16 +14,12 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
+import org.springframework.util.StringUtils;
+
+import com.dream.city.base.model.MessageData;
 
 import java.io.IOException;
 import java.util.Map;
-
-import com.alibaba.fastjson.JSON;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 /**
  * @author Wvv

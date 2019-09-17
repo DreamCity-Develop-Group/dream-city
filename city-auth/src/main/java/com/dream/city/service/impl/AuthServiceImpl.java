@@ -5,6 +5,7 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.dream.city.base.utils.RedisUtils;
 import com.dream.city.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,6 +29,9 @@ public class AuthServiceImpl implements AuthService {
 
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
+
+    @Autowired
+    RedisUtils redisUtils;
 
     /**
      * token 过期时间: 30分钟
@@ -62,8 +66,10 @@ public class AuthServiceImpl implements AuthService {
                     .sign(Algorithm.HMAC256(SECRET));
 
             //设置过期时间
-            redisTemplate.opsForValue().set("token_"+username,token);
-            redisTemplate.expire("token_"+username,30, TimeUnit.MINUTES);
+            //redisTemplate.opsForValue().set("token_"+username,token);
+            redisUtils.set("token_"+username,token);
+            //redisTemplate.expire("token_"+username,30, TimeUnit.MINUTES);
+            redisUtils.expire("token_"+username,30,TimeUnit.MINUTES);
 
             return token;
         } catch (IllegalArgumentException | UnsupportedEncodingException e) {

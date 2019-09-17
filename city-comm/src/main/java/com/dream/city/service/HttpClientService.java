@@ -1,6 +1,6 @@
 package com.dream.city.service;
 
-import com.dream.city.domain.Message;
+import com.dream.city.base.model.Message;
 
 /**
  * @author Wvv

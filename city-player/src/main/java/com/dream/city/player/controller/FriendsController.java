@@ -3,6 +3,7 @@ package com.dream.city.player.controller;
 
 import com.dream.city.base.model.Page;
 import com.dream.city.base.model.req.PageReq;
+import com.dream.city.base.utils.RedisUtils;
 import com.dream.city.player.domain.entity.Friends;
 import com.dream.city.player.service.FriendsService;
 import org.apache.commons.lang.StringUtils;
@@ -23,6 +24,8 @@ public class FriendsController {
 
     @Autowired
     private FriendsService friendsService;
+    @Autowired
+    RedisUtils redisUtils;
 
 
 

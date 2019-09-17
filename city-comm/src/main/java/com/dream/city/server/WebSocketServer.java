@@ -1,19 +1,20 @@
 package com.dream.city.server;
 
-import com.dream.city.domain.ApiSendObject;
-import com.dream.city.domain.Message;
-import com.dream.city.domain.MessageData;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.dream.city.base.model.Message;
+import com.dream.city.base.model.MessageData;
 import com.dream.city.service.HttpClientService;
 import com.dream.city.util.HttpClientUtil;
 import com.dream.city.util.SpringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.http.client.utils.HttpClientUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import javax.websocket.*;
 import javax.websocket.server.PathParam;
@@ -24,11 +25,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArraySet;
-
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import org.springframework.util.StringUtils;
 
 
 /**
@@ -194,7 +190,6 @@ public class WebSocketServer {
                     msg.setData(dataMsg);
 
                     String msgRet = JSON.toJSON(msg).toString();
-
 
                     sendMessage(msgRet);
                     return;

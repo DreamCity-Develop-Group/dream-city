@@ -2,7 +2,7 @@ package com.dream.city.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.dream.city.config.GateWayConfig;
-import com.dream.city.domain.Message;
+import com.dream.city.base.model.Message;
 import com.dream.city.server.Prop;
 import com.dream.city.server.WebSocketServer;
 import com.dream.city.service.HttpClientService;
