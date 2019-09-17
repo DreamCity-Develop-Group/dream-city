@@ -1,6 +1,8 @@
 package com.dream.city.domain;
 
+import com.dream.city.base.model.Message;
 import lombok.Data;
+
 
 /**
  * @author Wvv

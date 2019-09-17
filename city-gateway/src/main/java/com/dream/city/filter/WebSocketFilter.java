@@ -1,5 +1,6 @@
 package com.dream.city.filter;
 
+import com.dream.city.base.utils.RedisUtils;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
 import com.netflix.zuul.exception.ZuulException;
@@ -22,6 +23,8 @@ import java.util.HashSet;
 public class WebSocketFilter extends ZuulFilter {
     @Autowired
     RedisTemplate redisTemplate;
+    @Autowired
+    RedisUtils redisUtils;
 
 
     @Override
@@ -69,7 +72,8 @@ public class WebSocketFilter extends ZuulFilter {
             return null;
         }else{//"token_"+username
             String username = request.getHeader("username");
-            Object token = redisTemplate.opsForValue().get("token_"+username);
+            //Object token = redisTemplate.opsForValue().get("token_"+username);
+            Object token =  redisUtils.get("token_"+username);
 
             if (null != token && String.valueOf(token).equals(accessToken)){
                 log.info("Access token is Ok! ");

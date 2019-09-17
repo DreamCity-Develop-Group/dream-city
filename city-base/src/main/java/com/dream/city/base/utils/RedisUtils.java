@@ -2,14 +2,11 @@ package com.dream.city.base.utils;
 
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.*;
-import org.springframework.data.redis.support.atomic.RedisAtomicLong;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
-import redis.clients.jedis.Jedis;
 
 import java.nio.charset.Charset;
 import java.util.List;
@@ -37,8 +34,8 @@ public class RedisUtils {
     @Autowired
     private StringRedisTemplate strRedisTemplate;
 
-    @Autowired
-    private Jedis jedis;
+    //@Autowired
+    //private Jedis jedis;
 
 
 
@@ -375,7 +372,8 @@ public class RedisUtils {
 
     public boolean lpush(String key, JSONObject value) {
         try {
-            jedis.lpush(key, value.toString());
+            //jedis.lpush(key, value.toString());
+            redisTemplate.opsForList().leftPush(key,value.toString());
             return true;
         } catch (Exception e) {
             e.printStackTrace();

@@ -25,7 +25,7 @@ public class SubscribeListener implements MessageListener {
     @Override
     public void onMessage(Message message, byte[] pattern) {
         String msg = new String(message.getBody());
-        com.dream.city.domain.Message _msg = JsonUtil.parseJsonToObj(msg, com.dream.city.domain.Message.class);
+        com.dream.city.base.model.Message _msg = JsonUtil.parseJsonToObj(msg, com.dream.city.base.model.Message.class);
         System.out.println(new String(pattern) + "主题发布：" + msg);
         if(null!=session){
             try {

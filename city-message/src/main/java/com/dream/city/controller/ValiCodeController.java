@@ -104,7 +104,8 @@ public class ValiCodeController {
             logger.info("############################## getCode: ",code);
 
             try {
-                redisUtils.set(RedisKeys.REDIS_KEY_VALIDCODE+message.getSource(),code);
+                //保存10分钟
+                redisUtils.set(RedisKeys.REDIS_KEY_VALIDCODE+message.getSource(),code,600);
             }catch (Exception e){
                 logger.error("getCode Exception !",e);
             }

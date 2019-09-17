@@ -1,6 +1,5 @@
 package com.dream.city.base.config;
 
-import com.dream.city.base.utils.RedisUtils;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,7 +15,6 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.cache.RedisCacheWriter;
-import org.springframework.data.redis.connection.RedisConfiguration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisClientConfiguration;
@@ -56,6 +54,8 @@ public class RedisConfig extends CachingConfigurerSupport {
     private int maxIdle;
     @Value("${spring.redis.jedis.pool.min-idle:1}")
     private int minIdle;
+
+
 
 
     @Primary
@@ -232,11 +232,11 @@ public class RedisConfig extends CachingConfigurerSupport {
         return new Jedis(host,port);
     }
 
-
+/*
     @Bean
     public RedisUtils redisUtils(){
         return new RedisUtils();
     }
-
+*/
 
 }
