@@ -34,7 +34,7 @@ public interface FriendsMapper {
      * @return
      */
     List<Map> friendList(PageReq page);
-    Integer friendCount(String playerId);
+    Integer friendCount(PageReq page);
 
 
     /**
@@ -43,5 +43,5 @@ public interface FriendsMapper {
      * @return
      */
     List<Map> applyFriendList(PageReq page);
-    Integer applyFriendCount(String playerId);
+    Integer applyFriendCount(PageReq page);
 }

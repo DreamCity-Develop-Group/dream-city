@@ -357,10 +357,12 @@ public class PlayerController {
     }
 
 
-    @RequestMapping("/getPlayerByName")
-    public Result getPlayerByName(@PathVariable("playerName")String playerName,
-                                  @PathVariable("playerNick")String playerNick){
-        logger.info("根据用户名或昵称获取玩家，playerName:{},playerNick:{}",playerName,playerNick);
+    @RequestMapping(value = "/getPlayerByName",method = RequestMethod.POST,produces="application/json; utf-8")
+    public Result getPlayerByName(@RequestBody String jsonReq){
+        logger.info("根据用户名或昵称获取玩家，{}",jsonReq);
+        JSONObject jsonObject = JSON.parseObject(jsonReq);
+        String playerName = jsonObject.getString("playerName");
+        String playerNick = jsonObject.getString("playerNick");
         Player player = playerService.getPlayerByName(playerName,playerNick);
         Result result = null;
         if (player != null){

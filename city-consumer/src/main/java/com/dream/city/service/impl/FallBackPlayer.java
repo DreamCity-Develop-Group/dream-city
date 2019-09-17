@@ -57,7 +57,7 @@ public class FallBackPlayer implements ConsumerPlayerService {
     }
 
     @Override
-    public Result getPlayerByName(String playerName, String playerNick) {
+    public Result getPlayerByName(String jsonReq) {
         return null;
     }
 

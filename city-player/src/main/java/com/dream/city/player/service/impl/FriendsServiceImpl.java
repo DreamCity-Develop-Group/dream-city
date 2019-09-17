@@ -17,6 +17,7 @@ public class FriendsServiceImpl implements FriendsService {
     @Autowired
     private FriendsMapper friendsMapper;
 
+
     @Override
     public boolean addFriend(Friends friend) {
         friend.setAgree(0);
@@ -34,7 +35,7 @@ public class FriendsServiceImpl implements FriendsService {
         Page<Map> page = new Page<>();
         page.setCondition(pageReq.getCondition());
 
-        Integer count = friendsMapper.friendCount((String)pageReq.getCondition());
+        Integer count = friendsMapper.friendCount(pageReq);
         List<Map> friendList = friendsMapper.friendList(pageReq);
         page.setResult(friendList);
         page.setTotalCount( count== null?0:count);
@@ -46,7 +47,7 @@ public class FriendsServiceImpl implements FriendsService {
         Page<Map> page = new Page<>();
         page.setCondition(pageReq.getCondition());
 
-        Integer count = friendsMapper.applyFriendCount((String)pageReq.getCondition());
+        Integer count = friendsMapper.applyFriendCount(pageReq);
         List<Map> friendList = friendsMapper.applyFriendList(pageReq);
         page.setResult(friendList);
         page.setTotalCount( count== null?0:count);

@@ -1,10 +1,12 @@
 package com.dream.city.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.dream.city.base.model.*;
 import com.dream.city.base.model.req.PageReq;
 import com.dream.city.service.ConsumerFriendsService;
 import com.dream.city.service.ConsumerPlayerService;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,10 +63,9 @@ public class ConsumerFriendsController {
         MessageData data = new MessageData("addfriend","consumer");
         String desc = "获取好友成功";
         try {
-            Map map = getPlayerIdOrFriendId(msg);
-            String playerId = map.containsKey("playerId")?(String)map.get("playerId"):null;
-            PageReq<String> pageReq = new PageReq<>((Map)msg.getData().getT());
-            pageReq.setCondition(playerId);
+            Map condition = getCheckCondition(msg);
+            PageReq<Map> pageReq = new PageReq<>((Map)msg.getData().getT());
+            pageReq.setCondition(condition);
 
             Page page = consumerFriendsService.friendList(pageReq);
             data.setT(page);
@@ -85,10 +86,9 @@ public class ConsumerFriendsController {
         MessageData data = new MessageData("applyfriend","consumer");
         String desc = "获取好友申请列表成功";
         try {
-            Map map = getPlayerIdOrFriendId(msg);
-            String playerId = map.containsKey("playerId")?(String)map.get("playerId"):null;
-            PageReq<String> pageReq = new PageReq<>((Map)msg.getData().getT());
-            pageReq.setCondition(playerId);
+            Map condition = getCheckCondition(msg);
+            PageReq<Map> pageReq = new PageReq<>((Map)msg.getData().getT());
+            pageReq.setCondition(condition);
 
             Page page = consumerFriendsService.applyFriendList(pageReq);
             data.setT(page);
@@ -124,6 +124,27 @@ public class ConsumerFriendsController {
         return message;
     }
 
+
+    /**
+     *
+     * @param msg
+     * @return
+     */
+    private Map getCheckCondition(Message msg){
+        Map map = (Map)msg.getData().getT();
+        String username = map.containsKey("username")?(String) map.get("username"):null;
+        if (StringUtils.isBlank(username)){
+            username = map.containsKey("playerName")?(String) map.get("playerName"):null;
+        }
+        String nick = map.containsKey("nick")?(String) map.get("nick"):null;
+
+        Map<String,String> resultMap = new HashMap<>();
+        resultMap.put("username",username);
+        resultMap.put("nick",nick);
+        return resultMap;
+    }
+
+
     /**
      * 从入参中获取playerId、friendId
      * @param msg
@@ -132,16 +153,28 @@ public class ConsumerFriendsController {
     private Map getPlayerIdOrFriendId(Message msg){
         Map map = (Map)msg.getData().getT();
 
-        String playerName = (String) map.get("username");
-        Result player = consumerPlayerService.getPlayerByName(playerName, null);
-        Map playerMap = (Map)player.getData();
-        String playerId = playerMap.containsKey("playerId")?(String)playerMap.get("playerId"):null;
+        String playerName = map.containsKey("playerName")?(String) map.get("playerName"):null;
+        if (StringUtils.isBlank(playerName)){
+            playerName = map.containsKey("username")?(String) map.get("username"):null;
+        }
+        String playerId = map.containsKey("playerId")?(String) map.get("playerId"):null;
+        if (StringUtils.isNotBlank(playerName)){
+            JSONObject playerNamejsonObject = new JSONObject();
+            playerNamejsonObject.put("playerName",playerName);
+            Result<String> player = consumerPlayerService.getPlayerByName(playerNamejsonObject.toJSONString());
+            Map<String,Object> playerMap = JSON.parseObject(player.getData(),Map.class);
+            playerId = playerMap.containsKey("playerId")?(String)playerMap.get("playerId"):null;
+        }
 
-        String nick = (String) map.get("nick");
-        Result friend = consumerPlayerService.getPlayerByName(null, nick);
-        Map friendMap = (Map)friend.getData();
-        String friendId = friendMap.containsKey("playerId")?(String)friendMap.get("playerId"):null;
-
+        String nick = map.containsKey("nick")?(String) map.get("nick"):null;
+        String friendId = map.containsKey("friendId")?(String) map.get("friendId"):null;
+        if (StringUtils.isNotBlank(nick)){
+            JSONObject nickjsonObject = new JSONObject();
+            nickjsonObject.put("playerNick",nick);
+            Result<String> friend = consumerPlayerService.getPlayerByName(nickjsonObject.toJSONString());
+            Map<String,Object> friendMap = JSON.parseObject(friend.getData(),Map.class);
+            friendId = friendMap.containsKey("playerId")?(String)friendMap.get("playerId"):null;
+        }
         Map<String,String> resultMap = new HashMap<>();
         resultMap.put("playerId",playerId);
         resultMap.put("friendId",friendId);

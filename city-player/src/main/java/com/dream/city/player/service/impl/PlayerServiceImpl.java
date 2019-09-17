@@ -81,7 +81,9 @@ public class PlayerServiceImpl implements PlayerService {
     }
 
     private Result changePwdVelid(String playerId, String oldPwd){
-        Player playerExit = playerMapper.getPlayerById(playerId);
+        Player player = new Player();
+        player.setPlayerId(playerId);
+        Player playerExit = playerMapper.getPlayerById(player);
 
         // 用户不存在
         if(playerExit == null){
@@ -120,21 +122,17 @@ public class PlayerServiceImpl implements PlayerService {
 
     @Override
     public Player getPlayer(Player player) {
-        PageReq<Player> pageReq = new PageReq<>();
-        pageReq.setCondition(player);
-        List<Player> players = playerMapper.getPlayers(pageReq);
-        if (!CollectionUtils.isEmpty(players)) {
-            return players.get(0);
-        }
-        return null;
+        return playerMapper.getPlayerById(player);
     }
 
     @Override
     public Player getPlayerById(String playerId) {
+        Player player = new Player();
         if (StringUtils.isBlank(playerId)){
             return null;
         }
-        return playerMapper.getPlayerById(playerId);
+        player.setPlayerId(playerId);
+        return playerMapper.getPlayerById(player);
     }
 
 
@@ -146,17 +144,14 @@ public class PlayerServiceImpl implements PlayerService {
     @Override
     public Player getPlayerByName(String playerName,String playerNick) {
         Player player = new Player();
-        player.setPlayerName(playerName);
+        if (StringUtils.isNotBlank(playerName)) {
+            player.setPlayerName(playerName);
+        }
         if (StringUtils.isNotBlank(playerNick)) {
             player.setPlayerNick(playerNick);
         }
-        PageReq<Player> pageReq = new PageReq<>();
-        pageReq.setCondition(player);
-        List<Player> players = playerMapper.getPlayers(pageReq);
-        if (CollectionUtils.isEmpty(players)){
-            return null;
-        }
-        return players.get(0);
+        Player playerByName = playerMapper.getPlayerById(player);
+        return playerByName;
     }
 
 

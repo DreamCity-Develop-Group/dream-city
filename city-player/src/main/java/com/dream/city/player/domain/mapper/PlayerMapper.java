@@ -14,7 +14,7 @@ public interface PlayerMapper {
 
     int insertSelective(Player record);
 
-    Player getPlayerById(String playerId);
+    Player getPlayerById(Player record);
 
     /**
      * 广场玩家列表
@@ -22,7 +22,9 @@ public interface PlayerMapper {
      * @return
      */
     List<Player> getPlayers(PageReq pageReq);
+    Integer getPlayersCount(PageReq pageReq);
 
     int updateByPlayerId(Player record);
+
 
 }
