@@ -5,6 +5,7 @@ import com.dream.city.job.TestJob2;
 import com.dream.city.service.impl.WorkerServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -27,23 +28,24 @@ public class DefaultController {
     }
 
     @RequestMapping("/updateJob")
-    public void updateJob() {
-        workerService.updateJob("job1", "test", "0/10 * * * * ?");
+    public void updateJob(@RequestParam("jobName")String jobName,@RequestParam("jobGroupName")String jobGroupName) {
+        workerService.updateJob(jobName, jobGroupName, "0/10 * * * * ?");
     }
 
     @RequestMapping("/deleteJob")
-    public void deleteJob() {
-        workerService.deleteJob("job1", "test");
+    public void deleteJob(@RequestParam("jobName")String jobName,@RequestParam("jobGroupName")String jobGroupName) {
+        //workerService.deleteJob("job1", "test");
+        workerService.deleteJob(jobName,jobGroupName);
     }
 
     @RequestMapping("/pauseJob")
-    public void pauseJob() {
-        workerService.pauseJob("job1", "test");
+    public void pauseJob(@RequestParam("jobName")String jobName,@RequestParam("jobGroupName")String jobGroupName) {
+        workerService.pauseJob(jobName,jobGroupName);
     }
 
     @RequestMapping("/resumeJob")
-    public void resumeJob() {
-        workerService.resumeJob("job1", "test");
+    public void resumeJob(@RequestParam("jobName")String jobName,@RequestParam("jobGroupName")String jobGroupName) {
+        workerService.resumeJob(jobName,jobGroupName);
     }
 
     @RequestMapping("/queryAllJob")

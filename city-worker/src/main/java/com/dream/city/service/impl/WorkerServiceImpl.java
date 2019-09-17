@@ -39,6 +39,37 @@ public class WorkerServiceImpl implements WorkerService {
      * @param jobTimes     运行的次数 （<0:表示不限次数）
      */
     @Override
+    public void addJob(Class<? extends QuartzJobBean> jobClass, String jobName, String jobGroupName, int jobTime, int jobTimes,Map data) {
+        try {
+            JobDetail jobDetail = JobBuilder.newJob(jobClass)
+                    .withIdentity(jobName, jobGroupName)
+                    .usingJobData("data",data.get("data").toString())
+                    .build();
+
+            Trigger trigger = null;
+            if (jobTimes < 0) {
+                trigger = TriggerBuilder.newTrigger().withIdentity(jobName, jobGroupName)
+                        .withSchedule(SimpleScheduleBuilder.repeatSecondlyForever(1).withIntervalInSeconds(jobTime))
+                        .startNow().build();
+
+            } else {
+                trigger = TriggerBuilder.newTrigger()
+                        .withIdentity(jobName, jobGroupName)
+                        //.usingJobData(data)
+                        .withSchedule(SimpleScheduleBuilder.repeatSecondlyForever(1)
+                                                            .withIntervalInSeconds(jobTime)
+                                                            .withRepeatCount(jobTimes)
+                        )
+                        .startNow().build();
+            }
+            //scheduler.getContext().put("data",data);
+            scheduler.scheduleJob(jobDetail, trigger);
+        } catch (SchedulerException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     public void addJob(Class<? extends QuartzJobBean> jobClass, String jobName, String jobGroupName, int jobTime, int jobTimes) {
         try {
             JobDetail jobDetail = JobBuilder.newJob(jobClass).withIdentity(jobName, jobGroupName).build();
