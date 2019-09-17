@@ -2,10 +2,9 @@ package com.dream.city.player.service;
 
 
 import com.dream.city.player.domain.entity.PlayerLikes;
-import org.apache.ibatis.annotations.Mapper;
+import com.dream.city.player.domain.req.PlayerLikesReq;
 
 import java.util.List;
-import java.util.Map;
 
 public interface LikesService {
 
@@ -15,27 +14,27 @@ public interface LikesService {
      * @param record
      * @return
      */
-    int playerLike(PlayerLikes record);
+    int playerLike(PlayerLikesReq  record);
 
     /**
      * 取消点赞
      * @param record
      * @return
      */
-    int cancelLike(PlayerLikes record);
+    int cancelLike(PlayerLikesReq  record);
 
     /**
      * 玩家点赞总数
      * @param record
      * @return
      */
-    int playerLikesCount(PlayerLikes record);
+    int playerLikesCount(PlayerLikesReq  record);
 
     /**
      * 点赞项目
      * @param record
      * @return
      */
-    List<PlayerLikes> playerLikesList(PlayerLikes record);
+    List<PlayerLikes> playerLikesList(PlayerLikesReq  record);
 
 }

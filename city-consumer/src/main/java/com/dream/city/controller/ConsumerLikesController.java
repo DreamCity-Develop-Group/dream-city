@@ -1,14 +1,22 @@
 package com.dream.city.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.dream.city.base.model.Message;
+import com.dream.city.base.model.MessageData;
+import com.dream.city.base.model.Result;
+import com.dream.city.base.utils.DataUtils;
 import com.dream.city.service.ConsumerLikesService;
+import com.dream.city.service.ConsumerPlayerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -22,7 +30,8 @@ public class ConsumerLikesController {
 
     @Autowired
     ConsumerLikesService likesService;
-
+    @Autowired
+    ConsumerPlayerService consumerPlayerService;
 
 
     /**
@@ -33,10 +42,38 @@ public class ConsumerLikesController {
     @RequestMapping("/likefriend")
     public Message playerLike(@RequestBody Message msg){
         logger.info("添加好友", JSONObject.toJSONString(msg));
-        Message message = new Message();
+        Message message = new Message(msg.getSource(), msg.getTarget(),
+                new MessageData<Integer>(msg.getData().getType(),msg.getData().getModel()));
 
+        Map<String, String> conditionAllMap = DataUtils.getCondition(msg);
+        Integer like = conditionAllMap.containsKey("likes")?Integer.parseInt(conditionAllMap.get("likes")):0;
+        String username = conditionAllMap.get("username");
+        String nick = conditionAllMap.get("nick");
 
+        Map<String, Object> usernameConditionMap = new HashMap<>();
+        usernameConditionMap.put("playerName",username);
+        Result<String> playerNameResult = consumerPlayerService.getPlayerByName(JSON.toJSONString(usernameConditionMap));
+        Map playerMap = JSON.parseObject(playerNameResult.getData(),Map.class);
+        String playerId = (String)playerMap.get("playerId");
 
+        Map<String, Object> nickConditionMap = new HashMap<>();
+        nickConditionMap.put("playerNick",nick);
+        Result<String> nickResult = consumerPlayerService.getPlayerByName(JSON.toJSONString(nickConditionMap));
+        Map friendMap = JSON.parseObject(nickResult.getData(),Map.class);
+        String friendId = (String)friendMap.get("playerId");
+
+        Map<String, Object> conditionMap = new HashMap<>();
+        conditionMap.put("likedInvestTotal",like);
+        //收获玩家
+        conditionMap.put("likedPlayerId",playerId);
+        //点赞玩家ID
+        conditionMap.put("likePlayerId",friendId);
+
+        Result<Integer> result = likesService.playerLike(JSON.toJSONString(conditionMap));
+        if (result.getSuccess()){
+            message.getData().setT(result.getData());
+        }
+        message.setDesc(result.getMsg());
         return message;
     }
 
@@ -48,10 +85,15 @@ public class ConsumerLikesController {
     @RequestMapping("/cancelLike")
     public Message cancelLike(@RequestBody Message msg){
         logger.info("取消点赞，{}",msg);
-        Message message = new Message();
+        Message message = new Message(msg.getSource(), msg.getTarget(),
+                new MessageData<Integer>(msg.getData().getType(),msg.getData().getModel()));
 
-
-
+        Map<String, String> conditionMap = DataUtils.getCondition(msg);
+        Result<Integer> result = likesService.cancelLike(JSON.toJSONString(conditionMap));
+        if (result.getSuccess()){
+            message.getData().setT(result.getData());
+        }
+        message.setDesc(result.getMsg());
         return message;
     }
 
