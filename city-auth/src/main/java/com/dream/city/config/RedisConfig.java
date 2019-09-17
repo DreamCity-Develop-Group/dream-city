@@ -13,11 +13,11 @@ import javax.annotation.Resource;
  * @author Wvv
  * Redis Config
  */
-@Configuration
+/*@Configuration
 public class RedisConfig {
 
     @Bean
     public RedisTemplate redisTemplate(RedisTemplate redisTemplate){
         return redisTemplate;
     }
-}
+}*/

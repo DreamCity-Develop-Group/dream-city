@@ -34,7 +34,7 @@ import java.net.UnknownHostException;
 /**
  * redis配置
  */
-@Configuration
+/*@Configuration
 @EnableCaching
 public class RedisCacheConfig extends CachingConfigurerSupport {
 
@@ -42,6 +42,7 @@ public class RedisCacheConfig extends CachingConfigurerSupport {
     private String host;
     @Value("${spring.redis.port:6379}")
     private int port;
+    @Value()
     @Value("${spring.redis.jedis.pool.max-active:300}")
     private int maxActive;
     @Value("${spring.redis.jedis.pool.max-wait:-1}")
@@ -101,11 +102,11 @@ public class RedisCacheConfig extends CachingConfigurerSupport {
     }
 
 
-    /**
+    *//**
      * 实例化 RedisTemplate 对象
      *
      * @return
-     */
+     *//*
     @Bean(name="redisTemplate")
     @ConditionalOnMissingBean(name = "redisTemplate")
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory jedisConnectionFactory) throws UnknownHostException {
@@ -144,56 +145,56 @@ public class RedisCacheConfig extends CachingConfigurerSupport {
         return template;
     }
 
-    /**
+    *//**
      * 对hash类型的数据操作
      *
      * @param redisTemplate
      * @return
-     */
+     *//*
     @Bean
     public HashOperations<String, String, Object> hashOperations(RedisTemplate<String, Object> redisTemplate) {
         return redisTemplate.opsForHash();
     }
 
-    /**
+    *//**
      * 对redis字符串类型数据操作
      *
      * @param redisTemplate
      * @return
-     */
+     *//*
     @Bean
     public ValueOperations<String, Object> valueOperations(RedisTemplate<String, Object> redisTemplate) {
         return redisTemplate.opsForValue();
     }
 
-    /**
+    *//**
      * 对链表类型的数据操作
      *
      * @param redisTemplate
      * @return
-     */
+     *//*
     @Bean
     public ListOperations<String, Object> listOperations(RedisTemplate<String, Object> redisTemplate) {
         return redisTemplate.opsForList();
     }
 
-    /**
+    *//**
      * 对无序集合类型的数据操作
      *
      * @param redisTemplate
      * @return
-     */
+     *//*
     @Bean
     public SetOperations<String, Object> setOperations(RedisTemplate<String, Object> redisTemplate) {
         return redisTemplate.opsForSet();
     }
 
-    /**
+    *//**
      * 对有序集合类型的数据操作
      *
      * @param redisTemplate
      * @return
-     */
+     *//*
     @Bean
     public ZSetOperations<String, Object> zSetOperations(RedisTemplate<String, Object> redisTemplate) {
         return redisTemplate.opsForZSet();
@@ -226,4 +227,4 @@ public class RedisCacheConfig extends CachingConfigurerSupport {
 //        return new RedisUtils();
 //    }
 
-}
+}*/

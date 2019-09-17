@@ -30,6 +30,8 @@
         <module>city-player</module>
         <module>city-set</module>
         <module>city-auth</module>
+        <module>city-user</module>
+        <module>city-worker</module>
     </modules>
 
 

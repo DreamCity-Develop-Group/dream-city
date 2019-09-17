@@ -1,6 +1,7 @@
 package com.dream.city.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.dream.city.base.utils.RedisUtils;
 import com.dream.city.domain.Message;
 import com.dream.city.domain.MessageData;
 import com.dream.city.domain.entity.User;
@@ -23,6 +24,8 @@ import java.util.Map;
 public class UserController {
     @Autowired
     UserService userService;
+    @Autowired
+    RedisUtils redisUtils;
 
     /**
      * 用户注册
@@ -89,6 +92,7 @@ public class UserController {
 
     @RequestMapping("/get/{id}")
     public List getUser(@PathVariable(value = "id")Integer id){
+        redisUtils.set("user","users");
         List<User> users = new ArrayList<>();
         users = userService.getUsers(null);
         if(id != null){

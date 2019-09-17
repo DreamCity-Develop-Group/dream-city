@@ -3,14 +3,15 @@ server:
 spring:
   application:
     name: city-message
-    port: 8888
+  main:
+    allow-bean-definition-overriding: true
   cache:
     type: redis
   redis:
     host: 127.0.0.1
     port: 6379
     database: 0
-    password:
+    password: 123456
     timeout: 0
     ssl: false
     jedis:
@@ -20,15 +21,14 @@ spring:
         max-idle: 300
         min-idle: 1
 
-  main:
-    allow-bean-definition-overriding: true
+
 
   datasource:
-    #driver-class-name: com.mysql.jdbc.Driver
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/message?serverTimezone=UTC&useUnicode=true&characterEncoding=UTF-8&transformedBitIsBoolean=true&autoReconnect=true&failOverReadOnly=false&allowMultiQueries=true&useSSL=false
-    username: root
-    password: 123456
+    driver-class-name: com.mysql.jdbc.Driver
+    #driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/dreamcity?serverTimezone=UTC&useUnicode=true&characterEncoding=UTF-8&transformedBitIsBoolean=true&autoReconnect=true&failOverReadOnly=false&allowMultiQueries=true&useSSL=false
+    username: dreamcity
+    password: Root@123
 
 #datasource
 mybatis:

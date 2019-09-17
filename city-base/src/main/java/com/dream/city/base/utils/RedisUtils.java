@@ -2,12 +2,10 @@ package com.dream.city.base.utils;
 
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.connection.RedisConnection;
-import org.springframework.data.redis.core.HashOperations;
-import org.springframework.data.redis.core.RedisCallback;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.data.redis.core.*;
 import org.springframework.data.redis.support.atomic.RedisAtomicLong;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -22,6 +20,7 @@ import java.util.concurrent.TimeUnit;
 
 
 /**
+ * @author wvv
  * Redis客户端
  */
 @Component
@@ -34,6 +33,9 @@ public class RedisUtils {
 
     @Autowired
     private RedisTemplate<String, String> stringRedisTemplate;
+
+    @Autowired
+    private StringRedisTemplate strRedisTemplate;
 
     @Autowired
     private Jedis jedis;
