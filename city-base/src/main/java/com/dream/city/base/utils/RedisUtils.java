@@ -28,11 +28,12 @@ public class RedisUtils {
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
 
-    @Autowired
-    private RedisTemplate<String, String> stringRedisTemplate;
+//    @Autowired
+//    private RedisTemplate<String, String> stringRedisTemplate;
 
     @Autowired
-    private StringRedisTemplate strRedisTemplate;
+    private StringRedisTemplate stringRedisTemplate;
+    //private StringRedisTemplate strRedisTemplate;
 
     //@Autowired
     //private Jedis jedis;
