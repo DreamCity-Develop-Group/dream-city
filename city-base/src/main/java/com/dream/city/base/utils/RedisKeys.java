@@ -14,4 +14,9 @@ public final class RedisKeys {
     // 当前登录总人数
     public static final String CURRENT_LOGIN_USER_COUNT = "CURRENT_LOGIN_USER_COUNT_";
 
+
+    //广场玩家列表 换一批
+    public static final String SQUARE_PLAYER_LIST_ANOTHER_BATCH = "ANOTHER_BATCH_PLAYER_";
+
+
 }

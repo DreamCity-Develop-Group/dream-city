@@ -44,6 +44,33 @@ public class ConsumerPlayerController {
     AuthService authService;
 
 
+
+    @RequestMapping("/searchfriend")
+    public Message searchfriend(@RequestBody Message msg){
+        logger.info("广场玩家列表 换一批", JSONObject.toJSONString(msg));
+        UserReq jsonReq = getUserReq(msg);
+        PageReq<String> pageReq = new PageReq<>();
+
+        int pageNo = 1;
+        String redisKey = RedisKeys.SQUARE_PLAYER_LIST_ANOTHER_BATCH + jsonReq.getUsername();
+        if (redisUtils.hasKey(redisKey)){
+            pageNo = Integer.parseInt(redisUtils.getStr(redisKey));
+        }else {
+            pageNo = pageNo + 1;
+            redisUtils.setStr(redisKey,String.valueOf(pageNo));
+        }
+        pageReq.setPageNo(pageNo);
+
+        Result<String> players = consumerPlayerService.getPlayers(pageReq);
+        Map<String,Object> t = new HashMap<>();
+        t.put("userList",players.getData());
+        MessageData messageData = new MessageData();
+        messageData.setT(t);
+        Message message = new Message(msg.getSource(),msg.getTarget(),messageData);
+        return message;
+    }
+
+
     /**
      * 获取认证码
      * @param msg
@@ -340,6 +367,9 @@ public class ConsumerPlayerController {
         if (redisUtils.hasKey(redisKey)) {
             redisUtils.del(redisKey);
         }
+
+        redisKey = RedisKeys.SQUARE_PLAYER_LIST_ANOTHER_BATCH + jsonReq.getUsername();
+        redisUtils.del(redisKey);
 
         Map<String,String> t = new HashMap<>();
         t.put("desc",result.getMsg());

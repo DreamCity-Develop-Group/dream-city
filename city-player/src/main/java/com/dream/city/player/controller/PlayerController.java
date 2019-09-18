@@ -3,6 +3,7 @@ package com.dream.city.player.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.dream.city.base.model.CityGlobal;
+import com.dream.city.base.model.Page;
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.req.PageReq;
 import com.dream.city.base.model.req.UserReq;
@@ -341,14 +342,14 @@ public class PlayerController {
      * @return
      */
     @RequestMapping("/getPlayers")
-    public Result getPlayers(@RequestBody PageReq pageReq){
+    public Result<String> getPlayers(@RequestBody PageReq pageReq){
         logger.info("获取广场玩家列表，{}",pageReq);
         Result result = null;
-        List<Player> players = null;
+        Page page = null;
 
         try {
-            players = playerService.getPlayers(pageReq);
-            result = new Result(CityGlobal.ResultCode.success.getStatus(),players);
+            page = playerService.getPlayers(pageReq);
+            result = new Result(CityGlobal.ResultCode.success.getStatus(),JSON.toJSONString(page));
         }catch (Exception e){
             result = new Result(CityGlobal.ResultCode.fail.getStatus(),null);
         }

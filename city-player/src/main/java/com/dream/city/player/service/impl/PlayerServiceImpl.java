@@ -1,6 +1,8 @@
 package com.dream.city.player.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.dream.city.base.model.CityGlobal;
+import com.dream.city.base.model.Page;
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.req.PageReq;
 import com.dream.city.base.utils.KeyGenerator;
@@ -13,8 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Wvv
@@ -137,8 +138,25 @@ public class PlayerServiceImpl implements PlayerService {
 
 
     @Override
-    public List<Player> getPlayers(PageReq pageReq) {
-        return playerMapper.getPlayers(pageReq);
+    public Page getPlayers(PageReq pageReq) {
+        Page page = new Page();
+        page.setCondition(pageReq.getCondition());
+
+        Integer count = playerMapper.getPlayersCount(pageReq);
+        List<Player> players = playerMapper.getPlayers(pageReq);
+
+        List<Map> playersMap = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(players)){
+            Map map = null;
+            for (Player player:players){
+                map = JSON.parseObject(JSON.toJSONString(player),Map.class);
+                playersMap.add(map);
+            }
+        }
+        page.setResult(playersMap);
+        page.setTotalCount( count== null?0:count);
+
+        return page;
     }
 
     @Override

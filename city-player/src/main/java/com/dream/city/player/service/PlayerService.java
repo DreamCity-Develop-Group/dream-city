@@ -1,5 +1,6 @@
 package com.dream.city.player.service;
 
+import com.dream.city.base.model.Page;
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.req.PageReq;
 import com.dream.city.player.domain.entity.Player;
@@ -46,7 +47,7 @@ public interface PlayerService {
      * @param pageReq
      * @return
      */
-    List<Player> getPlayers(PageReq pageReq);
+    Page getPlayers(PageReq pageReq);
 
     Player getPlayerByName(String username,String playerNick);
 
