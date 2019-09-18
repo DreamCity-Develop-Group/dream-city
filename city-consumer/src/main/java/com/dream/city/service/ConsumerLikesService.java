@@ -15,7 +15,7 @@ public interface ConsumerLikesService {
      * @param jsonReq
      * @return
      */
-    @RequestMapping("/friends/playerLike")
+    @RequestMapping("/likes/playerLike")
     Result<Integer> playerLike(@RequestBody String jsonReq);
 
     /**
@@ -23,7 +23,7 @@ public interface ConsumerLikesService {
      * @param jsonReq
      * @return
      */
-    @RequestMapping("/friends/cancelLike")
+    @RequestMapping("/likes/cancelLike")
     Result<Integer> cancelLike(@RequestBody String jsonReq);
 
     /**
@@ -31,7 +31,7 @@ public interface ConsumerLikesService {
      * @param jsonReq
      * @return
      */
-    @RequestMapping("/friends/playerLikesCount")
+    @RequestMapping("/likes/playerLikesCount")
     Result<Integer> playerLikesCount(@RequestBody String jsonReq);
 
     /**
@@ -39,7 +39,7 @@ public interface ConsumerLikesService {
      * @param jsonReq
      * @return
      */
-    @RequestMapping("/friends/playerLikesList")
+    @RequestMapping("/likes/playerLikesList")
     Result<String> playerLikesList(@RequestBody String jsonReq);
 
 }
