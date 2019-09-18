@@ -51,7 +51,7 @@ public class ConsumerPlayerController {
         UserReq jsonReq = getUserReq(msg);
         PageReq<String> pageReq = new PageReq<>();
 
-        int pageNo = 1;
+        int pageNo = 0;
         String redisKey = RedisKeys.SQUARE_PLAYER_LIST_ANOTHER_BATCH + jsonReq.getUsername();
         if (redisUtils.hasKey(redisKey)){
             pageNo = Integer.parseInt(redisUtils.getStr(redisKey));
