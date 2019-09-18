@@ -1,9 +1,9 @@
 server:
-  port: 8030
+  port: 8280
 
 spring:
   application:
-    name: city-auth
+    name: city-tree
     #datasource
   datasource:
     #driver-class-name: com.mysql.jdbc.Driver

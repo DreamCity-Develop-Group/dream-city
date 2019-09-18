@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.dream.city</groupId>
-    <artifactId>city-auth</artifactId>
+    <artifactId>city-tree</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>city-auth</name>
-    <description>DreamCity Auth project for Spring Boot</description>
+    <name>city-tree</name>
+    <description>DreamCity Relation Tree project for Spring Boot</description>
 
     <properties>
         <java.version>1.8</java.version>
