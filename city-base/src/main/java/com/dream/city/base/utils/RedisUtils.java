@@ -79,6 +79,8 @@ public class RedisUtils {
            return null;
        });
     }
+
+
     public Optional<String> get( String key) {
         String result = (String) redisTemplate.execute((RedisCallback) redisConnection -> {
             String result1 = null;

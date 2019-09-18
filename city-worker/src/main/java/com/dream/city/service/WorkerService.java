@@ -10,7 +10,7 @@ import java.util.*;
  * @author Wvv
  */
 public interface WorkerService {
-    public void addJob(Class<? extends QuartzJobBean> jobClass, String jobName, String jobGroupName, int jobTime, int jobTimes,Map data);
+    public void addJob(Class<? extends QuartzJobBean> jobClass, String jobName, String jobGroupName, int jobTime, int jobTimes,String data);
     /**
      * 增加一个job
      *

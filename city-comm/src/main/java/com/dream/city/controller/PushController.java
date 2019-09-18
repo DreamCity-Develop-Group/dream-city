@@ -19,7 +19,7 @@ import java.io.IOException;
  * @author Wvv
  */
 @RestController
-@RequestMapping("/push")
+@RequestMapping("/comm")
 public class PushController {
     @Autowired
     HttpClientService httpClientService;
@@ -97,6 +97,17 @@ public class PushController {
         message.setData(messageData);
 
         redisUtils.set("msgg", JsonUtil.parseObjToJson(message));
+
+        return message;
+    }
+
+    @RequestMapping("/job/")
+    public Message jobPush(@RequestBody Message message){
+        try {
+            WebSocketServer.sendInfo(message);
+        }catch (IOException e){
+            e.printStackTrace();
+        }
 
         return message;
     }

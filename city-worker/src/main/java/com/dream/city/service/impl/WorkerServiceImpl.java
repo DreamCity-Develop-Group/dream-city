@@ -39,11 +39,11 @@ public class WorkerServiceImpl implements WorkerService {
      * @param jobTimes     运行的次数 （<0:表示不限次数）
      */
     @Override
-    public void addJob(Class<? extends QuartzJobBean> jobClass, String jobName, String jobGroupName, int jobTime, int jobTimes,Map data) {
+    public void addJob(Class<? extends QuartzJobBean> jobClass, String jobName, String jobGroupName, int jobTime, int jobTimes,String data) {
         try {
             JobDetail jobDetail = JobBuilder.newJob(jobClass)
                     .withIdentity(jobName, jobGroupName)
-                    .usingJobData("data",data.get("data").toString())
+                    .usingJobData("data",data)
                     .build();
 
             Trigger trigger = null;

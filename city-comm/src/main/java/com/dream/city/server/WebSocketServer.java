@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.dream.city.base.model.Message;
 import com.dream.city.base.model.MessageData;
+import com.dream.city.base.utils.JsonUtil;
+import com.dream.city.base.utils.RedisUtils;
 import com.dream.city.service.HttpClientService;
 import com.dream.city.util.HttpClientUtil;
 import com.dream.city.util.SpringUtils;
@@ -39,8 +41,10 @@ public class WebSocketServer {
 
     private RedisMessageListenerContainer redisMessageListenerContainer = SpringUtils.getBean(RedisMessageListenerContainer.class);
 
+    private RedisUtils redisUtils = SpringUtils.getBean(RedisUtils.class);
     @Autowired
     HttpClientService httpClientService;
+
 
     static Log log = LogFactory.getLog(WebSocketServer.class);
 
@@ -68,6 +72,8 @@ public class WebSocketServer {
 
     private String clientId = "";
 
+    private String username = "";
+
     /**
      * 连接建立成功调用的方法
      *
@@ -80,6 +86,8 @@ public class WebSocketServer {
         this.session = session;
         //加入set中
         webSocketSet.add(this);
+        //将连接加入到redis
+        //redisUtils.set();
 
         //在线数加1
         addOnlineCount();
@@ -124,9 +132,10 @@ public class WebSocketServer {
     public void onClose() {
         //从set中删除
         webSocketSet.remove(this);
+        redisUtils.del("clientID-"+this.username);
         //在线数减1
         subOnlineCount();
-        log.info("有一连接关闭！当前在线人数为" + getOnlineCount());
+        log.info("有一连接["+this.username+"]关闭！当前在线人数为" + getOnlineCount());
     }
 
     /**
@@ -153,7 +162,21 @@ public class WebSocketServer {
             //解析出客户端发来的消息
             Message msg = JSONObject.parseObject(message, Message.class);
 
+
+
             if (null != msg.getData().getT()) {
+                Map data = JsonUtil.parseJsonToObj(msg.getData().getT().toString(),Map.class);
+                String tokenStr = "token_"+data.get("username");
+                String token = redisUtils.get(tokenStr).toString();
+                if (!StringUtils.isEmpty(token)){
+                   redisUtils.set("clientID-"+data.get("username").toString(),this.clientId,60);
+                   for (WebSocketServer webSocketServer : webSocketSet){
+                       if (webSocketServer.clientId.equals(this.clientId)){
+                           webSocketServer.username = data.get("username").toString();
+                           break;
+                       }
+                   }
+                }
                 String strT = "";
                 if (msg.getData().getT() instanceof String){
                     strT = (String)msg.getData().getT();
@@ -173,7 +196,7 @@ public class WebSocketServer {
                     }
                 }
 
-                if (!StringUtils.isEmpty(strT) && (strT).equals("order")) {
+                /*if (!StringUtils.isEmpty(strT) && (strT).equals("order")) {
                     Map<String, Object> data = new HashMap<>();
                     data.put("orderId", "oid_12547");
                     data.put("order_good", "一支铅笔");
@@ -193,7 +216,7 @@ public class WebSocketServer {
 
                     sendMessage(msgRet);
                     return;
-                }
+                }*/
 
             }
 

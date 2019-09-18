@@ -36,7 +36,7 @@ public class MessageController {
             String jobGroup = dataMap.get("jobGroup").toString();
             String jobName = dataMap.get("jobName").toString();
 
-            workerService.addJob(MessagePushRetry.class,"MsgRetry-"+jobName,"Msg-"+jobGroup,jobTime,jobTimes,dataMap);
+            workerService.addJob(MessagePushRetry.class,"MsgRetry-"+jobName,"Msg-"+jobGroup,jobTime,jobTimes,map);
             return "success";
         }
         return "fail";

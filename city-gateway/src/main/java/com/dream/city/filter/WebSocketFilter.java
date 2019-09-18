@@ -52,12 +52,13 @@ public class WebSocketFilter extends ZuulFilter {
 
         log.info(String.format("%s request to %s", request.getMethod(), request.getRequestURL().toString()));
 
-        String accessToken = request.getHeader("Authorization").substring(7);
+        String auth = request.getHeader("Authorization");
+        String accessToken = auth==null?null:auth.substring(7);
         String accessMethod = request.getHeader("method");
         String authType = request.getAuthType();
         if (StringUtils.isEmpty(authType) ){
             HashSet<String> set = new HashSet<>();
-            set.add("login");set.add("reg");set.add("getValiCode");
+            set.add("login");set.add("reg");set.add("getValiCode");set.add("jobPush");
             if (set.contains(accessMethod)){
                 log.info("Access method is Ok! ");
                 return null;

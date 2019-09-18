@@ -53,7 +53,7 @@ public class HttpClientUtil {
 
             httpPost = new HttpPost(url);
 
-            if (serviceOpt.equals("login") || serviceOpt.equals("reg") || serviceOpt.equals("getValiCode")||serviceOpt.equals("jobPush")) {
+            if (serviceOpt.equals("login") || serviceOpt.equals("reg") || serviceOpt.equals("getValiCode")||serviceOpt.equals("job/push")) {
                 //这里不处理，表示正常放行
                 httpPost.setHeader("method", serviceOpt);
                 httpPost.setHeader("authType", "");

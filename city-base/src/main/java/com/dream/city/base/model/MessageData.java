@@ -19,4 +19,10 @@ public class MessageData<T> {
         this.type = type;
         this.model = model;
     }
+
+    public MessageData(String type,String model,T t){
+        this.type = type;
+        this.model = model;
+        this.t = t;
+    }
 }
