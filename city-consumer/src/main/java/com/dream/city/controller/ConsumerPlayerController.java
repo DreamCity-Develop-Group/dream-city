@@ -51,12 +51,12 @@ public class ConsumerPlayerController {
         UserReq jsonReq = getUserReq(msg);
         PageReq<String> pageReq = new PageReq<>();
 
-        int pageNo = 0;
+        int pageNo = 1;
         String redisKey = RedisKeys.SQUARE_PLAYER_LIST_ANOTHER_BATCH + jsonReq.getUsername();
         if (redisUtils.hasKey(redisKey)){
             pageNo = Integer.parseInt(redisUtils.getStr(redisKey));
-        }else {
             pageNo = pageNo + 1;
+        }else {
             redisUtils.setStr(redisKey,String.valueOf(pageNo));
         }
         pageReq.setPageNo(pageNo);
@@ -64,9 +64,10 @@ public class ConsumerPlayerController {
         Result<String> players = consumerPlayerService.getPlayers(pageReq);
         Map<String,Object> t = new HashMap<>();
         t.put("userList",players.getData());
-        MessageData messageData = new MessageData();
+        MessageData messageData = new MessageData(msg.getData().getType(),msg.getData().getModel());
         messageData.setT(t);
         Message message = new Message(msg.getSource(),msg.getTarget(),messageData);
+        message.setDesc(players.getMsg());
         return message;
     }
 
