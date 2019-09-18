@@ -38,20 +38,20 @@
   <select id="getPlayers" parameterType="com.dream.city.base.model.req.PageReq" resultMap="BaseResultMap">
     SELECT p.player_id playerId,p.player_name playerName,p.player_nick playerNick,p.create_time,
         e.friendlink playerLink,e.imgurl
-    FROM t_player p,t_player_ext e WHERE p.player_id=e.player_id
+    FROM t_player p,t_player_ext e
     <where>
-        1=1
+      p.player_id=e.player_id
       <if test="condition != null and condition != ''">
         and p.player_nick = #{_parameter} 
       </if>
     </where>
     ORDER BY p.create_time DESC limit ${start},${pageSize}
   </select>
-  <select id="getPlayersCount" parameterType="com.dream.city.base.model.req.PageReq" resultMap="BaseResultMap">
+  <select id="getPlayersCount" parameterType="com.dream.city.base.model.req.PageReq" resultType="java.lang.Integer">
     SELECT COUNT(p.player_id)
-    FROM t_player p,t_player_ext e WHERE p.player_id=e.player_id
+    FROM t_player p,t_player_ext e
     <where>
-      1=1
+      p.player_id=e.player_id
       <if test="condition != null and condition != ''">
         and p.player_nick = #{_parameter} 
       </if>
