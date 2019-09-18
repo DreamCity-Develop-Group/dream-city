@@ -90,13 +90,10 @@ public class ConsumerPlayerController {
      */
     @RequestMapping("/squarefriend")
     public Message squareFriend(@RequestBody Message msg){
-        logger.info("获取用户", JSONObject.toJSONString(msg));
+        logger.info("广场玩家列表", JSONObject.toJSONString(msg));
         UserReq jsonReq = getUserReq(msg);
-        Map<String,String> condition = new HashMap<>();
-        condition.put("playerName",jsonReq.getUsername());
-        condition.put("playerNick",jsonReq.getNick());
-        condition.put("playerId",jsonReq.getPlayerId());
-        PageReq<Map> pageReq = new PageReq<>((Map)msg.getData().getT());
+        String condition = jsonReq.getNick();
+        PageReq<String> pageReq = new PageReq<>((Map)msg.getData().getT());
         pageReq.setCondition(condition);
 
         Result players = consumerPlayerService.getPlayers(pageReq);

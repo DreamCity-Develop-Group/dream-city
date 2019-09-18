@@ -87,11 +87,8 @@ public interface ConsumerPlayerService {
 
     /**
      *
-     * @param playerName
-     * @param playerNick
      * @return
      */
     @RequestMapping("/player/getPlayerByName")
-    public Result getPlayerByName(@PathVariable("playerName")String playerName,
-                                  @PathVariable("playerNick")String playerNick);
+    public Result getPlayerByName(@RequestBody String jsonReq);
 }

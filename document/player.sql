@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50562
 File Encoding         : 65001
 
-Date: 2019-09-16 19:59:47
+Date: 2019-09-17 20:20:44
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -34,26 +34,10 @@ CREATE TABLE `t_friends` (
 -- ----------------------------
 -- Records of t_friends
 -- ----------------------------
-INSERT INTO `t_friends` VALUES ('1', 'FD826FE2E378445594D23CA84C0C485D', 'FD826FE2E378445594D23CA84C0C485D', '1', null, '0', '2019-09-11 17:04:40', '2019-09-12 09:44:19');
-INSERT INTO `t_friends` VALUES ('2', 'FD826FE2E378445594D23CA84C0C485D', 'FD826FE2E378445594D23CA84C0C485D', '0', '123', '0', '2019-09-12 17:21:09', null);
-INSERT INTO `t_friends` VALUES ('3', 'FD826FE2E378445594D23CA84C0C485D', 'FD826FE2E378445594D23CA84C0C485D', '0', null, '0', '2019-09-12 09:57:41', null);
-INSERT INTO `t_friends` VALUES ('4', '123', '1231', '1', null, '1', '2019-09-16 16:29:23', '2019-09-16 16:32:11');
-
--- ----------------------------
--- Table structure for t_likes
--- ----------------------------
-DROP TABLE IF EXISTS `t_likes`;
-CREATE TABLE `t_likes` (
-  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `player_id` varchar(64) CHARACTER SET utf8 NOT NULL,
-  `likes` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '点赞次数',
-  `create_date` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='点赞';
-
--- ----------------------------
--- Records of t_likes
--- ----------------------------
+INSERT INTO `t_friends` VALUES ('1', 'FD826FE2E378445594D23CA84C0C485D', '55ACB2722E33436F81040D0C8F257BF3', '1', null, '0', '2019-09-11 17:04:40', '2019-09-12 09:44:19');
+INSERT INTO `t_friends` VALUES ('2', 'FD826FE2E378445594D23CA84C0C485D', 'A1351FDFF0E344908A6EBBDDAC7D506D', '0', '123', '0', '2019-09-12 17:21:09', null);
+INSERT INTO `t_friends` VALUES ('3', 'FD826FE2E378445594D23CA84C0C485D', '758DEB6C0A854D569FF2FC8AC9B422C9', '0', null, '0', '2019-09-12 09:57:41', null);
+INSERT INTO `t_friends` VALUES ('4', 'FD826FE2E378445594D23CA84C0C485D', '727311B48CB4404EB9CACA6B9B235251', '1', null, '1', '2019-09-16 16:29:23', '2019-09-16 16:32:11');
 
 -- ----------------------------
 -- Table structure for t_login_log
@@ -169,12 +153,15 @@ CREATE TABLE `t_player_ext` (
   `create_date` datetime DEFAULT NULL,
   `update_date` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COMMENT='用户扩展表（玩家）';
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COMMENT='用户扩展表（玩家）';
 
 -- ----------------------------
 -- Records of t_player_ext
 -- ----------------------------
 INSERT INTO `t_player_ext` VALUES ('1', 'FD826FE2E378445594D23CA84C0C485D', 'friendlink', 'imgurl', null, null);
+INSERT INTO `t_player_ext` VALUES ('2', '55ACB2722E33436F81040D0C8F257BF3', 'friendlink', 'imgurl', null, null);
+INSERT INTO `t_player_ext` VALUES ('3', 'A1351FDFF0E344908A6EBBDDAC7D506D', 'friendlink', 'imgurl', null, null);
+INSERT INTO `t_player_ext` VALUES ('4', '758DEB6C0A854D569FF2FC8AC9B422C9', 'friendlink', 'imgurl', null, null);
 
 -- ----------------------------
 -- Table structure for t_player_grade
@@ -192,4 +179,42 @@ CREATE TABLE `t_player_grade` (
 
 -- ----------------------------
 -- Records of t_player_grade
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for t_player_likes
+-- ----------------------------
+DROP TABLE IF EXISTS `t_player_likes`;
+CREATE TABLE `t_player_likes` (
+  `liked_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `liked_player_id` varchar(64) CHARACTER SET utf8 DEFAULT NULL COMMENT '收获玩家',
+  `liked_invest_id` int(10) unsigned DEFAULT NULL COMMENT '点赞项目ID',
+  `liked_invest_total` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '项目点赞数量',
+  `create_time` datetime DEFAULT NULL,
+  `update_time` datetime DEFAULT NULL,
+  PRIMARY KEY (`liked_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
+
+-- ----------------------------
+-- Records of t_player_likes
+-- ----------------------------
+INSERT INTO `t_player_likes` VALUES ('1', 'FD826FE2E378445594D23CA84C0C485D', '1', '2', '2019-09-08 15:58:07', null);
+INSERT INTO `t_player_likes` VALUES ('2', 'FD826FE2E378445594D23CA84C0C485D', '2', '1', '2019-09-09 15:58:23', null);
+
+-- ----------------------------
+-- Table structure for t_player_likes_log
+-- ----------------------------
+DROP TABLE IF EXISTS `t_player_likes_log`;
+CREATE TABLE `t_player_likes_log` (
+  `like_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `like_player_id` varchar(64) CHARACTER SET utf8 DEFAULT NULL COMMENT '点赞玩家ID',
+  `like_liked_id` varchar(64) CHARACTER SET utf8 DEFAULT NULL COMMENT '收获点赞玩家ID',
+  `like_invest_id` int(11) unsigned DEFAULT NULL COMMENT '点赞投资ID',
+  `create_time` datetime DEFAULT NULL,
+  `update_time` datetime DEFAULT NULL,
+  PRIMARY KEY (`like_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ----------------------------
+-- Records of t_player_likes_log
 -- ----------------------------

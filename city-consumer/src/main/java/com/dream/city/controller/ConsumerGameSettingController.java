@@ -53,7 +53,9 @@ public class ConsumerGameSettingController {
         }
 
         if (StringUtils.isBlank(userId)){
-            Result playerByName = consumerPlayerService.getPlayerByName(username, null);
+            JSONObject playerNamejsonObject = new JSONObject();
+            playerNamejsonObject.put("playerName",username);
+            Result playerByName = consumerPlayerService.getPlayerByName(playerNamejsonObject.toJSONString());
             if (playerByName.getSuccess()){
                 userJson = JSONObject.parseObject((String) playerByName.getData(),JSONObject.class);
                 userId = userJson.get("playerId").toString();
