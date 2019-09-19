@@ -165,7 +165,7 @@ public class ConsumerPlayerController {
         UserReq jsonReq = getUserReq(msg);
         Result result = consumerPlayerService.resetLoginPwd(jsonReq.getPlayerId(), jsonReq.getOldpw(),jsonReq.getNewpw());
 
-        logger.info("##################### 修改密码 ",msg);
+        logger.info("##################### 修改密码 : {}",msg);
         Map<String,String> t = new HashMap<>();
         t.put("desc",result.getMsg());
 
@@ -185,7 +185,7 @@ public class ConsumerPlayerController {
         logger.info("修改交易密码", JSONObject.toJSONString(msg));
         UserReq jsonReq = getUserReq(msg);
         Result result = consumerPlayerService.resetTraderPwd(jsonReq.getPlayerId(), jsonReq.getOldpw(),jsonReq.getNewpw());
-        logger.info("##################### 修改交易密码 ",msg);
+        logger.info("##################### 修改交易密码 : {}",msg);
         Map<String,String> t = new HashMap<>();
         t.put("desc",result.getMsg());
 
@@ -220,7 +220,7 @@ public class ConsumerPlayerController {
         Result reg = null;
         if (StringUtils.isBlank(descMsg)){
             reg = consumerPlayerService.reg(jsonReq);
-            logger.info("##################### 用户注册 ",msg);
+            logger.info("##################### 用户注册: {}",msg);
 
             descMsg = reg.getMsg();
             if (reg.getSuccess()){ //用户注册成功
@@ -276,7 +276,7 @@ public class ConsumerPlayerController {
         String jsonReq = JSON.toJSONString(userReq);
 
         Result result = consumerPlayerService.pwLogoin(jsonReq);
-        logger.info("##################### 用户登录 ",result);
+        logger.info("##################### 用户登录: {}",result);
 
         Map<String,String> t = new HashMap<>();
         String descT = CityGlobal.Constant.LOGIN_FAIL;
@@ -334,7 +334,7 @@ public class ConsumerPlayerController {
 
         if (StringUtils.isBlank(descMsg)){
             Result idlog = consumerPlayerService.codeLogoin(JSON.toJSONString(userReq));
-            logger.info("##################### 验证码登录 ",idlog);
+            logger.info("##################### 验证码登录: {}",idlog);
             descMsg = idlog.getMsg();
 
             if (idlog.getSuccess()){
@@ -363,7 +363,7 @@ public class ConsumerPlayerController {
         logger.info("登出", JSONObject.toJSONString(msg));
         UserReq jsonReq = getUserReq(msg);
         Result result = consumerPlayerService.quit(jsonReq.getPlayerId());
-        logger.info("##################### 用户登出 ",msg);
+        logger.info("##################### 用户登出 :{}",msg);
 
         String redisKey = RedisKeys.LOGIN_USER_TOKEN + jsonReq.getUsername();
         if (redisUtils.hasKey(redisKey)) {
