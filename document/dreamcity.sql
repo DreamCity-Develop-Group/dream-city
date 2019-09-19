@@ -10,10 +10,29 @@ Target Server Type    : MYSQL
 Target Server Version : 50562
 File Encoding         : 65001
 
-Date: 2019-09-19 14:29:05
+Date: 2019-09-19 15:55:43
 */
 
 SET FOREIGN_KEY_CHECKS=0;
+
+-- ----------------------------
+-- Table structure for account_dynamic
+-- ----------------------------
+DROP TABLE IF EXISTS `account_dynamic`;
+CREATE TABLE `account_dynamic` (
+  `dyn_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `dyn_acc_id` int(10) unsigned NOT NULL COMMENT '账户id',
+  `dyn_amount` decimal(9,4) NOT NULL DEFAULT '0.0000' COMMENT '动账金额',
+  `dyn_type` char(3) DEFAULT NULL COMMENT '动账类型(收入in,支出out)',
+  `dyn_amount_type` char(4) DEFAULT NULL COMMENT '资金类型（usdt，mt）',
+  `dyn_desc` varchar(100) DEFAULT NULL COMMENT '动账描述',
+  `create_time` datetime DEFAULT NULL COMMENT '动账金额',
+  PRIMARY KEY (`dyn_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='动账记录表（收入支出）';
+
+-- ----------------------------
+-- Records of account_dynamic
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for city_auth_code
@@ -49,7 +68,7 @@ CREATE TABLE `city_file` (
   `update_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `index_from_id` (`from_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='文件';
 
 -- ----------------------------
 -- Records of city_file
@@ -60,7 +79,7 @@ CREATE TABLE `city_file` (
 -- ----------------------------
 DROP TABLE IF EXISTS `city_invest`;
 CREATE TABLE `city_invest` (
-  `in_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '标识',
+  `in_id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '标识',
   `in_name` varchar(255) DEFAULT NULL COMMENT '名称',
   `in_limit` float unsigned DEFAULT NULL COMMENT '限额',
   `in_start` datetime DEFAULT NULL COMMENT '开始时间',
@@ -68,7 +87,7 @@ CREATE TABLE `city_invest` (
   `in_earning` varchar(255) DEFAULT NULL COMMENT '收益倍数',
   `in_end` datetime DEFAULT NULL COMMENT '投资结束时间',
   PRIMARY KEY (`in_id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='投资项目表';
 
 -- ----------------------------
 -- Records of city_invest
@@ -209,7 +228,7 @@ CREATE TABLE `invest_order` (
   PRIMARY KEY (`order_id`) USING BTREE,
   KEY `index_order_invest_id` (`order_invest_id`),
   KEY `index_order_payer_id` (`order_payer_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='订单（投资记录）';
 
 -- ----------------------------
 -- Records of invest_order
@@ -220,7 +239,7 @@ CREATE TABLE `invest_order` (
 -- ----------------------------
 DROP TABLE IF EXISTS `invest_rule`;
 CREATE TABLE `invest_rule` (
-  `rule_id` int(11) NOT NULL,
+  `rule_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `rule_name` varchar(50) DEFAULT NULL COMMENT '规则名称',
   `rule_desc` varchar(200) DEFAULT NULL COMMENT '规则描述',
   `rule_item` int(11) unsigned DEFAULT NULL COMMENT '规则项目',
@@ -231,7 +250,7 @@ CREATE TABLE `invest_rule` (
   PRIMARY KEY (`rule_id`) USING BTREE,
   KEY `index_rule_item` (`rule_item`),
   KEY `index_rule_name` (`rule_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='项目规则表';
 
 -- ----------------------------
 -- Records of invest_rule
@@ -244,11 +263,17 @@ DROP TABLE IF EXISTS `player_account`;
 CREATE TABLE `player_account` (
   `acc_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `acc_player_id` varchar(64) NOT NULL COMMENT '账户玩家',
-  `acc_usdt` double DEFAULT NULL COMMENT '账户usdt额度',
-  `acc_mt` double DEFAULT NULL COMMENT '账户mt额度',
+  `acc_usdt` decimal(9,4) NOT NULL DEFAULT '0.0000' COMMENT '账户usdt额度',
+  `acc_usdt_available` decimal(9,4) unsigned NOT NULL DEFAULT '0.0000' COMMENT 'usdt可用金额',
+  `acc_usdt_freeze` decimal(9,4) unsigned NOT NULL DEFAULT '0.0000' COMMENT 'usdt冻结金额',
+  `acc_mt` decimal(9,4) NOT NULL DEFAULT '0.0000' COMMENT '账户mt额度',
+  `acc_mt_available` decimal(9,4) unsigned NOT NULL DEFAULT '0.0000' COMMENT 'mt可用金额',
+  `acc_mt_freeze` decimal(9,4) unsigned NOT NULL DEFAULT '0.0000' COMMENT 'mt冻结金额',
+  `create_time` datetime DEFAULT NULL,
+  `update_time` datetime DEFAULT NULL,
   PRIMARY KEY (`acc_id`),
   KEY `index_acc_player_id` (`acc_player_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='玩家账户表';
 
 -- ----------------------------
 -- Records of player_account
@@ -265,7 +290,7 @@ CREATE TABLE `player_earning` (
   `earn_tax` double DEFAULT NULL COMMENT '税金',
   PRIMARY KEY (`earn_id`) USING BTREE,
   KEY `index_earn_player_id` (`earn_player_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='玩家收益';
 
 -- ----------------------------
 -- Records of player_earning
@@ -355,7 +380,7 @@ CREATE TABLE `player_likes` (
   PRIMARY KEY (`liked_id`),
   KEY `index_liked_player_id` (`liked_player_id`),
   KEY `index_liked_invest_id` (`liked_invest_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COMMENT='玩家获赞表';
 
 -- ----------------------------
 -- Records of player_likes
@@ -371,17 +396,6 @@ INSERT INTO `player_likes` VALUES ('6', 'FD826FE2E378445594D23CA84C0C485D', null
 -- Table structure for player_likes_log
 -- ----------------------------
 DROP TABLE IF EXISTS `player_likes_log`;
-<<<<<<< HEAD
-CREATE TABLE `player_likes_log`  (
-  `like_id` int(11) NOT NULL AUTO_INCREMENT,
-  `like_player_id` varchar(0) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '点赞玩家ID',
-  `like_liked_id` varchar(0) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '收获点赞玩家ID',
-  `like_invest_id` int(11) NULL DEFAULT NULL COMMENT '点赞投资ID',
-  `create_time` timestamp(0) NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP(0),
-  `update_time` timestamp(0) NOT NULL ON UPDATE CURRENT_TIMESTAMP(0),
-  PRIMARY KEY (`like_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
-=======
 CREATE TABLE `player_likes_log` (
   `like_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `like_player_id` varchar(64) CHARACTER SET utf8 DEFAULT NULL COMMENT '点赞玩家ID',
@@ -390,7 +404,7 @@ CREATE TABLE `player_likes_log` (
   `create_time` datetime DEFAULT NULL,
   `update_time` datetime DEFAULT NULL,
   PRIMARY KEY (`like_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COMMENT='点赞记录表';
 
 -- ----------------------------
 -- Records of player_likes_log
@@ -420,7 +434,6 @@ CREATE TABLE `player_login_log` (
 -- ----------------------------
 -- Records of player_login_log
 -- ----------------------------
->>>>>>> 715901a0f9d18eb10d6c9dc4a40269a01e984057
 
 -- ----------------------------
 -- Table structure for rule_item
@@ -435,7 +448,7 @@ CREATE TABLE `rule_item` (
   `update_time` datetime DEFAULT NULL,
   PRIMARY KEY (`item_id`),
   KEY `index_item_name` (`item_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='规则表';
 
 -- ----------------------------
 -- Records of rule_item
