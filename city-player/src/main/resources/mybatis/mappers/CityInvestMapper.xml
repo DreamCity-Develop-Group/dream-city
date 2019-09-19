@@ -13,24 +13,47 @@
   <sql id="Base_Column_List" >
     in_id, in_name, in_limit, in_start, in_tax, in_earning, in_end
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.dream.city.base.model.entity.CityInvest" >
     select 
     <include refid="Base_Column_List" />
     from city_invest
-    where in_id = #{inId,jdbcType=INTEGER}
+    <where>
+      1=1
+      <if test="inId !=null">
+        and in_id = #{inId,jdbcType=INTEGER}
+      </if>
+      <if test="inName !=null">
+        and in_name = #{inName,jdbcType=INTEGER}
+      </if>
+
+    </where>
+    limit 1
   </select>
+
+  <select id="getInvestLsit" resultMap="BaseResultMap" parameterType="com.dream.city.base.model.entity.CityInvest" >
+    select
+    <include refid="Base_Column_List" />
+    from city_invest
+    <where>
+      1=1
+      <if test="inId !=null">
+        and in_id = #{inId,jdbcType=INTEGER}
+      </if>
+      <if test="inName !=null">
+        and in_name = #{inName,jdbcType=INTEGER}
+      </if>
+
+    </where>
+
+  </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from city_invest
     where in_id = #{inId,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.dream.city.base.model.entity.CityInvest" >
-    insert into city_invest (in_id, in_name, in_limit, 
-      in_start, in_tax, in_earning, 
-      in_end)
-    values (#{inId,jdbcType=INTEGER}, #{inName,jdbcType=VARCHAR}, #{inLimit,jdbcType=REAL}, 
-      #{inStart,jdbcType=TIMESTAMP}, #{inTax,jdbcType=DOUBLE}, #{inEarning,jdbcType=VARCHAR}, 
-      #{inEnd,jdbcType=TIMESTAMP})
-  </insert>
+
+
   <insert id="insertSelective" parameterType="com.dream.city.base.model.entity.CityInvest" >
     insert into city_invest
     <trim prefix="(" suffix=")" suffixOverrides="," >
@@ -104,14 +127,6 @@
     </set>
     where in_id = #{inId,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.dream.city.base.model.entity.CityInvest" >
-    update city_invest
-    set in_name = #{inName,jdbcType=VARCHAR},
-      in_limit = #{inLimit,jdbcType=REAL},
-      in_start = #{inStart,jdbcType=TIMESTAMP},
-      in_tax = #{inTax,jdbcType=DOUBLE},
-      in_earning = #{inEarning,jdbcType=VARCHAR},
-      in_end = #{inEnd,jdbcType=TIMESTAMP}
-    where in_id = #{inId,jdbcType=INTEGER}
-  </update>
+
+
 </mapper>

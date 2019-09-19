@@ -94,14 +94,14 @@
   <select id="playerLikesCount" resultType="INTEGER" parameterType="com.dream.city.player.domain.req.PlayerLikesReq" >
     select sum(liked_invest_total)
     from player_likes
-    where liked_player_id = #{likedPlayerId,jdbcType=INTEGER}
+    where liked_player_id = #{likedPlayerId,jdbcType=VARCHAR}
   </select>
 
 
   <select id="playerLikesList" resultMap="BaseResultMap" parameterType="com.dream.city.player.domain.req.PlayerLikesReq" >
     select <include refid="Base_Column_List" />
     from player_likes
-    where liked_player_id = #{likedPlayerId,jdbcType=INTEGER}
+    where liked_player_id = #{likedPlayerId,jdbcType=VARCHAR}
   </select>
 
 </mapper>
