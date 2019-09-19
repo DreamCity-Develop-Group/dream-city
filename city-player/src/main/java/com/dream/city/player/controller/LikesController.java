@@ -29,8 +29,7 @@ public class LikesController {
 
     @Autowired
     LikesService likesService;
-    @Autowired
-    PlayerLikesLogMapper likesLogMapper;
+
 
 
 
@@ -48,12 +47,9 @@ public class LikesController {
 
         PlayerLikesReq playerLikes = getPlayerLikes(jsonReq);
         int i = likesService.playerLike(playerLikes);
-
         if (i>0){
             b = Boolean.TRUE;
             msg = "点赞成功";
-
-            savePlayerLikesLog(playerLikes);
         }
 
         result.setData(i);
@@ -63,14 +59,7 @@ public class LikesController {
     }
 
 
-    private void savePlayerLikesLog(PlayerLikesReq playerLikes){
-        PlayerLikesLog record = new PlayerLikesLog();
-        record.setCreateTime(new Date());
-        record.setLikeInvestId(playerLikes.getLikedInvestId());
-        record.setLikeLikedId(playerLikes.getLikedPlayerId());
-        record.setLikePlayerId(playerLikes.getLikePlayerId());
-        likesLogMapper.insertSelective(record);
-    }
+
 
     /**
      * 取消点赞
@@ -90,8 +79,6 @@ public class LikesController {
         if (i>0){
             b = Boolean.TRUE;
             msg = "取消点赞成功";
-
-            savePlayerLikesLog(playerLikes);
         }
 
         result.setData(i);
@@ -164,13 +151,12 @@ public class LikesController {
         Map map = JSON.parseObject(jsonReq,Map.class);
         String likedIdStr = map.containsKey("likedId")?(String)map.get("likedId"):null;
         String likedInvestIdStr = map.containsKey("likedInvestId")?(String)map.get("likedInvestId"):null;
-        String likedInvestTotalStr = map.containsKey("likedInvestTotal")?(String)map.get("likedInvestTotal"):null;
+        Integer likedInvestTotal = map.containsKey("likedInvestTotal")?(Integer)map.get("likedInvestTotal"):1;
         String likedPlayerId = map.containsKey("likedPlayerId")?(String)map.get("likedPlayerId"):null;
         String likePlayerId = map.containsKey("likePlayerId")?(String)map.get("likePlayerId"):null;
 
         Integer likedId = likedIdStr == null? null: Integer.parseInt(likedIdStr);
         Integer likedInvestId = likedInvestIdStr == null? null: Integer.parseInt(likedInvestIdStr);
-        Integer likedInvestTotal = likedInvestTotalStr == null? 0: Integer.parseInt(likedInvestTotalStr);
 
         PlayerLikesReq likes = new PlayerLikesReq();
         likes.setLikedId(likedId);

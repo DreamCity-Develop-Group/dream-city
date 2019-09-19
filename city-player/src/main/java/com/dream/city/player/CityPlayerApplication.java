@@ -58,30 +58,6 @@ public class CityPlayerApplication {
     private int minIdle;
 
 
-    @Bean
-    public RedisUtils redisUtils(){
-        return new RedisUtils();
-    }
-
-    @Bean(name="redisTemplate")
-    @ConditionalOnMissingBean(name = "redisTemplate")
-    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory jedisConnectionFactory) throws UnknownHostException {
-        RedisTemplate<String, Object> template = new RedisTemplate<>();
-        template.setConnectionFactory(jedisConnectionFactory);
-
-        ObjectMapper om = new ObjectMapper();
-        om.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
-        om.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
-        Jackson2JsonRedisSerializer jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer(Object.class);
-        jackson2JsonRedisSerializer.setObjectMapper(om);
-        RedisSerializer<String> redisSerializer = new StringRedisSerializer();
-        template.setHashKeySerializer(redisSerializer);
-        template.setHashValueSerializer(jackson2JsonRedisSerializer);
-        template.setKeySerializer(redisSerializer);
-        template.setValueSerializer(jackson2JsonRedisSerializer);
-
-        return template;
-    }
 
     @Bean(name = "stringRedisTemplate")
     @ConditionalOnMissingBean
@@ -139,5 +115,29 @@ public class CityPlayerApplication {
         return new JedisConnectionFactory(redisStandaloneConfiguration, jedisClientConfiguration);
     }
 
+    @Bean
+    public RedisUtils redisUtils(){
+        return new RedisUtils();
+    }
+
+    @Bean(name="redisTemplate")
+    @ConditionalOnMissingBean(name = "redisTemplate")
+    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory jedisConnectionFactory) throws UnknownHostException {
+        RedisTemplate<String, Object> template = new RedisTemplate<>();
+        template.setConnectionFactory(jedisConnectionFactory);
+
+        ObjectMapper om = new ObjectMapper();
+        om.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
+        om.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
+        Jackson2JsonRedisSerializer jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer(Object.class);
+        jackson2JsonRedisSerializer.setObjectMapper(om);
+        RedisSerializer<String> redisSerializer = new StringRedisSerializer();
+        template.setHashKeySerializer(redisSerializer);
+        template.setHashValueSerializer(jackson2JsonRedisSerializer);
+        template.setKeySerializer(redisSerializer);
+        template.setValueSerializer(jackson2JsonRedisSerializer);
+
+        return template;
+    }
 
 }
