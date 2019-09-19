@@ -215,7 +215,7 @@ public class ConsumerPlayerController {
         UserReq userReq = getUserReq(message);
         String jsonReq = JSON.toJSONString(userReq);
 
-        String descMsg = checkCode(userReq.getCode());
+        String descMsg = checkCode(userReq.getCode(),msg.getSource());
         String descT = CityGlobal.Constant.REG_FAIL;
         Result reg = null;
         if (StringUtils.isBlank(descMsg)){
@@ -245,13 +245,13 @@ public class ConsumerPlayerController {
      * @param code
      * @return
      */
-    private String checkCode(String code){
+    private String checkCode(String code,String msgSource){
         String descMsg = null;
         // 校验验证码
         if (StringUtils.isBlank(code)){ //验证码不能为空
             descMsg = CityGlobal.Constant.USER_VLCODE_NULL;
         }else {
-            String redisValidCodekey = RedisKeys.REDIS_KEY_VALIDCODE+message.getSource();
+            String redisValidCodekey = RedisKeys.REDIS_KEY_VALIDCODE + msgSource;
             if (!redisUtils.hasKey(redisValidCodekey)){ //该验证码超时
                 descMsg = CityGlobal.Constant.USER_VLCODE_TIMEOUT;
             }
@@ -329,7 +329,7 @@ public class ConsumerPlayerController {
 
         UserReq userReq = getUserReq(msg);
         // 校验认证码
-        String descMsg = checkCode(userReq.getCode());
+        String descMsg = checkCode(userReq.getCode(),msg.getSource());
         String descT = CityGlobal.Constant.LOGIN_FAIL;
 
         if (StringUtils.isBlank(descMsg)){
