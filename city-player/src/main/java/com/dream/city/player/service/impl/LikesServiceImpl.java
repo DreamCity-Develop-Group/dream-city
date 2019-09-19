@@ -1,7 +1,7 @@
 package com.dream.city.player.service.impl;
 
-import com.dream.city.player.domain.entity.PlayerLikes;
-import com.dream.city.player.domain.entity.PlayerLikesLog;
+import com.dream.city.base.model.entity.PlayerLikes;
+import com.dream.city.base.model.entity.PlayerLikesLog;
 import com.dream.city.player.domain.mapper.PlayerLikesLogMapper;
 import com.dream.city.player.domain.mapper.PlayerLikesMapper;
 import com.dream.city.player.domain.req.PlayerLikesReq;

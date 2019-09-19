@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.dream.city.player.domain.mapper.CityTreeMapper" >
-  <resultMap id="BaseResultMap" type="com.dream.city.player.domain.entity.CityTree" >
+  <resultMap id="BaseResultMap" type="com.dream.city.base.model.entity.CityTree" >
     <id column="tree_id" property="treeId" jdbcType="INTEGER" />
     <result column="tree_parent_id" property="treeParentId" jdbcType="INTEGER" />
     <result column="tree_player_id" property="treePlayerId" jdbcType="INTEGER" />
@@ -20,13 +20,13 @@
     delete from city_tree
     where tree_id = #{treeId,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.dream.city.player.domain.entity.CityTree" >
+  <insert id="insert" parameterType="com.dream.city.base.model.entity.CityTree" >
     insert into city_tree (tree_id, tree_parent_id, tree_player_id, 
       tree_relation)
     values (#{treeId,jdbcType=INTEGER}, #{treeParentId,jdbcType=INTEGER}, #{treePlayerId,jdbcType=INTEGER}, 
       #{treeRelation,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.dream.city.player.domain.entity.CityTree" >
+  <insert id="insertSelective" parameterType="com.dream.city.base.model.entity.CityTree" >
     insert into city_tree
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="treeId != null" >
@@ -57,7 +57,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.dream.city.player.domain.entity.CityTree" >
+  <update id="updateByPrimaryKeySelective" parameterType="com.dream.city.base.model.entity.CityTree" >
     update city_tree
     <set >
       <if test="treeParentId != null" >
@@ -72,7 +72,7 @@
     </set>
     where tree_id = #{treeId,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.dream.city.player.domain.entity.CityTree" >
+  <update id="updateByPrimaryKey" parameterType="com.dream.city.base.model.entity.CityTree" >
     update city_tree
     set tree_parent_id = #{treeParentId,jdbcType=INTEGER},
       tree_player_id = #{treePlayerId,jdbcType=INTEGER},

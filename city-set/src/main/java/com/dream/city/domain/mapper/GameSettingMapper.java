@@ -1,7 +1,7 @@
 package com.dream.city.domain.mapper;
 
 
-import com.dream.city.domain.entity.GameSetting;
+import com.dream.city.base.model.entity.GameSetting;
 import org.springframework.stereotype.Repository;
 
 @Repository

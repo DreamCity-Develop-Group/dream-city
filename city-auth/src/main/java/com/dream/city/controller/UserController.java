@@ -1,6 +1,6 @@
 package com.dream.city.controller;
 
-import com.dream.city.domain.entity.User;
+import com.dream.city.base.model.entity.User;
 import com.dream.city.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

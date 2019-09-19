@@ -1,8 +1,8 @@
 package com.dream.city.player.domain.mapper;
 
 
+import com.dream.city.base.model.entity.Player;
 import com.dream.city.base.model.req.PageReq;
-import com.dream.city.player.domain.entity.Player;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.dream.city.domain.mapper.UserMapper">
-    <resultMap id="SysUserResultMap" type="com.dream.city.domain.entity.User">
+    <resultMap id="SysUserResultMap" type="com.dream.city.base.model.entity.User">
         <id property="uId" column="uid" javaType="java.lang.Long" jdbcType="BIGINT"/>
         <result property="uName" column="u_name" javaType="java.lang.String" jdbcType="VARCHAR"/>
         <result property="uPass" column="u_pass" javaType="java.lang.String" jdbcType="VARCHAR"/>
@@ -17,7 +17,7 @@
     </select>
 
 
-    <insert id="save" parameterType="com.dream.city.domain.entity.User" >
+    <insert id="save" parameterType="com.dream.city.base.model.entity.User" >
         insert into city_user
         <trim prefix="(" suffix=")" suffixOverrides="," >
             <if test="id != null" >
@@ -57,7 +57,7 @@
     </insert>
 
 
-    <update id="update" parameterType="com.dream.city.domain.entity.User" >
+    <update id="update" parameterType="com.dream.city.base.model.entity.User" >
         update city_user
         <set >
             <if test="username != null" >

@@ -1,9 +1,8 @@
 package com.dream.city.player.domain.mapper;
 
 
-import com.dream.city.player.domain.entity.PlayerExt;
+import com.dream.city.base.model.entity.PlayerExt;
 import org.apache.ibatis.annotations.Mapper;
-import org.springframework.stereotype.Repository;
 
 @Mapper
 public interface PlayerExtMapper {

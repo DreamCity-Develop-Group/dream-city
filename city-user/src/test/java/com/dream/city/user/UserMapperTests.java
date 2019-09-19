@@ -1,7 +1,7 @@
 package com.dream.city.user;
 
 import com.dream.city.domain.mapper.UserMapper;
-import com.dream.city.domain.entity.User;
+import com.dream.city.base.model.entity.User;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -2,7 +2,7 @@ package com.dream.city.player.service;
 
 import com.dream.city.base.model.Page;
 import com.dream.city.base.model.req.PageReq;
-import com.dream.city.player.domain.entity.Friends;
+import com.dream.city.base.model.entity.Friends;
 
 /**
  * 好友

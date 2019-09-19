@@ -6,7 +6,7 @@
 
     <!--id对应接口中的方法，名字要一样，parameterType是方法的参数类型，
     resultType是查询返回的类型，需要注意的是，这里的SQL语句后面不能加分号，变量不能加引号-->
-    <select id="getById" parameterType="int" resultType="com.dream.city.domain.entity.User">
+    <select id="getById" parameterType="int" resultType="com.dream.city.base.model.entity.User">
         select * from user where id = #{id}
     </select>
 
@@ -14,11 +14,11 @@
         insert into user(name) values(#{name})
     </insert>
 
-    <select id="getUsers"  resultType="com.dream.city.domain.entity.User">
+    <select id="getUsers"  resultType="com.dream.city.base.model.entity.User">
         select * from user order by #{id}
     </select>
 
-    <update id="updateUser" parameterType="com.dream.city.domain.entity.User">
+    <update id="updateUser" parameterType="com.dream.city.base.model.entity.User">
         update user set name=#{name} where id = #{id}
     </update>
     <delete id="deleteAllUsers">

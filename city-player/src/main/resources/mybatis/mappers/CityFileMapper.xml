@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.dream.city.player.domain.mapper.CityFileMapper" >
-  <resultMap id="BaseResultMap" type="com.dream.city.player.domain.entity.CityFile" >
+  <resultMap id="BaseResultMap" type="com.dream.city.base.model.entity.CityFile" >
     <id column="id" property="id" jdbcType="BIGINT" />
     <result column="file_url" property="fileUrl" jdbcType="VARCHAR" />
     <result column="file_type" property="fileType" jdbcType="VARCHAR" />
@@ -23,7 +23,7 @@
     delete from city_file
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.dream.city.player.domain.entity.CityFile" >
+  <insert id="insert" parameterType="com.dream.city.base.model.entity.CityFile" >
     insert into city_file (id, file_url, file_type, 
       is_valid, from_id, create_time, 
       update_time)
@@ -31,7 +31,7 @@
       #{isValid,jdbcType=BIT}, #{fromId,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
       #{updateTime,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="com.dream.city.player.domain.entity.CityFile" >
+  <insert id="insertSelective" parameterType="com.dream.city.base.model.entity.CityFile" >
     insert into city_file
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -80,7 +80,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.dream.city.player.domain.entity.CityFile" >
+  <update id="updateByPrimaryKeySelective" parameterType="com.dream.city.base.model.entity.CityFile" >
     update city_file
     <set >
       <if test="fileUrl != null" >
@@ -104,7 +104,7 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.dream.city.player.domain.entity.CityFile" >
+  <update id="updateByPrimaryKey" parameterType="com.dream.city.base.model.entity.CityFile" >
     update city_file
     set file_url = #{fileUrl,jdbcType=VARCHAR},
       file_type = #{fileType,jdbcType=VARCHAR},

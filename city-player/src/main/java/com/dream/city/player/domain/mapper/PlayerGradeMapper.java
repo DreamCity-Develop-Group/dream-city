@@ -1,9 +1,8 @@
 package com.dream.city.player.domain.mapper;
 
 
-import com.dream.city.player.domain.entity.PlayerGrade;
+import com.dream.city.base.model.entity.PlayerGrade;
 import org.apache.ibatis.annotations.Mapper;
-import org.springframework.stereotype.Repository;
 
 @Mapper
 public interface PlayerGradeMapper {

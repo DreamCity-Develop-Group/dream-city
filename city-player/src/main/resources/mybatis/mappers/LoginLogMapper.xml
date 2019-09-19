@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.dream.city.player.domain.mapper.LoginLogMapper">
-  <resultMap id="BaseResultMap" type="com.dream.city.player.domain.entity.LoginLog">
+  <resultMap id="BaseResultMap" type="com.dream.city.base.model.entity.LoginLog">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="player_id" jdbcType="VARCHAR" property="playerId" />
     <result column="imei" jdbcType="VARCHAR" property="imei" />
@@ -28,7 +28,7 @@
   </delete>
 
 
-  <insert id="insertSelective" parameterType="com.dream.city.player.domain.entity.LoginLog">
+  <insert id="insertSelective" parameterType="com.dream.city.base.model.entity.LoginLog">
     insert into player_login_log
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -68,7 +68,7 @@
     </trim>
   </insert>
 
-  <update id="updateByPrimaryKeySelective" parameterType="com.dream.city.player.domain.entity.LoginLog">
+  <update id="updateByPrimaryKeySelective" parameterType="com.dream.city.base.model.entity.LoginLog">
     update player_login_log
     <set>
       <if test="playerId != null">

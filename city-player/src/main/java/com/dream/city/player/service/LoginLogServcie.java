@@ -1,6 +1,6 @@
 package com.dream.city.player.service;
 
-import com.dream.city.player.domain.entity.LoginLog;
+import com.dream.city.base.model.entity.LoginLog;
 
 public interface LoginLogServcie {
 

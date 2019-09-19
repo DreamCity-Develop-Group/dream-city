@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.dream.city.base.utils.RedisUtils;
 import com.dream.city.domain.Message;
 import com.dream.city.domain.MessageData;
-import com.dream.city.domain.entity.User;
+import com.dream.city.base.model.entity.User;
 import com.dream.city.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;

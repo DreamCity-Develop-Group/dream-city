@@ -7,6 +7,6 @@
         <setting name="mapUnderscoreToCamelCase" value="true"/>
     </settings>
     <typeAliases>
-        <package name="com.dream.city.domain.entity"/>
+        <package name="com.dream.city.base.model.entity"/>
     </typeAliases>
 </configuration>

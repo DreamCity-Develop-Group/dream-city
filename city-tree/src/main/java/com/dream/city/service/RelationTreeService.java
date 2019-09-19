@@ -1,8 +1,8 @@
 package com.dream.city.service;
 
 import com.dream.city.base.model.Result;
-import com.dream.city.domain.entity.RelationTree;
-import com.dream.city.domain.entity.User;
+import com.dream.city.base.model.entity.RelationTree;
+import com.dream.city.base.model.entity.User;
 
 import java.util.List;
 import java.util.Map;

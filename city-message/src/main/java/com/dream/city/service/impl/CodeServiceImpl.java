@@ -1,6 +1,6 @@
 package com.dream.city.service.impl;
 
-import com.dream.city.domain.entity.AuthCode;
+import com.dream.city.base.model.entity.AuthCode;
 import com.dream.city.domain.mapper.AuthCodeMapper;
 import com.dream.city.service.CodeService;
 import org.springframework.beans.factory.annotation.Autowired;

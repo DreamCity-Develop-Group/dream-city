@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.dream.city.player.domain.mapper.PlayerAccountMapper" >
-  <resultMap id="BaseResultMap" type="com.dream.city.player.domain.entity.PlayerAccount" >
+  <resultMap id="BaseResultMap" type="com.dream.city.base.model.entity.PlayerAccount" >
     <id column="acc_id" property="accId" jdbcType="INTEGER" />
     <result column="acc_player_id" property="accPlayerId" jdbcType="VARCHAR" />
     <result column="acc_usdt" property="accUsdt" jdbcType="DECIMAL" />
@@ -27,7 +27,7 @@
     delete from player_account
     where acc_id = #{accId,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.dream.city.player.domain.entity.PlayerAccount" >
+  <insert id="insert" parameterType="com.dream.city.base.model.entity.PlayerAccount" >
     insert into player_account (acc_id, acc_player_id, acc_usdt, 
       acc_usdt_available, acc_usdt_freeze, acc_mt, 
       acc_mt_available, acc_mt_freeze, create_time, 
@@ -37,7 +37,7 @@
       #{accMtAvailable,jdbcType=DECIMAL}, #{accMtFreeze,jdbcType=DECIMAL}, #{createTime,jdbcType=TIMESTAMP}, 
       #{updateTime,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="com.dream.city.player.domain.entity.PlayerAccount" >
+  <insert id="insertSelective" parameterType="com.dream.city.base.model.entity.PlayerAccount" >
     insert into player_account
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="accId != null" >
@@ -104,7 +104,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.dream.city.player.domain.entity.PlayerAccount" >
+  <update id="updateByPrimaryKeySelective" parameterType="com.dream.city.base.model.entity.PlayerAccount" >
     update player_account
     <set >
       <if test="accPlayerId != null" >
@@ -137,7 +137,7 @@
     </set>
     where acc_id = #{accId,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.dream.city.player.domain.entity.PlayerAccount" >
+  <update id="updateByPrimaryKey" parameterType="com.dream.city.base.model.entity.PlayerAccount" >
     update player_account
     set acc_player_id = #{accPlayerId,jdbcType=VARCHAR},
       acc_usdt = #{accUsdt,jdbcType=DECIMAL},

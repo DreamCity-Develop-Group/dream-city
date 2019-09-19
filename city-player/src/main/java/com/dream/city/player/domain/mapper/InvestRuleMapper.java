@@ -1,7 +1,7 @@
 package com.dream.city.player.domain.mapper;
 
 
-import com.dream.city.player.domain.entity.InvestRule;
+import com.dream.city.base.model.entity.InvestRule;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper

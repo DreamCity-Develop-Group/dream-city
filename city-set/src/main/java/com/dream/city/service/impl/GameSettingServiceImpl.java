@@ -1,7 +1,7 @@
 package com.dream.city.service.impl;
 
 import com.dream.city.base.model.enu.GameSettingType;
-import com.dream.city.domain.entity.GameSetting;
+import com.dream.city.base.model.entity.GameSetting;
 import com.dream.city.domain.mapper.GameSettingMapper;
 import com.dream.city.service.GameSettingService;
 import org.springframework.beans.factory.annotation.Autowired;

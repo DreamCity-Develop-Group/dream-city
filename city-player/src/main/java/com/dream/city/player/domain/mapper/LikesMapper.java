@@ -1,9 +1,8 @@
 package com.dream.city.player.domain.mapper;
 
 
-import com.dream.city.player.domain.entity.Likes;
+import com.dream.city.base.model.entity.Likes;
 import org.apache.ibatis.annotations.Mapper;
-import org.springframework.stereotype.Repository;
 
 @Mapper
 public interface LikesMapper {

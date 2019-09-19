@@ -1,6 +1,6 @@
 package com.dream.city.player.service.impl;
 
-import com.dream.city.player.domain.entity.LoginLog;
+import com.dream.city.base.model.entity.LoginLog;
 import com.dream.city.player.domain.mapper.LoginLogMapper;
 import com.dream.city.player.service.LoginLogServcie;
 import org.slf4j.Logger;

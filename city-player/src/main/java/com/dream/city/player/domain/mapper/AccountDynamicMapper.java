@@ -1,7 +1,7 @@
 package com.dream.city.player.domain.mapper;
 
 
-import com.dream.city.player.domain.entity.AccountDynamic;
+import com.dream.city.base.model.entity.AccountDynamic;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper

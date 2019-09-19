@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.dream.city.player.domain.mapper.PlayerLikesLogMapper" >
-  <resultMap id="BaseResultMap" type="com.dream.city.player.domain.entity.PlayerLikesLog" >
+  <resultMap id="BaseResultMap" type="com.dream.city.base.model.entity.PlayerLikesLog" >
     <id column="like_id" property="likeId" jdbcType="INTEGER" />
     <result column="like_player_id" property="likePlayerId" jdbcType="VARCHAR" />
     <result column="like_liked_id" property="likeLikedId" jdbcType="VARCHAR" />
@@ -22,7 +22,7 @@
     delete from player_likes_log
     where like_id = #{likeId,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.dream.city.player.domain.entity.PlayerLikesLog" >
+  <insert id="insert" parameterType="com.dream.city.base.model.entity.PlayerLikesLog" >
     insert into player_likes_log (like_id, like_player_id, like_liked_id,
       like_invest_id, create_time, update_time
       )
@@ -30,7 +30,7 @@
       #{likeInvestId,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.dream.city.player.domain.entity.PlayerLikesLog" >
+  <insert id="insertSelective" parameterType="com.dream.city.base.model.entity.PlayerLikesLog" >
     insert into player_likes_log
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="likeId != null" >
@@ -73,7 +73,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.dream.city.player.domain.entity.PlayerLikesLog" >
+  <update id="updateByPrimaryKeySelective" parameterType="com.dream.city.base.model.entity.PlayerLikesLog" >
     update player_likes_log
     <set >
       <if test="likePlayerId != null" >
@@ -94,7 +94,7 @@
     </set>
     where like_id = #{likeId,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.dream.city.player.domain.entity.PlayerLikesLog" >
+  <update id="updateByPrimaryKey" parameterType="com.dream.city.base.model.entity.PlayerLikesLog" >
     update player_likes_log
     set like_player_id = #{likePlayerId,jdbcType=VARCHAR},
       like_liked_id = #{likeLikedId,jdbcType=VARCHAR},

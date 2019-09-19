@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.dream.city.player.domain.mapper.PlayerLikesMapper" >
-  <resultMap id="BaseResultMap" type="com.dream.city.player.domain.entity.PlayerLikes" >
+  <resultMap id="BaseResultMap" type="com.dream.city.base.model.entity.PlayerLikes" >
     <id column="liked_id" property="likedId" jdbcType="INTEGER" />
     <result column="liked_player_id" property="likedPlayerId" jdbcType="VARCHAR" />
     <result column="liked_invest_id" property="likedInvestId" jdbcType="INTEGER" />

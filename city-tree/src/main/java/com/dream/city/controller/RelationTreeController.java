@@ -2,8 +2,8 @@ package com.dream.city.controller;
 
 import com.dream.city.base.model.CityGlobal;
 import com.dream.city.base.model.Result;
-import com.dream.city.domain.entity.RelationTree;
-import com.dream.city.domain.entity.User;
+import com.dream.city.base.model.entity.RelationTree;
+import com.dream.city.base.model.entity.User;
 import com.dream.city.service.RelationTreeService;
 import com.dream.city.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

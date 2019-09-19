@@ -1,7 +1,7 @@
 package com.dream.city.domain.mapper;
 
-import com.dream.city.domain.entity.RelationTree;
-import com.dream.city.domain.entity.User;
+import com.dream.city.base.model.entity.RelationTree;
+import com.dream.city.base.model.entity.User;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

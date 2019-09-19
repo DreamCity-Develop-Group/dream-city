@@ -1,7 +1,7 @@
 package com.dream.city.domain.mapper;
 
 
-import com.dream.city.domain.entity.AuthCode;
+import com.dream.city.base.model.entity.AuthCode;
 import org.springframework.stereotype.Repository;
 
 @Repository

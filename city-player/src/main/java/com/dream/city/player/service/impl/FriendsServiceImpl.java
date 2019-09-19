@@ -2,7 +2,7 @@ package com.dream.city.player.service.impl;
 
 import com.dream.city.base.model.Page;
 import com.dream.city.base.model.req.PageReq;
-import com.dream.city.player.domain.entity.Friends;
+import com.dream.city.base.model.entity.Friends;
 import com.dream.city.player.domain.mapper.FriendsMapper;
 import com.dream.city.player.service.FriendsService;
 import org.springframework.beans.factory.annotation.Autowired;

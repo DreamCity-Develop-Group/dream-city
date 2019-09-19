@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.dream.city.player.domain.mapper.InvestOrderMapper" >
-  <resultMap id="BaseResultMap" type="com.dream.city.player.domain.entity.InvestOrder" >
+  <resultMap id="BaseResultMap" type="com.dream.city.base.model.entity.InvestOrder" >
     <id column="order_id" property="orderId" jdbcType="INTEGER" />
     <result column="order_invest_id" property="orderInvestId" jdbcType="INTEGER" />
     <result column="order_payer_id" property="orderPayerId" jdbcType="VARCHAR" />
@@ -24,7 +24,7 @@
     delete from invest_order
     where order_id = #{orderId,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.dream.city.player.domain.entity.InvestOrder" >
+  <insert id="insert" parameterType="com.dream.city.base.model.entity.InvestOrder" >
     insert into invest_order (order_id, order_invest_id, order_payer_id, 
       order_state, order_repeat, create_time, 
       update_time)
@@ -32,7 +32,7 @@
       #{orderState,jdbcType=TINYINT}, #{orderRepeat,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP}, 
       #{updateTime,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="com.dream.city.player.domain.entity.InvestOrder" >
+  <insert id="insertSelective" parameterType="com.dream.city.base.model.entity.InvestOrder" >
     insert into invest_order
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="orderId != null" >
@@ -81,7 +81,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.dream.city.player.domain.entity.InvestOrder" >
+  <update id="updateByPrimaryKeySelective" parameterType="com.dream.city.base.model.entity.InvestOrder" >
     update invest_order
     <set >
       <if test="orderInvestId != null" >
@@ -105,7 +105,7 @@
     </set>
     where order_id = #{orderId,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.dream.city.player.domain.entity.InvestOrder" >
+  <update id="updateByPrimaryKey" parameterType="com.dream.city.base.model.entity.InvestOrder" >
     update invest_order
     set order_invest_id = #{orderInvestId,jdbcType=INTEGER},
       order_payer_id = #{orderPayerId,jdbcType=VARCHAR},

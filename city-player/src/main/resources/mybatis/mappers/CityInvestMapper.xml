@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.dream.city.player.domain.mapper.CityInvestMapper" >
-  <resultMap id="BaseResultMap" type="com.dream.city.player.domain.entity.CityInvest" >
+  <resultMap id="BaseResultMap" type="com.dream.city.base.model.entity.CityInvest" >
     <id column="in_id" property="inId" jdbcType="INTEGER" />
     <result column="in_name" property="inName" jdbcType="VARCHAR" />
     <result column="in_limit" property="inLimit" jdbcType="REAL" />
@@ -23,7 +23,7 @@
     delete from city_invest
     where in_id = #{inId,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.dream.city.player.domain.entity.CityInvest" >
+  <insert id="insert" parameterType="com.dream.city.base.model.entity.CityInvest" >
     insert into city_invest (in_id, in_name, in_limit, 
       in_start, in_tax, in_earning, 
       in_end)
@@ -31,7 +31,7 @@
       #{inStart,jdbcType=TIMESTAMP}, #{inTax,jdbcType=DOUBLE}, #{inEarning,jdbcType=VARCHAR}, 
       #{inEnd,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="com.dream.city.player.domain.entity.CityInvest" >
+  <insert id="insertSelective" parameterType="com.dream.city.base.model.entity.CityInvest" >
     insert into city_invest
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="inId != null" >
@@ -80,7 +80,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.dream.city.player.domain.entity.CityInvest" >
+  <update id="updateByPrimaryKeySelective" parameterType="com.dream.city.base.model.entity.CityInvest" >
     update city_invest
     <set >
       <if test="inName != null" >
@@ -104,7 +104,7 @@
     </set>
     where in_id = #{inId,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.dream.city.player.domain.entity.CityInvest" >
+  <update id="updateByPrimaryKey" parameterType="com.dream.city.base.model.entity.CityInvest" >
     update city_invest
     set in_name = #{inName,jdbcType=VARCHAR},
       in_limit = #{inLimit,jdbcType=REAL},

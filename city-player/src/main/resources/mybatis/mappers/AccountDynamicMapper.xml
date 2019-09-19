@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.dream.city.player.domain.mapper.AccountDynamicMapper" >
-  <resultMap id="BaseResultMap" type="com.dream.city.player.domain.entity.AccountDynamic" >
+  <resultMap id="BaseResultMap" type="com.dream.city.base.model.entity.AccountDynamic" >
     <id column="dyn_id" property="dynId" jdbcType="INTEGER" />
     <result column="dyn_acc_id" property="dynAccId" jdbcType="INTEGER" />
     <result column="dyn_amount" property="dynAmount" jdbcType="DECIMAL" />
@@ -23,7 +23,7 @@
     delete from account_dynamic
     where dyn_id = #{dynId,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.dream.city.player.domain.entity.AccountDynamic" >
+  <insert id="insert" parameterType="com.dream.city.base.model.entity.AccountDynamic" >
     insert into account_dynamic (dyn_id, dyn_acc_id, dyn_amount, 
       dyn_type, dyn_amount_type, dyn_desc, 
       create_time)
@@ -31,7 +31,7 @@
       #{dynType,jdbcType=CHAR}, #{dynAmountType,jdbcType=CHAR}, #{dynDesc,jdbcType=VARCHAR}, 
       #{createTime,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="com.dream.city.player.domain.entity.AccountDynamic" >
+  <insert id="insertSelective" parameterType="com.dream.city.base.model.entity.AccountDynamic" >
     insert into account_dynamic
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="dynId != null" >
@@ -80,7 +80,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.dream.city.player.domain.entity.AccountDynamic" >
+  <update id="updateByPrimaryKeySelective" parameterType="com.dream.city.base.model.entity.AccountDynamic" >
     update account_dynamic
     <set >
       <if test="dynAccId != null" >
@@ -104,7 +104,7 @@
     </set>
     where dyn_id = #{dynId,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.dream.city.player.domain.entity.AccountDynamic" >
+  <update id="updateByPrimaryKey" parameterType="com.dream.city.base.model.entity.AccountDynamic" >
     update account_dynamic
     set dyn_acc_id = #{dynAccId,jdbcType=INTEGER},
       dyn_amount = #{dynAmount,jdbcType=DECIMAL},
