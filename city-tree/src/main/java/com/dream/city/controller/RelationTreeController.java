@@ -68,7 +68,7 @@ public class RelationTreeController {
     }
 
     /**
-     *
+     *  查找商会关系的上级
      * @param playerId
      * @return
      */
