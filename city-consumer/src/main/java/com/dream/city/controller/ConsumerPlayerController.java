@@ -50,7 +50,6 @@ public class ConsumerPlayerController {
     private ConsumerTreeService treeService;
 
 
-
     @RequestMapping("/searchfriend")
     public Message searchfriend(@RequestBody Message msg){
         logger.info("广场玩家列表 换一批", JSONObject.toJSONString(msg));
@@ -221,7 +220,6 @@ public class ConsumerPlayerController {
         UserReq userReq = getUserReq(message);
         String jsonReq = JSON.toJSONString(userReq);
 
-<<<<<<< HEAD
 
         Result reg = consumerPlayerService.reg(jsonReq);
         if (reg.getSuccess()){
@@ -243,7 +241,7 @@ public class ConsumerPlayerController {
             t.put("desc",CityGlobal.Constant.REG_SUCCESS);
             data.setT(t);
             msg.setData(data);
-=======
+
         String descMsg = checkCode(userReq.getCode(),msg.getSource());
         String descT = CityGlobal.Constant.REG_FAIL;
         Result reg = null;
@@ -254,7 +252,7 @@ public class ConsumerPlayerController {
             descMsg = reg.getMsg();
             if (reg.getSuccess()){ //用户注册成功
                 descT = CityGlobal.Constant.REG_SUCCESS;
->>>>>>> 715901a0f9d18eb10d6c9dc4a40269a01e984057
+
 
                 //登录或注册成功后保存token
                 String token = saveToken(userReq.getUsername());
@@ -270,163 +268,164 @@ public class ConsumerPlayerController {
     }
 
 
-    /**
-     * 校验验证码
-     * @param code
-     * @return
-     */
-    private String checkCode(String code,String msgSource){
-        String descMsg = null;
-        // 校验验证码
-        if (StringUtils.isBlank(code)){ //验证码不能为空
-            descMsg = CityGlobal.Constant.USER_VLCODE_NULL;
-        }else {
-            String redisValidCodekey = RedisKeys.REDIS_KEY_VALIDCODE + msgSource;
-            if (!redisUtils.hasKey(redisValidCodekey)){ //该验证码超时
-                descMsg = CityGlobal.Constant.USER_VLCODE_TIMEOUT;
+        /**
+         * 校验验证码
+         * @param code
+         * @return
+         */
+        private String checkCode (String code, String msgSource){
+            String descMsg = null;
+            // 校验验证码
+            if (StringUtils.isBlank(code)) { //验证码不能为空
+                descMsg = CityGlobal.Constant.USER_VLCODE_NULL;
+            } else {
+                String redisValidCodekey = RedisKeys.REDIS_KEY_VALIDCODE + msgSource;
+                if (!redisUtils.hasKey(redisValidCodekey)) { //该验证码超时
+                    descMsg = CityGlobal.Constant.USER_VLCODE_TIMEOUT;
+                }
+                String redisValidCode = redisUtils.getStr(redisValidCodekey);
+                if (!code.equalsIgnoreCase(redisValidCode)) { //验证码不正确
+                    descMsg = CityGlobal.Constant.USER_VLCODE_ERROR;
+                }
             }
-            String redisValidCode = redisUtils.getStr(redisValidCodekey);
-            if (!code.equalsIgnoreCase(redisValidCode)){ //验证码不正确
-                descMsg = CityGlobal.Constant.USER_VLCODE_ERROR;
-            }
-        }
-        return descMsg;
-    }
-
-
-    /**
-     * 密码登录
-     * @param msg
-     * @return
-     */
-    @RequestMapping("/pwlogoin")
-    public Message pwLogoin(@RequestBody Message msg){
-        logger.info("密码登录", JSONObject.toJSONString(msg));
-        UserReq userReq = getUserReq(msg);
-        String jsonReq = JSON.toJSONString(userReq);
-
-        Result result = consumerPlayerService.pwLogoin(jsonReq);
-        logger.info("##################### 用户登录: {}",result);
-
-        Map<String,String> t = new HashMap<>();
-        String descT = CityGlobal.Constant.LOGIN_FAIL;
-        if (result.getSuccess()){
-            descT = CityGlobal.Constant.LOGIN_SUCCESS;
-
-            String token = saveToken(userReq.getUsername());
-            t.put("token",token);
+            return descMsg;
         }
 
-        MessageData data = new MessageData("pwlog","consumer");
-        t.put("desc",descT);
-        data.setT(t);
-        Message message = new Message(msg.getSource(),msg.getTarget(),data);
-        message.setSource(msg.getSource());
-        message.setTarget(msg.getTarget());
-        message.setDesc(result.getMsg());
-        return message;
-    }
 
-    /**
-     * 登录或注册成功后保存token
-     * @param username
-     */
-    private String saveToken(String username){
-        String token = authService.getAuth(username);
+        /**
+         * 密码登录
+         * @param msg
+         * @return
+         */
+        @RequestMapping("/pwlogoin")
+        public Message pwLogoin (@RequestBody Message msg){
+            logger.info("密码登录", JSONObject.toJSONString(msg));
+            UserReq userReq = getUserReq(msg);
+            String jsonReq = JSON.toJSONString(userReq);
 
-        String redisKey = RedisKeys.LOGIN_USER_TOKEN + username;
-        if (redisUtils.hasKey(redisKey)) {
-            redisUtils.del(redisKey);
-        }
-        redisUtils.setStr(redisKey,token);
+            Result result = consumerPlayerService.pwLogoin(jsonReq);
+            logger.info("##################### 用户登录: {}", result);
 
-        return token;
-    }
-
-    /**
-     * 验证码登录
-     * @param msg
-     * @return
-     */
-    @RequestMapping("/codelogoin")
-    public Message codeLogoin(@RequestBody Message msg){
-        logger.info("验证码登录", JSONObject.toJSONString(msg));
-        Message message = new Message();
-        message.setSource(msg.getSource());
-        message.setTarget(msg.getTarget());
-        MessageData data = new MessageData("idlog","consumer");
-        Map<String,String> t = new HashMap<>();
-
-        UserReq userReq = getUserReq(msg);
-        // 校验认证码
-        String descMsg = checkCode(userReq.getCode(),msg.getSource());
-        String descT = CityGlobal.Constant.LOGIN_FAIL;
-
-        if (StringUtils.isBlank(descMsg)){
-            Result idlog = consumerPlayerService.codeLogoin(JSON.toJSONString(userReq));
-            logger.info("##################### 验证码登录: {}",idlog);
-            descMsg = idlog.getMsg();
-
-            if (idlog.getSuccess()){
+            Map<String, String> t = new HashMap<>();
+            String descT = CityGlobal.Constant.LOGIN_FAIL;
+            if (result.getSuccess()) {
                 descT = CityGlobal.Constant.LOGIN_SUCCESS;
 
                 String token = saveToken(userReq.getUsername());
-                t.put("token",token);
+                t.put("token", token);
             }
+
+            MessageData data = new MessageData("pwlog", "consumer");
+            t.put("desc", descT);
+            data.setT(t);
+            Message message = new Message(msg.getSource(), msg.getTarget(), data);
+            message.setSource(msg.getSource());
+            message.setTarget(msg.getTarget());
+            message.setDesc(result.getMsg());
+            return message;
         }
 
-        t.put("desc",descT);
-        data.setT(t);
-        message.setData(data);
-        message.setDesc(descMsg);
-        return message;
-    }
+        /**
+         * 登录或注册成功后保存token
+         * @param username
+         */
+        private String saveToken (String username){
+            String token = authService.getAuth(username);
+
+            String redisKey = RedisKeys.LOGIN_USER_TOKEN + username;
+            if (redisUtils.hasKey(redisKey)) {
+                redisUtils.del(redisKey);
+            }
+            redisUtils.setStr(redisKey, token);
+
+            return token;
+        }
+
+        /**
+         * 验证码登录
+         * @param msg
+         * @return
+         */
+        @RequestMapping("/codelogoin")
+        public Message codeLogoin (@RequestBody Message msg){
+            logger.info("验证码登录", JSONObject.toJSONString(msg));
+            Message message = new Message();
+            message.setSource(msg.getSource());
+            message.setTarget(msg.getTarget());
+            MessageData data = new MessageData("idlog", "consumer");
+            Map<String, String> t = new HashMap<>();
+
+            UserReq userReq = getUserReq(msg);
+            // 校验认证码
+            String descMsg = checkCode(userReq.getCode(), msg.getSource());
+            String descT = CityGlobal.Constant.LOGIN_FAIL;
+
+            if (StringUtils.isBlank(descMsg)) {
+                Result idlog = consumerPlayerService.codeLogoin(JSON.toJSONString(userReq));
+                logger.info("##################### 验证码登录: {}", idlog);
+                descMsg = idlog.getMsg();
+
+                if (idlog.getSuccess()) {
+                    descT = CityGlobal.Constant.LOGIN_SUCCESS;
+
+                    String token = saveToken(userReq.getUsername());
+                    t.put("token", token);
+                }
+            }
+
+            t.put("desc", descT);
+            data.setT(t);
+            message.setData(data);
+            message.setDesc(descMsg);
+            return message;
+        }
 
 
-    /**
-     * 登出
-     * @param msg
-     * @return
-     */
-    @RequestMapping("/exit")
-    public Message exit(@RequestBody Message msg){
-        logger.info("登出", JSONObject.toJSONString(msg));
-        UserReq jsonReq = getUserReq(msg);
-        Result result = consumerPlayerService.quit(jsonReq.getPlayerId());
-        logger.info("##################### 用户登出 :{}",msg);
+        /**
+         * 登出
+         * @param msg
+         * @return
+         */
+        @RequestMapping("/exit")
+        public Message exit (@RequestBody Message msg){
+            logger.info("登出", JSONObject.toJSONString(msg));
+            UserReq jsonReq = getUserReq(msg);
+            Result result = consumerPlayerService.quit(jsonReq.getPlayerId());
+            logger.info("##################### 用户登出 :{}", msg);
 
-        String redisKey = RedisKeys.LOGIN_USER_TOKEN + jsonReq.getUsername();
-        if (redisUtils.hasKey(redisKey)) {
+            String redisKey = RedisKeys.LOGIN_USER_TOKEN + jsonReq.getUsername();
+            if (redisUtils.hasKey(redisKey)) {
+                redisUtils.del(redisKey);
+            }
+
+            redisKey = RedisKeys.SQUARE_PLAYER_LIST_ANOTHER_BATCH + jsonReq.getUsername();
             redisUtils.del(redisKey);
+
+            Map<String, String> t = new HashMap<>();
+            t.put("desc", result.getMsg());
+            MessageData data = new MessageData();
+            data.setT(t);
+            Message message = new Message(msg.getSource(), msg.getTarget(), data);
+            return message;
         }
 
-        redisKey = RedisKeys.SQUARE_PLAYER_LIST_ANOTHER_BATCH + jsonReq.getUsername();
-        redisUtils.del(redisKey);
 
-        Map<String,String> t = new HashMap<>();
-        t.put("desc",result.getMsg());
-        MessageData data = new MessageData();
-        data.setT(t);
-        Message message = new Message(msg.getSource(),msg.getTarget(),data);
-        return message;
-    }
-
-
-    private UserReq getUserReq(Message message){
-        Map map = (Map)message.getData().getT();
-        UserReq userReq = new UserReq();
-        if (map != null) {
-            userReq.setInvite(map.containsKey("invited")?(String) map.get("invited"):null);
-            userReq.setNick(map.containsKey("nick")?(String) map.get("nick"):null);
-            userReq.setPlayerId(map.containsKey("playerId")?(String) map.get("playerId"):null);
-            userReq.setPwshop(map.containsKey("pwshop")?(String) map.get("pwshop"):null);
-            userReq.setUsername(map.containsKey("username")?(String) map.get("username"):null);
-            userReq.setUserpass(map.containsKey("userpass")?(String) map.get("userpass"):null);
-            userReq.setCode(map.containsKey("code")?(String) map.get("code"):null);
-            userReq.setOldpw(map.containsKey("oldpw")?(String) map.get("oldpw"):null);
-            userReq.setNewpw(map.containsKey("newpw")?(String) map.get("newpw"):null);
+        private UserReq getUserReq (Message message){
+            Map map = (Map) message.getData().getT();
+            UserReq userReq = new UserReq();
+            if (map != null) {
+                userReq.setInvite(map.containsKey("invited") ? (String) map.get("invited") : null);
+                userReq.setNick(map.containsKey("nick") ? (String) map.get("nick") : null);
+                userReq.setPlayerId(map.containsKey("playerId") ? (String) map.get("playerId") : null);
+                userReq.setPwshop(map.containsKey("pwshop") ? (String) map.get("pwshop") : null);
+                userReq.setUsername(map.containsKey("username") ? (String) map.get("username") : null);
+                userReq.setUserpass(map.containsKey("userpass") ? (String) map.get("userpass") : null);
+                userReq.setCode(map.containsKey("code") ? (String) map.get("code") : null);
+                userReq.setOldpw(map.containsKey("oldpw") ? (String) map.get("oldpw") : null);
+                userReq.setNewpw(map.containsKey("newpw") ? (String) map.get("newpw") : null);
+            }
+            return userReq;
         }
-        return userReq;
-    }
 
+    }
 }

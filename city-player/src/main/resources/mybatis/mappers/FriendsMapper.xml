@@ -24,19 +24,11 @@
   <select id="friendList" parameterType="com.dream.city.base.model.req.PageReq" resultType="java.util.Map">
     select a.id, a.player_id playerId, a.friend_id friendId, a.agree,
       b.friend_name friendName,b.friend_nick friendNick,b.friendlink,b.imgurl FROM
-<<<<<<< HEAD
-      (select f.id, f.player_id, f.friend_id , f.agree,f.create_time from player_friends f,city_player p
-      where f.player_id =p.player_id  and f.agree =1 and p.player_name = #{condition.username,jdbcType=VARCHAR}
-      ) a,
-      (SELECT p.player_id friend_id,p.player_name friend_name,p.player_nick friend_nick,e.friendlink,e.imgurl
-      from player p,city_player_ext e WHERE p.player_id=e.player_id) b
-=======
       (select f.id, f.player_id, f.friend_id , f.agree,f.create_time FROM player_friends f,city_player p
       where f.player_id =p.player_id  and f.agree =1 and p.player_name = #{condition.username,jdbcType=VARCHAR}
       ) a,
       (SELECT p.player_id friend_id,p.player_name friend_name,p.player_nick friend_nick,e.friendlink,e.imgurl
       FROM city_player p,player_ext e WHERE p.player_id=e.player_id) b
->>>>>>> 715901a0f9d18eb10d6c9dc4a40269a01e984057
     WHERE a.friend_id = b.friend_id
     <if test="condition.nick != null">
       and b.friend_nick = #{condition.nick,jdbcType=VARCHAR}
@@ -45,19 +37,11 @@
   </select>
   <select id="friendCount" parameterType="com.dream.city.base.model.req.PageReq" resultType="java.lang.Integer">
     select COUNT(a.friend_id) FROM
-<<<<<<< HEAD
-      (select f.id, f.player_id, f.friend_id , f.agree,f.create_time from player_friends f,city_player p
-      where f.player_id =p.player_id  and f.agree =1 and p.player_name = #{condition.username,jdbcType=VARCHAR}
-      ) a,
-      (SELECT p.player_id friend_id,p.player_name friend_name,p.player_nick friend_nick,e.friendlink,e.imgurl
-      from player p,city_player_ext e WHERE p.player_id=e.player_id) b
-=======
       (select f.id, f.player_id, f.friend_id , f.agree,f.create_time FROM player_friends f,city_player p
       where f.player_id =p.player_id  and f.agree =1 and p.player_name = #{condition.username,jdbcType=VARCHAR}
       ) a,
       (SELECT p.player_id friend_id,p.player_name friend_name,p.player_nick friend_nick,e.friendlink,e.imgurl
       FROM city_player p,player_ext e WHERE p.player_id=e.player_id) b
->>>>>>> 715901a0f9d18eb10d6c9dc4a40269a01e984057
     WHERE a.friend_id = b.friend_id
     <if test="condition.nick != null">
       and b.friend_nick = #{condition.nick,jdbcType=VARCHAR}
@@ -68,19 +52,11 @@
   <select id="applyFriendList" parameterType="com.dream.city.base.model.req.PageReq" resultType="java.util.Map">
     select a.id, a.player_id playerId, a.friend_id friendId, a.agree,
       b.friend_name friendName,b.friend_nick friendNick,b.friendlink,b.imgurl FROM
-<<<<<<< HEAD
-      (select f.id, f.player_id, f.friend_id , f.agree,f.create_time from player_friends f,city_player p
-      where f.player_id =p.player_id and f.agree =0 and p.player_name = #{condition.username,jdbcType=VARCHAR}
-      ) a,
-      (SELECT p.player_id friend_id,p.player_name friend_name,p.player_nick friend_nick,e.friendlink,e.imgurl
-      from player p,city_player_ext e WHERE p.player_id=e.player_id) b
-=======
       (select f.id, f.player_id, f.friend_id , f.agree,f.create_time FROM player_friends f,city_player p
       where f.player_id =p.player_id and f.agree =0 and p.player_name = #{condition.username,jdbcType=VARCHAR}
       ) a,
       (SELECT p.player_id friend_id,p.player_name friend_name,p.player_nick friend_nick,e.friendlink,e.imgurl
       FROM city_player p,player_ext e WHERE p.player_id=e.player_id) b
->>>>>>> 715901a0f9d18eb10d6c9dc4a40269a01e984057
     WHERE a.friend_id = b.friend_id
     <if test="condition.nick != null">
       and b.friend_nick = #{condition.nick,jdbcType=VARCHAR}
@@ -89,19 +65,11 @@
   </select>
   <select id="applyFriendCount" parameterType="com.dream.city.base.model.req.PageReq" resultType="java.lang.Integer">
     select COUNT(a.friend_id) FROM
-<<<<<<< HEAD
-      (select f.id, f.player_id, f.friend_id , f.agree,f.create_time from player_friends f,city_player p
-      where f.player_id =p.player_id and f.agree =0 and p.player_name = #{condition.username,jdbcType=VARCHAR}
-      ) a,
-      (SELECT p.player_id friend_id,p.player_name friend_name,p.player_nick friend_nick,e.friendlink,e.imgurl
-      from player p,city_player_ext e WHERE p.player_id=e.player_id) b
-=======
       (select f.id, f.player_id, f.friend_id , f.agree,f.create_time FROM player_friends f,city_player p
       where f.player_id =p.player_id and f.agree =0 and p.player_name = #{condition.username,jdbcType=VARCHAR}
       ) a,
       (SELECT p.player_id friend_id,p.player_name friend_name,p.player_nick friend_nick,e.friendlink,e.imgurl
       FROM city_player p,player_ext e WHERE p.player_id=e.player_id) b
->>>>>>> 715901a0f9d18eb10d6c9dc4a40269a01e984057
     WHERE a.friend_id = b.friend_id
     <if test="condition.nick != null">
       and b.friend_nick = #{condition.nick,jdbcType=VARCHAR}
