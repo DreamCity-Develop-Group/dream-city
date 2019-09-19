@@ -15,15 +15,15 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from t_player_ext
+    from player_ext
     where id = #{id,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from t_player_ext
+    delete from player_ext
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.dream.city.player.domain.entity.PlayerExt">
-    insert into t_player_ext (id, player_id, friendlink, 
+    insert into player_ext (id, player_id, friendlink,
       imgurl, create_date, update_date
       )
     values (#{id,jdbcType=BIGINT}, #{playerId,jdbcType=VARCHAR}, #{friendlink,jdbcType=VARCHAR}, 
@@ -31,7 +31,7 @@
       )
   </insert>
   <insert id="insertSelective" parameterType="com.dream.city.player.domain.entity.PlayerExt">
-    insert into t_player_ext
+    insert into player_ext
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
@@ -74,7 +74,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.dream.city.player.domain.entity.PlayerExt">
-    update t_player_ext
+    update player_ext
     <set>
       <if test="playerId != null">
         player_id = #{playerId,jdbcType=VARCHAR},
@@ -95,7 +95,7 @@
     where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.dream.city.player.domain.entity.PlayerExt">
-    update t_player_ext
+    update player_ext
     set player_id = #{playerId,jdbcType=VARCHAR},
       friendlink = #{friendlink,jdbcType=VARCHAR},
       imgurl = #{imgurl,jdbcType=VARCHAR},

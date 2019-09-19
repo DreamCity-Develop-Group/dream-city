@@ -14,15 +14,15 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from t_auth_code
+    from city_auth_code
     where id = #{id,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from t_auth_code
+    delete from city_auth_code
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insertSelective" parameterType="com.dream.city.domain.entity.AuthCode">
-    insert into t_auth_code
+    insert into city_auth_code
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
@@ -59,7 +59,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.dream.city.domain.entity.AuthCode">
-    update t_auth_code
+    update city_auth_code
     <set>
       <if test="code != null">
         code = #{code,jdbcType=VARCHAR},
@@ -79,7 +79,7 @@
 
   <select id="selectByPhone" parameterType="java.lang.String" resultType="java.lang.String">
     select code
-    from t_auth_code
+    from city_auth_code
     where phone = #{phone,jdbcType=VARCHAR} order by create_date desc limit 1
   </select>
 

@@ -13,21 +13,21 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from t_likes
+    from player_likes
     where id = #{id,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from t_likes
+    delete from player_likes
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.dream.city.player.domain.entity.Likes">
-    insert into t_likes (id, player_id, likes, 
+    insert into player_likes (id, player_id, likes,
       create_date)
     values (#{id,jdbcType=BIGINT}, #{playerId,jdbcType=VARCHAR}, #{likes,jdbcType=INTEGER}, 
       #{createDate,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.dream.city.player.domain.entity.Likes">
-    insert into t_likes
+    insert into player_likes
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
@@ -58,7 +58,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.dream.city.player.domain.entity.Likes">
-    update t_likes
+    update player_likes
     <set>
       <if test="playerId != null">
         player_id = #{playerId,jdbcType=VARCHAR},
@@ -73,7 +73,7 @@
     where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.dream.city.player.domain.entity.Likes">
-    update t_likes
+    update player_likes
     set player_id = #{playerId,jdbcType=VARCHAR},
       likes = #{likes,jdbcType=INTEGER},
       create_date = #{createDate,jdbcType=TIMESTAMP}

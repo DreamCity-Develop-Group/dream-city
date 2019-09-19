@@ -16,7 +16,7 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from t_friends
+    from player_friends
     where id = #{id,jdbcType=BIGINT}
   </select>
 
@@ -24,11 +24,11 @@
   <select id="friendList" parameterType="com.dream.city.base.model.req.PageReq" resultType="java.util.Map">
     select a.id, a.player_id playerId, a.friend_id friendId, a.agree,
       b.friend_name friendName,b.friend_nick friendNick,b.friendlink,b.imgurl FROM
-      (select f.id, f.player_id, f.friend_id , f.agree,f.create_time FROM t_friends f,t_player p
+      (select f.id, f.player_id, f.friend_id , f.agree,f.create_time FROM player_friends f,city_player p
       where f.player_id =p.player_id  and f.agree =1 and p.player_name = #{condition.username,jdbcType=VARCHAR}
       ) a,
       (SELECT p.player_id friend_id,p.player_name friend_name,p.player_nick friend_nick,e.friendlink,e.imgurl
-      FROM t_player p,t_player_ext e WHERE p.player_id=e.player_id) b
+      FROM city_player p,player_ext e WHERE p.player_id=e.player_id) b
     WHERE a.friend_id = b.friend_id
     <if test="condition.nick != null">
       and b.friend_nick = #{condition.nick,jdbcType=VARCHAR}
@@ -37,11 +37,11 @@
   </select>
   <select id="friendCount" parameterType="com.dream.city.base.model.req.PageReq" resultType="java.lang.Integer">
     select COUNT(a.friend_id) FROM
-      (select f.id, f.player_id, f.friend_id , f.agree,f.create_time FROM t_friends f,t_player p
+      (select f.id, f.player_id, f.friend_id , f.agree,f.create_time FROM player_friends f,city_player p
       where f.player_id =p.player_id  and f.agree =1 and p.player_name = #{condition.username,jdbcType=VARCHAR}
       ) a,
       (SELECT p.player_id friend_id,p.player_name friend_name,p.player_nick friend_nick,e.friendlink,e.imgurl
-      FROM t_player p,t_player_ext e WHERE p.player_id=e.player_id) b
+      FROM city_player p,player_ext e WHERE p.player_id=e.player_id) b
     WHERE a.friend_id = b.friend_id
     <if test="condition.nick != null">
       and b.friend_nick = #{condition.nick,jdbcType=VARCHAR}
@@ -52,11 +52,11 @@
   <select id="applyFriendList" parameterType="com.dream.city.base.model.req.PageReq" resultType="java.util.Map">
     select a.id, a.player_id playerId, a.friend_id friendId, a.agree,
       b.friend_name friendName,b.friend_nick friendNick,b.friendlink,b.imgurl FROM
-      (select f.id, f.player_id, f.friend_id , f.agree,f.create_time FROM t_friends f,t_player p
+      (select f.id, f.player_id, f.friend_id , f.agree,f.create_time FROM player_friends f,city_player p
       where f.player_id =p.player_id and f.agree =0 and p.player_name = #{condition.username,jdbcType=VARCHAR}
       ) a,
       (SELECT p.player_id friend_id,p.player_name friend_name,p.player_nick friend_nick,e.friendlink,e.imgurl
-      FROM t_player p,t_player_ext e WHERE p.player_id=e.player_id) b
+      FROM city_player p,player_ext e WHERE p.player_id=e.player_id) b
     WHERE a.friend_id = b.friend_id
     <if test="condition.nick != null">
       and b.friend_nick = #{condition.nick,jdbcType=VARCHAR}
@@ -65,11 +65,11 @@
   </select>
   <select id="applyFriendCount" parameterType="com.dream.city.base.model.req.PageReq" resultType="java.lang.Integer">
     select COUNT(a.friend_id) FROM
-      (select f.id, f.player_id, f.friend_id , f.agree,f.create_time FROM t_friends f,t_player p
+      (select f.id, f.player_id, f.friend_id , f.agree,f.create_time FROM player_friends f,city_player p
       where f.player_id =p.player_id and f.agree =0 and p.player_name = #{condition.username,jdbcType=VARCHAR}
       ) a,
       (SELECT p.player_id friend_id,p.player_name friend_name,p.player_nick friend_nick,e.friendlink,e.imgurl
-      FROM t_player p,t_player_ext e WHERE p.player_id=e.player_id) b
+      FROM city_player p,player_ext e WHERE p.player_id=e.player_id) b
     WHERE a.friend_id = b.friend_id
     <if test="condition.nick != null">
       and b.friend_nick = #{condition.nick,jdbcType=VARCHAR}
@@ -78,12 +78,12 @@
 
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from t_friends
+    delete from player_friends
     where id = #{id,jdbcType=BIGINT}
   </delete>
 
   <insert id="insertSelective" parameterType="com.dream.city.player.domain.entity.Friends">
-    insert into t_friends
+    insert into player_friends
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
@@ -123,7 +123,7 @@
   </insert>
 
   <update id="updateByPrimaryKeySelective" parameterType="com.dream.city.player.domain.entity.Friends">
-    update t_friends
+    update player_friends
     <set>
       <if test="playerId != null">
         player_id = #{playerId,jdbcType=VARCHAR},
@@ -144,7 +144,7 @@
 
 
   <update id="agreeAddFriend" parameterType="com.dream.city.player.domain.entity.Friends">
-    update t_friends
+    update player_friends
     <set>
       <if test="agree != null">
         agree = #{agree,jdbcType=INTEGER},
