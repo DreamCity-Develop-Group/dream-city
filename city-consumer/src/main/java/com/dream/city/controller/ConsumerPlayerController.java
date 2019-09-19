@@ -171,7 +171,7 @@ public class ConsumerPlayerController {
         UserReq jsonReq = getUserReq(msg);
         Result result = consumerPlayerService.resetLoginPwd(jsonReq.getPlayerId(), jsonReq.getOldpw(),jsonReq.getNewpw());
 
-        logger.info("##################### 修改密码 ",msg);
+        logger.info("##################### 修改密码 : {}",msg);
         Map<String,String> t = new HashMap<>();
         t.put("desc",result.getMsg());
 
@@ -191,7 +191,7 @@ public class ConsumerPlayerController {
         logger.info("修改交易密码", JSONObject.toJSONString(msg));
         UserReq jsonReq = getUserReq(msg);
         Result result = consumerPlayerService.resetTraderPwd(jsonReq.getPlayerId(), jsonReq.getOldpw(),jsonReq.getNewpw());
-        logger.info("##################### 修改交易密码 ",msg);
+        logger.info("##################### 修改交易密码 : {}",msg);
         Map<String,String> t = new HashMap<>();
         t.put("desc",result.getMsg());
 
@@ -221,6 +221,7 @@ public class ConsumerPlayerController {
         UserReq userReq = getUserReq(message);
         String jsonReq = JSON.toJSONString(userReq);
 
+<<<<<<< HEAD
 
         Result reg = consumerPlayerService.reg(jsonReq);
         if (reg.getSuccess()){
@@ -242,18 +243,54 @@ public class ConsumerPlayerController {
             t.put("desc",CityGlobal.Constant.REG_SUCCESS);
             data.setT(t);
             msg.setData(data);
+=======
+        String descMsg = checkCode(userReq.getCode(),msg.getSource());
+        String descT = CityGlobal.Constant.REG_FAIL;
+        Result reg = null;
+        if (StringUtils.isBlank(descMsg)){
+            reg = consumerPlayerService.reg(jsonReq);
+            logger.info("##################### 用户注册: {}",msg);
 
-            String token = saveToken(userReq.getUsername());
-            t.put("token",token);
+            descMsg = reg.getMsg();
+            if (reg.getSuccess()){ //用户注册成功
+                descT = CityGlobal.Constant.REG_SUCCESS;
+>>>>>>> 715901a0f9d18eb10d6c9dc4a40269a01e984057
 
-            logger.info("##################### 用户注册成功 ",msg);
-            return msg;
+                //登录或注册成功后保存token
+                String token = saveToken(userReq.getUsername());
+                t.put("token",token);
+            }
         }
-        t.put("desc",CityGlobal.Constant.REG_FAIL);
+
+        t.put("desc",descT);
         data.setT(t);
         msg.setData(data);
-        msg.setDesc(reg.getMsg());
+        msg.setDesc(descMsg);
         return msg;
+    }
+
+
+    /**
+     * 校验验证码
+     * @param code
+     * @return
+     */
+    private String checkCode(String code,String msgSource){
+        String descMsg = null;
+        // 校验验证码
+        if (StringUtils.isBlank(code)){ //验证码不能为空
+            descMsg = CityGlobal.Constant.USER_VLCODE_NULL;
+        }else {
+            String redisValidCodekey = RedisKeys.REDIS_KEY_VALIDCODE + msgSource;
+            if (!redisUtils.hasKey(redisValidCodekey)){ //该验证码超时
+                descMsg = CityGlobal.Constant.USER_VLCODE_TIMEOUT;
+            }
+            String redisValidCode = redisUtils.getStr(redisValidCodekey);
+            if (!code.equalsIgnoreCase(redisValidCode)){ //验证码不正确
+                descMsg = CityGlobal.Constant.USER_VLCODE_ERROR;
+            }
+        }
+        return descMsg;
     }
 
 
@@ -267,19 +304,21 @@ public class ConsumerPlayerController {
         logger.info("密码登录", JSONObject.toJSONString(msg));
         UserReq userReq = getUserReq(msg);
         String jsonReq = JSON.toJSONString(userReq);
+
         Result result = consumerPlayerService.pwLogoin(jsonReq);
+        logger.info("##################### 用户登录: {}",result);
 
         Map<String,String> t = new HashMap<>();
+        String descT = CityGlobal.Constant.LOGIN_FAIL;
         if (result.getSuccess()){
-            t.put("desc",CityGlobal.Constant.LOGIN_SUCCESS);
+            descT = CityGlobal.Constant.LOGIN_SUCCESS;
 
             String token = saveToken(userReq.getUsername());
             t.put("token",token);
-        }else {
-            t.put("desc",CityGlobal.Constant.LOGIN_FAIL);
         }
-        logger.info("##################### 用户登录 ",msg);
+
         MessageData data = new MessageData("pwlog","consumer");
+        t.put("desc",descT);
         data.setT(t);
         Message message = new Message(msg.getSource(),msg.getTarget(),data);
         message.setSource(msg.getSource());
@@ -319,50 +358,27 @@ public class ConsumerPlayerController {
         Map<String,String> t = new HashMap<>();
 
         UserReq userReq = getUserReq(msg);
-        StringBuilder tip = new StringBuilder();
-
         // 校验认证码
-        if (StringUtils.isBlank(userReq.getUserpass())){
-            tip.append(CityGlobal.Constant.USER_VLCODE_NULL);
-            t.put("desc",CityGlobal.Constant.LOGIN_FAIL);
-            data.setT(t);
-            message.setData(data);
-            message.setDesc(tip.toString());
-        }
-        String redisKey = RedisKeys.REDIS_KEY_VALIDCODE + msg.getSource();
-        if (redisUtils.hasKey(redisKey)){
-            String redisCode = redisUtils.getStr(RedisKeys.REDIS_KEY_VALIDCODE+msg.getSource());
-            if (!userReq.getUserpass().equals(redisCode)){
-                tip.append(CityGlobal.Constant.USER_VLCODE_ERROR);
-                t.put("desc",CityGlobal.Constant.LOGIN_FAIL);
-                data.setT(t);
-                message.setData(data);
-                message.setDesc(tip.toString());
+        String descMsg = checkCode(userReq.getCode(),msg.getSource());
+        String descT = CityGlobal.Constant.LOGIN_FAIL;
+
+        if (StringUtils.isBlank(descMsg)){
+            Result idlog = consumerPlayerService.codeLogoin(JSON.toJSONString(userReq));
+            logger.info("##################### 验证码登录: {}",idlog);
+            descMsg = idlog.getMsg();
+
+            if (idlog.getSuccess()){
+                descT = CityGlobal.Constant.LOGIN_SUCCESS;
+
+                String token = saveToken(userReq.getUsername());
+                t.put("token",token);
             }
-        }else {
-            // 校验码  todo
-            /*Message retMsg = messageService.validCode(message);
-            if (!(Boolean) retMsg.getData().getT()){
-                msg.getData().setT(new MessageData(CityGlobal.Constant.REG_FAIL));
-                return msg;
-            }*/
-        }
-        if (StringUtils.isNotBlank(tip.toString())){
-            return message;
         }
 
-        Result idlog = consumerPlayerService.codeLogoin(JSON.toJSONString(userReq));
-        if (idlog.getSuccess()){
-            t.put("desc",CityGlobal.Constant.LOGIN_SUCCESS);
-
-            String token = saveToken(userReq.getUsername());
-            t.put("token",token);
-        }else {
-            t.put("desc",CityGlobal.Constant.LOGIN_FAIL);
-        }
+        t.put("desc",descT);
         data.setT(t);
         message.setData(data);
-        message.setDesc(idlog.getMsg());
+        message.setDesc(descMsg);
         return message;
     }
 
@@ -377,7 +393,7 @@ public class ConsumerPlayerController {
         logger.info("登出", JSONObject.toJSONString(msg));
         UserReq jsonReq = getUserReq(msg);
         Result result = consumerPlayerService.quit(jsonReq.getPlayerId());
-        logger.info("##################### 用户登出 ",msg);
+        logger.info("##################### 用户登出 :{}",msg);
 
         String redisKey = RedisKeys.LOGIN_USER_TOKEN + jsonReq.getUsername();
         if (redisUtils.hasKey(redisKey)) {

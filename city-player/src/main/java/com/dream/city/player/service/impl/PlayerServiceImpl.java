@@ -168,7 +168,10 @@ public class PlayerServiceImpl implements PlayerService {
         if (StringUtils.isNotBlank(playerNick)) {
             player.setPlayerNick(playerNick);
         }
-        Player playerByName = playerMapper.getPlayerById(player);
+        Player playerByName = null;
+        if (StringUtils.isNotBlank(playerName) || StringUtils.isNotBlank(playerNick)) {
+            playerByName = playerMapper.getPlayerById(player);
+        }
         return playerByName;
     }
 

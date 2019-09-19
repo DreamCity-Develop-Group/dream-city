@@ -101,7 +101,7 @@ public class ValiCodeController {
         }
         if (insertCode){
             msg.getData().setT(code);
-            logger.info("############################## getCode: ",code);
+            logger.info("############################## 用户[{}]获取认证码: {}",(String) map.get("username"),code);
 
             try {
                 //保存10分钟

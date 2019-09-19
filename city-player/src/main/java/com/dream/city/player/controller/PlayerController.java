@@ -69,9 +69,15 @@ public class PlayerController {
             tip=  "用户名或密码为空";
         }
         // 用户是否存在
-        Player playerExit = playerService.getPlayerByName(playerName,null);
-        if (playerExit != null){
-            tip = CityGlobal.Constant.REG_USER_EXIT + ",请直接登录！";
+        Player playerExistByName = playerService.getPlayerByName(playerName,null);
+        if (playerExistByName != null){
+            tip = "["+ playerName +"]" + CityGlobal.Constant.REG_USER_EXIT + ",请直接登录！";
+        }
+
+        // 昵称已被使用
+        Player playerExistByNick = playerService.getPlayerByName(null,nick);
+        if (playerExistByNick != null){
+            tip = "["+ nick +"]" + CityGlobal.Constant.REG_USER_NICK_EXIST;
         }
 
         /*if(StringUtils.isBlank(code)){

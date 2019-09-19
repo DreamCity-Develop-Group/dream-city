@@ -23,7 +23,11 @@
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.dream.city.player.domain.entity.PlayerExt">
+<<<<<<< HEAD
     insert into city_player_ext (id, player_id, friendlink,
+=======
+    insert into player_ext (id, player_id, friendlink,
+>>>>>>> 715901a0f9d18eb10d6c9dc4a40269a01e984057
       imgurl, create_date, update_date
       )
     values (#{id,jdbcType=BIGINT}, #{playerId,jdbcType=VARCHAR}, #{friendlink,jdbcType=VARCHAR}, 
@@ -31,7 +35,11 @@
       )
   </insert>
   <insert id="insertSelective" parameterType="com.dream.city.player.domain.entity.PlayerExt">
+<<<<<<< HEAD
     insert into city_player_ext
+=======
+    insert into player_ext
+>>>>>>> 715901a0f9d18eb10d6c9dc4a40269a01e984057
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
@@ -74,7 +82,11 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.dream.city.player.domain.entity.PlayerExt">
+<<<<<<< HEAD
     update city_player_ext
+=======
+    update player_ext
+>>>>>>> 715901a0f9d18eb10d6c9dc4a40269a01e984057
     <set>
       <if test="playerId != null">
         player_id = #{playerId,jdbcType=VARCHAR},
@@ -95,7 +107,11 @@
     where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.dream.city.player.domain.entity.PlayerExt">
+<<<<<<< HEAD
     update city_player_ext
+=======
+    update player_ext
+>>>>>>> 715901a0f9d18eb10d6c9dc4a40269a01e984057
     set player_id = #{playerId,jdbcType=VARCHAR},
       friendlink = #{friendlink,jdbcType=VARCHAR},
       imgurl = #{imgurl,jdbcType=VARCHAR},
