@@ -23,5 +23,5 @@ public interface PlayerLikesLogMapper {
      * @param record
      * @return
      */
-    Integer playerLikesCountToday(PlayerLikesLog record);
+    Integer playerTodayLikesCountToday(PlayerLikesLog record);
 }

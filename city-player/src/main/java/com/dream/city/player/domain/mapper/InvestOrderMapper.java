@@ -4,17 +4,19 @@ package com.dream.city.player.domain.mapper;
 import com.dream.city.base.model.entity.InvestOrder;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 @Mapper
 public interface InvestOrderMapper {
-    int deleteByPrimaryKey(Integer orderId);
 
-    int insert(InvestOrder record);
+    Integer deleteByPrimaryKey(Integer orderId);
 
-    int insertSelective(InvestOrder record);
+    Integer insertSelective(InvestOrder record);
 
-    InvestOrder selectByPrimaryKey(Integer orderId);
+    InvestOrder selectByPrimaryKey(InvestOrder record);
 
-    int updateByPrimaryKeySelective(InvestOrder record);
+    Integer updateByPrimaryKeySelective(InvestOrder record);
 
-    int updateByPrimaryKey(InvestOrder record);
+    List<InvestOrder> getInvestOrders(InvestOrder record);
+
 }

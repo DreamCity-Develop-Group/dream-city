@@ -2,6 +2,7 @@ package com.dream.city.player.service;
 
 
 import com.dream.city.base.model.entity.PlayerLikes;
+import com.dream.city.base.model.entity.PlayerLikesLog;
 import com.dream.city.player.domain.req.PlayerLikesReq;
 
 import java.util.List;
@@ -36,5 +37,13 @@ public interface LikesService {
      * @return
      */
     List<PlayerLikes> playerLikesList(PlayerLikesReq  record);
+
+
+    /**
+     * 当天点赞次数
+     * @param record
+     * @return
+     */
+    Integer playerTodayLikesCountToday(PlayerLikesReq record);
 
 }

@@ -30,7 +30,8 @@ public class LikesController {
 
     @Autowired
     LikesService likesService;
-
+    @Autowired
+    PlayerLikesLogMapper likesLogMapper;
 
 
 
@@ -47,10 +48,18 @@ public class LikesController {
         String msg = CityGlobal.Constant.USER_LIKES_FAIL;
 
         PlayerLikesReq playerLikes = getPlayerLikes(jsonReq);
-        int i = likesService.playerLike(playerLikes);
-        if (i>0){
-            b = Boolean.TRUE;
-            msg = CityGlobal.Constant.USER_LIKES_SUCCESS;
+
+        int i = 0;
+        //当天点赞次数
+        Integer countToday = likesService.playerTodayLikesCountToday(playerLikes);
+        if (countToday != null && countToday > 0){
+            msg = CityGlobal.Constant.USER_LIKES_ONLY_ONE_ETIME;
+        }else {
+            i = likesService.playerLike(playerLikes);
+            if (i>0){
+                b = Boolean.TRUE;
+                msg = CityGlobal.Constant.USER_LIKES_SUCCESS;
+            }
         }
 
         result.setData(i);
