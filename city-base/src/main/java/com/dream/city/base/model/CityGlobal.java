@@ -70,6 +70,12 @@ public interface CityGlobal {
         public static final String TREE_RELATION_SUCCESS = "成功";
         public static final String TREE_RELATION_FAIL = "失败";
 
+        //点赞
+        //每个玩家同一天只能对同一物业点赞1次
+        public static final String USER_LIKES_ONLY_ONE_ETIME = "每个经营物业只能点赞一次哦";
+        public static final String USER_LIKES_SUCCESS = "恭喜您助力成功，多点赞获得点赞分成几率更大哦";
+        public static final String USER_LIKES_FAIL = "很遗憾没有点亮成功，希望总在下一个点赞哦";
+
 
 
 

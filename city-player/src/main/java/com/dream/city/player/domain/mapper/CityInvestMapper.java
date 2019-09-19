@@ -6,7 +6,6 @@ import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface CityInvestMapper {
-    int deleteByPrimaryKey(Integer inId);
 
     int insert(CityInvest record);
 

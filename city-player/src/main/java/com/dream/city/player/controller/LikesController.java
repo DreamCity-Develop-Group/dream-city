@@ -2,6 +2,7 @@ package com.dream.city.player.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.dream.city.base.model.CityGlobal;
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.PlayerLikes;
 import com.dream.city.base.model.entity.PlayerLikesLog;
@@ -43,13 +44,13 @@ public class LikesController {
         logger.info("点赞，{}",jsonReq);
         Result<Integer> result = new Result<>();
         boolean b = Boolean.FALSE;
-        String msg = "点赞失败";
+        String msg = CityGlobal.Constant.USER_LIKES_FAIL;
 
         PlayerLikesReq playerLikes = getPlayerLikes(jsonReq);
         int i = likesService.playerLike(playerLikes);
         if (i>0){
             b = Boolean.TRUE;
-            msg = "点赞成功";
+            msg = CityGlobal.Constant.USER_LIKES_SUCCESS;
         }
 
         result.setData(i);

@@ -17,4 +17,11 @@ public interface PlayerLikesLogMapper {
     int updateByPrimaryKeySelective(PlayerLikesLog record);
 
     int updateByPrimaryKey(PlayerLikesLog record);
+
+    /**
+     * 当天点赞次数
+     * @param record
+     * @return
+     */
+    Integer playerLikesCountToday(PlayerLikesLog record);
 }
