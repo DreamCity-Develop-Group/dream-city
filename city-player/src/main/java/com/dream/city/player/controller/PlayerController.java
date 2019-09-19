@@ -6,6 +6,7 @@ import com.dream.city.base.model.CityGlobal;
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.req.PageReq;
 import com.dream.city.base.model.req.UserReq;
+import com.dream.city.base.utils.InvitedCodeUtil;
 import com.dream.city.base.utils.RedisKeys;
 import com.dream.city.base.utils.RedisUtils;
 import com.dream.city.player.domain.entity.LoginLog;
@@ -81,12 +82,13 @@ public class PlayerController {
         if (StringUtils.isBlank(nick)){
             nick = playerName;
         }
-
+        //生成用户的邀请码
+        String inviteCode = InvitedCodeUtil.getCode();
         if (StringUtils.isBlank(tip)){
             Player playerSave = new Player();
             playerSave.setPlayerName(playerName);
             playerSave.setPlayerPass(playerPass);
-            playerSave.setPlayerInvite(invite);
+            playerSave.setPlayerInvite(inviteCode);
             playerSave.setPlayerNick(nick);
             boolean ret = playerService.save(playerSave);
             if (ret){
