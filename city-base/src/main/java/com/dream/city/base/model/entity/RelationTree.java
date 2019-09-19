@@ -1,4 +1,4 @@
-package com.dream.city.domain.entity;
+package com.dream.city.base.model.entity;
 
 import lombok.Data;
 
