@@ -21,11 +21,7 @@
   <select id="getPlayerById" parameterType="com.dream.city.player.domain.entity.Player" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-<<<<<<< HEAD
     from city_player p
-=======
-    from city_player
->>>>>>> 715901a0f9d18eb10d6c9dc4a40269a01e984057
     where 1=1
     <if test="playerId != null and playerId != ''">
       and p.player_id = #{playerId,jdbcType=VARCHAR} 
@@ -53,11 +49,7 @@
   <select id="getPlayers" parameterType="com.dream.city.base.model.req.PageReq" resultMap="BaseResultMap">
     SELECT p.player_id playerId,p.player_name playerName,p.player_nick playerNick,p.create_time,
         e.friendlink playerLink,e.imgurl
-<<<<<<< HEAD
     from city_player p,city_player_ext e
-=======
-    FROM city_player p,player_ext e
->>>>>>> 715901a0f9d18eb10d6c9dc4a40269a01e984057
     <where>
       p.player_id=e.player_id
       <if test="condition != null and condition != ''">
@@ -68,11 +60,7 @@
   </select>
   <select id="getPlayersCount" parameterType="com.dream.city.base.model.req.PageReq" resultType="java.lang.Integer">
     SELECT COUNT(p.player_id)
-<<<<<<< HEAD
     from city_player p,city_player_ext e
-=======
-    FROM city_player p,player_ext e
->>>>>>> 715901a0f9d18eb10d6c9dc4a40269a01e984057
     <where>
       p.player_id=e.player_id
       <if test="condition != null and condition != ''">

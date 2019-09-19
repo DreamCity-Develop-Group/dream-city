@@ -14,19 +14,11 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-<<<<<<< HEAD
-    from auth_code
-    where id = #{id,jdbcType=BIGINT}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from auth_code
-=======
     from city_auth_code
     where id = #{id,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from city_auth_code
->>>>>>> 715901a0f9d18eb10d6c9dc4a40269a01e984057
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insertSelective" parameterType="com.dream.city.domain.entity.AuthCode">
@@ -87,11 +79,7 @@
 
   <select id="selectByPhone" parameterType="java.lang.String" resultType="java.lang.String">
     select code
-<<<<<<< HEAD
-    from auth_code
-=======
     from city_auth_code
->>>>>>> 715901a0f9d18eb10d6c9dc4a40269a01e984057
     where phone = #{phone,jdbcType=VARCHAR} order by create_date desc limit 1
   </select>
 

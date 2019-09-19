@@ -27,11 +27,7 @@
 
 
   <insert id="insertSelective" parameterType="com.dream.city.player.domain.entity.PlayerGrade">
-<<<<<<< HEAD
     insert into city_player_grade
-=======
-    insert into player_grade
->>>>>>> 715901a0f9d18eb10d6c9dc4a40269a01e984057
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
@@ -76,11 +72,7 @@
 
 
   <update id="updateByPlayerId" parameterType="com.dream.city.player.domain.entity.PlayerGrade">
-<<<<<<< HEAD
     update city_player_grade
-=======
-    update player_grade
->>>>>>> 715901a0f9d18eb10d6c9dc4a40269a01e984057
     <set>
       <!--<if test="playerId != null">
         player_id = #{playerId,jdbcType=VARCHAR},

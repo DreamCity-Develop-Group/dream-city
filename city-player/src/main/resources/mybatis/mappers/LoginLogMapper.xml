@@ -18,20 +18,12 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-<<<<<<< HEAD
-    from login_log
-=======
     from player_login_log
->>>>>>> 715901a0f9d18eb10d6c9dc4a40269a01e984057
     where id = #{id,jdbcType=BIGINT}
   </select>
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-<<<<<<< HEAD
-    delete from login_log
-=======
     delete from player_login_log
->>>>>>> 715901a0f9d18eb10d6c9dc4a40269a01e984057
     where id = #{id,jdbcType=BIGINT}
   </delete>
 
