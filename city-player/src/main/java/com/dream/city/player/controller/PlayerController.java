@@ -92,6 +92,7 @@ public class PlayerController {
             playerSave.setPlayerInvite(inviteCode);
             playerSave.setPlayerNick(nick);
             boolean ret = playerService.save(playerSave);
+            
             if (ret){
                 tip = "注册成功";
                 result.setSuccess(Boolean.TRUE);
