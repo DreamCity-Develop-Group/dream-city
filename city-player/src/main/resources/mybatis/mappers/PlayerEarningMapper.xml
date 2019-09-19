@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dream.city.player.domain.mapper.PlayerEarningMapper" >
+  <resultMap id="BaseResultMap" type="com.dream.city.player.domain.entity.PlayerEarning" >
+    <id column="earn_id" property="earnId" jdbcType="INTEGER" />
+    <result column="earn_player_id" property="earnPlayerId" jdbcType="VARCHAR" />
+    <result column="earn_max" property="earnMax" jdbcType="DOUBLE" />
+    <result column="earn_tax" property="earnTax" jdbcType="DOUBLE" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    earn_id, earn_player_id, earn_max, earn_tax
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from player_earning
+    where earn_id = #{earnId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from player_earning
+    where earn_id = #{earnId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.dream.city.player.domain.entity.PlayerEarning" >
+    insert into player_earning (earn_id, earn_player_id, earn_max, 
+      earn_tax)
+    values (#{earnId,jdbcType=INTEGER}, #{earnPlayerId,jdbcType=VARCHAR}, #{earnMax,jdbcType=DOUBLE}, 
+      #{earnTax,jdbcType=DOUBLE})
+  </insert>
+  <insert id="insertSelective" parameterType="com.dream.city.player.domain.entity.PlayerEarning" >
+    insert into player_earning
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="earnId != null" >
+        earn_id,
+      </if>
+      <if test="earnPlayerId != null" >
+        earn_player_id,
+      </if>
+      <if test="earnMax != null" >
+        earn_max,
+      </if>
+      <if test="earnTax != null" >
+        earn_tax,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="earnId != null" >
+        #{earnId,jdbcType=INTEGER},
+      </if>
+      <if test="earnPlayerId != null" >
+        #{earnPlayerId,jdbcType=VARCHAR},
+      </if>
+      <if test="earnMax != null" >
+        #{earnMax,jdbcType=DOUBLE},
+      </if>
+      <if test="earnTax != null" >
+        #{earnTax,jdbcType=DOUBLE},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.dream.city.player.domain.entity.PlayerEarning" >
+    update player_earning
+    <set >
+      <if test="earnPlayerId != null" >
+        earn_player_id = #{earnPlayerId,jdbcType=VARCHAR},
+      </if>
+      <if test="earnMax != null" >
+        earn_max = #{earnMax,jdbcType=DOUBLE},
+      </if>
+      <if test="earnTax != null" >
+        earn_tax = #{earnTax,jdbcType=DOUBLE},
+      </if>
+    </set>
+    where earn_id = #{earnId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.dream.city.player.domain.entity.PlayerEarning" >
+    update player_earning
+    set earn_player_id = #{earnPlayerId,jdbcType=VARCHAR},
+      earn_max = #{earnMax,jdbcType=DOUBLE},
+      earn_tax = #{earnTax,jdbcType=DOUBLE}
+    where earn_id = #{earnId,jdbcType=INTEGER}
+  </update>
+</mapper>

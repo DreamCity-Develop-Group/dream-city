@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dream.city.player.domain.mapper.PlayerAccountMapper" >
+  <resultMap id="BaseResultMap" type="com.dream.city.player.domain.entity.PlayerAccount" >
+    <id column="acc_id" property="accId" jdbcType="INTEGER" />
+    <result column="acc_player_id" property="accPlayerId" jdbcType="VARCHAR" />
+    <result column="acc_usdt" property="accUsdt" jdbcType="DECIMAL" />
+    <result column="acc_usdt_available" property="accUsdtAvailable" jdbcType="DECIMAL" />
+    <result column="acc_usdt_freeze" property="accUsdtFreeze" jdbcType="DECIMAL" />
+    <result column="acc_mt" property="accMt" jdbcType="DECIMAL" />
+    <result column="acc_mt_available" property="accMtAvailable" jdbcType="DECIMAL" />
+    <result column="acc_mt_freeze" property="accMtFreeze" jdbcType="DECIMAL" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    acc_id, acc_player_id, acc_usdt, acc_usdt_available, acc_usdt_freeze, acc_mt, acc_mt_available, 
+    acc_mt_freeze, create_time, update_time
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from player_account
+    where acc_id = #{accId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from player_account
+    where acc_id = #{accId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.dream.city.player.domain.entity.PlayerAccount" >
+    insert into player_account (acc_id, acc_player_id, acc_usdt, 
+      acc_usdt_available, acc_usdt_freeze, acc_mt, 
+      acc_mt_available, acc_mt_freeze, create_time, 
+      update_time)
+    values (#{accId,jdbcType=INTEGER}, #{accPlayerId,jdbcType=VARCHAR}, #{accUsdt,jdbcType=DECIMAL}, 
+      #{accUsdtAvailable,jdbcType=DECIMAL}, #{accUsdtFreeze,jdbcType=DECIMAL}, #{accMt,jdbcType=DECIMAL}, 
+      #{accMtAvailable,jdbcType=DECIMAL}, #{accMtFreeze,jdbcType=DECIMAL}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.dream.city.player.domain.entity.PlayerAccount" >
+    insert into player_account
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="accId != null" >
+        acc_id,
+      </if>
+      <if test="accPlayerId != null" >
+        acc_player_id,
+      </if>
+      <if test="accUsdt != null" >
+        acc_usdt,
+      </if>
+      <if test="accUsdtAvailable != null" >
+        acc_usdt_available,
+      </if>
+      <if test="accUsdtFreeze != null" >
+        acc_usdt_freeze,
+      </if>
+      <if test="accMt != null" >
+        acc_mt,
+      </if>
+      <if test="accMtAvailable != null" >
+        acc_mt_available,
+      </if>
+      <if test="accMtFreeze != null" >
+        acc_mt_freeze,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="accId != null" >
+        #{accId,jdbcType=INTEGER},
+      </if>
+      <if test="accPlayerId != null" >
+        #{accPlayerId,jdbcType=VARCHAR},
+      </if>
+      <if test="accUsdt != null" >
+        #{accUsdt,jdbcType=DECIMAL},
+      </if>
+      <if test="accUsdtAvailable != null" >
+        #{accUsdtAvailable,jdbcType=DECIMAL},
+      </if>
+      <if test="accUsdtFreeze != null" >
+        #{accUsdtFreeze,jdbcType=DECIMAL},
+      </if>
+      <if test="accMt != null" >
+        #{accMt,jdbcType=DECIMAL},
+      </if>
+      <if test="accMtAvailable != null" >
+        #{accMtAvailable,jdbcType=DECIMAL},
+      </if>
+      <if test="accMtFreeze != null" >
+        #{accMtFreeze,jdbcType=DECIMAL},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.dream.city.player.domain.entity.PlayerAccount" >
+    update player_account
+    <set >
+      <if test="accPlayerId != null" >
+        acc_player_id = #{accPlayerId,jdbcType=VARCHAR},
+      </if>
+      <if test="accUsdt != null" >
+        acc_usdt = #{accUsdt,jdbcType=DECIMAL},
+      </if>
+      <if test="accUsdtAvailable != null" >
+        acc_usdt_available = #{accUsdtAvailable,jdbcType=DECIMAL},
+      </if>
+      <if test="accUsdtFreeze != null" >
+        acc_usdt_freeze = #{accUsdtFreeze,jdbcType=DECIMAL},
+      </if>
+      <if test="accMt != null" >
+        acc_mt = #{accMt,jdbcType=DECIMAL},
+      </if>
+      <if test="accMtAvailable != null" >
+        acc_mt_available = #{accMtAvailable,jdbcType=DECIMAL},
+      </if>
+      <if test="accMtFreeze != null" >
+        acc_mt_freeze = #{accMtFreeze,jdbcType=DECIMAL},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where acc_id = #{accId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.dream.city.player.domain.entity.PlayerAccount" >
+    update player_account
+    set acc_player_id = #{accPlayerId,jdbcType=VARCHAR},
+      acc_usdt = #{accUsdt,jdbcType=DECIMAL},
+      acc_usdt_available = #{accUsdtAvailable,jdbcType=DECIMAL},
+      acc_usdt_freeze = #{accUsdtFreeze,jdbcType=DECIMAL},
+      acc_mt = #{accMt,jdbcType=DECIMAL},
+      acc_mt_available = #{accMtAvailable,jdbcType=DECIMAL},
+      acc_mt_freeze = #{accMtFreeze,jdbcType=DECIMAL},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where acc_id = #{accId,jdbcType=INTEGER}
+  </update>
+</mapper>
