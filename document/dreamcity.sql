@@ -343,10 +343,10 @@ CREATE TABLE `player_likes` (
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for player_likes_log
+-- Table structure for likes_log
 -- ----------------------------
-DROP TABLE IF EXISTS `player_likes_log`;
-CREATE TABLE `player_likes_log` (
+DROP TABLE IF EXISTS `likes_log`;
+CREATE TABLE `likes_log` (
   `like_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `like_player_id` varchar(64) CHARACTER SET utf8 DEFAULT NULL COMMENT '点赞玩家ID',
   `like_liked_id` varchar(64) CHARACTER SET utf8 DEFAULT NULL COMMENT '收获点赞玩家ID',
@@ -357,7 +357,7 @@ CREATE TABLE `player_likes_log` (
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COMMENT='点赞记录表';
 
 -- ----------------------------
--- Records of player_likes_log
+-- Records of likes_log
 -- ----------------------------
 
 -- ----------------------------

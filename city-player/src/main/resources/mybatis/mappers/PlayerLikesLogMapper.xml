@@ -103,4 +103,12 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where like_id = #{likeId,jdbcType=INTEGER}
   </update>
+
+  <select id="playerLikesCountToday" resultType="INTEGER" parameterType="com.dream.city.player.domain.entity.PlayerLikesLog" >
+    select sum(like_invest_id)
+    from likes_log
+    where liked_player_id = #{likedPlayerId,jdbcType=INTEGER}
+  </select>
+
+
 </mapper>
