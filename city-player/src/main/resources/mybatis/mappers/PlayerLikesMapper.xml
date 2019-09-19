@@ -17,17 +17,17 @@
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
-    from t_player_likes
+    from player_likes
     where liked_id = #{likedId,jdbcType=INTEGER}
   </select>
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
-    delete from t_player_likes
+    delete from player_likes
     where liked_id = #{likedId,jdbcType=INTEGER}
   </delete>
 
   <insert id="insertSelective" parameterType="com.dream.city.player.domain.req.PlayerLikesReq" >
-    insert into t_player_likes
+    insert into player_likes
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="likedId != null" >
         liked_id,
@@ -70,7 +70,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.dream.city.player.domain.req.PlayerLikesReq" >
-    update t_player_likes
+    update player_likes
     <set >
       <if test="likedPlayerId != null" >
         liked_player_id = #{likedPlayerId,jdbcType=VARCHAR},
@@ -93,14 +93,14 @@
 
   <select id="playerLikesCount" resultType="INTEGER" parameterType="com.dream.city.player.domain.req.PlayerLikesReq" >
     select sum(liked_invest_total)
-    from t_player_likes
+    from player_likes
     where liked_player_id = #{likedPlayerId,jdbcType=INTEGER}
   </select>
 
 
   <select id="playerLikesList" resultMap="BaseResultMap" parameterType="com.dream.city.player.domain.req.PlayerLikesReq" >
     select <include refid="Base_Column_List" />
-    from t_player_likes
+    from player_likes
     where liked_player_id = #{likedPlayerId,jdbcType=INTEGER}
   </select>
 

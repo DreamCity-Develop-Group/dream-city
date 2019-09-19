@@ -10,6 +10,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -20,15 +21,15 @@ public class CityConsumerApplicationTests {
     }
 
     @Test
-    public void testUserReg(){
+    public void testUserReg() {
 
-        MessageData data = new MessageData("login","user");
-        Map<String,String> map = new HashMap<>();
-        map.put("username","Wvv11");
-        map.put("userpass","123456");
-        map.put("code","125478");
-        map.put("nick","VVV");
-        map.put("invite","saas223");
+        MessageData data = new MessageData("login", "user");
+        Map<String, String> map = new HashMap<>();
+        map.put("username", "Wvv11");
+        map.put("userpass", "123456");
+        map.put("code", "125478");
+        map.put("nick", "VVV");
+        map.put("invite", "saas223");
         data.setT(map);
         System.out.println(data);
         Message msg = new Message();
@@ -45,6 +46,11 @@ public class CityConsumerApplicationTests {
 //        Message message1 = new Message(new MessageData(map));
 //        System.out.println(message1);
 
+
+    }
+
+    @Test
+    public void testUUID() {
 
     }
 

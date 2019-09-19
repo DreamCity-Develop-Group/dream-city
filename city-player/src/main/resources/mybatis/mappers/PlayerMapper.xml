@@ -21,16 +21,27 @@
   <select id="getPlayerById" parameterType="com.dream.city.player.domain.entity.Player" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from t_player
+    from city_player p
     where 1=1
     <if test="playerId != null and playerId != ''">
       and p.player_id = #{playerId,jdbcType=VARCHAR} 
     </if>
     <if test="playerName != null" >
-      and player_name = #{playerName,jdbcType=VARCHAR}
+      and p.player_name = #{playerName,jdbcType=VARCHAR}
     </if>
     <if test="playerNick != null" >
-      and player_nick = #{playerNick,jdbcType=VARCHAR}
+      and p.player_nick = #{playerNick,jdbcType=VARCHAR}
+    </if>
+    limit 1
+  </select>
+
+  <select id="getPlayerByInvite" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from city_player
+    where 1=1
+    <if test="invite != null and invite != ''">
+      and player_invite = #{invite,jdbcType=VARCHAR}
     </if>
     limit 1
   </select>
@@ -38,18 +49,18 @@
   <select id="getPlayers" parameterType="com.dream.city.base.model.req.PageReq" resultMap="BaseResultMap">
     SELECT p.player_id playerId,p.player_name playerName,p.player_nick playerNick,p.create_time,
         e.friendlink playerLink,e.imgurl
-    FROM t_player p,t_player_ext e
+    from city_player p,city_player_ext e
     <where>
       p.player_id=e.player_id
       <if test="condition != null and condition != ''">
-        and p.player_nick = #{_parameter} 
+        and p.player_nick = #{_parameter}
       </if>
     </where>
     ORDER BY p.create_time DESC limit ${start},${pageSize}
   </select>
   <select id="getPlayersCount" parameterType="com.dream.city.base.model.req.PageReq" resultType="java.lang.Integer">
     SELECT COUNT(p.player_id)
-    FROM t_player p,t_player_ext e
+    from city_player p,city_player_ext e
     <where>
       p.player_id=e.player_id
       <if test="condition != null and condition != ''">
@@ -60,12 +71,12 @@
   </select>
 
   <delete id="deleteByPlayerId" parameterType="java.lang.Long">
-    delete from t_player
+    delete from city_player
     where player_id = #{playerId,jdbcType=BIGINT}
   </delete>
 
   <insert id="insertSelective" parameterType="com.dream.city.player.domain.entity.Player" >
-    insert into t_player
+    insert into city_player
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
         id,
@@ -117,7 +128,7 @@
   </insert>
 
   <update id="updateByPlayerId" parameterType="com.dream.city.player.domain.entity.Player">
-    update t_player
+    update city_player
     <set >
       <if test="playerName != null" >
         player_name = #{playerName,jdbcType=VARCHAR},

@@ -1,18 +1,22 @@
 package com.dream.city.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.parser.Feature;
 import com.dream.city.base.model.CityGlobal;
 import com.dream.city.base.model.Message;
 import com.dream.city.base.model.MessageData;
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.req.PageReq;
 import com.dream.city.base.model.req.UserReq;
+import com.dream.city.base.utils.JsonUtil;
 import com.dream.city.base.utils.RedisKeys;
 import com.dream.city.base.utils.RedisUtils;
 import com.dream.city.service.AuthService;
 import com.dream.city.service.CityMessageService;
 import com.dream.city.service.ConsumerPlayerService;
+import com.dream.city.service.ConsumerTreeService;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,6 +46,8 @@ public class ConsumerPlayerController {
     private RedisUtils redisUtils;
     @Autowired
     AuthService authService;
+    @Autowired
+    private ConsumerTreeService treeService;
 
 
 
@@ -215,15 +221,24 @@ public class ConsumerPlayerController {
         UserReq userReq = getUserReq(message);
         String jsonReq = JSON.toJSONString(userReq);
 
-        // 校验码  todo
-        /*Message retMsg = messageService.validCode(message);
-        if (!(Boolean) retMsg.getData().getT()){
-            msg.getData().setT(new MessageData(CityGlobal.Constant.REG_FAIL));
-            return msg;
-        }*/
 
         Result reg = consumerPlayerService.reg(jsonReq);
         if (reg.getSuccess()){
+            String json   = JsonUtil.parseObjToJson(message);
+
+            JSONObject jsonObject = JSON.parseObject(json);
+            JSONObject jsonT = jsonObject.getJSONObject("data").getJSONObject("t");
+            String invite = jsonT.getString("invite");
+
+            Result resultParent = consumerPlayerService.getPlayerByInvite(invite);
+            JSONObject parent = JSON.parseObject(JsonUtil.parseObjToJson(resultParent.getData()));
+            String parentId = parent.getString("playerId");
+
+            JSONObject jsonObject1 = JSON.parseObject(JsonUtil.parseObjToJson(reg.getData()));
+            String playerId = jsonObject1.getString("playerId");
+            String playerInvite = jsonObject1.getString("playerCode");
+
+            Result result = treeService.addTree(parentId,playerId,playerInvite);
             t.put("desc",CityGlobal.Constant.REG_SUCCESS);
             data.setT(t);
             msg.setData(data);

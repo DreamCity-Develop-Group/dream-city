@@ -1,16 +1,33 @@
 package com.dream.city.domain.mapper;
 
+import com.dream.city.domain.entity.RelationTree;
 import com.dream.city.domain.entity.User;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+/**
+ * @author wvv
+ */
 @Repository
-public interface treeMapper {
-    User getById(int id);
-    boolean insert(String name);
-    List<User> getUsers();
-    boolean updateUser(User user);
-    boolean deleteUser(int id);
-    boolean deleteAllUsers();
+public interface TreeMapper {
+    RelationTree getTreeById(Integer id);
+    RelationTree get(String pid,String cid);
+    void  saveTree(RelationTree tree);
+    void saveTreeMap(Integer parent,Integer child,String relation);
+    List<RelationTree> getTrees();
+    void updateTree();
+    void deleteTree(Integer id);
+    void disableTree();
+
+    List<RelationTree> getByParent(String parentId);
+
+    RelationTree getByPlayer(String playerId);
+
+    List<RelationTree> selectByRelation(String relation);
+
+
+
+
+
 }

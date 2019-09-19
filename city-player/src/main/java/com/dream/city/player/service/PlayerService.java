@@ -51,4 +51,5 @@ public interface PlayerService {
 
     Player getPlayerByName(String username,String playerNick);
 
+    Player getPlayerByInvite(String invite);
 }

@@ -118,8 +118,8 @@ CREATE TABLE `player_earning`  (
 -- ----------------------------
 -- Table structure for player_likes
 -- ----------------------------
-DROP TABLE IF EXISTS `t_player_likes`;
-CREATE TABLE `t_player_likes` (
+DROP TABLE IF EXISTS `player_likes`;
+CREATE TABLE `player_likes` (
   `liked_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `liked_player_id` varchar(64) CHARACTER SET utf8 DEFAULT NULL COMMENT '收获玩家',
   `liked_invest_id` int(10) unsigned DEFAULT NULL COMMENT '点赞项目ID',
@@ -133,8 +133,8 @@ CREATE TABLE `t_player_likes` (
 -- ----------------------------
 -- Table structure for player_likes_log
 -- ----------------------------
-DROP TABLE IF EXISTS `t_player_likes_log`;
-CREATE TABLE `t_player_likes_log`  (
+DROP TABLE IF EXISTS `player_likes_log`;
+CREATE TABLE `player_likes_log`  (
   `like_id` int(11) NOT NULL AUTO_INCREMENT,
   `like_player_id` varchar(0) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '点赞玩家ID',
   `like_liked_id` varchar(0) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '收获点赞玩家ID',

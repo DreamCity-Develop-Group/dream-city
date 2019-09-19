@@ -61,6 +61,10 @@ public interface CityGlobal {
         public static final String USER_CHANGE_TRADERPWD_SUCCESS = "修改交易密码成功！";
         public static final String USER_CHANGE_TRADERPWD_FAIL = "修改交易密码失败！";
 
+        //商会关系
+        public static final String TREE_RELATION_SUCCESS = "成功";
+        public static final String TREE_RELATION_FAIL = "失败";
+
 
 
 

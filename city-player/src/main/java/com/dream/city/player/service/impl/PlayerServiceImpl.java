@@ -106,7 +106,7 @@ public class PlayerServiceImpl implements PlayerService {
         //加密  前端加密，后端不加密
         player.setPlayerPass(player.getPlayerPass());
         // todo
-        player.setPlayerInvite("");
+        //player.setPlayerInvite("");
         return playerMapper.insertSelective(player)>0?Boolean.TRUE:Boolean.FALSE;
     }
 
@@ -170,6 +170,12 @@ public class PlayerServiceImpl implements PlayerService {
         }
         Player playerByName = playerMapper.getPlayerById(player);
         return playerByName;
+    }
+
+    @Override
+    public Player getPlayerByInvite(String invite){
+        Player player = playerMapper.getPlayerByInvite(invite);
+        return player;
     }
 
 

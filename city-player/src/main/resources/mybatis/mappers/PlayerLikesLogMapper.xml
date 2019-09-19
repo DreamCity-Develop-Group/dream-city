@@ -15,15 +15,15 @@
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
-    from t_player_likes_log
+    from player_likes_log
     where like_id = #{likeId,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
-    delete from t_player_likes_log
+    delete from player_likes_log
     where like_id = #{likeId,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.dream.city.player.domain.entity.PlayerLikesLog" >
-    insert into t_player_likes_log (like_id, like_player_id, like_liked_id, 
+    insert into player_likes_log (like_id, like_player_id, like_liked_id,
       like_invest_id, create_time, update_time
       )
     values (#{likeId,jdbcType=INTEGER}, #{likePlayerId,jdbcType=VARCHAR}, #{likeLikedId,jdbcType=VARCHAR}, 
@@ -31,7 +31,7 @@
       )
   </insert>
   <insert id="insertSelective" parameterType="com.dream.city.player.domain.entity.PlayerLikesLog" >
-    insert into t_player_likes_log
+    insert into player_likes_log
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="likeId != null" >
         like_id,
@@ -74,7 +74,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.dream.city.player.domain.entity.PlayerLikesLog" >
-    update t_player_likes_log
+    update player_likes_log
     <set >
       <if test="likePlayerId != null" >
         like_player_id = #{likePlayerId,jdbcType=VARCHAR},
@@ -95,7 +95,7 @@
     where like_id = #{likeId,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.dream.city.player.domain.entity.PlayerLikesLog" >
-    update t_player_likes_log
+    update player_likes_log
     set like_player_id = #{likePlayerId,jdbcType=VARCHAR},
       like_liked_id = #{likeLikedId,jdbcType=VARCHAR},
       like_invest_id = #{likeInvestId,jdbcType=INTEGER},

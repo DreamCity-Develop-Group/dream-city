@@ -16,18 +16,18 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from t_player_grade
+    from player_grade
     where id = #{id,jdbcType=BIGINT}
   </select>
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from t_player_grade
+    delete from player_grade
     where id = #{id,jdbcType=BIGINT}
   </delete>
 
 
   <insert id="insertSelective" parameterType="com.dream.city.player.domain.entity.PlayerGrade">
-    insert into t_player_grade
+    insert into city_player_grade
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
@@ -72,7 +72,7 @@
 
 
   <update id="updateByPlayerId" parameterType="com.dream.city.player.domain.entity.PlayerGrade">
-    update t_player_grade
+    update city_player_grade
     <set>
       <!--<if test="playerId != null">
         player_id = #{playerId,jdbcType=VARCHAR},

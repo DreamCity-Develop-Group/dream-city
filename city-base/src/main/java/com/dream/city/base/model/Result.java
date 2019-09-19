@@ -30,6 +30,7 @@ public class Result<T> {
     public Result() {
     }
 
+
     public Result(String msg, int code) {
         super();
         this.msg = msg;

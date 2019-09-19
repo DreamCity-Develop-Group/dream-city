@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -92,12 +93,17 @@ public class PlayerController {
             playerSave.setPlayerInvite(inviteCode);
             playerSave.setPlayerNick(nick);
             boolean ret = playerService.save(playerSave);
-            
+
             if (ret){
                 tip = "注册成功";
+                Player playerInsert = playerService.getPlayerByName(playerName,nick);
+
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("playerId",playerInsert.getPlayerId());
+                jsonObject.put("playerCode",playerInsert.getPlayerInvite());
                 result.setSuccess(Boolean.TRUE);
                 result.setCode(CityGlobal.ResultCode.success.getStatus());
-
+                result.setData(jsonObject);
                 // 登录成功保存redis
                 loginToRedis(playerSave);
             }
@@ -386,6 +392,13 @@ public class PlayerController {
         player.setPlayerName(userReq.getUsername());
         player.setPlayerId(userReq.getPlayerId());
         return player;
+    }
+
+    @RequestMapping("/getPlayerByInvite")
+    public Result getPlayerByInvite(@RequestParam("invite")String invite){
+        Player player = playerService.getPlayerByInvite(invite);
+
+        return new Result("success",200,player);
     }
 
 }

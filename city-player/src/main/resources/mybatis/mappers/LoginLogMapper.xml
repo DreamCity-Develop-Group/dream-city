@@ -18,12 +18,12 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from t_login_log
+    from login_log
     where id = #{id,jdbcType=BIGINT}
   </select>
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from t_login_log
+    delete from login_log
     where id = #{id,jdbcType=BIGINT}
   </delete>
 
