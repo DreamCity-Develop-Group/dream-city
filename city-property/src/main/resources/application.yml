@@ -1,0 +1,29 @@
+server:
+  port: 9020
+
+spring:
+  application:
+    name: city-property
+  profiles:
+    active: dev
+  main:
+    allow-bean-definition-overriding: true
+
+
+eureka:
+  instance:
+    hostname: localhost
+    instance-id: ${spring.application.name}-${server.port}
+  client:
+    service-url:
+      defaultZone: http://${eureka.instance.hostname}:8888/eureka/,http://${eureka.instance.hostname}:9999/eureka/
+
+
+#datasource
+mybatis:
+  type-aliases-package: com.dream.city.domain.mapper
+  mapper-locations: classpath:/mybatis/mappers/*.xml
+
+
+
+

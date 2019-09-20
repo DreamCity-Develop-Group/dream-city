@@ -18,8 +18,7 @@ public class InvestServiceImpl implements InvestService {
 
     @Autowired
     private CityInvestMapper investMapper;
-    @Autowired
-    private InvestOrderMapper orderMapper;
+
 
 
     @Override
@@ -47,33 +46,4 @@ public class InvestServiceImpl implements InvestService {
         return investMapper.getInvestLsit(record);
     }
 
-    @Override
-    public int insertInvestOrder(InvestOrder record) {
-        Integer integer = orderMapper.updateByPrimaryKeySelective(record);
-        return integer ==null?0:integer;
-    }
-
-    @Override
-    public int investOrderInvalid(InvestOrder record) {
-        record.setOrderState(OrderState.INVALID.getStatus());
-        Integer integer = orderMapper.updateByPrimaryKeySelective(record);
-        return integer ==null?0:integer;
-    }
-
-    @Override
-    public int investOrderCancel(InvestOrder record) {
-        record.setOrderState(OrderState.CANCEL.getStatus());
-        Integer integer = orderMapper.updateByPrimaryKeySelective(record);
-        return integer ==null?0:integer;
-    }
-
-    @Override
-    public InvestOrder getInvestOrder(InvestOrder record) {
-        return orderMapper.selectByPrimaryKey(record);
-    }
-
-    @Override
-    public List<InvestOrder> getInvestOrders(InvestOrder record) {
-        return orderMapper.getInvestOrders(record);
-    }
 }
