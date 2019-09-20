@@ -76,7 +76,7 @@ public class PlayerServiceImpl implements PlayerService {
         int i = playerMapper.updateByPlayerId(player);
         if (i>0){
             // 修改密码成功
-            return new Result(Boolean.TRUE, CityGlobal.Constant.USER_CHANGE_PWD_SUCCESS);
+            return new Result(Boolean.TRUE, CityGlobal.Constant.USER_CHANGE_TRADERPWD_SUCCESS);
         }
         return new Result(Boolean.FALSE, CityGlobal.Constant.USER_CHANGE_TRADERPWD_FAIL);
     }

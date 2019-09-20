@@ -60,7 +60,7 @@ public class ConsumerLikesController {
      * @param msg
      * @return
      */
-    @RequestMapping("/cancelLike")
+    /*@RequestMapping("/cancelLike")
     public Message cancelLike(@RequestBody Message msg){
         logger.info("取消点赞，{}",msg);
         Message message = new Message(msg.getSource(), msg.getTarget(),
@@ -73,7 +73,7 @@ public class ConsumerLikesController {
         }
         message.setDesc(result.getMsg());
         return message;
-    }
+    }*/
 
     /**
      * 玩家点赞总数

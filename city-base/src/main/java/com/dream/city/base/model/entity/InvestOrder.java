@@ -14,10 +14,10 @@ public class InvestOrder implements Serializable {
     private String orderPayerId;
 
     /** 状态 */
-    private Byte orderState;
+    private int orderState;
 
     /** 是否复投 */
-    private Byte orderRepeat;
+    private int orderRepeat;
 
     /**  */
     private Date createTime;
@@ -49,19 +49,19 @@ public class InvestOrder implements Serializable {
         this.orderPayerId = orderPayerId == null ? null : orderPayerId.trim();
     }
 
-    public Byte getOrderState() {
+    public int getOrderState() {
         return orderState;
     }
 
-    public void setOrderState(Byte orderState) {
+    public void setOrderState(int orderState) {
         this.orderState = orderState;
     }
 
-    public Byte getOrderRepeat() {
+    public int getOrderRepeat() {
         return orderRepeat;
     }
 
-    public void setOrderRepeat(Byte orderRepeat) {
+    public void setOrderRepeat(int orderRepeat) {
         this.orderRepeat = orderRepeat;
     }
 
