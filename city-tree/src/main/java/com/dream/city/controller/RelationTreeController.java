@@ -9,6 +9,7 @@ import com.dream.city.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
@@ -33,8 +34,9 @@ public class RelationTreeController {
     @RequestMapping("/get/tree")
     public Result get(@RequestParam("playerId") String playerId) {
         RelationTree tree = relationTreeService.getByPlayer(playerId);
-        Result result = new Result();
-        return new Result(CityGlobal.Constant.TREE_RELATION_SUCCESS, 200, tree);
+        List<RelationTree> trees = relationTreeService.getTrees();
+
+        return new Result(CityGlobal.Constant.TREE_RELATION_SUCCESS, 200, trees);
     }
 
     /**
@@ -76,6 +78,30 @@ public class RelationTreeController {
     public Result findParent(@RequestParam("playerId")String playerId){
         return new Result("success",200,relationTreeService.getParent(playerId));
     }
+
+    /**
+     *
+     * @param playerId
+     * @return
+     */
+    @RequestMapping("query/sales")
+    public Result querySales(@RequestParam("playerId")String playerId){
+
+        return new Result();
+    }
+
+    /**
+     * 购买MT
+     * @param playerId
+     * @param amount
+     * @return
+     */
+    @RequestMapping("buy/mt")
+    public Result buyMt(@RequestParam("playerId")String playerId, @RequestParam("amount")BigDecimal amount){
+        return new Result();
+    }
+
+
 
 
 }

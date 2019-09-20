@@ -4,9 +4,7 @@ server:
 spring:
   application:
     name: city-tree
-    #datasource
   datasource:
-    #driver-class-name: com.mysql.jdbc.Driver
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/dreamcity?serverTimezone=UTC&useUnicode=true&characterEncoding=UTF-8&transformedBitIsBoolean=true&autoReconnect=true&failOverReadOnly=false&allowMultiQueries=true&useSSL=false
     username: dreamcity
@@ -18,6 +16,8 @@ spring:
     password: 123456
   main:
     allow-bean-definition-overriding: true
+  profiles:
+    active: dev
 
 mybatis:
   type-aliases-package: com.dream.city.domain.mapper
@@ -31,6 +31,3 @@ eureka:
   client:
     service-url:
       defaultZone: http://${eureka.instance.hostname}:8888/eureka/, http://${eureka.instance.hostname}:9999/eureka/
-
-auth:
-  secret: oKKLJOoasdl

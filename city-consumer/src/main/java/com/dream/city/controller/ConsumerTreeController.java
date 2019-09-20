@@ -46,7 +46,9 @@ public class ConsumerTreeController {
         String parentId = parentObj.getString("playerId");
 
 
-        treeService.addTree(parentId,playerId,playerInvite);
+        Result result = treeService.addTree(parentId,playerId,playerInvite);
+
+        return result;
     }
 
 }

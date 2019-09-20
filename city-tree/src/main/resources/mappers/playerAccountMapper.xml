@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dream.city.domain.mapper.PlayerAccountMapper">
+    <resultMap id="PlayerAccountBaseResultMap" type="com.dream.city.base.model.entity.PlayerAccount">
+        <result column="acc_id" jdbcType="INTEGER" property="accId" />
+        <result column="acc_player_id" jdbcType="INTEGER" property="accPlayId"/>
+        <result column="acc_usdt" jdbcType="DOUBLE" property="accUsdt" />
+        <result column="acc_usdt_available" jdbcType="VARCHAR" property="accUsdtAvailable"/>
+        <result column="acc_usdt_freeze" jdbcType="VARCHAR" property="accUsdtFreeze"/>
+        <result column="acc_mt" jdbcType="VARCHAR" property="accMt"/>
+        <result column="acc_mt_available" jdbcType="VARCHAR" property="accMtAvailale"/>
+        <result column="acc_mt_freeze" jdbcType="INTEGER" property="accMtFreeze"/>
+        <result column="createtime" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="updatetime" jdbcType="TIMESTAMP" property="updateTime"/>
+    </resultMap>
+</mapper>
