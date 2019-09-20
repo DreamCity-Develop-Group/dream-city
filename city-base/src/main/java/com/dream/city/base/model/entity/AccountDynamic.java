@@ -11,6 +11,9 @@ public class AccountDynamic implements Serializable {
     /** 账户id */
     private Integer dynAccId;
 
+    /** 订单id */
+    private Integer orderId;
+
     /** 动账金额 */
     private BigDecimal dynAmount;
 

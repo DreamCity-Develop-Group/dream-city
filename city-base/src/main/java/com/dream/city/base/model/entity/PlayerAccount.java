@@ -4,6 +4,9 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
+/**
+ * @author wvv
+ */
 public class PlayerAccount implements Serializable {
     /**  */
     private Integer accId;

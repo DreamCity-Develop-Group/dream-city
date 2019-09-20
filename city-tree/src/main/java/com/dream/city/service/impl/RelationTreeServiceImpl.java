@@ -1,12 +1,15 @@
 package com.dream.city.service.impl;
 
+import com.dream.city.base.model.CityGlobal;
 import com.dream.city.base.model.Result;
+import com.dream.city.base.model.entity.GameSetting;
 import com.dream.city.base.model.entity.RelationTree;
 import com.dream.city.base.model.entity.User;
 import com.dream.city.domain.mapper.TreeMapper;
 import com.dream.city.domain.mapper.UserMapper;
 import com.dream.city.service.RelationTreeService;
 import com.dream.city.service.UserService;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,13 +30,20 @@ public class RelationTreeServiceImpl implements RelationTreeService {
     public Result save(String parent, String child, String invite) {
         RelationTree tree = new RelationTree();
         RelationTree parentTree = treeMapper.getByPlayer(parent);
-        tree.setId(0);
-        tree.setParentId(parent);
-        tree.setPlayerId(child);
-        tree.setRelation(parentTree.getRelation() + "/" + invite);
-        treeMapper.saveTree(tree);
+        RelationTree playerTree = treeMapper.getByPlayer(child);
+        if(StringUtils.isBlank(parent) || StringUtils.isBlank(child) || StringUtils.isBlank(invite)){
+            return new Result(CityGlobal.Constant.TREE_PARAMS_ERROR, 501);
+        }
+        if(null == playerTree) {
+            tree.setId(0);
+            tree.setParentId(parent);
+            tree.setPlayerId(child);
+            tree.setRelation(parentTree.getRelation() + "/" + invite);
+            treeMapper.saveTree(tree);
+            return new Result("成功", 200);
+        }
+        return new Result(CityGlobal.Constant.TREE_RELATION_EXISTS, 201);
 
-        return new Result("成功", 200);
     }
 
 
@@ -61,16 +71,13 @@ public class RelationTreeServiceImpl implements RelationTreeService {
      */
     @Override
     public List<RelationTree> findLevel(String playerId, Integer level) {
-        if (level <= 1){
-            return treeMapper.getByParent(playerId);
-        }
         String like = "";
         for (int i = 0; i < level; i++) {
             like += "/______";
         }
         RelationTree tree = treeMapper.getByPlayer(playerId);
 
-        like = tree.getRelation() + like;
+        like = tree.getRelation() + like+"";
         System.out.println("Select Like: "+like);
         List<RelationTree> trees = treeMapper.selectByRelation(like);
 
@@ -99,5 +106,10 @@ public class RelationTreeServiceImpl implements RelationTreeService {
     public RelationTree getParent(String playerId){
         RelationTree player =  treeMapper.getByPlayer(playerId);
         return treeMapper.getByPlayer(player.getParentId());
+    }
+
+    @Override
+    public List<RelationTree> getTrees(){
+        return treeMapper.getTrees();
     }
 }

@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.dream.city.domain.mapper.TreeMapper">
-    <resultMap id="BaseResultMap" type="com.dream.city.base.model.entity.RelationTree">
+    <resultMap id="TreeBaseResultMap" type="com.dream.city.base.model.entity.RelationTree">
         <result column="tree_id" jdbcType="INTEGER" property="id" />
         <result column="tree_parent_id" jdbcType="INTEGER" property="parentId"/>
         <result column="tree_player_id" jdbcType="INTEGER" property="playerId"/>
@@ -11,75 +11,4 @@
     </resultMap>
     <!--id对应接口中的方法，名字要一样，parameterType是方法的参数类型，
     resultType是查询返回的类型，需要注意的是，这里的SQL语句后面不能加分号，变量不能加引号-->
-    <select id="getTreeById" parameterType="int" resultType="com.dream.city.base.model.entity.User">
-        select * from city_tree where id = #{id}
-    </select>
-
-    <select id="get" parameterType="java.util.Map" resultMap="BaseResultMap">
-        select
-        *
-        from city_tree
-        <where>
-            1=1
-            <if test="parentId != null">
-                and tree_parent_id = #{parentId}
-            </if>
-            <if test="player_id != null">
-                and tree_player_id = #{playerId}
-            </if>
-        </where>
-    </select>
-    <select id="getByParent" parameterType="java.lang.String" resultMap="BaseResultMap">
-        select
-        *
-        from city_tree
-        <where>
-            1=1
-            <if test="parentId != null">
-                and tree_parent_id = #{parentId}
-            </if>
-        </where>
-    </select>
-    <select id="getByPlayer" parameterType="java.lang.String" resultMap="BaseResultMap">
-        select
-        *
-        from city_tree
-        <where>
-            1=1
-            <if test="parentId != null">
-                and tree_player_id = #{playerId}
-            </if>
-        </where>
-    </select>
-
-    <select id="selectByRelation" parameterType="java.lang.String" resultMap="BaseResultMap">
-        select
-        *
-        from city_tree
-        <where>
-            1=1
-            <if test="relation != null">
-                and tree_relation like  #{relation}
-            </if>
-        </where>
-    </select>
-
-    <insert id="saveTree" parameterType="com.dream.city.base.model.entity.RelationTree">
-        insert into city_tree(tree_parent_id,tree_player_id,tree_relation) values(#{parentId},#{playerId},#{relation})
-    </insert>
-
-    <insert id="saveTreeMap" parameterType="java.util.Map">
-        insert into city_tree(tree_parent_id,tree_player_id,tree_relation) values(#{parent},#{child},#{relation})
-    </insert>
-
-    <select id="getTrees"  resultType="com.dream.city.base.model.entity.RelationTree">
-        select * from city_tree order by #{id}
-    </select>
-
-    <update id="updateTree" parameterType="com.dream.city.base.model.entity.RelationTree">
-        update city_tree set name=#{name} where id = #{id}
-    </update>
-    <delete id="deleteTree" parameterType="int">
-        delete from city_tree where id = #{id}
-    </delete>
 </mapper>

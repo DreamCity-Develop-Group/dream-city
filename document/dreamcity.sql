@@ -227,6 +227,8 @@ DROP TABLE IF EXISTS `player_account`;
 CREATE TABLE `player_account` (
   `acc_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `acc_player_id` varchar(64) NOT NULL COMMENT '账户玩家',
+  `acc_address` varchar(64) NOT NULL COMMENT '区块账户地址',
+  `acc_pass` varchar(64) NOT NULL COMMENT '区块账户密码',
   `acc_usdt` decimal(9,4) NOT NULL DEFAULT '0.0000' COMMENT '账户usdt额度',
   `acc_usdt_available` decimal(9,4) unsigned NOT NULL DEFAULT '0.0000' COMMENT 'usdt可用金额',
   `acc_usdt_freeze` decimal(9,4) unsigned NOT NULL DEFAULT '0.0000' COMMENT 'usdt冻结金额',

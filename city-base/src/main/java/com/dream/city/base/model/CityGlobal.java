@@ -1,5 +1,10 @@
 package com.dream.city.base.model;
 
+import org.apache.commons.lang.StringUtils;
+
+/**
+ * @author
+ */
 public interface CityGlobal {
 
     enum ResultCode {
@@ -69,6 +74,8 @@ public interface CityGlobal {
         //商会关系
         public static final String TREE_RELATION_SUCCESS = "成功";
         public static final String TREE_RELATION_FAIL = "失败";
+        public static final String TREE_PARAMS_ERROR = "参数错误，请验证后添加!";
+        public static final String TREE_RELATION_EXISTS="已经添加此商会关系，不必重复添加";
 
         //点赞
         //每个玩家同一天只能对同一物业点赞1次
@@ -79,8 +86,7 @@ public interface CityGlobal {
 
 
 
-
-
+        
 
     }
 
