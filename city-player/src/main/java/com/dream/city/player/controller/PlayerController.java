@@ -92,6 +92,11 @@ public class PlayerController {
         }
         //生成用户的邀请码 TODO 邀请码重复待处理
         String inviteCode = InvitedCodeUtil.getCode();
+        boolean isExists = (playerService.getPlayerByInvite(inviteCode)==null);
+        while (!isExists){
+            inviteCode = InvitedCodeUtil.getCode();
+            isExists = (playerService.getPlayerByInvite(inviteCode)==null);
+        }
         if (StringUtils.isBlank(tip)){
             Player playerSave = new Player();
             playerSave.setPlayerName(playerName);

@@ -1,0 +1,20 @@
+package com.dream.city.invest.domain.mapper;
+
+
+import com.dream.city.base.model.entity.PlayerAccount;
+import org.apache.ibatis.annotations.Mapper;
+
+@Mapper
+public interface PlayerAccountMapper {
+    int deleteByPrimaryKey(Integer accId);
+
+    int insert(PlayerAccount record);
+
+    int insertSelective(PlayerAccount record);
+
+    PlayerAccount selectByPrimaryKey(Integer accId);
+
+    int updateByPrimaryKeySelective(PlayerAccount record);
+
+    int updateByPrimaryKey(PlayerAccount record);
+}

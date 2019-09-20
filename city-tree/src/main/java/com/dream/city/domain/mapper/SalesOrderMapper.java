@@ -2,10 +2,7 @@ package com.dream.city.domain.mapper;
 
 import com.dream.city.base.model.entity.SalesOrder;
 import org.apache.commons.lang.StringUtils;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
@@ -56,4 +53,21 @@ public interface SalesOrderMapper {
 
     @Select("select * from sales_order where 1=1 and ")
     SalesOrder findSalesOrder();
+
+    @Select("select * from `sales_order` where 1=1 and order_id = #{orderId} limit 1 ")
+    SalesOrder getSalesOrderByOrderId(String orderId);
+
+    @Update("update `sales_order` set order_state=#{order.orderState},update_time=#{order.updateTime} where 1=1 and order_player_id=#{order.playerId}")
+    void updateSalesOrder(SalesOrder order);
+
+    @Update({"<script>" +
+            "<foreach collection=\"orderList\" item=\"item\" separator=\";\">" +
+            " UPDATE" +
+            " `sales_order`" +
+            " SET order_state = #{item.orderState, jdbcType=TINYINT}, " +
+            "  WHERE " +
+            "  AND order_id = #{item.orderId, jdbcType=VARCHAR} " +
+            "</foreach>" +
+            "</script>"})
+    void sendOrderMt(@Param("orderList") List<SalesOrder> orderList);
 }
