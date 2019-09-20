@@ -60,9 +60,9 @@ public class PlayerController {
         Map<String,String> player = JSON.parseObject(jsonReq,Map.class);
         String playerName = player.get("username");
         String playerPass = player.get("userpass");
-        String code = player.get("code");
+        //String code = player.get("code");
         String nick = player.get("nick");
-        String invite = player.get("invite");
+        //String invite = player.get("invite");
 
         String tip = "";
         if(StringUtils.isBlank(playerName) || StringUtils.isBlank(playerPass)){
@@ -90,7 +90,7 @@ public class PlayerController {
         if (StringUtils.isBlank(nick)){
             nick = playerName;
         }
-        //生成用户的邀请码
+        //生成用户的邀请码 TODO 邀请码重复待处理
         String inviteCode = InvitedCodeUtil.getCode();
         if (StringUtils.isBlank(tip)){
             Player playerSave = new Player();
