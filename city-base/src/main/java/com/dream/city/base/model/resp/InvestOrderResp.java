@@ -1,12 +1,15 @@
-package com.dream.city.base.model.req;
+package com.dream.city.base.model.resp;
+
+import lombok.ToString;
 
 import java.io.Serializable;
 import java.util.Date;
 
 /**
- * 玩家订单
+ * 玩家投资订单
  */
-public class PlayerOrderReq  implements Serializable {
+@ToString
+public class InvestOrderResp implements Serializable {
 
     /**
      * 订单id
@@ -21,6 +24,8 @@ public class PlayerOrderReq  implements Serializable {
 
     /** 玩家ID */
     private String payerId;
+    private String playerName;
+    private String playerNick;
 
     /** 订单状态 */
     private int orderState;
@@ -28,11 +33,17 @@ public class PlayerOrderReq  implements Serializable {
     /** 订单是否复投 */
     private int orderRepeat;
 
-    /**  */
-    private Date orderStartTime;
+    /** 限额 */
+    private Float inLimit;
 
-    /**  */
-    private Date orderEndTime;
+    /** 税金 */
+    private Double inTax;
+
+    /** 收益倍数 */
+    private String inEarning;
+
+    /** 投资时间 */
+    private Date createTime;
 
 
     public Integer getOrderId() {
@@ -83,33 +94,52 @@ public class PlayerOrderReq  implements Serializable {
         this.orderRepeat = orderRepeat;
     }
 
-    public Date getOrderStartTime() {
-        return orderStartTime;
+    public Float getInLimit() {
+        return inLimit;
     }
 
-    public void setOrderStartTime(Date orderStartTime) {
-        this.orderStartTime = orderStartTime;
+    public void setInLimit(Float inLimit) {
+        this.inLimit = inLimit;
     }
 
-    public Date getOrderEndTime() {
-        return orderEndTime;
+    public Double getInTax() {
+        return inTax;
     }
 
-    public void setOrderEndTime(Date orderEndTime) {
-        this.orderEndTime = orderEndTime;
+    public void setInTax(Double inTax) {
+        this.inTax = inTax;
     }
 
-    @Override
-    public String toString() {
-        return "PlayerOrderReq{" +
-                "orderId=" + orderId +
-                ", investId=" + investId +
-                ", inName='" + inName + '\'' +
-                ", payerId='" + payerId + '\'' +
-                ", orderState=" + orderState +
-                ", orderRepeat=" + orderRepeat +
-                ", orderStartTime=" + orderStartTime +
-                ", orderEndTime=" + orderEndTime +
-                '}';
+    public String getInEarning() {
+        return inEarning;
     }
+
+    public void setInEarning(String inEarning) {
+        this.inEarning = inEarning;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    public String getPlayerName() {
+        return playerName;
+    }
+
+    public void setPlayerName(String playerName) {
+        this.playerName = playerName;
+    }
+
+    public String getPlayerNick() {
+        return playerNick;
+    }
+
+    public void setPlayerNick(String playerNick) {
+        this.playerNick = playerNick;
+    }
+
 }

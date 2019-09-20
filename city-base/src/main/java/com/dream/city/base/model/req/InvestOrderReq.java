@@ -1,12 +1,15 @@
-package com.dream.city.base.model.resp;
+package com.dream.city.base.model.req;
+
+import lombok.ToString;
 
 import java.io.Serializable;
 import java.util.Date;
 
 /**
- * 玩家订单
+ * 玩家投资订单
  */
-public class PlayerOrderResp implements Serializable {
+@ToString
+public class InvestOrderReq implements Serializable {
 
     /**
      * 订单id
@@ -21,8 +24,6 @@ public class PlayerOrderResp implements Serializable {
 
     /** 玩家ID */
     private String payerId;
-    private String playerName;
-    private String playerNick;
 
     /** 订单状态 */
     private int orderState;
@@ -33,14 +34,23 @@ public class PlayerOrderResp implements Serializable {
     /** 限额 */
     private Float inLimit;
 
+    /** 开始时间 */
+    private Date inStart;
+
     /** 税金 */
     private Double inTax;
 
     /** 收益倍数 */
     private String inEarning;
 
-    /** 投资时间 */
-    private Date createTime;
+    /** 投资结束时间 */
+    private Date inEnd;
+
+    /**  */
+    private Date orderStartTime;
+
+    /**  */
+    private Date orderEndTime;
 
 
     public Integer getOrderId() {
@@ -91,12 +101,36 @@ public class PlayerOrderResp implements Serializable {
         this.orderRepeat = orderRepeat;
     }
 
+    public Date getOrderStartTime() {
+        return orderStartTime;
+    }
+
+    public void setOrderStartTime(Date orderStartTime) {
+        this.orderStartTime = orderStartTime;
+    }
+
+    public Date getOrderEndTime() {
+        return orderEndTime;
+    }
+
+    public void setOrderEndTime(Date orderEndTime) {
+        this.orderEndTime = orderEndTime;
+    }
+
     public Float getInLimit() {
         return inLimit;
     }
 
     public void setInLimit(Float inLimit) {
         this.inLimit = inLimit;
+    }
+
+    public Date getInStart() {
+        return inStart;
+    }
+
+    public void setInStart(Date inStart) {
+        this.inStart = inStart;
     }
 
     public Double getInTax() {
@@ -115,45 +149,13 @@ public class PlayerOrderResp implements Serializable {
         this.inEarning = inEarning;
     }
 
-    public Date getCreateTime() {
-        return createTime;
+    public Date getInEnd() {
+        return inEnd;
     }
 
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
+    public void setInEnd(Date inEnd) {
+        this.inEnd = inEnd;
     }
 
-    public String getPlayerName() {
-        return playerName;
-    }
 
-    public void setPlayerName(String playerName) {
-        this.playerName = playerName;
-    }
-
-    public String getPlayerNick() {
-        return playerNick;
-    }
-
-    public void setPlayerNick(String playerNick) {
-        this.playerNick = playerNick;
-    }
-
-    @Override
-    public String toString() {
-        return "PlayerOrderResp{" +
-                "orderId=" + orderId +
-                ", investId=" + investId +
-                ", inName='" + inName + '\'' +
-                ", payerId='" + payerId + '\'' +
-                ", playerName='" + playerName + '\'' +
-                ", playerNick='" + playerNick + '\'' +
-                ", orderState=" + orderState +
-                ", orderRepeat=" + orderRepeat +
-                ", inLimit=" + inLimit +
-                ", inTax=" + inTax +
-                ", inEarning='" + inEarning + '\'' +
-                ", createTime=" + createTime +
-                '}';
-    }
 }

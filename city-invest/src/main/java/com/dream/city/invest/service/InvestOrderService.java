@@ -40,7 +40,7 @@ public interface InvestOrderService {
     InvestOrder getInvestOrder(InvestOrder record);
 
     /**
-     * 投资列表
+     * 投资订单列表
      * @param record
      * @return
      */
