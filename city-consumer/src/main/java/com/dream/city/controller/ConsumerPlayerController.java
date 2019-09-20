@@ -13,10 +13,7 @@ import com.dream.city.base.model.req.UserReq;
 import com.dream.city.base.utils.JsonUtil;
 import com.dream.city.base.utils.RedisKeys;
 import com.dream.city.base.utils.RedisUtils;
-import com.dream.city.service.AuthService;
-import com.dream.city.service.CityMessageService;
-import com.dream.city.service.ConsumerPlayerService;
-import com.dream.city.service.ConsumerTreeService;
+import com.dream.city.service.*;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 
 /**
  * 玩家Controller
@@ -49,6 +47,12 @@ public class ConsumerPlayerController {
     AuthService authService;
     @Autowired
     private ConsumerTreeService treeService;
+    //用户平台账户
+    @Autowired
+    ConsumerPlayerAccountService playerAccountService;
+    //区块账户
+    @Autowired
+    ConsumerPlayerBlockChainService playerBlockChainService;
 
 
     @RequestMapping("/searchfriend")
@@ -217,65 +221,86 @@ public class ConsumerPlayerController {
     @RequestMapping("/reg")
     public Message reg(@RequestBody Message message) {
         logger.info("用户注册", JSONObject.toJSONString(message));
+        UserReq userReq = getUserReq(message);
+        String jsonReq = JSON.toJSONString(userReq);
         Message msg = new Message();
         msg.setSource(message.getSource());
         msg.setTarget(message.getTarget());
+
         MessageData data = new MessageData();
         data.setType("reg");
         data.setModel("consumer");
-        Map<String, String> t = new HashMap<>();
 
-        UserReq userReq = getUserReq(message);
-        String jsonReq = JSON.toJSONString(userReq);
+        //验证码验证
+        String descMsg = checkCode(userReq.getCode(), msg.getSource());
+        String descT = CityGlobal.Constant.REG_FAIL;
+        Result reg1 = null;
+        //验证成功
+        if (StringUtils.isBlank(descMsg)) {
+            Map<String, String> t = new HashMap<>();
+
+            Result reg = consumerPlayerService.reg(jsonReq);
+            logger.info("##################### 玩家注册: {}", msg);
+
+            //玩家注册成功
+            descMsg = reg.getMsg();
+            if (reg.getSuccess()) {
+                descT = CityGlobal.Constant.REG_SUCCESS;
+
+                //登录或注册成功后保存token
+                String token = saveToken(userReq.getUsername());
+                t.put("token", token);
+                t.put("desc", CityGlobal.Constant.REG_SUCCESS);
+                data.setT(t);
+                msg.setData(data);
+                msg.setDesc(descMsg);
 
 
-        Result reg = consumerPlayerService.reg(jsonReq);
-        if (reg.getSuccess()) {
-            String json = JsonUtil.parseObjToJson(message);
 
-            JSONObject jsonObject = JSON.parseObject(json);
-            JSONObject jsonT = jsonObject.getJSONObject("data").getJSONObject("t");
-            String invite = jsonT.getString("invite");
-
-            //邀请码不为空，设置商会关系
-            //邀请码为空，不设置关系
-            if(!StringUtils.isBlank(invite)){
-                Result resultParent = consumerPlayerService.getPlayerByInvite(invite);
-                JSONObject parent = JSON.parseObject(JsonUtil.parseObjToJson(resultParent.getData()));
-                String parentId = parent.getString("playerId");
-
+                String json = JsonUtil.parseObjToJson(message);
+                JSONObject jsonObject = JSON.parseObject(json);
+                JSONObject jsonT = jsonObject.getJSONObject("data").getJSONObject("t");
+                String invite = jsonT.getString("invite");
+                String username = jsonT.getString("username");
+                //注册成功的用户信息
                 JSONObject jsonObject1 = JSON.parseObject(JsonUtil.parseObjToJson(reg.getData()));
                 String playerId = jsonObject1.getString("playerId");
                 String playerInvite = jsonObject1.getString("playerCode");
 
-                Result result = treeService.addTree(parentId, playerId, playerInvite);
-            }
-            t.put("desc", CityGlobal.Constant.REG_SUCCESS);
-            data.setT(t);
-            msg.setData(data);
+                //创建用户账户
+                Result accRet = playerBlockChainService.createBlockChainAccount(username);
+                String address = accRet.getData().toString();
+                if (!StringUtils.isBlank(address)){
+                    //todo-----------------------
+                    playerAccountService.createAccount(playerId,address);
 
-            String descMsg = checkCode(userReq.getCode(), msg.getSource());
-            String descT = CityGlobal.Constant.REG_FAIL;
-            Result reg1 = null;
-            if (StringUtils.isBlank(descMsg)) {
-                reg1 = consumerPlayerService.reg(jsonReq);
-                logger.info("##################### 用户注册: {}", msg);
-
-                descMsg = reg1.getMsg();
-                if (reg1.getSuccess()) { //用户注册成功
-                    descT = CityGlobal.Constant.REG_SUCCESS;
-
-
-                    //登录或注册成功后保存token
-                    String token = saveToken(userReq.getUsername());
-                    t.put("token", token);
                 }
-            }
 
-            t.put("desc", descT);
-            data.setT(t);
-            msg.setData(data);
-            msg.setDesc(descMsg);
+
+
+                //邀请码不为空，设置商会关系
+                //邀请码为空，不设置关系
+                if(!StringUtils.isBlank(invite)){
+                    Result resultParent = consumerPlayerService.getPlayerByInvite(invite);
+                    JSONObject parent = JSON.parseObject(JsonUtil.parseObjToJson(resultParent.getData()));
+                    String parentId = parent.getString("playerId");
+
+
+                    //glk关系
+                    Result result = treeService.addTree(parentId, playerId, playerInvite);
+                }
+
+
+
+            }
+        }
+
+
+
+        if (reg.getSuccess()) {
+
+
+
 
         }
         return msg;

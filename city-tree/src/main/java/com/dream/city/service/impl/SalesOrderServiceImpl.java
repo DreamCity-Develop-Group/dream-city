@@ -4,6 +4,7 @@ import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.PlayerAccount;
 import com.dream.city.base.model.entity.RelationTree;
 import com.dream.city.base.model.entity.SalesOrder;
+import com.dream.city.base.model.enu.OrderState;
 import com.dream.city.domain.mapper.PlayerAccountMapper;
 import com.dream.city.domain.mapper.SalesOrderMapper;
 import com.dream.city.domain.mapper.TreeMapper;
@@ -38,6 +39,11 @@ public class SalesOrderServiceImpl implements SalesOrderService {
     }
 
     @Override
+    public SalesOrder getSalesOrder(String orderId){
+        return salesOrderMapper.getSalesOrderByOrderId(orderId);
+    }
+
+    @Override
     public List<SalesOrder> selectSalesSellerOrder(String playerId) {
 
         return salesOrderMapper.selectSalesSellerOrder(playerId);
@@ -49,7 +55,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
     }
 
     @Override
-    public Result buyMt(BigDecimal buyAmount, String playerId){
+    public Result buyMtCreate(BigDecimal buyAmount, BigDecimal rate, String playerId){
         //判断是否有足够的支付USDT:剩余额度
         PlayerAccount playerAccount = playerAccountMapper.getPlayerAccount(playerId);
         if (playerAccount.getAccUsdtAvailable().compareTo(buyAmount.multiply(new BigDecimal(0.1))) < 0){
@@ -66,14 +72,41 @@ public class SalesOrderServiceImpl implements SalesOrderService {
         order.setOrderId(new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()));
         order.setOrderBuyType("MT");
         order.setOrderPayType("USDT");
+
+        //支付usdt额度
+        BigDecimal usdtPay = buyAmount.multiply(rate);
+        order.setOrderPayAmount(usdtPay);
         order.setOrderPlayerBuyer(playerId);
         order.setOrderPlayerSeller(parentId);
-        order.setOrderState(1);
+        order.setOrderState(OrderState.PAID);
         order.setOrderAmount(buyAmount);
         salesOrderMapper.createSalesOrder(order);
 
-        return new Result("下单成功",200);
 
+
+        return new Result("下单成功",200);
+    }
+
+    @Override
+    public Result buyMtFinish(String playerId,String orderId){
+        SalesOrder order = salesOrderMapper.getSalesOrderByOrderId(orderId);
+        //处于待支付状态
+        if (OrderState.PAID.equals(order.getOrderState())){
+            //扣除相应的USDT总额和可用额度
+            playerAccountMapper.subtractAmount(order.getOrderPayAmount(),playerId);
+            //改变订单状态
+            order.setOrderState(OrderState.PAY);
+            order.setUpdateTime(Timestamp.valueOf(new SimpleDateFormat("yMd Hms").format(new Date())));
+            salesOrderMapper.updateSalesOrder(order);
+            return new Result(true,"订单已支付成功",200);
+        }else {
+            return new Result(false,"订单已经支付或被取消",500);
+        }
+    }
+
+    @Override
+    public BigDecimal getUsdtToMtRate(){
+        return new BigDecimal(0.1);
     }
 
 

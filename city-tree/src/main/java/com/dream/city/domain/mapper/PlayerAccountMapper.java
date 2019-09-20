@@ -3,11 +3,14 @@ package com.dream.city.domain.mapper;
 import com.dream.city.base.model.entity.Player;
 import com.dream.city.base.model.entity.PlayerAccount;
 import com.dream.city.base.model.entity.SalesOrder;
+import org.apache.commons.lang.StringUtils;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -41,5 +44,6 @@ public interface PlayerAccountMapper {
     @Select("select * from player_account where 1=1 and  acc_player_id = #{playerId}")
     PlayerAccount getPlayerAccount(String playerId);
 
-
+    @Update("update player_account set acc_usdt = acc_usdt-#{payAmount} ,acc_usdt_availble=acc_usdt_availble-#{payAmount} where 1=1 adnd acc_player_id=#{playerId}")
+    void subtractAmount(BigDecimal payAmount, String playerId);
 }

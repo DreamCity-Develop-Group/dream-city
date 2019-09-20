@@ -1,5 +1,6 @@
 package com.dream.city.base.model.entity;
 
+import com.dream.city.base.model.enu.OrderState;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -15,9 +16,10 @@ public class SalesOrder {
     private BigDecimal orderAmount;
     private String orderBuyType;
     private String orderPayType;
+    private BigDecimal orderPayAmount;
     private String orderPlayerBuyer;
     private String orderPlayerSeller;
-    private int orderState;
+    private OrderState orderState;
     private Timestamp createTime;
     private Timestamp updateTime;
 }
