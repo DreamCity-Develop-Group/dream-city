@@ -3,6 +3,7 @@ package com.dream.city.base.utils;
 
 import com.alibaba.fastjson.JSON;
 import com.dream.city.base.model.Message;
+import com.dream.city.base.model.entity.CityInvest;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.HashMap;
@@ -41,7 +42,18 @@ public class DataUtils {
 
 
 
+    public static CityInvest getInvestFromJsonReq(String jsonReq){
+        Map map = JSON.parseObject(jsonReq,Map.class);
+        CityInvest record = new CityInvest();
+        /*record.setInEarning();
+        record.setInEnd();
+        record.setInLimit();
+        record.setInName();
+        record.setInStart();
+        record.setInTax();*/
 
+        return record;
+    }
 
 
 

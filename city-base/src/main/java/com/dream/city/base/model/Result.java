@@ -35,32 +35,45 @@ public class Result<T> {
         super();
         this.msg = msg;
         this.code = code;
+        if (code == CityGlobal.ResultCode.success.getStatus()){
+            this.success = Boolean.TRUE;
+        }
     }
 
     public Result(int code, T data) {
         super();
         this.code = code;
         this.data = data;
+        if (code == CityGlobal.ResultCode.success.getStatus()){
+            this.success = Boolean.TRUE;
+        }
     }
 
-    public Result(String msg, int code, T data) {
+    public Result(boolean success, String msg, T data) {
         super();
         this.msg = msg;
-        this.code = code;
         this.data = data;
+        if (success){
+            this.code = CityGlobal.ResultCode.success.getStatus();
+        }
     }
 
     public Result(boolean success, String msg) {
         super();
         this.success = success;
         this.msg = msg;
+        if (success){
+            this.code = CityGlobal.ResultCode.success.getStatus();
+        }
     }
 
-    public Result(boolean success, String msg, int code) {
+    public Result(boolean success, T data) {
         super();
         this.success = success;
-        this.msg = msg;
-        this.code = code;
+        this.data = data;
+        if (success){
+            this.code = CityGlobal.ResultCode.success.getStatus();
+        }
     }
 
     public Result(boolean success, String msg, int code, T data) {
