@@ -6,10 +6,17 @@ spring:
       exclude: static/**
       additional-exclude: static/**,public/**
 
+  datasource:
+    #driver-class-name: com.mysql.jdbc.Driver
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/dreamcity?serverTimezone=UTC&useUnicode=true&characterEncoding=UTF-8&transformedBitIsBoolean=true&autoReconnect=true&failOverReadOnly=false&allowMultiQueries=true&useSSL=false
+    username: dreamcity
+    password: Root@123
+
   cache:
     type: redis
   redis:
-    host: 127.0.0.1
+    host: 192.168.0.88
     port: 6379
     database: 0
     password: 123456
