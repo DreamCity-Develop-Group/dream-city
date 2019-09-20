@@ -41,7 +41,7 @@ public class LikesController {
      * @return
      */
     @RequestMapping("/playerLike")
-    Result<Integer> playerLike(@RequestBody String jsonReq){
+    public Result<Integer> playerLike(@RequestBody String jsonReq){
         logger.info("点赞，{}",jsonReq);
         Result<Integer> result = new Result<>();
         boolean b = Boolean.FALSE;
@@ -77,7 +77,7 @@ public class LikesController {
      * @return
      */
     @RequestMapping("/cancelLike")
-    Result<Integer> cancelLike(@RequestBody String jsonReq){
+    public Result<Integer> cancelLike(@RequestBody String jsonReq){
         logger.info("取消点赞，{}",jsonReq);
         Result<Integer> result = new Result<>();
         boolean b = Boolean.FALSE;
@@ -103,7 +103,7 @@ public class LikesController {
      * @return
      */
     @RequestMapping("/playerLikesCount")
-    Result<Integer> playerLikesCount(@RequestBody String jsonReq){
+    public Result<Integer> playerLikesCount(@RequestBody String jsonReq){
         logger.info("获取玩家点赞总数，{}",jsonReq);
         Result<Integer> result = new Result<>();
         boolean b = Boolean.FALSE;
@@ -129,7 +129,7 @@ public class LikesController {
      * @return
      */
     @RequestMapping("/playerLikesList")
-    Result<String> playerLikesList(@RequestBody String jsonReq){
+    public Result<String> playerLikesList(@RequestBody String jsonReq){
         logger.info("获取点赞项目，{}",jsonReq);
         Result<String> result = new Result<>();
         boolean b = Boolean.FALSE;

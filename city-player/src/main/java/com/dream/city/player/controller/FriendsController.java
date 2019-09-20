@@ -32,7 +32,7 @@ public class FriendsController {
      * @return
      */
     @RequestMapping("/addFriend")
-    boolean addFriend(@RequestParam("playerId") String playerId,
+    public boolean addFriend(@RequestParam("playerId") String playerId,
                       @RequestParam("friendId") String friendId){
         logger.info("addFriend，playerId：{},friendId:{}",playerId,friendId);
         Friends friend = getFriendFromUsername(playerId,friendId);
@@ -40,7 +40,7 @@ public class FriendsController {
     }
 
 
-    private Friends getFriendFromUsername(String playerId,String friendId){
+    public Friends getFriendFromUsername(String playerId,String friendId){
         Friends friend = new Friends();
         friend.setPlayerId(playerId);
         friend.setFriendId(friendId);
@@ -54,7 +54,7 @@ public class FriendsController {
      * @return
      */
     @RequestMapping("/agreeAddFriend")
-    boolean agreeAddFriend(@RequestParam("playerId") String playerId,
+    public boolean agreeAddFriend(@RequestParam("playerId") String playerId,
                            @RequestParam("friendId") String friendId){
         logger.info("agreeAddFriend，playerId：{},friendId:{}",playerId,friendId);
         Friends friend = getFriendFromUsername(playerId,friendId);
@@ -67,7 +67,7 @@ public class FriendsController {
      * @return
      */
     @RequestMapping("/friendList")
-    Page friendList(@RequestBody PageReq pageReq){
+    public Page friendList(@RequestBody PageReq pageReq){
         logger.info("friendList，pageReq：{}",pageReq);
         return friendsService.friendList(pageReq);
     }
@@ -79,7 +79,7 @@ public class FriendsController {
      * @return
      */
     @RequestMapping("/applyFriendList")
-    Page applyFriendList(@RequestBody PageReq pageReq){
+    public Page applyFriendList(@RequestBody PageReq pageReq){
         logger.info("applyFriendList，pageReq：{}",pageReq);
         return friendsService.applyFriendList(pageReq);
     }
