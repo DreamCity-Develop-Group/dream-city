@@ -1,9 +1,9 @@
 server:
-  port: 8180
+  port: 9020
 
 spring:
   application:
-    name: city-set
+    name: city-property
   profiles:
     active: dev
   main:

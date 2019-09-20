@@ -1,9 +1,9 @@
 server:
-  port: 8180
+  port: 9010
 
 spring:
   application:
-    name: city-set
+    name: city-invest
   profiles:
     active: dev
   main:

@@ -22,17 +22,25 @@
         <module>city-admin</module>
         <!--服务提供者-->
         <!--<module>city-user</module>-->
+        <!-- 消息 -->
         <module>city-message</module>
         <module>city-consumer</module>
         <module>city-base</module>
         <module>city-comm</module>
         <module>city-gateway</module>
+        <!-- 玩家 -->
         <module>city-player</module>
+        <!-- 设置 -->
         <module>city-set</module>
+        <!-- 认证 -->
         <module>city-auth</module>
         <module>city-tree</module>
         <module>city-user</module>
         <module>city-worker</module>
+        <!-- 物业 -->
+        <module>city-property</module>
+        <!-- 玩家投资 -->
+        <module>city-invest</module>
     </modules>
 
 
