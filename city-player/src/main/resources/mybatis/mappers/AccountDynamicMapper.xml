@@ -4,6 +4,7 @@
   <resultMap id="BaseResultMap" type="com.dream.city.base.model.entity.AccountDynamic" >
     <id column="dyn_id" property="dynId" jdbcType="INTEGER" />
     <result column="dyn_acc_id" property="dynAccId" jdbcType="INTEGER" />
+    <result column="order_id" property="orderId" jdbcType="INTEGER" />
     <result column="dyn_amount" property="dynAmount" jdbcType="DECIMAL" />
     <result column="dyn_type" property="dynType" jdbcType="CHAR" />
     <result column="dyn_amount_type" property="dynAmountType" jdbcType="CHAR" />
@@ -11,26 +12,22 @@
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    dyn_id, dyn_acc_id, dyn_amount, dyn_type, dyn_amount_type, dyn_desc, create_time
+    dyn_id, dyn_acc_id, order_id, dyn_amount, dyn_type, dyn_amount_type, dyn_desc, create_time
   </sql>
+
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
     from account_dynamic
     where dyn_id = #{dynId,jdbcType=INTEGER}
   </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from account_dynamic
     where dyn_id = #{dynId,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.dream.city.base.model.entity.AccountDynamic" >
-    insert into account_dynamic (dyn_id, dyn_acc_id, dyn_amount, 
-      dyn_type, dyn_amount_type, dyn_desc, 
-      create_time)
-    values (#{dynId,jdbcType=INTEGER}, #{dynAccId,jdbcType=INTEGER}, #{dynAmount,jdbcType=DECIMAL}, 
-      #{dynType,jdbcType=CHAR}, #{dynAmountType,jdbcType=CHAR}, #{dynDesc,jdbcType=VARCHAR}, 
-      #{createTime,jdbcType=TIMESTAMP})
-  </insert>
+
+
   <insert id="insertSelective" parameterType="com.dream.city.base.model.entity.AccountDynamic" >
     insert into account_dynamic
     <trim prefix="(" suffix=")" suffixOverrides="," >
@@ -52,9 +49,7 @@
       <if test="dynDesc != null" >
         dyn_desc,
       </if>
-      <if test="createTime != null" >
-        create_time,
-      </if>
+      create_time
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="dynId != null" >
@@ -75,16 +70,18 @@
       <if test="dynDesc != null" >
         #{dynDesc,jdbcType=VARCHAR},
       </if>
-      <if test="createTime != null" >
-        #{createTime,jdbcType=TIMESTAMP},
-      </if>
+      now()
     </trim>
   </insert>
+
   <update id="updateByPrimaryKeySelective" parameterType="com.dream.city.base.model.entity.AccountDynamic" >
     update account_dynamic
     <set >
       <if test="dynAccId != null" >
         dyn_acc_id = #{dynAccId,jdbcType=INTEGER},
+      </if>
+      <if test="orderId != null" >
+        order_id = #{orderId,jdbcType=INTEGER},
       </if>
       <if test="dynAmount != null" >
         dyn_amount = #{dynAmount,jdbcType=DECIMAL},
@@ -98,20 +95,9 @@
       <if test="dynDesc != null" >
         dyn_desc = #{dynDesc,jdbcType=VARCHAR},
       </if>
-      <if test="createTime != null" >
-        create_time = #{createTime,jdbcType=TIMESTAMP},
-      </if>
     </set>
     where dyn_id = #{dynId,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.dream.city.base.model.entity.AccountDynamic" >
-    update account_dynamic
-    set dyn_acc_id = #{dynAccId,jdbcType=INTEGER},
-      dyn_amount = #{dynAmount,jdbcType=DECIMAL},
-      dyn_type = #{dynType,jdbcType=CHAR},
-      dyn_amount_type = #{dynAmountType,jdbcType=CHAR},
-      dyn_desc = #{dynDesc,jdbcType=VARCHAR},
-      create_time = #{createTime,jdbcType=TIMESTAMP}
-    where dyn_id = #{dynId,jdbcType=INTEGER}
-  </update>
+
+
 </mapper>
