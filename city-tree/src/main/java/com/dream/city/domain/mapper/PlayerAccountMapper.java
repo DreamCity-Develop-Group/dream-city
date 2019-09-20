@@ -4,10 +4,7 @@ import com.dream.city.base.model.entity.Player;
 import com.dream.city.base.model.entity.PlayerAccount;
 import com.dream.city.base.model.entity.SalesOrder;
 import org.apache.commons.lang.StringUtils;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
@@ -46,4 +43,16 @@ public interface PlayerAccountMapper {
 
     @Update("update player_account set acc_usdt = acc_usdt-#{payAmount} ,acc_usdt_availble=acc_usdt_availble-#{payAmount} where 1=1 adnd acc_player_id=#{playerId}")
     void subtractAmount(BigDecimal payAmount, String playerId);
+
+    @Update({"<script>" +
+            "<foreach collection=\"accounts\" item=\"item\" separator=\";\">" +
+            " UPDATE" +
+            " `player_account`" +
+            " SET acc_usdt = #{item.accUsdt, jdbcType=VARCHAR}, " +
+            "  acc_usdt_available = #{item.accUsdtAvailable, jdbcType=VARCHAR}, " +
+            "  WHERE 1=1 " +
+            "  AND message_player_id = #{item.accPlayerId, jdbcType=VARCHAR} " +
+            "</foreach>" +
+            "</script>"})
+    void updateBuyerAccount(@Param("accounts") List<PlayerAccount> accounts);
 }

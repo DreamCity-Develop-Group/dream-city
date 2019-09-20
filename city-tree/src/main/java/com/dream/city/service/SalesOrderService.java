@@ -24,4 +24,6 @@ public interface SalesOrderService {
     Result buyMtFinish(String playerId, String orderId);
 
     BigDecimal getUsdtToMtRate();
+
+    Result sendOrderMt(List<SalesOrder>orders);
 }

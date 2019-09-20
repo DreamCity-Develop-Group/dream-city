@@ -91,11 +91,12 @@ public class SalesOrderController {
         }
         BigDecimal availbleMt = accountService.getPlayerAccountMTAvailble(playerId);
 
+        //额度检测
         if (availbleMt.compareTo(amountMt) < 1){
             return new Result("可用MT额度不足，请及时备货",500);
         }
-
-        salesOrderService.
+        //修改订单状态和修改玩家账户额度
+        return salesOrderService.sendOrderMt(salesOrders);
     }
 
     /**

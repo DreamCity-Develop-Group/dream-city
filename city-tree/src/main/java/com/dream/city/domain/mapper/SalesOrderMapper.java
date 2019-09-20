@@ -59,4 +59,15 @@ public interface SalesOrderMapper {
 
     @Update("update `sales_order` set order_state=#{order.orderState},update_time=#{order.updateTime} where 1=1 and order_player_id=#{order.playerId}")
     void updateSalesOrder(SalesOrder order);
+
+    @Update({"<script>" +
+            "<foreach collection=\"orderList\" item=\"item\" separator=\";\">" +
+            " UPDATE" +
+            " `sales_order`" +
+            " SET order_state = #{item.orderState, jdbcType=TINYINT}, " +
+            "  WHERE " +
+            "  AND order_id = #{item.orderId, jdbcType=VARCHAR} " +
+            "</foreach>" +
+            "</script>"})
+    void sendOrderMt(@Param("orderList") List<SalesOrder> orderList);
 }
