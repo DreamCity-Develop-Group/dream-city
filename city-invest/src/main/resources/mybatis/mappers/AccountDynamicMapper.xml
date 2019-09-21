@@ -5,12 +5,14 @@
     <id column="dyn_id" property="dynId" jdbcType="INTEGER" />
     <result column="dyn_acc_id" property="dynAccId" jdbcType="INTEGER" />
     <result column="order_id" property="orderId" jdbcType="INTEGER" />
+    <result column="dyn_player_id" property="dynPlayerId" jdbcType="VARCHAR" />
     <result column="dyn_amount" property="dynAmount" jdbcType="DECIMAL" />
     <result column="dyn_type" property="dynType" jdbcType="CHAR" />
     <result column="dyn_amount_type" property="dynAmountType" jdbcType="CHAR" />
     <result column="dyn_desc" property="dynDesc" jdbcType="VARCHAR" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
   </resultMap>
+
   <sql id="Base_Column_List" >
     dyn_id, dyn_acc_id, order_id, dyn_amount, dyn_type, dyn_amount_type, dyn_desc, create_time
   </sql>
@@ -20,6 +22,37 @@
     <include refid="Base_Column_List" />
     from account_dynamic
     where dyn_id = #{dynId,jdbcType=INTEGER}
+  </select>
+
+  <select id="getAccountDynamicList" resultMap="BaseResultMap" parameterType="com.dream.city.base.model.entity.AccountDynamic" >
+    select
+    <include refid="Base_Column_List" />
+    from account_dynamic
+    <where>
+      1=1
+      <if test="dynId != null" >
+        and dyn_id = #{dynId,jdbcType=INTEGER}
+      </if>
+      <if test="dynAccId != null" >
+        and dyn_acc_id = #{dynAccId,jdbcType=INTEGER}
+      </if>
+      <if test="orderId != null" >
+        and order_id = #{orderId,jdbcType=INTEGER}
+      </if>
+      <if test="dynAmount != null" >
+        and dyn_amount = #{dynAmount,jdbcType=DECIMAL}
+      </if>
+      <if test="dynType != null and dynType != ''" >
+        and dyn_type = #{dynType,jdbcType=CHAR},
+      </if>
+      <if test="dynAmountType != null and dynAmountType != ''" >
+        and dyn_amount_type = #{dynAmountType,jdbcType=CHAR}
+      </if>
+      <if test="dynDesc != null and dynDesc != ''" >
+        and dyn_desc = #{dynDesc,jdbcType=VARCHAR}
+      </if>
+    </where>
+    order by create_time desc
   </select>
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >

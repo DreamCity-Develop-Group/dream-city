@@ -1,10 +1,8 @@
 package com.dream.city.invest.controller;
 
 import com.dream.city.base.model.Result;
-import com.dream.city.base.model.entity.CityInvest;
 import com.dream.city.base.model.entity.InvestOrder;
-import com.dream.city.base.model.req.InvestOrderReq;
-import com.dream.city.invest.service.InvestOrderService;
+import com.dream.city.invest.service.OrderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,17 +13,17 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 /**
- * 投资
+ * 投资订单
  */
 @RestController
-@RequestMapping("/property")
-public class InvestOrderController {
+@RequestMapping("/invest")
+public class OrderController {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
     @Autowired
-    private InvestOrderService orderService;
+    private OrderService orderService;
 
 
     /**
@@ -33,7 +31,7 @@ public class InvestOrderController {
      * @param order
      * @return
      */
-    @RequestMapping("/insertInvest")
+    @RequestMapping("/insertOrder")
     public Result insertInvestOrder(@RequestBody InvestOrder order) {
         logger.info("新建投资，{}", order);
 
@@ -51,7 +49,7 @@ public class InvestOrderController {
      * @param order
      * @return
      */
-    @RequestMapping("/getInvestOrder")
+    @RequestMapping("/getOrder")
     public Result getInvestOrder(@RequestBody InvestOrder order) {
         logger.info("查询投资，{}", order);
 
@@ -69,7 +67,7 @@ public class InvestOrderController {
      * @param order
      * @return
      */
-    @RequestMapping("/investOrderInvalid")
+    @RequestMapping("/orderInvalid")
     public Result investOrderInvalid(@RequestBody InvestOrder order){
         logger.info("投资订单作废，{}", order);
 
@@ -88,7 +86,7 @@ public class InvestOrderController {
      * @param order
      * @return
      */
-    @RequestMapping("/investOrderCancel")
+    @RequestMapping("/orderCancel")
     public Result investOrderCancel(@RequestBody InvestOrder order){
         logger.info("投资订单取消，{}", order);
 
@@ -107,7 +105,7 @@ public class InvestOrderController {
      * @param order
      * @return
      */
-    @RequestMapping("/getInvestOrders")
+    @RequestMapping("/getOrders")
     public Result getInvestOrders(@RequestBody InvestOrder order) {
         logger.info("投资订单列表，{}", order);
 

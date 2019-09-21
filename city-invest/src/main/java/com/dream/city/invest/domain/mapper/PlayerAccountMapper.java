@@ -4,17 +4,19 @@ package com.dream.city.invest.domain.mapper;
 import com.dream.city.base.model.entity.PlayerAccount;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 @Mapper
 public interface PlayerAccountMapper {
-    int deleteByPrimaryKey(Integer accId);
 
-    int insert(PlayerAccount record);
+    Integer deleteByPrimaryKey(Integer accId);
 
-    int insertSelective(PlayerAccount record);
+    Integer insertSelective(PlayerAccount record);
 
-    PlayerAccount selectByPrimaryKey(Integer accId);
+    PlayerAccount getPlayerAccount(PlayerAccount record);
 
-    int updateByPrimaryKeySelective(PlayerAccount record);
+    Integer updateByPlayerId(PlayerAccount record);
 
-    int updateByPrimaryKey(PlayerAccount record);
+    List<PlayerAccount> getPlayerAccountList(PlayerAccount record);
+
 }

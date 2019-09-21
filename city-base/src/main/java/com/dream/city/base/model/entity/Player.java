@@ -1,8 +1,11 @@
 package com.dream.city.base.model.entity;
 
+import lombok.Data;
+
 import java.io.Serializable;
 import java.util.Date;
 
+@Data
 public class Player implements Serializable {
     private Long id;
 
@@ -18,7 +21,9 @@ public class Player implements Serializable {
 
     private String playerInvite;
 
-    private Integer isValid;
+    private Integer playerLevel;
+
+    private String isValid;
 
     private Date createTime;
 
@@ -96,11 +101,11 @@ public class Player implements Serializable {
         this.updateTime = updateTime;
     }
 
-    public Integer getIsValid() {
+    public String getIsValid() {
         return isValid;
     }
 
-    public void setIsValid(Integer isValid) {
+    public void setIsValid(String isValid) {
         this.isValid = isValid;
     }
 }

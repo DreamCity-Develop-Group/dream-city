@@ -1,6 +1,7 @@
 package com.dream.city.base.utils;
 
 import com.alibaba.fastjson.JSONObject;
+import com.dream.city.base.model.entity.Notice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.connection.RedisConnection;
@@ -9,10 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import java.nio.charset.Charset;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 
@@ -125,7 +123,7 @@ public class RedisUtils {
      * @param map 对应多个键值
      * @return true 成功 false 失败
      */
-    public boolean hmset(String key, Map<String, Object> map) {
+    public boolean hmset(String key, HashMap<String, Notice> map) {
         try {
             stringRedisTemplate.opsForHash().putAll(key, map);
             return true;

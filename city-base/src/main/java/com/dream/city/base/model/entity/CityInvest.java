@@ -22,8 +22,15 @@ public class CityInvest implements Serializable {
     /** 收益倍数 */
     private String inEarning;
 
+
+    private String isValid;
+
     /** 投资结束时间 */
     private Date inEnd;
+
+    private Date createTime;
+
+    private Date updateTime;
 
     public Integer getInId() {
         return inId;
@@ -79,5 +86,29 @@ public class CityInvest implements Serializable {
 
     public void setInEnd(Date inEnd) {
         this.inEnd = inEnd;
+    }
+
+    public String getIsValid() {
+        return isValid;
+    }
+
+    public void setIsValid(String isValid) {
+        this.isValid = isValid;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
     }
 }

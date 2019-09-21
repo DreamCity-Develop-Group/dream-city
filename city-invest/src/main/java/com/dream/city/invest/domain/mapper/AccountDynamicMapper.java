@@ -4,18 +4,19 @@ package com.dream.city.invest.domain.mapper;
 import com.dream.city.base.model.entity.AccountDynamic;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 @Mapper
 public interface AccountDynamicMapper {
 
-    int deleteByPrimaryKey(Integer dynId);
+    Integer deleteByPrimaryKey(Integer dynId);
 
-    int insert(AccountDynamic record);
-
-    int insertSelective(AccountDynamic record);
+    Integer insertSelective(AccountDynamic record);
 
     AccountDynamic selectByPrimaryKey(Integer dynId);
 
-    int updateByPrimaryKeySelective(AccountDynamic record);
+    List<AccountDynamic> getAccountDynamicList(AccountDynamic record);
 
-    int updateByPrimaryKey(AccountDynamic record);
+    Integer updateByPrimaryKeySelective(AccountDynamic record);
+
 }

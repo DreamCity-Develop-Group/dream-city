@@ -3,14 +3,14 @@ package com.dream.city.invest.service.impl;
 import com.dream.city.base.model.entity.InvestOrder;
 import com.dream.city.base.model.enu.OrderState;
 import com.dream.city.invest.domain.mapper.InvestOrderMapper;
-import com.dream.city.invest.service.InvestOrderService;
+import com.dream.city.invest.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class InvestOrderServiceImpl implements InvestOrderService {
+public class OrderServiceImpl implements OrderService {
 
 
     @Autowired
@@ -40,6 +40,9 @@ public class InvestOrderServiceImpl implements InvestOrderService {
 
     @Override
     public InvestOrder getInvestOrder(InvestOrder record) {
+        if (record.getOrderId() == null){
+            return null;
+        }
         return orderMapper.selectByPrimaryKey(record);
     }
 

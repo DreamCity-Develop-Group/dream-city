@@ -1,7 +1,12 @@
 package com.dream.city.base.model.entity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Date;
 
+/**
+ * 玩家提现规则
+ */
 public class PlayerEarning implements Serializable {
     /**  */
     private Integer earnId;
@@ -10,10 +15,12 @@ public class PlayerEarning implements Serializable {
     private String earnPlayerId;
 
     /** 最大提取额度 */
-    private Double earnMax;
+    private BigDecimal earnMax;
 
     /** 税金 */
-    private Double earnTax;
+    private BigDecimal earnTax;
+
+    private Date createTime;
 
     public Integer getEarnId() {
         return earnId;
@@ -31,19 +38,27 @@ public class PlayerEarning implements Serializable {
         this.earnPlayerId = earnPlayerId == null ? null : earnPlayerId.trim();
     }
 
-    public Double getEarnMax() {
+    public BigDecimal getEarnMax() {
         return earnMax;
     }
 
-    public void setEarnMax(Double earnMax) {
+    public void setEarnMax(BigDecimal earnMax) {
         this.earnMax = earnMax;
     }
 
-    public Double getEarnTax() {
+    public BigDecimal getEarnTax() {
         return earnTax;
     }
 
-    public void setEarnTax(Double earnTax) {
+    public void setEarnTax(BigDecimal earnTax) {
         this.earnTax = earnTax;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 }

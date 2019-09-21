@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 public class AccountDynamic implements Serializable {
+
     /**  */
     private Integer dynId;
 
@@ -14,13 +15,15 @@ public class AccountDynamic implements Serializable {
     /** 订单id */
     private Integer orderId;
 
+    private String dynPlayerId;
+
     /** 动账金额 */
     private BigDecimal dynAmount;
 
     /** 动账类型(收入in,支出out) */
     private String dynType;
 
-    /** 资金类型（usdt，mt） */
+    /** 资金类型（投资usdt，投资mt，转账transfer，提现withdraw） */
     private String dynAmountType;
 
     /** 动账描述 */
@@ -83,5 +86,21 @@ public class AccountDynamic implements Serializable {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+
+    public Integer getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(Integer orderId) {
+        this.orderId = orderId;
+    }
+
+    public String getDynPlayerId() {
+        return dynPlayerId;
+    }
+
+    public void setDynPlayerId(String dynPlayerId) {
+        this.dynPlayerId = dynPlayerId;
     }
 }

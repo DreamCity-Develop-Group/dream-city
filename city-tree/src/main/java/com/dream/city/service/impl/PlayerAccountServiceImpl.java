@@ -25,13 +25,13 @@ public class PlayerAccountServiceImpl implements PlayerAccountService {
     @Override
     public BigDecimal getPlayerAccountUSDTAvailble(String playerId) {
         PlayerAccount account = playerAccountMapper.getPlayerAccount(playerId);
-        return account.getAccUsdtAvailable();
+        return account == null?new BigDecimal(0.00):account.getAccUsdtAvailable();
     }
 
     @Override
     public BigDecimal getPlayerAccountMTAvailble(String playerId) {
         PlayerAccount account = playerAccountMapper.getPlayerAccount(playerId);
-        return account.getAccMtAvailable();
+        return account == null?new BigDecimal(0.00):account.getAccMtAvailable();
     }
 
     @Override
@@ -46,6 +46,11 @@ public class PlayerAccountServiceImpl implements PlayerAccountService {
             return new Result(false,"支付密码不正确",500);
         }
 
+    }
+
+    @Override
+    public PlayerAccount getPlayerAccount(String playerId){
+        return  playerAccountMapper.getPlayerAccount(playerId);
     }
 
 

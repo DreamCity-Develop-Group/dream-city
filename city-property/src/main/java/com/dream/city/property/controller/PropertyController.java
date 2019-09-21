@@ -17,7 +17,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/property")
-public class InvestController {
+public class PropertyController {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 

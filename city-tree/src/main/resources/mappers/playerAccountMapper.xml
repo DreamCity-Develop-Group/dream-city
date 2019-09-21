@@ -6,12 +6,15 @@
     <resultMap id="PlayerAccountBaseResultMap" type="com.dream.city.base.model.entity.PlayerAccount">
         <result column="acc_id" jdbcType="INTEGER" property="accId" />
         <result column="acc_player_id" jdbcType="INTEGER" property="accPlayId"/>
+        <result column="acc_addr" jdbcType="VARCHAR" property="accAddr"/>
+        <result column="acc_pass" jdbcType="VARCHAR" property="accPass"/>
         <result column="acc_usdt" jdbcType="DOUBLE" property="accUsdt" />
         <result column="acc_usdt_available" jdbcType="VARCHAR" property="accUsdtAvailable"/>
         <result column="acc_usdt_freeze" jdbcType="VARCHAR" property="accUsdtFreeze"/>
         <result column="acc_mt" jdbcType="VARCHAR" property="accMt"/>
         <result column="acc_mt_available" jdbcType="VARCHAR" property="accMtAvailale"/>
         <result column="acc_mt_freeze" jdbcType="INTEGER" property="accMtFreeze"/>
+        <result column="acc_income" jdbcType="DOUBLE" property="accIncome"/>
         <result column="createtime" jdbcType="TIMESTAMP" property="createTime"/>
         <result column="updatetime" jdbcType="TIMESTAMP" property="updateTime"/>
     </resultMap>
