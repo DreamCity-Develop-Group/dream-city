@@ -1,5 +1,7 @@
 package com.dream.city.service;
 
+import com.dream.city.base.model.Result;
+
 /**
  * 游戏设置
  */
@@ -18,5 +20,7 @@ public interface GameSettingService {
      * @return
      */
     boolean settingBgVioce(String playerId, boolean isOpen);
+
+    Result getGameNotices();
 
 }

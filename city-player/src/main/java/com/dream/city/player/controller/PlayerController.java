@@ -409,7 +409,7 @@ public class PlayerController {
     public Result getPlayerByInvite(@RequestParam("invite")String invite){
         Player player = playerService.getPlayerByInvite(invite);
 
-        return new Result("success",200,player);
+        return new Result(true,"success",200,player);
     }
 
 }

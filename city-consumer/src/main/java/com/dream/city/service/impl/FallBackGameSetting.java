@@ -1,7 +1,10 @@
 package com.dream.city.service.impl;
 
 import com.dream.city.base.model.Result;
+import com.dream.city.base.model.entity.Notice;
 import com.dream.city.service.ConsumerGameSettingService;
+
+import java.util.List;
 
 public class FallBackGameSetting implements ConsumerGameSettingService {
     @Override
@@ -11,6 +14,11 @@ public class FallBackGameSetting implements ConsumerGameSettingService {
 
     @Override
     public Result settingBgVioce(String playerId, Boolean isOpen) {
+        return null;
+    }
+
+    @Override
+    public List<Notice> getGameNoties() {
         return null;
     }
 }

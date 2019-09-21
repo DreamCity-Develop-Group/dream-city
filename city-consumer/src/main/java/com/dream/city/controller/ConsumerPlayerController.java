@@ -294,15 +294,6 @@ public class ConsumerPlayerController {
 
             }
         }
-
-
-
-        if (reg.getSuccess()) {
-
-
-
-
-        }
         return msg;
     }
 

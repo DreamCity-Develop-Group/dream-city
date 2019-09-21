@@ -1,29 +1,37 @@
 package com.dream.city.base.model;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 /**
  * 操作结果
  * @param <T>
  */
+@ApiModel(description = "返回响应数据")
 public class Result<T> {
 
     /**
      * 操作是否成功
      */
+    @ApiModelProperty(value = "是否成功")
     private boolean success;
 
     /**
      * 返回码
      */
+    @ApiModelProperty(value = "状态码")
     private int code;
 
     /**
      * 返回消息
      */
+    @ApiModelProperty(value = "消息描述")
     private String msg;
 
     /**
      * 返回数据
      */
+    @ApiModelProperty(value = "业务数据")
     private T data;
 
 
