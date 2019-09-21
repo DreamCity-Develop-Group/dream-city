@@ -1,4 +1,6 @@
-package com.dream.city.base.model.entity;
+package com.dream.city.base.model.resp;
+
+import lombok.ToString;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -7,15 +9,34 @@ import java.util.Date;
 /**
  * @author wvv
  */
-public class PlayerAccount implements Serializable {
+@ToString
+public class PlayerAccountResp implements Serializable {
     /**  */
     private Integer accId;
 
     /** 账户玩家 */
-    private String accPlayerId;
+    private String playerId;
+
+    private String playerName;
+
+    /** 玩家等级 */
+    private String grade;
+
+    /** 商会成员数 */
+     private String commerceMember;
+
+    /** 商会邀请码*/
+    private String invite;
+
+    /** 总资产 */
+    private BigDecimal totalProperty;
+
+    /** 总资产 */
+    private BigDecimal totalIncome;
 
     /** 账户usdt额度 */
     private BigDecimal accUsdt;
+
 
     /** usdt可用金额 */
     private BigDecimal accUsdtAvailable;
@@ -32,14 +53,7 @@ public class PlayerAccount implements Serializable {
     /** mt冻结金额 */
     private BigDecimal accMtFreeze;
 
-    /** 积累总收入 */
-    private BigDecimal accIncome;
 
-    /**  */
-    private Date createTime;
-
-    /**  */
-    private Date updateTime;
 
     public Integer getAccId() {
         return accId;
@@ -49,12 +63,12 @@ public class PlayerAccount implements Serializable {
         this.accId = accId;
     }
 
-    public String getAccPlayerId() {
-        return accPlayerId;
+    public String getPlayerId() {
+        return playerId;
     }
 
-    public void setAccPlayerId(String accPlayerId) {
-        this.accPlayerId = accPlayerId == null ? null : accPlayerId.trim();
+    public void setPlayerId(String playerId) {
+        this.playerId = playerId;
     }
 
     public BigDecimal getAccUsdt() {
@@ -105,19 +119,5 @@ public class PlayerAccount implements Serializable {
         this.accMtFreeze = accMtFreeze;
     }
 
-    public Date getCreateTime() {
-        return createTime;
-    }
 
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public Date getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
-    }
 }

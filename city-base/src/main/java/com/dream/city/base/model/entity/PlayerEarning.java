@@ -1,6 +1,7 @@
 package com.dream.city.base.model.entity;
 
 import java.io.Serializable;
+import java.util.Date;
 
 public class PlayerEarning implements Serializable {
     /**  */
@@ -14,6 +15,8 @@ public class PlayerEarning implements Serializable {
 
     /** 税金 */
     private Double earnTax;
+
+    private Date createTime;
 
     public Integer getEarnId() {
         return earnId;
@@ -45,5 +48,13 @@ public class PlayerEarning implements Serializable {
 
     public void setEarnTax(Double earnTax) {
         this.earnTax = earnTax;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 }
