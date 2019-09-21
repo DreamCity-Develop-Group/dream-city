@@ -10,6 +10,7 @@
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
     <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
   </resultMap>
+
   <sql id="Base_Column_List" >
     order_id, order_invest_id, order_payer_id, order_state, order_repeat, create_time, 
     update_time
@@ -19,25 +20,7 @@
     select 
     <include refid="Base_Column_List" />
     from invest_order
-    <where>
-      1=1
-      <if test="orderId !=null">
-        and  order_id = #{orderId,jdbcType=INTEGER}
-      </if>
-      <if test="orderInvestId !=null">
-        and  order_invest_id = #{orderInvestId,jdbcType=INTEGER}
-      </if>
-      <if test="orderPayerId !=null">
-        and  order_payer_id = #{orderPayerId,jdbcType=VARCHAR}
-      </if>
-      <if test="orderState !=null">
-        and  order_state = #{orderState,jdbcType=TINYINT}
-      </if>
-      <if test="order_repeat !=null">
-        and  order_state = #{order_repeat,jdbcType=TINYINT}
-      </if>
-    </where>
-    limit 1
+    where order_id = #{orderId,jdbcType=INTEGER}
   </select>
 
 

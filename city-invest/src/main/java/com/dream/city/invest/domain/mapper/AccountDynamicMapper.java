@@ -9,7 +9,6 @@ public interface AccountDynamicMapper {
 
     int deleteByPrimaryKey(Integer dynId);
 
-    int insert(AccountDynamic record);
 
     int insertSelective(AccountDynamic record);
 
@@ -17,5 +16,4 @@ public interface AccountDynamicMapper {
 
     int updateByPrimaryKeySelective(AccountDynamic record);
 
-    int updateByPrimaryKey(AccountDynamic record);
 }

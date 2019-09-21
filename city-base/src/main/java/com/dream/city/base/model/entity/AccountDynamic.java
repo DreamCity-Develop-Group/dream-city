@@ -20,7 +20,7 @@ public class AccountDynamic implements Serializable {
     /** 动账类型(收入in,支出out) */
     private String dynType;
 
-    /** 资金类型（usdt，mt） */
+    /** 资金类型（投资usdt，投资mt，转账transfer，提现withdraw） */
     private String dynAmountType;
 
     /** 动账描述 */

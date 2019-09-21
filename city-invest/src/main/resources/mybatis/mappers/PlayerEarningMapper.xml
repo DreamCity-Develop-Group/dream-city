@@ -6,9 +6,10 @@
     <result column="earn_player_id" property="earnPlayerId" jdbcType="VARCHAR" />
     <result column="earn_max" property="earnMax" jdbcType="DOUBLE" />
     <result column="earn_tax" property="earnTax" jdbcType="DOUBLE" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    earn_id, earn_player_id, earn_max, earn_tax
+    earn_id, earn_player_id, earn_max, earn_tax, create_time
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -41,6 +42,7 @@
       <if test="earnTax != null" >
         earn_tax,
       </if>
+      create_time
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="earnId != null" >
@@ -55,6 +57,7 @@
       <if test="earnTax != null" >
         #{earnTax,jdbcType=DOUBLE},
       </if>
+      now()
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.dream.city.base.model.entity.PlayerEarning" >

@@ -84,6 +84,16 @@ public class Result<T> {
         }
     }
 
+    public Result(String msg, int code, T data) {
+        super();
+        this.msg = msg;
+        this.code = code;
+        this.data = data;
+        if (code == CityGlobal.ResultCode.success.getStatus()){
+            this.success = Boolean.TRUE;
+        }
+    }
+
     public Result(boolean success, String msg, int code, T data) {
         super();
         this.success = success;

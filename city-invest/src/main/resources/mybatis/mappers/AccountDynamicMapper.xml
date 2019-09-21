@@ -11,6 +11,7 @@
     <result column="dyn_desc" property="dynDesc" jdbcType="VARCHAR" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
   </resultMap>
+
   <sql id="Base_Column_List" >
     dyn_id, dyn_acc_id, order_id, dyn_amount, dyn_type, dyn_amount_type, dyn_desc, create_time
   </sql>

@@ -6,15 +6,13 @@ import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface PlayerAccountMapper {
-    int deleteByPrimaryKey(Integer accId);
 
-    int insert(PlayerAccount record);
+    Integer deleteByPrimaryKey(Integer accId);
 
-    int insertSelective(PlayerAccount record);
+    Integer insertSelective(PlayerAccount record);
 
-    PlayerAccount selectByPrimaryKey(Integer accId);
+    PlayerAccount getPlayerAccount(PlayerAccount record);
 
-    int updateByPrimaryKeySelective(PlayerAccount record);
+    Integer updateByPrimaryKeySelective(PlayerAccount record);
 
-    int updateByPrimaryKey(PlayerAccount record);
 }

@@ -34,8 +34,13 @@ public class GameSettingController {
      * @param isOpen
      * @return
      */
+<<<<<<< HEAD
     @RequestMapping(method = RequestMethod.POST, value = "/settingGameVoice")
     public Result settingGameVioce(@RequestParam(value = "playerId") String playerId,
+=======
+    @RequestMapping(method = RequestMethod.POST, value = "/settingGameVioce")
+    public Result settingGameVoice(@RequestParam(value = "playerId") String playerId,
+>>>>>>> 4e2311292c4f5ee8fc57438c106082c6b4f7725e
                             @RequestParam(value = "isOpen") Boolean isOpen){
         logger.info("游戏音效设置,playerId:{},isOpen:{}",playerId,isOpen);
         Result result = new Result();
@@ -51,6 +56,7 @@ public class GameSettingController {
      * @param isOpen
      * @return
      */
+
     @RequestMapping(method = RequestMethod.POST, value = "/settingBgVoice")
     public Result settingBgVioce(@RequestParam(value = "playerId") String playerId,
                             @RequestParam(value = "isOpen") Boolean isOpen){
