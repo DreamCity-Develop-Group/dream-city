@@ -19,12 +19,15 @@ public interface PlayerAccountMapper {
     @Results(id = "BasePlayerAccountResultMap", value = {
             @Result(property = "accId", column = "id", id = true),
             @Result(property = "accPlayerId", column = "acc_player_id"),
+            @Result(property = "accAddr", column = "acc_addr"),
+            @Result(property = "accPass", column = "acc_pass"),
             @Result(property = "accUsdt", column = "acc_usdt"),
             @Result(property = "accUsdtAvailable", column = "acc_usdt_available"),
             @Result(property = "accUsdtFreeze", column = "acc_usdt_freeze"),
             @Result(property = "accMt", column = "acc_mt"),
             @Result(property = "accMtAvailable", column = "acc_mt_available"),
             @Result(property = "accMtFreeze", column = "acc_mt_freeze"),
+            @Result(property = "accIncome", column = "acc_income"),
             @Result(property = "createTime", column = "createtime"),
             @Result(property = "updateTime", column = "updatetime")
     })
@@ -38,6 +41,7 @@ public interface PlayerAccountMapper {
      * @param playerId
      * @return
      */
+    @ResultMap("BasePlayerAccountResultMap")
     @Select("select * from player_account where 1=1 and  acc_player_id = #{playerId}")
     PlayerAccount getPlayerAccount(String playerId);
 

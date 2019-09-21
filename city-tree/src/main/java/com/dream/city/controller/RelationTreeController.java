@@ -2,18 +2,16 @@ package com.dream.city.controller;
 
 import com.dream.city.base.model.CityGlobal;
 import com.dream.city.base.model.Result;
-import com.dream.city.base.model.entity.RelationTree;
-import com.dream.city.base.model.entity.User;
+import com.dream.city.base.model.entity.*;
+import com.dream.city.service.PlayerAccountService;
 import com.dream.city.service.RelationTreeService;
+import com.dream.city.service.SalesOrderService;
 import com.dream.city.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  *
@@ -24,6 +22,10 @@ public class RelationTreeController {
 
     @Autowired
     private RelationTreeService relationTreeService;
+    @Autowired
+    private SalesOrderService salesOrderService;
+    @Autowired
+    private PlayerAccountService accountService;
 
     /**
      * 根据玩家ID查找关系
@@ -80,14 +82,15 @@ public class RelationTreeController {
     }
 
     /**
+     *获取作为卖家的订单数据
      *
      * @param playerId
      * @return
      */
     @RequestMapping("query/sales")
     public Result querySales(@RequestParam("playerId")String playerId){
-
-        return new Result();
+        List<SalesOrder> orders = salesOrderService.selectSalesSellerOrder(playerId);
+        return new Result(true,"获取订单成功",200,orders);
     }
 
     /**
@@ -98,10 +101,24 @@ public class RelationTreeController {
      */
     @RequestMapping("buy/mt")
     public Result buyMt(@RequestParam("playerId")String playerId, @RequestParam("amount")BigDecimal amount){
-        return new Result();
+        BigDecimal rate = salesOrderService.getUsdtToMtRate();
+        Result ret = salesOrderService.buyMtCreate(amount,rate,playerId);
+        return ret;
     }
 
+    /**
+     * 获取主页账户数据
+     *
+     * @param playerId
+     * @return
+     */
+    @RequestMapping("/get/account")
+    public PlayerAccount getPlayerAccount(@RequestParam("playerId")String playerId){
 
+        PlayerAccount account = accountService.getPlayerAccount(playerId);
+
+        return  account;
+    }
 
 
 }

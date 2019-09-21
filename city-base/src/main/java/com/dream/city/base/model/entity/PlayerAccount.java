@@ -13,6 +13,15 @@ public class PlayerAccount implements Serializable {
 
     /** 账户玩家 */
     private String accPlayerId;
+    /**
+     * 玩家账户地址
+     */
+    private String accAddr;
+
+    /**
+     * 玩家账户密码
+     */
+    private String accPass;
 
     /** 账户usdt额度 */
     private BigDecimal accUsdt;
@@ -41,91 +50,4 @@ public class PlayerAccount implements Serializable {
     /**  */
     private Date updateTime;
 
-    public Integer getAccId() {
-        return accId;
-    }
-
-    public void setAccId(Integer accId) {
-        this.accId = accId;
-    }
-
-    public String getAccPlayerId() {
-        return accPlayerId;
-    }
-
-    public void setAccPlayerId(String accPlayerId) {
-        this.accPlayerId = accPlayerId == null ? null : accPlayerId.trim();
-    }
-
-    public BigDecimal getAccUsdt() {
-        return accUsdt;
-    }
-
-    public void setAccUsdt(BigDecimal accUsdt) {
-        this.accUsdt = accUsdt;
-    }
-
-    public BigDecimal getAccUsdtAvailable() {
-        return accUsdtAvailable;
-    }
-
-    public void setAccUsdtAvailable(BigDecimal accUsdtAvailable) {
-        this.accUsdtAvailable = accUsdtAvailable;
-    }
-
-    public BigDecimal getAccUsdtFreeze() {
-        return accUsdtFreeze;
-    }
-
-    public void setAccUsdtFreeze(BigDecimal accUsdtFreeze) {
-        this.accUsdtFreeze = accUsdtFreeze;
-    }
-
-    public BigDecimal getAccMt() {
-        return accMt;
-    }
-
-    public void setAccMt(BigDecimal accMt) {
-        this.accMt = accMt;
-    }
-
-    public BigDecimal getAccMtAvailable() {
-        return accMtAvailable;
-    }
-
-    public void setAccMtAvailable(BigDecimal accMtAvailable) {
-        this.accMtAvailable = accMtAvailable;
-    }
-
-    public BigDecimal getAccMtFreeze() {
-        return accMtFreeze;
-    }
-
-    public void setAccMtFreeze(BigDecimal accMtFreeze) {
-        this.accMtFreeze = accMtFreeze;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public Date getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
-    }
-
-    public BigDecimal getAccIncome() {
-        return accIncome;
-    }
-
-    public void setAccIncome(BigDecimal accIncome) {
-        this.accIncome = accIncome;
-    }
 }

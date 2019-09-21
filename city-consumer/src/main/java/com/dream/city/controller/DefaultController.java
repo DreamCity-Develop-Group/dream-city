@@ -5,10 +5,12 @@ import com.dream.city.base.model.entity.Notice;
 import com.dream.city.base.model.entity.Player;
 import com.dream.city.base.model.entity.PlayerAccount;
 import com.dream.city.base.model.entity.RelationTree;
+import com.dream.city.base.utils.RedisUtils;
 import com.dream.city.service.ConsumerGameSettingService;
 import com.dream.city.service.ConsumerPlayerAccountService;
 import com.dream.city.service.ConsumerPlayerService;
 import com.dream.city.service.ConsumerTreeService;
+import com.dream.city.service.impl.ConsumerNoticeServiceImpl;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -27,6 +29,10 @@ public class DefaultController {
     ConsumerGameSettingService gameSettingService;
     @Autowired
     ConsumerTreeService treeService;
+    @Autowired
+    RedisUtils redisUtils;
+    @Autowired
+    ConsumerNoticeServiceImpl noticeService;
 
 
 
@@ -49,12 +55,15 @@ public class DefaultController {
         Map<String,Object> profile = new HashMap<>();
         profile.put("nick",player.getPlayerNick());
         profile.put("level",player.getPlayerLevel());
+
+        //取出公告缓存
         //公告
         List<Notice> notices = new ArrayList<>();
-        notices = gameSettingService.getGameNoties();
+        notices = noticeService.getCacheNotices();
 
         //账户
-        PlayerAccount playerAccount = (PlayerAccount) playerAccountService.getPlayerAccount(player.getPlayerId()).getData();
+        PlayerAccount playerAccount = playerAccountService.getPlayerAccount(player.getPlayerId());
+
         Map<String,Object> account = new HashMap<>();
         account.put("usdt",playerAccount.getAccUsdt());
         account.put("mt",playerAccount.getAccMt());

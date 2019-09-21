@@ -84,7 +84,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
         salesOrderMapper.createSalesOrder(order);
 
 
-        return new Result("下单成功", 200);
+        return new Result(true,"下单成功", 200,order);
     }
 
     @Override

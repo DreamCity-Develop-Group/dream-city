@@ -23,8 +23,9 @@ import java.util.Map;
  */
 @Service
 public class RelationTreeServiceImpl implements RelationTreeService {
+
     @Autowired
-    TreeMapper treeMapper;
+    private TreeMapper treeMapper;
 
     @Override
     public Result save(String parent, String child, String invite) {
