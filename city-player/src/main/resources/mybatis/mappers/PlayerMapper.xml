@@ -9,7 +9,7 @@
     <result column="player_pass" jdbcType="VARCHAR" property="playerPass" />
     <result column="player_trade_pass" jdbcType="VARCHAR" property="playerTradePass" />
     <result column="player_invite" jdbcType="VARCHAR" property="playerInvite" />
-    <result column="is_valid" jdbcType="INTEGER" property="isValid" />
+    <result column="is_valid" jdbcType="CHAR" property="isValid" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
@@ -143,7 +143,7 @@
         player_trade_pass = #{playerTradePass,jdbcType=VARCHAR},
       </if>
       <if test="isValid != null" >
-        is_valid = #{isValid,jdbcType=INTEGER},
+        is_valid = #{isValid,jdbcType=CHAR},
       </if>
       update_time = now(),
     </set>

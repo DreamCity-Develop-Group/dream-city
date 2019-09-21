@@ -9,9 +9,12 @@
     <result column="in_tax" property="inTax" jdbcType="DOUBLE" />
     <result column="in_earning" property="inEarning" jdbcType="VARCHAR" />
     <result column="in_end" property="inEnd" jdbcType="TIMESTAMP" />
+    <result column="is_valid" property="isValid" jdbcType="CHAR" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <sql id="Base_Column_List" >
-    in_id, in_name, in_limit, in_start, in_tax, in_earning, in_end
+    in_id, in_name, in_limit, in_start, in_tax, in_earning, in_end,create_time, update_time,is_valid
   </sql>
 
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.dream.city.base.model.entity.CityInvest" >
@@ -78,6 +81,7 @@
       <if test="inEnd != null" >
         in_end,
       </if>
+      create_time,
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="inId != null" >
@@ -101,6 +105,7 @@
       <if test="inEnd != null" >
         #{inEnd,jdbcType=TIMESTAMP},
       </if>
+      now()
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.dream.city.base.model.entity.CityInvest" >
@@ -124,6 +129,10 @@
       <if test="inEnd != null" >
         in_end = #{inEnd,jdbcType=TIMESTAMP},
       </if>
+      <if test="isValid != null" >
+        is_valid = #{isValid,jdbcType=CHAR},
+      </if>
+      update_time = now(),
     </set>
     where in_id = #{inId,jdbcType=INTEGER}
   </update>

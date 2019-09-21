@@ -120,4 +120,12 @@ public class PlayerAccount implements Serializable {
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
     }
+
+    public BigDecimal getAccIncome() {
+        return accIncome;
+    }
+
+    public void setAccIncome(BigDecimal accIncome) {
+        this.accIncome = accIncome;
+    }
 }

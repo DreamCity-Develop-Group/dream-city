@@ -4,6 +4,8 @@ package com.dream.city.invest.domain.mapper;
 import com.dream.city.base.model.entity.PlayerAccount;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 @Mapper
 public interface PlayerAccountMapper {
 
@@ -13,6 +15,8 @@ public interface PlayerAccountMapper {
 
     PlayerAccount getPlayerAccount(PlayerAccount record);
 
-    Integer updateByPrimaryKeySelective(PlayerAccount record);
+    Integer updateByPlayerId(PlayerAccount record);
+
+    List<PlayerAccount> getPlayerAccountList(PlayerAccount record);
 
 }

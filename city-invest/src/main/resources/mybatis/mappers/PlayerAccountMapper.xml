@@ -32,6 +32,23 @@
     limit 1
   </select>
 
+  <select id="getPlayerAccountList" resultMap="BaseResultMap"
+          parameterType="com.dream.city.base.model.entity.PlayerAccount" >
+    select
+    <include refid="Base_Column_List" />
+    from player_account
+    <where>
+        1=1
+      <if test="accId != null">
+        and acc_id = #{accId,jdbcType=INTEGER}
+      </if>
+      <if test="accPlayerId != null and accPlayerId != '' ">
+        and acc_player_id = #{accPlayerId,jdbcType=VARCHAR}
+      </if>
+    </where>
+    order by create_time desc
+  </select>
+
   <sql id="Base_Column_List" >
     acc_id, acc_player_id, acc_usdt, acc_usdt_available, acc_usdt_freeze, acc_mt, acc_mt_available,
     acc_mt_freeze,acc_income, create_time, update_time
@@ -69,12 +86,7 @@
       <if test="accMtFreeze != null" >
         acc_mt_freeze,
       </if>
-      <if test="createTime != null" >
-        create_time,
-      </if>
-      <if test="updateTime != null" >
-        update_time,
-      </if>
+      create_time,
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="accId != null" >
@@ -101,18 +113,13 @@
       <if test="accMtFreeze != null" >
         #{accMtFreeze,jdbcType=DECIMAL},
       </if>
-      <if test="createTime != null" >
-        #{createTime,jdbcType=TIMESTAMP},
-      </if>
+      now(),
     </trim>
   </insert>
 
-  <update id="updateByPrimaryKeySelective" parameterType="com.dream.city.base.model.entity.PlayerAccount" >
+  <update id="updateByPlayerId" parameterType="com.dream.city.base.model.entity.PlayerAccount" >
     update player_account
     <set >
-      <if test="accPlayerId != null" >
-        acc_player_id = #{accPlayerId,jdbcType=VARCHAR},
-      </if>
       <if test="accUsdt != null" >
         acc_usdt = #{accUsdt,jdbcType=DECIMAL},
       </if>
@@ -131,11 +138,10 @@
       <if test="accMtFreeze != null" >
         acc_mt_freeze = #{accMtFreeze,jdbcType=DECIMAL},
       </if>
-      <if test="updateTime != null" >
-        update_time = #{updateTime,jdbcType=TIMESTAMP},
-      </if>
+      update_time = now(),
     </set>
-    where acc_id = #{accId,jdbcType=INTEGER}
+    where acc_player_id = #{accPlayerId,jdbcType=VARCHAR}
+
   </update>
 
 

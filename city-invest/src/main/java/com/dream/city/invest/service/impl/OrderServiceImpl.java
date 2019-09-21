@@ -40,6 +40,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public InvestOrder getInvestOrder(InvestOrder record) {
+        if (record.getOrderId() == null){
+            return null;
+        }
         return orderMapper.selectByPrimaryKey(record);
     }
 

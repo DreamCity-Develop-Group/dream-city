@@ -23,7 +23,7 @@ public class Player implements Serializable {
 
     private Integer playerLevel;
 
-    private Integer isValid;
+    private String isValid;
 
     private Date createTime;
 
@@ -101,11 +101,11 @@ public class Player implements Serializable {
         this.updateTime = updateTime;
     }
 
-    public Integer getIsValid() {
+    public String getIsValid() {
         return isValid;
     }
 
-    public void setIsValid(Integer isValid) {
+    public void setIsValid(String isValid) {
         this.isValid = isValid;
     }
 }

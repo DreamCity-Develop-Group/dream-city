@@ -13,11 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 /**
- * 投资
+ * 投资订单
  */
 @RestController
-@RequestMapping("/property")
-public class InvestOrderController {
+@RequestMapping("/invest")
+public class OrderController {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
