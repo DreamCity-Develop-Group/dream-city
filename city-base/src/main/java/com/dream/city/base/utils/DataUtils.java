@@ -2,6 +2,7 @@ package com.dream.city.base.utils;
 
 
 import com.dream.city.base.model.Message;
+import com.dream.city.base.model.entity.CityInvest;
 import com.dream.city.base.model.entity.PlayerEarning;
 import org.apache.commons.lang.StringUtils;
 
@@ -55,6 +56,17 @@ public class DataUtils {
         earning.setEarnPlayerId(earnPlayerId);
         earning.setEarnTax(earnTax);
         return earning;
+    }
+
+    public static CityInvest getInvestFromMessage(Message msg){
+        Map map = (Map)msg.getData().getT();
+        Integer inId = map.containsKey("inId")?Integer.parseInt(String.valueOf(map.get("inId"))):null;
+        String inName = map.containsKey("inName")?String.valueOf(map.get("inName")):null;
+
+        CityInvest result = new CityInvest();
+        result.setInId(inId);
+        result.setInName(inName);
+        return result;
     }
 
 

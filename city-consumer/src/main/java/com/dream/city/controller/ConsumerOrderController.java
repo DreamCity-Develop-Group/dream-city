@@ -34,6 +34,13 @@ public class ConsumerOrderController {
     public Message createOrder(@RequestBody Message msg){
         logger.info("用户下单", JSONObject.toJSONString(msg));
 
+        //物业扣减金额
+
+
+        //生成订单
+
+
+        //下单用户账户扣减金额
 
 
         msg.getData().setT(JSON.toJSONString(""));
