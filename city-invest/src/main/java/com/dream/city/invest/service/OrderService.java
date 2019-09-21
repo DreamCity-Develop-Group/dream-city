@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * 投资订单
  */
-public interface InvestOrderService {
+public interface OrderService {
 
 
 

@@ -1,10 +1,8 @@
 package com.dream.city.invest.controller;
 
 import com.dream.city.base.model.Result;
-import com.dream.city.base.model.entity.CityInvest;
 import com.dream.city.base.model.entity.InvestOrder;
-import com.dream.city.base.model.req.InvestOrderReq;
-import com.dream.city.invest.service.InvestOrderService;
+import com.dream.city.invest.service.OrderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +23,7 @@ public class InvestOrderController {
 
 
     @Autowired
-    private InvestOrderService orderService;
+    private OrderService orderService;
 
 
     /**
