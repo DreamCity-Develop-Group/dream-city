@@ -96,7 +96,7 @@ public class ConsumerEarningController {
      * @param msg
      * @return
      */
-    @RequestMapping("/updateEarningById")
+    /*@RequestMapping("/updateEarningById")
     public Message updateEarningById(@RequestBody Message msg){
         PlayerEarning earning = DataUtils.getEarningFromJsonReq(msg);
         Result result = earningService.updateEarningById(earning);
@@ -105,7 +105,7 @@ public class ConsumerEarningController {
         msg.getData().setT(t);
         msg.setDesc(result.getMsg());
         return msg;
-    }
+    }*/
 
 
 

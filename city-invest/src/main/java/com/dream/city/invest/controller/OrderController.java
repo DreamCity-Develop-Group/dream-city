@@ -31,7 +31,7 @@ public class OrderController {
      * @param order
      * @return
      */
-    @RequestMapping("/insertInvest")
+    @RequestMapping("/insertOrder")
     public Result insertInvestOrder(@RequestBody InvestOrder order) {
         logger.info("新建投资，{}", order);
 
@@ -49,7 +49,7 @@ public class OrderController {
      * @param order
      * @return
      */
-    @RequestMapping("/getInvestOrder")
+    @RequestMapping("/getOrder")
     public Result getInvestOrder(@RequestBody InvestOrder order) {
         logger.info("查询投资，{}", order);
 
@@ -67,7 +67,7 @@ public class OrderController {
      * @param order
      * @return
      */
-    @RequestMapping("/investOrderInvalid")
+    @RequestMapping("/orderInvalid")
     public Result investOrderInvalid(@RequestBody InvestOrder order){
         logger.info("投资订单作废，{}", order);
 
@@ -86,7 +86,7 @@ public class OrderController {
      * @param order
      * @return
      */
-    @RequestMapping("/investOrderCancel")
+    @RequestMapping("/orderCancel")
     public Result investOrderCancel(@RequestBody InvestOrder order){
         logger.info("投资订单取消，{}", order);
 
@@ -105,7 +105,7 @@ public class OrderController {
      * @param order
      * @return
      */
-    @RequestMapping("/getInvestOrders")
+    @RequestMapping("/getOrders")
     public Result getInvestOrders(@RequestBody InvestOrder order) {
         logger.info("投资订单列表，{}", order);
 
