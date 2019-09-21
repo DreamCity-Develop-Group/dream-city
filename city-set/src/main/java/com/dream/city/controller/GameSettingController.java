@@ -35,7 +35,7 @@ public class GameSettingController {
      * @return
      */
     @RequestMapping(method = RequestMethod.POST, value = "/settingGameVioce")
-    public Result settingGameVioce(@RequestParam(value = "playerId") String playerId,
+    public Result settingGameVoice(@RequestParam(value = "playerId") String playerId,
                             @RequestParam(value = "isOpen") Boolean isOpen){
         logger.info("游戏音效设置,playerId:{},isOpen:{}",playerId,isOpen);
         Result result = new Result();
@@ -52,7 +52,7 @@ public class GameSettingController {
      * @return
      */
     @RequestMapping(method = RequestMethod.POST, value = "/settingBgVioce")
-    public Result settingBgVioce(@RequestParam(value = "playerId") String playerId,
+    public Result settingBgVoice(@RequestParam(value = "playerId") String playerId,
                             @RequestParam(value = "isOpen") Boolean isOpen){
         logger.info("背景音效设置,playerId:{},isOpen:{}",playerId,isOpen);
         Result result = new Result();
