@@ -13,7 +13,7 @@ import java.util.List;
  */
 @FeignClient(value = "city-property")
 @RequestMapping("/property")
-public interface ConsumerInvestService {
+public interface ConsumerPropertyService {
 
     /**
      * 新建物业
