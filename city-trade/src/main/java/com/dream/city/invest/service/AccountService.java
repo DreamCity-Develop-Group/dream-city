@@ -1,6 +1,7 @@
 package com.dream.city.invest.service;
 
 import com.dream.city.base.model.entity.PlayerAccount;
+import com.dream.city.base.model.req.PlayerAccountReq;
 
 import java.util.List;
 
@@ -35,6 +36,6 @@ public interface AccountService {
      * @param record
      * @return
      */
-    int updatePlayerAccount(PlayerAccount record);
+    int updatePlayerAccount(PlayerAccountReq record);
 
 }

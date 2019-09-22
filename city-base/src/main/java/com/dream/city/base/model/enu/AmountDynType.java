@@ -1,17 +1,18 @@
 package com.dream.city.base.model.enu;
 
-public enum GameSettingType {
+/**
+ * 资金动态(进账in,出账out)
+ * */
+public enum AmountDynType {
 
-    bg("背景音效"),
-    game("游戏音效");
+    in("进账"),
+    out("出账");
 
-    // 成员变量
     private String desc;
 
-    GameSettingType(String desc){
+    AmountDynType(String desc){
         this.desc = desc;
     }
-
 
     public String getDesc() {
         return desc;

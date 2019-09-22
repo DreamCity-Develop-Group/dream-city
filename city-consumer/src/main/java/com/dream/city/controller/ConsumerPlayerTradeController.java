@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/consumer")
-public class ConsumerInvestController {
+public class ConsumerPlayerTradeController {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 

@@ -11,25 +11,25 @@ public interface PlayerTradeService {
      * 玩家充值
      * @return
      */
-    boolean playerRecharge(Message msg);
+    Message playerRecharge(Message msg);
 
     /**
      * 玩家提现
      * @return
      */
-    boolean playerWithdraw(Message msg);
+    Message playerWithdraw(Message msg);
 
     /**
      * 玩家转账
      * @return
      */
-    boolean playerTransfer(Message msg);
+    Message playerTransfer(Message msg);
 
     /**
      * 玩家投资
      * 购买mt
      * @return
      */
-    boolean playerInvest(Message msg);
+    Message playerInvest(Message msg);
 
 }

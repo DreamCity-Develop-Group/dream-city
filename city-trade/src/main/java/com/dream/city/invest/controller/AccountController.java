@@ -2,6 +2,7 @@ package com.dream.city.invest.controller;
 
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.PlayerAccount;
+import com.dream.city.base.model.req.PlayerAccountReq;
 import com.dream.city.invest.service.AccountService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -98,7 +99,7 @@ public class AccountController {
      * @return
      */
     @RequestMapping("/updatePlayerAccount")
-    public Result updatePlayerAccount(@RequestBody PlayerAccount record){
+    public Result updatePlayerAccount(@RequestBody PlayerAccountReq record){
         logger.info("更新玩家账户，{}", record);
 
         int i = 0;

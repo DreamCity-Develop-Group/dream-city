@@ -4,6 +4,9 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
+/**
+ * 交易流水
+ */
 public class AccountDynamic implements Serializable {
 
     /**  */
@@ -17,19 +20,19 @@ public class AccountDynamic implements Serializable {
 
     private String dynPlayerId;
 
-    /** 动账金额 */
+    /** 交易金额 */
     private BigDecimal dynAmount;
 
-    /** 动账类型(收入in,支出out) */
+    /** 交易类型(收入in,支出out) */
     private String dynType;
 
-    /** 资金类型（投资usdt，投资mt，转账transfer，提现withdraw） */
+    /** 资金类型（投资usdt，投资mt，转账transfer，充值recharge，提现withdraw） */
     private String dynAmountType;
 
-    /** 动账描述 */
+    /** 交易描述 */
     private String dynDesc;
 
-    /** 动账金额 */
+    /** 交易时间 */
     private Date createTime;
 
     public Integer getDynId() {
