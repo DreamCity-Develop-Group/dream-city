@@ -108,7 +108,6 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
         boolean success = Boolean.FALSE;
 
         recordOut.setTradeType(TradeType.transfer.name());
-        String accAddr = recordOut.getAccAddr();
         Result<BigDecimal> updateAccountResult = null;
         try {
             //转账 出账
@@ -126,7 +125,7 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
                     updateAccountResult.getData(), updateAccountResult.getMsg());
 
             String verifyStatus = VerifyStatus.wait.name();
-            if (isInsideAccAddr(accAddr)){
+            if (isInsideAccAddr(recordOut.getAccAddr())){
                 //内部转账 立即到账
                 verifyStatus = VerifyStatus.pass.name();
 
