@@ -16,7 +16,7 @@ import java.util.List;
  * 投资订单
  */
 @RestController
-@RequestMapping("/invest")
+@RequestMapping("/order")
 public class OrderController {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());

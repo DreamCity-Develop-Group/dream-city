@@ -49,7 +49,7 @@ public class ConsumerLikesController {
         Map<String, Object> conditionMap = getConditionMap(msg);
         Result<Integer> result = likesService.playerLike(JSON.toJSONString(conditionMap));
         if (result.getSuccess()){
-            message.getData().setT(result.getData());
+            message.getData().setData(result.getData());
         }
         message.setDesc(result.getMsg());
         return message;
@@ -69,7 +69,7 @@ public class ConsumerLikesController {
         Map<String, Object> conditionMap = getConditionMap(msg);
         Result<Integer> result = likesService.cancelLike(JSON.toJSONString(conditionMap));
         if (result.getSuccess()){
-            message.getData().setT(result.getData());
+            message.getData().setData(result.getData());
         }
         message.setDesc(result.getMsg());
         return message;
@@ -89,7 +89,7 @@ public class ConsumerLikesController {
         Map<String, Object> conditionMap = getConditionMap(msg);
         Result<Integer> result = likesService.playerLikesCount(JSON.toJSONString(conditionMap));
         if (result.getSuccess()){
-            message.getData().setT(result.getData());
+            message.getData().setData(result.getData());
         }
         message.setDesc(result.getMsg());
         return message;
@@ -109,7 +109,7 @@ public class ConsumerLikesController {
         Map<String, Object> conditionMap = getConditionMap(msg);
         Result<String> result = likesService.playerLikesList(JSON.toJSONString(conditionMap));
         if (result.getSuccess()){
-            message.getData().setT(result.getData());
+            message.getData().setData(result.getData());
         }
         message.setDesc(result.getMsg());
         return message;

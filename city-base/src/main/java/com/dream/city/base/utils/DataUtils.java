@@ -21,7 +21,7 @@ public class DataUtils {
      * @return
      */
     public static Map<String,String> getCondition(Message msg){
-        Map map = (Map)msg.getData().getT();
+        Map map = (Map)msg.getData().getData();
         String username = map.containsKey("username")?(String) map.get("username"):null;
         /*String playerId = map.containsKey("playerId")?(String) map.get("playerId"):null;
         String nick = map.containsKey("nick")?(String) map.get("nick"):null;
@@ -45,7 +45,7 @@ public class DataUtils {
 
 
     public static UserReq getUserReq(Message message) {
-        Map map = (Map) message.getData().getT();
+        Map map = (Map) message.getData().getData();
         UserReq userReq = new UserReq();
         if (map != null) {
             userReq.setInvite(map.containsKey("invited") ? (String) map.get("invited") : null);
@@ -63,7 +63,7 @@ public class DataUtils {
 
 
     public static PlayerEarning getEarningFromJsonReq(Message msg){
-        Map map = (Map)msg.getData().getT();
+        Map map = (Map)msg.getData().getData();
         Integer earnId = map.containsKey("earnId")?Integer.parseInt(String.valueOf(map.get("earnId"))):null;
         String earnPlayerId = map.containsKey("earnPlayerId")?String.valueOf(map.get("earnPlayerId")):null;
         BigDecimal earnMax = map.containsKey("earnMax")? (BigDecimal) map.get("earnMax") :null;
@@ -78,7 +78,7 @@ public class DataUtils {
     }
 
     public static CityInvest getInvestFromMessage(Message msg){
-        Map map = (Map)msg.getData().getT();
+        Map map = (Map)msg.getData().getData();
         Integer inId = map.containsKey("inId")?Integer.parseInt(String.valueOf(map.get("inId"))):null;
         String inName = map.containsKey("inName")?String.valueOf(map.get("inName")):null;
 
@@ -90,11 +90,13 @@ public class DataUtils {
 
 
     public static PlayerAccountReq getPlayerAccountReqFromMessage(Message msg){
-        Map map = (Map)msg.getData().getT();
+        Map map = (Map)msg.getData().getData();
         Integer accId = map.containsKey("accId")?Integer.parseInt(String.valueOf(map.get("accId"))):null;
         String accPlayerId = map.containsKey("playerId")?String.valueOf(map.get("playerId")):null;
-        String userName = map.containsKey("playerId")?String.valueOf(map.get("username")):null;
+        String userName = map.containsKey("username")?String.valueOf(map.get("username")):null;
         String nick = map.containsKey("nick")?String.valueOf(map.get("nick")):null;
+        String accAddr = map.containsKey("accAddr")?String.valueOf(map.get("accAddr")):null;
+        String tradeType = map.containsKey("tradeType")?String.valueOf(map.get("tradeType")):null;
         String accPass = map.containsKey("accPass")?String.valueOf(map.get("accPass")):null;
         BigDecimal accUsdt = map.containsKey("accUsdt")?BigDecimal.valueOf(Double.parseDouble(String.valueOf(map.get("accUsdt")))):null;
         BigDecimal accMt = map.containsKey("accMt")?BigDecimal.valueOf(Double.parseDouble(String.valueOf(map.get("accMt")))):null;

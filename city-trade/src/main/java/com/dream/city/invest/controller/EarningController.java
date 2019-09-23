@@ -1,9 +1,9 @@
-package com.dream.city.controller;
+package com.dream.city.invest.controller;
 
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.PlayerEarning;
 import com.dream.city.base.utils.RedisUtils;
-import com.dream.city.service.EarningService;
+import com.dream.city.invest.service.EarningService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +15,7 @@ import java.util.List;
  * 提现规则
  */
 @RestController
-@RequestMapping("/set")
+@RequestMapping("/earning")
 public class EarningController {
 
 

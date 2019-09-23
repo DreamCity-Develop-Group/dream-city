@@ -11,17 +11,10 @@ import java.util.List;
 /**
  * 玩家账户
  */
-@FeignClient(value = "city-invest")
-@RequestMapping("/invest")
+@FeignClient(value = "city-trade")
+@RequestMapping("/account")
 public interface ConsumerAccountService {
 
-    /**
-     * 新增玩家账户
-     * @param record
-     * @return
-     */
-    @RequestMapping("/createPlayerAccount")
-    Result createPlayerAccount(@RequestBody PlayerAccount record);
 
     /**
      * 获取玩家账户
@@ -38,6 +31,14 @@ public interface ConsumerAccountService {
      */
     @RequestMapping("/getPlayerAccountList")
     Result getPlayerAccountList(@RequestBody PlayerAccount record);
+
+    /**
+     * 新增玩家账户
+     * @param record
+     * @return
+     */
+    /*@RequestMapping("/createPlayerAccount")
+    Result createPlayerAccount(@RequestBody PlayerAccount record);*/
 
     /**
      * 更新玩家账户

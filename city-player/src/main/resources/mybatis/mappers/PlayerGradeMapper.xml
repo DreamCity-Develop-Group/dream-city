@@ -14,10 +14,17 @@
   </sql>
 
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    select 
+  select
+  <include refid="Base_Column_List" />
+  from player_grade
+  where id = #{id,jdbcType=BIGINT}
+</select>
+
+  <select id="getPlayerGradeByPlayerId" parameterType="com.dream.city.base.model.entity.PlayerGrade" resultMap="BaseResultMap">
+    select
     <include refid="Base_Column_List" />
     from player_grade
-    where id = #{id,jdbcType=BIGINT}
+    where player_id = #{playerId,jdbcType=VARCHAR}
   </select>
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
@@ -74,9 +81,6 @@
   <update id="updateByPlayerId" parameterType="com.dream.city.base.model.entity.PlayerGrade">
     update city_player_grade
     <set>
-      <!--<if test="playerId != null">
-        player_id = #{playerId,jdbcType=VARCHAR},
-      </if>-->
       <if test="grade != null">
         grade = #{grade,jdbcType=VARCHAR},
       </if>

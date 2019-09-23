@@ -6,9 +6,8 @@ import com.dream.city.base.model.Message;
 import com.dream.city.base.model.MessageData;
 import com.dream.city.base.utils.JsonUtil;
 import com.dream.city.base.utils.RedisUtils;
+import com.dream.city.base.utils.SpringUtils;
 import com.dream.city.service.HttpClientService;
-import com.dream.city.util.HttpClientUtil;
-import com.dream.city.util.SpringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +26,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+
+import static java.util.concurrent.Executors.*;
 
 
 /**
@@ -42,8 +45,11 @@ public class WebSocketServer {
     private RedisMessageListenerContainer redisMessageListenerContainer = SpringUtils.getBean(RedisMessageListenerContainer.class);
 
     private RedisUtils redisUtils = SpringUtils.getBean(RedisUtils.class);
-    @Autowired
-    HttpClientService httpClientService;
+
+    private HttpClientService httpClientService = SpringUtils.getBean(HttpClientService.class);
+
+    //@Autowired
+    //HttpClientService httpClientService;
 
 
     static Log log = LogFactory.getLog(WebSocketServer.class);
@@ -97,7 +103,7 @@ public class WebSocketServer {
         subscribeListener.setStringRedisTemplate(redisTampate);
         //设置订阅topic
         redisMessageListenerContainer.addMessageListener(subscribeListener, new ChannelTopic(topic));
-
+        redisMessageListenerContainer.setTaskExecutor(newFixedThreadPool(4));
 
         this.sid = sid;
         try {
@@ -116,7 +122,7 @@ public class WebSocketServer {
             MessageData data = new MessageData();
             data.setType("init");
             data.setModel("socket");
-            data.setT(null);
+            data.setData(null);
             message.setData(data);
             String msg = JSON.toJSON(message).toString();
             sendMessage(msg);
@@ -152,7 +158,7 @@ public class WebSocketServer {
 
         //根据sid 到服务上找对应的数据，=》校验 =》 推送数据到客户端
         try {
-            //如果客户端发心跳包,回复success
+            //TODO 如果客户端发心跳包,回复success
             if (message.equals("ping")) {
                 System.out.println("心跳消息接收...");
                 sendMessage("success");
@@ -164,8 +170,8 @@ public class WebSocketServer {
 
 
 
-            if (null != msg.getData().getT()) {
-                Map data = JsonUtil.parseJsonToObj(msg.getData().getT().toString(),Map.class);
+            if (null != msg.getData().getData()) {
+                Map data = JsonUtil.parseJsonToObj(msg.getData().getData().toString(),Map.class);
                 String tokenStr = "token_"+data.get("username");
                 String token = redisUtils.get(tokenStr).toString();
                 if (!StringUtils.isEmpty(token)){
@@ -178,16 +184,16 @@ public class WebSocketServer {
                    }
                 }
                 String strT = "";
-                if (msg.getData().getT() instanceof String){
-                    strT = (String)msg.getData().getT();
-                }else if (msg.getData().getT() instanceof Integer){
-                    Integer intT = (Integer)msg.getData().getT();
+                if (msg.getData().getData() instanceof String){
+                    strT = (String)msg.getData().getData();
+                }else if (msg.getData().getData() instanceof Integer){
+                    Integer intT = (Integer)msg.getData().getData();
                     if (null != intT){
                         strT = String.valueOf(intT);
                     }
 
-                }else if (msg.getData().getT() instanceof JSONObject){
-                    JSONObject jsonObjectT = (JSONObject)msg.getData().getT();
+                }else if (msg.getData().getData() instanceof JSONObject){
+                    JSONObject jsonObjectT = (JSONObject)msg.getData().getData();
                     if (null != jsonObjectT){
                         strT = String.valueOf(jsonObjectT);
                     }
@@ -196,34 +202,25 @@ public class WebSocketServer {
                     }
                 }
 
-                /*if (!StringUtils.isEmpty(strT) && (strT).equals("order")) {
-                    Map<String, Object> data = new HashMap<>();
-                    data.put("orderId", "oid_12547");
-                    data.put("order_good", "一支铅笔");
-
-                    msg.setSource("server");
-                    msg.setTarget(msg.getSource());
-                    msg.setDesc("下单成功");
-                    msg.setCreatetime(String.valueOf(System.currentTimeMillis()));
-
-                    MessageData dataMsg = new MessageData();
-                    dataMsg.setType("createOrder");
-                    dataMsg.setModel("order");
-                    dataMsg.setT(data);
-                    msg.setData(dataMsg);
-
-                    String msgRet = JSON.toJSON(msg).toString();
-
-                    sendMessage(msgRet);
-                    return;
-                }*/
-
             }
 
             //请求网关的restful接口，将数据发送给客户端
-            HttpClientUtil.post((Message) msg);
+            //HttpClientUtil.post((Message) msg);
             //new HttpClientUtil().postService(msg);
-            //httpClientService.post(msg);
+            Message replay = new Message();
+            replay.setSource("server");
+            replay.setTarget(WebSocketServer.this.clientId);
+            replay.setDesc("服务端消息中心同步通知");
+            replay.setCreatetime(String.valueOf(System.currentTimeMillis()));
+            replay.setData(new MessageData("replay","messageCenter",null));
+            //TODO 第一步: 同步回复消息，通知客户端接收消息成功
+            WebSocketServer.sendInfo(replay);
+
+            //TODO 第二步: 将异步处理消息逻辑
+            httpClientService.post(msg);
+
+            //TODO 第三步: 由任务高度完成对客户端消息的推送
+
         }catch (IOException e){
             e.printStackTrace();
         } catch (Exception e) {
@@ -233,7 +230,7 @@ public class WebSocketServer {
 
 
         //群发消息
-        for (WebSocketServer item : webSocketSet) {
+        /*for (WebSocketServer item : webSocketSet) {
             try {
                 if(item.clientId == session.getId()){
                     item.sendMessage(message);
@@ -242,7 +239,7 @@ public class WebSocketServer {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
+        }*/
     }
 
     /**

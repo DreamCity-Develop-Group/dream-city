@@ -1,8 +1,8 @@
-package com.dream.city.service.impl;
+package com.dream.city.invest.service.impl;
 
 import com.dream.city.base.model.entity.PlayerEarning;
-import com.dream.city.domain.mapper.PlayerEarningMapper;
-import com.dream.city.service.EarningService;
+import com.dream.city.invest.domain.mapper.PlayerEarningMapper;
+import com.dream.city.invest.service.EarningService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +29,13 @@ public class EarningServiceImpl implements EarningService {
     @Override
     public PlayerEarning getEarning(Integer earnId) {
         return earningMapper.selectByPrimaryKey(earnId);
+    }
+
+    @Override
+    public PlayerEarning getPlayerEarningByPlayerId(String playerId) {
+        PlayerEarning record = new PlayerEarning();
+        record.setEarnPlayerId(playerId);
+        return earningMapper.getPlayerEarningByPlayerId(record);
     }
 
     @Override

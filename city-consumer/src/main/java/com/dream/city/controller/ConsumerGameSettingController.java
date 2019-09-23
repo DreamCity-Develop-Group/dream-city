@@ -35,7 +35,7 @@ public class ConsumerGameSettingController {
     @RequestMapping("/voice")
     public Object voice(@RequestBody Message msg){
         logger.info("游戏设置", JSONObject.toJSONString(msg));
-        Map<String,Object> data = (Map<String, Object>) msg.getData().getT();
+        Map<String,Object> data = (Map<String, Object>) msg.getData().getData();
         String game = data.get("game").toString();
         String bg = data.get("bg").toString();
         String username = data.get("username").toString();

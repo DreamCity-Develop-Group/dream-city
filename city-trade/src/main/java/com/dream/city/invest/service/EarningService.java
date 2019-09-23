@@ -1,4 +1,4 @@
-package com.dream.city.service;
+package com.dream.city.invest.service;
 
 import com.dream.city.base.model.entity.PlayerEarning;
 
@@ -29,6 +29,8 @@ public interface EarningService {
      * @return
      */
     PlayerEarning getEarning(Integer earnId);
+
+    PlayerEarning getPlayerEarningByPlayerId(String playerId);
 
     /**
      * 查询提现规则列表

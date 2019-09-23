@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 /**
  * 投资订单
  */
-@FeignClient(value = "city-invest")
-@RequestMapping("/invest")
+@FeignClient(value = "city-trade")
+@RequestMapping("/order")
 public interface ConsumerOrderService {
 
 

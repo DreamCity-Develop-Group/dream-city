@@ -2,7 +2,6 @@ package com.dream.city.invest.controller;
 
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.PlayerAccount;
-import com.dream.city.base.model.req.PlayerAccountReq;
 import com.dream.city.invest.service.AccountService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +16,7 @@ import java.util.List;
  * 玩家账户
  */
 @RestController
-@RequestMapping("/invest")
+@RequestMapping("/account")
 public class AccountController {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -32,7 +31,7 @@ public class AccountController {
      * @return
      */
     @RequestMapping("/createPlayerAccount")
-    public Result createPlayerAccount(@RequestBody PlayerAccount record){
+    public Result<Integer> createPlayerAccount(@RequestBody PlayerAccount record){
         logger.info("新增玩家账户，{}", record);
 
         int i = 0;
@@ -55,7 +54,7 @@ public class AccountController {
      * @return
      */
     @RequestMapping("/getPlayerAccount")
-    public Result getPlayerAccount(@RequestBody PlayerAccount record){
+    public Result<PlayerAccount> getPlayerAccount(@RequestBody PlayerAccount record){
         logger.info("获取玩家账户，{}", record);
         String desc = "获取玩家账户成功";
         PlayerAccount account = null;
@@ -77,7 +76,7 @@ public class AccountController {
      * @return
      */
     @RequestMapping("/getPlayerAccountList")
-    public Result getPlayerAccountList(@RequestBody PlayerAccount record){
+    public Result<List<PlayerAccount>> getPlayerAccountList(@RequestBody PlayerAccount record){
         logger.info("玩家账户列表，{}", record);
         String desc = "玩家账户列表成功";
         List<PlayerAccount> accounts = null;
@@ -99,7 +98,7 @@ public class AccountController {
      * @return
      */
     @RequestMapping("/updatePlayerAccount")
-    public Result updatePlayerAccount(@RequestBody PlayerAccountReq record){
+    public Result<Integer> updatePlayerAccount(@RequestBody PlayerAccount record){
         logger.info("更新玩家账户，{}", record);
 
         int i = 0;

@@ -64,11 +64,11 @@ public class ConsumerFriendsController {
         String desc = "获取好友成功";
         try {
             Map condition = getCheckCondition(msg);
-            PageReq<Map> pageReq = new PageReq<>((Map)msg.getData().getT());
+            PageReq<Map> pageReq = new PageReq<>((Map)msg.getData().getData());
             pageReq.setCondition(condition);
 
             Page page = consumerFriendsService.friendList(pageReq);
-            data.setT(page);
+            data.setData(page);
         }catch (Exception e){
             desc = "获取好友失败";
             logger.error(desc,e);
@@ -87,11 +87,11 @@ public class ConsumerFriendsController {
         String desc = "获取好友申请列表成功";
         try {
             Map condition = getCheckCondition(msg);
-            PageReq<Map> pageReq = new PageReq<>((Map)msg.getData().getT());
+            PageReq<Map> pageReq = new PageReq<>((Map)msg.getData().getData());
             pageReq.setCondition(condition);
 
             Page page = consumerFriendsService.applyFriendList(pageReq);
-            data.setT(page);
+            data.setData(page);
         }catch (Exception e){
             desc = "获取好友申请列表失败";
             logger.error(desc,e);
@@ -112,13 +112,13 @@ public class ConsumerFriendsController {
     private Message getResultMessage(boolean b,String desc){
         Message message = new Message();
         MessageData<String> data = new MessageData<>("addfriend","consumer");
-        String t = CityGlobal.ResultCode.fail.name();
+        String name = CityGlobal.ResultCode.fail.name();
         desc = desc + "失败";
         if (b) {
-            t = CityGlobal.ResultCode.success.name();
+            name = CityGlobal.ResultCode.success.name();
             desc = desc + "成功";
         }
-        data.setT(t);
+        data.setData(name);
         message.setData(data);
         message.setDesc(desc);
         return message;
@@ -131,7 +131,7 @@ public class ConsumerFriendsController {
      * @return
      */
     private Map getCheckCondition(Message msg){
-        Map map = (Map)msg.getData().getT();
+        Map map = (Map)msg.getData().getData();
         String username = map.containsKey("username")?(String) map.get("username"):null;
         if (StringUtils.isBlank(username)){
             username = map.containsKey("playerName")?(String) map.get("playerName"):null;
@@ -151,7 +151,7 @@ public class ConsumerFriendsController {
      * @return
      */
     private Map getPlayerIdOrFriendId(Message msg){
-        Map map = (Map)msg.getData().getT();
+        Map map = (Map)msg.getData().getData();
 
         String playerName = map.containsKey("playerName")?(String) map.get("playerName"):null;
         if (StringUtils.isBlank(playerName)){

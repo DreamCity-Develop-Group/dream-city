@@ -8,4 +8,6 @@ import com.dream.city.base.model.Message;
 public interface HttpClientService {
 
     void post(Message message);
+
+    void send(Message message);
 }

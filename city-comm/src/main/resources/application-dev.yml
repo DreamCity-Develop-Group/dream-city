@@ -1,6 +1,6 @@
 gate:
   zuul:
-    url: localhost:8020
+    url: http://localhost:8020/consumer/v1
 
 props: #自定义的属性和值
   simpleProp: simplePropValue #单个值

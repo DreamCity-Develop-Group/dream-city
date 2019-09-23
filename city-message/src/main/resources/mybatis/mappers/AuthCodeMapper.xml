@@ -5,11 +5,11 @@
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="code" jdbcType="VARCHAR" property="code" />
     <result column="phone" jdbcType="VARCHAR" property="phone" />
-    <result column="user_id" jdbcType="VARCHAR" property="userId" />
-    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="valid" jdbcType="TINYINT" property="valid" />
+    <result column="createtime" jdbcType="TIMESTAMP" property="createTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, code, user_id,phone, create_date
+    id, code, valid,phone, createtime
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -30,14 +30,14 @@
       <if test="code != null">
         code,
       </if>
-      <if test="userId != null">
-        user_id,
+      <if test="valid != null">
+        valid,
       </if>
       <if test="phone != null">
         phone,
       </if>
-      <if test="createDate != null">
-        create_date,
+      <if test="createTime != null">
+        createtime,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -47,14 +47,14 @@
       <if test="code != null">
         #{code,jdbcType=VARCHAR},
       </if>
-      <if test="userId != null">
-        #{userId,jdbcType=VARCHAR},
+      <if test="valid != null">
+        #{valid,jdbcType=TINYINT},
       </if>
       <if test="phone != null">
         #{phone,jdbcType=VARCHAR},
       </if>
-      <if test="createDate != null">
-        #{createDate,jdbcType=TIMESTAMP},
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
@@ -64,14 +64,14 @@
       <if test="code != null">
         code = #{code,jdbcType=VARCHAR},
       </if>
-      <if test="userId != null">
-        user_id = #{userId,jdbcType=VARCHAR},
+      <if test="valid != null">
+        valid = #{valid,jdbcType=TINYINT},
       </if>
       <if test="phone != null">
         phone = #{phone,jdbcType=VARCHAR},
       </if>
-      <if test="createDate != null">
-        create_date = #{createDate,jdbcType=TIMESTAMP},
+      <if test="createTime != null">
+        createtime = #{createTime,jdbcType=TIMESTAMP},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
@@ -80,7 +80,7 @@
   <select id="selectByPhone" parameterType="java.lang.String" resultType="java.lang.String">
     select code
     from city_auth_code
-    where phone = #{phone,jdbcType=VARCHAR} order by create_date desc limit 1
+    where phone = #{phone,jdbcType=VARCHAR} order by createtime desc limit 1
   </select>
 
 

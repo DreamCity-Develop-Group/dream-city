@@ -4,7 +4,6 @@ package com.dream.city.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.dream.city.base.model.Message;
-import com.dream.city.service.ConsumerOrderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,16 +13,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 /**
- * 投资
+ *  玩家交易
+ *  投资
  */
 @RestController
 @RequestMapping("/consumer")
-public class ConsumerPlayerTradeController {
+public class ConsumerInvestController {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @Autowired
-    private ConsumerOrderService orderService;
+    //@Autowired
+    //private ConsumerTradeService tradeService;
 
     /**
      * 用户下单
@@ -45,7 +45,7 @@ public class ConsumerPlayerTradeController {
         //用户账户流水
 
 
-        msg.getData().setT(JSON.toJSONString(""));
+        msg.getData().setData(JSON.toJSONString(""));
         msg.setDesc("");
         return msg;
     }
@@ -65,7 +65,7 @@ public class ConsumerPlayerTradeController {
 
         //用户账户流水
 
-        msg.getData().setT(JSON.toJSONString(""));
+        msg.getData().setData(JSON.toJSONString(""));
         msg.setDesc("");
         return msg;
     }
@@ -81,7 +81,7 @@ public class ConsumerPlayerTradeController {
 
 
 
-        msg.getData().setT(JSON.toJSONString(""));
+        msg.getData().setData(JSON.toJSONString(""));
         msg.setDesc("");
         return msg;
     }
@@ -97,7 +97,7 @@ public class ConsumerPlayerTradeController {
 
 
 
-        msg.getData().setT(JSON.toJSONString(""));
+        msg.getData().setData(JSON.toJSONString(""));
         msg.setDesc("");
         return msg;
     }

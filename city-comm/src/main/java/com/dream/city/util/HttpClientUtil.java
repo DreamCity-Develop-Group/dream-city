@@ -37,10 +37,10 @@ public class HttpClientUtil {
     public static void post(Message msg) {
         CloseableHttpClient client = HttpClientBuilder.create().build();
         //网关地址
-        String gateWayUrl = "http://localhost:8020";
+        String gateWayUrl = "http://localhost:8020/v1";
         MessageData data = msg.getData();
         //网关路由
-        String gateRoutePath = data.getModel();
+        String gateRoutePath = "consumer";
         //模块地址
         String serviceModel = data.getModel();
         //请求模块操作行为
@@ -72,8 +72,8 @@ public class HttpClientUtil {
                 httpPost.setHeader("method", serviceOpt);
                 httpPost.setHeader("authType", "");
             } else {
-                if (null != data.getT()) {
-                    String dataStr = JsonUtil.parseObjToJson(data.getT());
+                if (null != data.getData()) {
+                    String dataStr = JsonUtil.parseObjToJson(data.getData());
                     Map dataMap = JsonUtil.parseJsonToObj(dataStr, Map.class);
 
                     if (dataMap.containsKey("token") && !StringUtils.isEmpty(dataMap.get("token"))) {
@@ -118,7 +118,7 @@ public class HttpClientUtil {
 
                 if (resp.contains("data") && resp.contains("t")) {
                     Object jsonObject = JSON.parseObject(JSON.toJSONString(JSON.parseObject(resp).get("data"))).get("t");
-                    message.getData().setT(jsonObject);
+                    message.getData().setData(jsonObject);
                 }
 
                 WebSocketServer.sendInfo(message);
