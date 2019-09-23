@@ -39,8 +39,8 @@
         <module>city-worker</module>
         <!-- 物业 -->
         <module>city-property</module>
-        <!-- 玩家投资 -->
-        <module>city-invest</module>
+        <!-- 玩家投资交易 -->
+        <module>city-trade</module>
     </modules>
 
 

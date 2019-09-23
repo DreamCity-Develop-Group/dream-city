@@ -1,17 +1,18 @@
 package com.dream.city.base.model.enu;
 
-public enum GameSettingType {
+/**
+ * 投资usdt，投资mt
+ * */
+public enum AmountType {
 
-    bg("背景音效"),
-    game("游戏音效");
+    usdt("usdt"),
+    mt("mt");
 
-    // 成员变量
     private String desc;
 
-    GameSettingType(String desc){
+    AmountType(String desc){
         this.desc = desc;
     }
-
 
     public String getDesc() {
         return desc;

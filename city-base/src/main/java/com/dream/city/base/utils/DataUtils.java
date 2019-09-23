@@ -2,7 +2,10 @@ package com.dream.city.base.utils;
 
 
 import com.dream.city.base.model.Message;
+import com.dream.city.base.model.entity.CityInvest;
 import com.dream.city.base.model.entity.PlayerEarning;
+import com.dream.city.base.model.req.PlayerAccountReq;
+import com.dream.city.base.model.req.UserReq;
 import org.apache.commons.lang.StringUtils;
 
 import java.math.BigDecimal;
@@ -41,6 +44,23 @@ public class DataUtils {
     }
 
 
+    public static UserReq getUserReq(Message message) {
+        Map map = (Map) message.getData().getT();
+        UserReq userReq = new UserReq();
+        if (map != null) {
+            userReq.setInvite(map.containsKey("invited") ? (String) map.get("invited") : null);
+            userReq.setNick(map.containsKey("nick") ? (String) map.get("nick") : null);
+            userReq.setPlayerId(map.containsKey("playerId") ? (String) map.get("playerId") : null);
+            userReq.setPwshop(map.containsKey("pwshop") ? (String) map.get("pwshop") : null);
+            userReq.setUsername(map.containsKey("username") ? (String) map.get("username") : null);
+            userReq.setUserpass(map.containsKey("userpass") ? (String) map.get("userpass") : null);
+            userReq.setCode(map.containsKey("code") ? (String) map.get("code") : null);
+            userReq.setOldpw(map.containsKey("oldpw") ? (String) map.get("oldpw") : null);
+            userReq.setNewpw(map.containsKey("newpw") ? (String) map.get("newpw") : null);
+        }
+        return userReq;
+    }
+
 
     public static PlayerEarning getEarningFromJsonReq(Message msg){
         Map map = (Map)msg.getData().getT();
@@ -57,8 +77,38 @@ public class DataUtils {
         return earning;
     }
 
+    public static CityInvest getInvestFromMessage(Message msg){
+        Map map = (Map)msg.getData().getT();
+        Integer inId = map.containsKey("inId")?Integer.parseInt(String.valueOf(map.get("inId"))):null;
+        String inName = map.containsKey("inName")?String.valueOf(map.get("inName")):null;
+
+        CityInvest result = new CityInvest();
+        result.setInId(inId);
+        result.setInName(inName);
+        return result;
+    }
 
 
+    public static PlayerAccountReq getPlayerAccountReqFromMessage(Message msg){
+        Map map = (Map)msg.getData().getT();
+        Integer accId = map.containsKey("accId")?Integer.parseInt(String.valueOf(map.get("accId"))):null;
+        String accPlayerId = map.containsKey("playerId")?String.valueOf(map.get("playerId")):null;
+        String userName = map.containsKey("playerId")?String.valueOf(map.get("username")):null;
+        String nick = map.containsKey("nick")?String.valueOf(map.get("nick")):null;
+        String accPass = map.containsKey("accPass")?String.valueOf(map.get("accPass")):null;
+        BigDecimal accUsdt = map.containsKey("accUsdt")?BigDecimal.valueOf(Double.parseDouble(String.valueOf(map.get("accUsdt")))):null;
+        BigDecimal accMt = map.containsKey("accMt")?BigDecimal.valueOf(Double.parseDouble(String.valueOf(map.get("accMt")))):null;
+
+        PlayerAccountReq result = new PlayerAccountReq();
+        result.setAccId(accId);
+        result.setAccPass(accPass);
+        result.setAccPlayerId(accPlayerId);
+        result.setUsername(userName);
+        result.setNick(nick);
+        result.setAccMt(accMt);
+        result.setAccUsdt(accUsdt);
+        return result;
+    }
 
 
 

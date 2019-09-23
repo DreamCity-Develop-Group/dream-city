@@ -31,12 +31,11 @@ public class PlayerAccountResp implements Serializable {
     /** 总资产 */
     private BigDecimal totalProperty;
 
-    /** 总资产 */
+    /** 总收入*/
     private BigDecimal totalIncome;
 
     /** 账户usdt额度 */
     private BigDecimal accUsdt;
-
 
     /** usdt可用金额 */
     private BigDecimal accUsdtAvailable;
@@ -53,7 +52,8 @@ public class PlayerAccountResp implements Serializable {
     /** mt冻结金额 */
     private BigDecimal accMtFreeze;
 
-
+    /**  */
+    private Date createTime;
 
     public Integer getAccId() {
         return accId;
@@ -119,5 +119,59 @@ public class PlayerAccountResp implements Serializable {
         this.accMtFreeze = accMtFreeze;
     }
 
+    public String getPlayerName() {
+        return playerName;
+    }
 
+    public void setPlayerName(String playerName) {
+        this.playerName = playerName;
+    }
+
+    public String getGrade() {
+        return grade;
+    }
+
+    public void setGrade(String grade) {
+        this.grade = grade;
+    }
+
+    public String getCommerceMember() {
+        return commerceMember;
+    }
+
+    public void setCommerceMember(String commerceMember) {
+        this.commerceMember = commerceMember;
+    }
+
+    public String getInvite() {
+        return invite;
+    }
+
+    public void setInvite(String invite) {
+        this.invite = invite;
+    }
+
+    public BigDecimal getTotalProperty() {
+        return totalProperty;
+    }
+
+    public void setTotalProperty(BigDecimal totalProperty) {
+        this.totalProperty = totalProperty;
+    }
+
+    public BigDecimal getTotalIncome() {
+        return totalIncome;
+    }
+
+    public void setTotalIncome(BigDecimal totalIncome) {
+        this.totalIncome = totalIncome;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
 }
