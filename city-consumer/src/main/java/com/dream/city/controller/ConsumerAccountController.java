@@ -3,6 +3,7 @@ package com.dream.city.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.dream.city.base.model.Message;
+import com.dream.city.base.model.MessageData;
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.Player;
 import com.dream.city.base.model.entity.PlayerAccount;
@@ -72,9 +73,9 @@ public class ConsumerAccountController {
             map.put("commerce_member",player.getCommerceMember());
             resultList.add(map);
         }
-
-        msg.getData().setT(resultList);
-
+        MessageData resultData = new MessageData(msg.getData().getType(),msg.getData().getModel());
+        resultData.setData(resultList);
+        msg.setData(resultData);
         return msg;
     }
 
