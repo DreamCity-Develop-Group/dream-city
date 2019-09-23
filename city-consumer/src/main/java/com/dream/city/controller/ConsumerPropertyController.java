@@ -39,7 +39,7 @@ public class ConsumerPropertyController {
 
         CityInvest invest = DataUtils.getInvestFromMessage(msg);
         Result result = investService.getInvest(invest);
-        msg.getData().setT(JSON.toJSONString(result.getData()));
+        msg.getData().setData(JSON.toJSONString(result.getData()));
         msg.setDesc(result.getMsg());
         return msg;
     }
@@ -55,7 +55,7 @@ public class ConsumerPropertyController {
 
         CityInvest invest = DataUtils.getInvestFromMessage(msg);
         Result result = investService.getInvestLsit(invest);
-        msg.getData().setT(JSON.toJSONString(result.getData()));
+        msg.getData().setData(JSON.toJSONString(result.getData()));
         msg.setDesc(result.getMsg());
         return msg;
     }
@@ -71,7 +71,7 @@ public class ConsumerPropertyController {
 
 
 
-        msg.getData().setT(JSON.toJSONString(""));
+        msg.getData().setData(JSON.toJSONString(""));
         msg.setDesc("");
         return msg;
     }*/
@@ -89,7 +89,7 @@ public class ConsumerPropertyController {
 
 
 
-        msg.getData().setT(JSON.toJSONString(""));
+        msg.getData().setData(JSON.toJSONString(""));
         msg.setDesc("");
         return msg;
     }*/

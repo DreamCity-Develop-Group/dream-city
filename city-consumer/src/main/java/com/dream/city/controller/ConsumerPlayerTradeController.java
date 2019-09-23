@@ -45,7 +45,7 @@ public class ConsumerPlayerTradeController {
         //用户账户流水
 
 
-        msg.getData().setT(JSON.toJSONString(""));
+        msg.getData().setData(JSON.toJSONString(""));
         msg.setDesc("");
         return msg;
     }
@@ -65,7 +65,7 @@ public class ConsumerPlayerTradeController {
 
         //用户账户流水
 
-        msg.getData().setT(JSON.toJSONString(""));
+        msg.getData().setData(JSON.toJSONString(""));
         msg.setDesc("");
         return msg;
     }
@@ -81,7 +81,7 @@ public class ConsumerPlayerTradeController {
 
 
 
-        msg.getData().setT(JSON.toJSONString(""));
+        msg.getData().setData(JSON.toJSONString(""));
         msg.setDesc("");
         return msg;
     }
@@ -97,7 +97,7 @@ public class ConsumerPlayerTradeController {
 
 
 
-        msg.getData().setT(JSON.toJSONString(""));
+        msg.getData().setData(JSON.toJSONString(""));
         msg.setDesc("");
         return msg;
     }

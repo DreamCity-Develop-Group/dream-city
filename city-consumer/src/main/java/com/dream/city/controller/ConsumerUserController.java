@@ -31,7 +31,7 @@ public class ConsumerUserController {
 
     @RequestMapping("/get/user")
     public Object getUser(@RequestBody Message msg){
-        Map<String,Object> data = (Map<String, Object>) msg.getData().getT();
+        Map<String,Object> data = (Map<String, Object>) msg.getData().getData();
         String id = data.get("id").toString();
 
         return cityUserService.users(id);

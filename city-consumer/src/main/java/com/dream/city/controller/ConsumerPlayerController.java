@@ -76,7 +76,7 @@ public class ConsumerPlayerController {
         Map<String, Object> t = new HashMap<>();
         t.put("userList", players.getData());
         MessageData messageData = new MessageData(msg.getData().getType(), msg.getData().getModel());
-        messageData.setT(t);
+        messageData.setData(t);
         Message message = new Message(msg.getSource(), msg.getTarget(), messageData);
         message.setDesc(players.getMsg());
         return message;
@@ -94,9 +94,9 @@ public class ConsumerPlayerController {
         logger.info("获取认证码", JSONObject.toJSONString(msg));
         Map<String, Object> map = new HashMap<>();
         Message code = messageService.getCode(msg);
-        map.put("code", code.getData().getT());
+        map.put("code", code.getData().getData());
         MessageData messageData = new MessageData();
-        messageData.setT(map);
+        messageData.setData(map);
         Message message = new Message(msg.getSource(), msg.getTarget(), messageData);
         return message;
     }
@@ -111,14 +111,14 @@ public class ConsumerPlayerController {
     @RequestMapping("/get/user")
     public Message getUser(@RequestBody Message msg) {
         logger.info("获取用户", JSONObject.toJSONString(msg));
-        Map<String, Object> map = (Map<String, Object>) msg.getData().getT();
+        Map<String, Object> map = (Map<String, Object>) msg.getData().getData();
         String id = map.get("id").toString();
         Result player = consumerPlayerService.getPlayer(id);
 
         Map<String, Object> t = new HashMap<>();
         t.put("user", player.getData());
         MessageData messageData = new MessageData();
-        messageData.setT(t);
+        messageData.setData(t);
         Message message = new Message(msg.getSource(), msg.getTarget(), messageData);
         return message;
     }
@@ -135,7 +135,7 @@ public class ConsumerPlayerController {
         logger.info("广场玩家列表", JSONObject.toJSONString(msg));
         UserReq jsonReq = DataUtils.getUserReq(msg);
         String condition = jsonReq.getNick();
-        PageReq<String> pageReq = new PageReq<>((Map) msg.getData().getT());
+        PageReq<String> pageReq = new PageReq<>((Map) msg.getData().getData());
         pageReq.setCondition(condition);
 
         Result players = consumerPlayerService.getPlayers(pageReq);
@@ -143,7 +143,7 @@ public class ConsumerPlayerController {
         Map<String, Object> t = new HashMap<>();
         t.put("userList", players.getData());
         MessageData messageData = new MessageData();
-        messageData.setT(t);
+        messageData.setData(t);
         Message message = new Message(msg.getSource(), msg.getTarget(), messageData);
         return message;
     }
@@ -164,7 +164,7 @@ public class ConsumerPlayerController {
         Map<String, String> t = new HashMap<>();
         t.put("desc", result.getMsg());
         MessageData data = new MessageData();
-        data.setT(t);
+        data.setData(t);
         Message message = new Message(msg.getSource(), msg.getTarget(), data);
         return message;
     }
@@ -186,7 +186,7 @@ public class ConsumerPlayerController {
         t.put("desc", result.getMsg());
 
         MessageData data = new MessageData();
-        data.setT(t);
+        data.setData(t);
         Message message = new Message(msg.getSource(), msg.getTarget(), data);
         return message;
     }
@@ -207,7 +207,7 @@ public class ConsumerPlayerController {
         t.put("desc", result.getMsg());
 
         MessageData data = new MessageData();
-        data.setT(t);
+        data.setData(t);
         Message message = new Message(msg.getSource(), msg.getTarget(), data);
         return message;
     }
@@ -252,7 +252,7 @@ public class ConsumerPlayerController {
                 String token = saveToken(userReq.getUsername());
                 t.put("token", token);
                 t.put("desc", CityGlobal.Constant.REG_SUCCESS);
-                data.setT(t);
+                data.setData(t);
                 msg.setData(data);
                 msg.setDesc(descMsg);
 
@@ -350,7 +350,7 @@ public class ConsumerPlayerController {
 
         MessageData data = new MessageData("pwlog", "consumer");
         t.put("desc", descT);
-        data.setT(t);
+        data.setData(t);
         Message message = new Message(msg.getSource(), msg.getTarget(), data);
         message.setSource(msg.getSource());
         message.setTarget(msg.getTarget());
@@ -409,7 +409,7 @@ public class ConsumerPlayerController {
         }
 
         t.put("desc", descT);
-        data.setT(t);
+        data.setData(t);
         message.setData(data);
         message.setDesc(descMsg);
         return message;
@@ -440,7 +440,7 @@ public class ConsumerPlayerController {
         Map<String, String> t = new HashMap<>();
         t.put("desc", result.getMsg());
         MessageData data = new MessageData();
-        data.setT(t);
+        data.setData(t);
         Message message = new Message(msg.getSource(), msg.getTarget(), data);
         return message;
     }

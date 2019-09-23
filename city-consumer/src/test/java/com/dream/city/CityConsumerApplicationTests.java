@@ -30,7 +30,7 @@ public class CityConsumerApplicationTests {
         map.put("code", "125478");
         map.put("nick", "VVV");
         map.put("invite", "saas223");
-        data.setT(map);
+        data.setData(map);
         System.out.println(data);
         Message msg = new Message();
         msg.setData(data);
