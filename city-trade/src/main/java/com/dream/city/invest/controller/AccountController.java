@@ -99,7 +99,7 @@ public class AccountController {
      * @return
      */
     @RequestMapping("/updatePlayerAccount")
-    public Result updatePlayerAccount(@RequestBody PlayerAccountReq record){
+    public Result updatePlayerAccount(@RequestBody PlayerAccount record){
         logger.info("更新玩家账户，{}", record);
 
         int i = 0;

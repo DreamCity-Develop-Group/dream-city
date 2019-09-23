@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * 玩家账户
  */
-@FeignClient(value = "city-invest")
+@FeignClient(value = "city-trade")
 @RequestMapping("/invest")
 public interface ConsumerAccountService {
 

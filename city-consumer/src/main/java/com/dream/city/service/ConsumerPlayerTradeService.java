@@ -5,7 +5,7 @@ import com.dream.city.base.model.Message;
 /**
  *  玩家交易
  */
-public interface PlayerTradeService {
+public interface ConsumerPlayerTradeService {
 
     /**
      * 玩家充值

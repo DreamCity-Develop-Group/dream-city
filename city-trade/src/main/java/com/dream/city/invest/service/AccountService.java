@@ -36,6 +36,6 @@ public interface AccountService {
      * @param record
      * @return
      */
-    int updatePlayerAccount(PlayerAccountReq record);
+    int updatePlayerAccount(PlayerAccount record);
 
 }
