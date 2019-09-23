@@ -27,6 +27,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+
+import static java.util.concurrent.Executors.*;
 
 
 /**
@@ -42,8 +46,11 @@ public class WebSocketServer {
     private RedisMessageListenerContainer redisMessageListenerContainer = SpringUtils.getBean(RedisMessageListenerContainer.class);
 
     private RedisUtils redisUtils = SpringUtils.getBean(RedisUtils.class);
-    @Autowired
-    HttpClientService httpClientService;
+
+    private HttpClientService httpClientService = SpringUtils.getBean(HttpClientService.class);
+
+    //@Autowired
+    //HttpClientService httpClientService;
 
 
     static Log log = LogFactory.getLog(WebSocketServer.class);
@@ -97,7 +104,7 @@ public class WebSocketServer {
         subscribeListener.setStringRedisTemplate(redisTampate);
         //设置订阅topic
         redisMessageListenerContainer.addMessageListener(subscribeListener, new ChannelTopic(topic));
-
+        redisMessageListenerContainer.setTaskExecutor(newFixedThreadPool(4));
 
         this.sid = sid;
         try {
@@ -221,9 +228,9 @@ public class WebSocketServer {
             }
 
             //请求网关的restful接口，将数据发送给客户端
-            HttpClientUtil.post((Message) msg);
+            //HttpClientUtil.post((Message) msg);
             //new HttpClientUtil().postService(msg);
-            //httpClientService.post(msg);
+            httpClientService.post(msg);
         }catch (IOException e){
             e.printStackTrace();
         } catch (Exception e) {
@@ -233,7 +240,7 @@ public class WebSocketServer {
 
 
         //群发消息
-        for (WebSocketServer item : webSocketSet) {
+        /*for (WebSocketServer item : webSocketSet) {
             try {
                 if(item.clientId == session.getId()){
                     item.sendMessage(message);
@@ -242,7 +249,7 @@ public class WebSocketServer {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
+        }*/
     }
 
     /**

@@ -58,7 +58,7 @@ public class WebSocketFilter extends ZuulFilter {
         String authType = request.getAuthType();
         if (StringUtils.isEmpty(authType) ){
             HashSet<String> set = new HashSet<>();
-            set.add("login");set.add("reg");set.add("getValiCode");set.add("jobPush");
+            set.add("login");set.add("reg");set.add("getCode");set.add("jobPush");
             if (set.contains(accessMethod)){
                 log.info("Access method is Ok! ");
                 return null;
@@ -73,8 +73,7 @@ public class WebSocketFilter extends ZuulFilter {
             return null;
         }else{//"token_"+username
             String username = request.getHeader("username");
-            //Object token = redisTemplate.opsForValue().get("token_"+username);
-            Object token =  redisUtils.get("token_"+username);
+            Object token =  redisUtils.getStr("token_"+username);
 
             if (null != token && String.valueOf(token).equals(accessToken)){
                 log.info("Access token is Ok! ");

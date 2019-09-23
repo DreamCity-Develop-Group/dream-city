@@ -1,16 +1,21 @@
 server:
   port: 8030
+  servlet:
+    context-path: /
 
 spring:
   application:
     name: city-auth
-
   main:
     allow-bean-definition-overriding: true
 
-mybatis:
-  type-aliases-package: com.dream.city.domain.mapper
-  mapper-locations: classpath:/mappers/*.xml
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/dreamcity?serverTimezone=UTC&useUnicode=true&characterEncoding=UTF-8&transformedBitIsBoolean=true&autoReconnect=true&failOverReadOnly=false&allowMultiQueries=true&useSSL=false
+    username: dreamcity
+    password: Root@123
+  profiles:
+    active: dev
 
 #eureka
 eureka:
@@ -23,3 +28,7 @@ eureka:
 
 auth:
   secret: oKKLJOoasdl
+
+mybatis:
+  type-aliases-package: com.dream.city.domain.mapper
+  mapper-locations: classpath:/mappers/*.xml

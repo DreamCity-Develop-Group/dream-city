@@ -37,10 +37,10 @@ public class HttpClientUtil {
     public static void post(Message msg) {
         CloseableHttpClient client = HttpClientBuilder.create().build();
         //网关地址
-        String gateWayUrl = "http://localhost:8020";
+        String gateWayUrl = "http://localhost:8020/v1";
         MessageData data = msg.getData();
         //网关路由
-        String gateRoutePath = data.getModel();
+        String gateRoutePath = "consumer";
         //模块地址
         String serviceModel = data.getModel();
         //请求模块操作行为

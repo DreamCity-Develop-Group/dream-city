@@ -88,7 +88,7 @@ public class ConsumerPlayerController {
      * @param msg
      * @return
      */
-    @RequestMapping("/getcode")
+    @RequestMapping("/message/getCode")
     public Message getCode(@RequestBody Message msg) {
         logger.info("获取认证码", JSONObject.toJSONString(msg));
         Map<String, Object> map = new HashMap<>();
