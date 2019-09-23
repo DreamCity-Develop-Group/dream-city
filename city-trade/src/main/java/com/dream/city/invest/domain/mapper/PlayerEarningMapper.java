@@ -1,4 +1,4 @@
-package com.dream.city.domain.mapper;
+package com.dream.city.invest.domain.mapper;
 
 
 import com.dream.city.base.model.entity.PlayerEarning;
@@ -17,6 +17,8 @@ public interface PlayerEarningMapper {
     Integer insertSelective(PlayerEarning record);
 
     PlayerEarning selectByPrimaryKey(Integer earnId);
+
+    PlayerEarning getPlayerEarningByPlayerId(PlayerEarning record);
 
     List<PlayerEarning> selectPlayerEarningList(PlayerEarning record);
 

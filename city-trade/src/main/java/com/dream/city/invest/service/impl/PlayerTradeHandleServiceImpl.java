@@ -2,6 +2,7 @@ package com.dream.city.invest.service.impl;
 
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.PlayerAccount;
+import com.dream.city.base.model.entity.PlayerEarning;
 import com.dream.city.base.model.entity.PlayerTrade;
 import com.dream.city.base.model.entity.TradeVerify;
 import com.dream.city.base.model.enu.AmountDynType;
@@ -9,10 +10,7 @@ import com.dream.city.base.model.enu.AmountType;
 import com.dream.city.base.model.enu.TradeType;
 import com.dream.city.base.model.enu.VerifyStatus;
 import com.dream.city.base.model.req.PlayerAccountReq;
-import com.dream.city.invest.service.PlayerTradeService;
-import com.dream.city.invest.service.AccountService;
-import com.dream.city.invest.service.PlayerTradeHandleService;
-import com.dream.city.invest.service.TradeVerifyService;
+import com.dream.city.invest.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +30,8 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
     PlayerTradeService tradeService;
     @Autowired
     TradeVerifyService verifyService;
+    @Autowired
+    EarningService earningService;
 
 
 
@@ -72,6 +72,9 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
         record.setTradeType(TradeType.withdraw.name());
         Result<BigDecimal> updateAccountResult = null;
         try {
+            //校验提现规则 todo
+            PlayerEarning playerEarning = earningService.getPlayerEarningByPlayerId(record.getAccPlayerId());
+
             //提现 冻结金额
             updateAccountResult = updatePlayerAccount(record);
             success = updateAccountResult.getSuccess();

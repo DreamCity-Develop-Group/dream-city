@@ -12,8 +12,8 @@ import java.util.List;
 /**
  * 提现规则设置
  */
-@FeignClient(value = "city-set")
-@RequestMapping("/set")
+@FeignClient(value = "city-trade")
+@RequestMapping("/earning")
 public interface ConsumerEarningService {
 
     /**
