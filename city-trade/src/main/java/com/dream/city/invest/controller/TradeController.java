@@ -1,9 +1,17 @@
 package com.dream.city.invest.controller;
 
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 /**
- * 交易记录
+ * 玩家交易
  */
+@RestController
+@RequestMapping("/trade")
 public class TradeController {
+
+
+
 
 
 }

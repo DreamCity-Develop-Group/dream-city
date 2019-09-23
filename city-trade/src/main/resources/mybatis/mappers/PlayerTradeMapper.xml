@@ -19,11 +19,39 @@
     trade_amount_type, trade_desc, create_time, update_time
   </sql>
 
-  <select id="getPlayerTrade" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+  <select id="getPlayerTradeById" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
     from player_trade
     where trade_id = #{tradeId,jdbcType=INTEGER}
+  </select>
+
+  <select id="getPlayerTrade" resultMap="BaseResultMap" parameterType="com.dream.city.base.model.entity.PlayerTrade" >
+    select
+    <include refid="Base_Column_List" />
+    from player_trade
+    <where>
+      1=1
+      <if test="tradeId != null" >
+        and trade_id = #{tradeId,jdbcType=INTEGER}
+      </if>
+      <if test="tradeAccId != null" >
+        and trade_acc_id = #{tradeAccId,jdbcType=INTEGER}
+      </if>
+      <if test="tradeOrderId != null" >
+        and trade_order_id = #{tradeOrderId,jdbcType=INTEGER}
+      </if>
+      <if test="tradeAmount != null" >
+        and trade_amount = #{tradeAmount,jdbcType=DECIMAL}
+      </if>
+      <if test="tradeType != null and tradeType != ''" >
+        and trade_type = #{dynType,tradeType=CHAR},
+      </if>
+      <if test="tradeAmountType != null and tradeAmountType != ''" >
+        and trade_amount_type = #{tradeAmountType,jdbcType=CHAR}
+      </if>
+    </where>
+    linit 1
   </select>
 
   <select id="getPlayerTradeList" resultMap="BaseResultMap" parameterType="com.dream.city.base.model.entity.PlayerTrade" >
@@ -53,11 +81,20 @@
       <if test="tradeDesc != null and tradeDesc != ''" >
         and trade_desc = #{tradeDesc,jdbcType=VARCHAR}
       </if>
+      <if test="createTime != null" >
+        and create_time = #{createTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="updateTime != null" >
+        and update_time = #{updateTime,jdbcType=TIMESTAMP}
+      </if>
     </where>
     order by create_time desc
   </select>
 
   <insert id="insertSelective" parameterType="com.dream.city.base.model.entity.PlayerTrade" >
+    <selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="tradeId">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
     insert into player_trade
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="tradeId != null" >

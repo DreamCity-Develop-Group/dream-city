@@ -2,7 +2,6 @@ package com.dream.city.invest.controller;
 
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.PlayerAccount;
-import com.dream.city.base.model.req.PlayerAccountReq;
 import com.dream.city.invest.service.AccountService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +16,7 @@ import java.util.List;
  * 玩家账户
  */
 @RestController
-@RequestMapping("/invest")
+@RequestMapping("/account")
 public class AccountController {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());

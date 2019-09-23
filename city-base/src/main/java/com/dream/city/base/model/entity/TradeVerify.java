@@ -1,9 +1,10 @@
 package com.dream.city.base.model.entity;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
-public class TradeVerify {
+public class TradeVerify  implements Serializable {
     private Integer verifyId;
 
     private Integer verifyTradeId;

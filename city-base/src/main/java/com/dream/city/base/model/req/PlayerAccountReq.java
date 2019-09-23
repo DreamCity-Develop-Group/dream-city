@@ -9,7 +9,7 @@ import java.util.Date;
  */
 public class PlayerAccountReq implements Serializable {
 
-    /**  */
+    /** 账号id */
     private Integer accId;
 
     /** 账户玩家 */

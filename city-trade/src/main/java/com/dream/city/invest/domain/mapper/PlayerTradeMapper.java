@@ -6,12 +6,17 @@ import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 
+/**
+ * 交易流水
+ */
 @Mapper
 public interface PlayerTradeMapper {
 
     Integer insertSelective(PlayerTrade record);
 
-    PlayerTrade getPlayerTrade(Integer tradeId);
+    PlayerTrade getPlayerTradeById(Integer tradeId);
+
+    PlayerTrade getPlayerTrade(PlayerTrade record);
 
     List<PlayerTrade> getPlayerTradeList(PlayerTrade record);
 
