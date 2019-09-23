@@ -11,6 +11,9 @@ import com.dream.city.base.model.req.PlayerAccountReq;
 import com.dream.city.base.utils.DataUtils;
 import com.dream.city.service.ConsumerCommonsService;
 import com.dream.city.service.ConsumerTradeService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +30,7 @@ import java.util.Map;
  *  玩家交易
  *  充值、提现、转账
  */
+@Api(value = "API-Consumer Main Default Page",description = "玩家充值、提现、转账")
 @RestController
 @RequestMapping("/consumer")
 public class ConsumerTradeController {
@@ -45,6 +49,7 @@ public class ConsumerTradeController {
      * @param msg
      * @return
      */
+    @ApiOperation(value = "根据tradeId获取投资记录",notes = "t参数:tradeId", response = Message.class)
     @RequestMapping("/getPlayerTradeById")
     public Message getPlayerTradeById(@RequestBody Message msg){
         logger.info("根据tradeId获取投资记录", JSONObject.toJSONString(msg));
@@ -65,17 +70,24 @@ public class ConsumerTradeController {
      * @param msg
      * @return
      */
+    @ApiOperation(value = "获取投资记录",notes = "t可选参数:tradeId,playerId,username,nick,tradeType", response = Message.class)
     @RequestMapping("/getPlayerTrade")
     public Message getPlayerTrade(@RequestBody Message msg){
         logger.info("获取投资记录", JSONObject.toJSONString(msg));
 
-        Player player = commonsService.getPlayerByNameOrNicke(msg);
         PlayerAccountReq accountReq = DataUtils.getPlayerAccountReqFromMessage(msg);
+        String playerId = accountReq.getAccPlayerId();
+        Player player = null;
+        if (StringUtils.isBlank(playerId)) {
+            player = commonsService.getPlayerByNameOrNicke(msg);
+            playerId = player.getPlayerId();
+        }
         PlayerTrade record = new PlayerTrade();
         record.setTradeAccId(accountReq.getAccId());
         record.setTradeOrderId(accountReq.getTradeOrderId());
-        record.setTradePlayerId(player.getPlayerId());
+        record.setTradePlayerId(playerId);
         record.setTradeAmountType(accountReq.getTradeType());
+        record.setTradePlayerId(playerId);
 
         Result<PlayerTrade> tradeResult = tradeService.getPlayerTrade(record);
         Map resultMap = JSON.parseObject(JSON.toJSONString(tradeResult.getData()));
@@ -90,16 +102,22 @@ public class ConsumerTradeController {
      * @param msg
      * @return
      */
+    @ApiOperation(value = "获取投资记录列表",notes = "t可选参数:tradeId,playerId,username,nick,tradeType", response = Message.class)
     @RequestMapping("/getPlayerTradeList")
     public Message getPlayerTradeList(@RequestBody Message msg){
         logger.info("用户下单", JSONObject.toJSONString(msg));
 
-        Player player = commonsService.getPlayerByNameOrNicke(msg);
         PlayerAccountReq accountReq = DataUtils.getPlayerAccountReqFromMessage(msg);
+        String playerId = accountReq.getAccPlayerId();
+        Player player = null;
+        if (StringUtils.isBlank(playerId)) {
+            player = commonsService.getPlayerByNameOrNicke(msg);
+            playerId = player.getPlayerId();
+        }
         PlayerTrade record = new PlayerTrade();
         record.setTradeAccId(accountReq.getAccId());
         record.setTradeOrderId(accountReq.getTradeOrderId());
-        record.setTradePlayerId(player.getPlayerId());
+        record.setTradePlayerId(playerId);
         record.setTradeAmountType(accountReq.getTradeType());
 
         Result<List<PlayerTrade>> tradeResult = tradeService.getPlayerTradeList(record);
@@ -123,12 +141,18 @@ public class ConsumerTradeController {
      * @return
      */
     @RequestMapping("/playerRecharge")
+    @ApiOperation(value = "玩家充值",notes = "t参数:playerId,username,nick,accUsdt,accMt", response = Message.class)
     public Message playerRecharge(@RequestBody Message msg){
         logger.info("玩家充值", JSONObject.toJSONString(msg));
 
-        Player player = commonsService.getPlayerByNameOrNicke(msg);
         PlayerAccountReq accountReq = DataUtils.getPlayerAccountReqFromMessage(msg);
-        accountReq.setAccPlayerId(player.getPlayerId());
+        String playerId = accountReq.getAccPlayerId();
+        Player player = null;
+        if (StringUtils.isBlank(playerId)) {
+            player = commonsService.getPlayerByNameOrNicke(msg);
+            playerId = player.getPlayerId();
+        }
+        accountReq.setAccPlayerId(playerId);
 
         Result<PlayerTrade> tradeResult = tradeService.playerRecharge(accountReq);
         Map resultMap = JSON.parseObject(JSON.toJSONString(tradeResult.getData()));
@@ -144,12 +168,18 @@ public class ConsumerTradeController {
      * @return
      */
     @RequestMapping("/playerWithdraw")
+    @ApiOperation(value = "玩家提现",notes = "t参数:playerId,username,nick,accUsdt,accMt", response = Message.class)
     public Message playerWithdraw(@RequestBody Message msg){
         logger.info("玩家提现", JSONObject.toJSONString(msg));
 
-        Player player = commonsService.getPlayerByNameOrNicke(msg);
         PlayerAccountReq accountReq = DataUtils.getPlayerAccountReqFromMessage(msg);
-        accountReq.setAccPlayerId(player.getPlayerId());
+        String playerId = accountReq.getAccPlayerId();
+        Player player = null;
+        if (StringUtils.isBlank(playerId)) {
+            player = commonsService.getPlayerByNameOrNicke(msg);
+            playerId = player.getPlayerId();
+        }
+        accountReq.setAccPlayerId(playerId);
 
         Result<PlayerTrade> tradeResult = tradeService.playerWithdraw(accountReq);
         Map resultMap = JSON.parseObject(JSON.toJSONString(tradeResult.getData()));
@@ -164,12 +194,18 @@ public class ConsumerTradeController {
      * 玩家转账
      * @return
      */
+    @ApiOperation(value = "玩家转账",notes = "t参数:playerId,username,nick,accUsdt,accMt", response = Message.class)
     @RequestMapping("/playerTransfer")
     public Message playerTransfer(@RequestBody Message msg){
         logger.info("玩家转账", JSONObject.toJSONString(msg));
 
-        Player player = commonsService.getPlayerByNameOrNicke(msg);
         PlayerAccountReq accountReq = DataUtils.getPlayerAccountReqFromMessage(msg);
+        String playerId = accountReq.getAccPlayerId();
+        Player player = null;
+        if (StringUtils.isBlank(playerId)) {
+            player = commonsService.getPlayerByNameOrNicke(msg);
+            playerId = player.getPlayerId();
+        }
         accountReq.setAccPlayerId(player.getPlayerId());
 
         Result<PlayerTrade> tradeResult = tradeService.playerTransfer(accountReq);
