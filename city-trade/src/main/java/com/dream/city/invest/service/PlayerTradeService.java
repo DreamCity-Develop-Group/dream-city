@@ -13,7 +13,7 @@ public interface PlayerTradeService {
 
     int updatePlayerTrade(PlayerTrade record);
 
-    PlayerTrade getPlayerTradeById(Integer dynId);
+    PlayerTrade getPlayerTradeById(Integer tradeId);
 
     PlayerTrade getPlayerTrade(PlayerTrade record);
 
