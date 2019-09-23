@@ -17,6 +17,9 @@ public class PlayerAccountReq implements Serializable {
     private String username;
     private String nick;
 
+    /** 好友id */
+    private String friendId;
+
     /**
      * 玩家账户地址
      */
@@ -177,5 +180,13 @@ public class PlayerAccountReq implements Serializable {
 
     public void setTradeOrderId(Integer tradeOrderId) {
         this.tradeOrderId = tradeOrderId;
+    }
+
+    public String getFriendId() {
+        return friendId;
+    }
+
+    public void setFriendId(String friendId) {
+        this.friendId = friendId;
     }
 }

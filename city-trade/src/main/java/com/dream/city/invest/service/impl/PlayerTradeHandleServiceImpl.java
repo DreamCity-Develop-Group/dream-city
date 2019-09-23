@@ -104,33 +104,53 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
 
 
     @Override
-    public Result playerTransfer(PlayerAccountReq record) {
+    public Result playerTransfer(PlayerAccountReq recordOut) {
         boolean success = Boolean.FALSE;
-        record.setAmountDynType(AmountDynType.out.name());
-        record.setTradeType(TradeType.transfer.name());
-        String accAddr = record.getAccAddr();
+
+        recordOut.setTradeType(TradeType.transfer.name());
+        String accAddr = recordOut.getAccAddr();
         Result<BigDecimal> updateAccountResult = null;
         try {
-            //转账 冻结金额
-            updateAccountResult = updatePlayerAccount(record);
+            //转账 出账
+            PlayerAccount accountOut = new PlayerAccount();
+            accountOut.setAccPlayerId(recordOut.getAccPlayerId());
+            PlayerAccount playerAccountOut = accountService.getPlayerAccount(accountOut);
+
+            recordOut.setAccId(playerAccountOut.getAccId());
+            recordOut.setAmountDynType(AmountDynType.out.name());
+            updateAccountResult = updatePlayerAccount(recordOut);
             success = updateAccountResult.getSuccess();
 
             //新增交易记录
-            record.setAccId(record.getAccId());
-            Result<PlayerTrade> createPlayerTradeResult = createPlayerTrade(record,
+            Result<PlayerTrade> createPlayerTradeResult = createPlayerTrade(recordOut,
                     updateAccountResult.getData(), updateAccountResult.getMsg());
 
             String verifyStatus = VerifyStatus.wait.name();
             if (isInsideAccAddr(accAddr)){
                 //内部转账 立即到账
                 verifyStatus = VerifyStatus.pass.name();
+
+                //立即到账 入账
+                PlayerAccount accountIn = new PlayerAccount();
+                accountIn.setAccPlayerId(recordOut.getFriendId());
+                PlayerAccount playerAccountIn = accountService.getPlayerAccount(accountIn);
+
+                PlayerAccountReq recordIn = recordOut;
+                recordIn.setAccId(playerAccountIn.getAccId());
+                recordIn.setAccPlayerId(recordOut.getFriendId());
+                recordIn.setAmountDynType(AmountDynType.in.name());
+                Result<BigDecimal> transferInResult = updatePlayerAccount(recordIn);
+
+                //新增交易记录 入账
+                recordIn.setAccId(playerAccountIn.getAccId());
+                createPlayerTrade(recordIn,transferInResult.getData(), transferInResult.getMsg());
             }else {
                 //外部转账 相当于体现 TODO
 
             }
 
-            //新增交易审核
-            if (createPlayerTradeResult.getSuccess()){
+            //新增交易审核 不是内部转账
+            if (createPlayerTradeResult.getSuccess() && !isInsideAccAddr(recordOut.getAccAddr())){
                 createTradeVerify(createPlayerTradeResult.getData().getTradeId(),updateAccountResult.getData(),
                         verifyStatus,updateAccountResult.getMsg());
             }
@@ -214,16 +234,29 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
             tradeType = TradeType.transfer.getDesc();
             if (record.getAmountDynType().equalsIgnoreCase(AmountDynType.out.name())){
                 //转账转出 账户金额减去转账金额
-                if (record.getTradeType().equalsIgnoreCase(AmountType.mt.name())){
-                    tradeAmount = record.getAccMt();
-                    accMt = getPlayerAccount.getAccMt();
-                    accMtAvailable = getPlayerAccount.getAccMtAvailable().subtract(tradeAmount);
-                    accMtFreeze = tradeAmount;
-                }else if (record.getTradeType().equalsIgnoreCase(AmountType.usdt.name())){
-                    tradeAmount = record.getAccUsdt();
-                    accUsdt = getPlayerAccount.getAccUsdt();
-                    accUsdtAvailable = getPlayerAccount.getAccUsdtAvailable().subtract(tradeAmount);
-                    accUsdtFreeze = tradeAmount;
+                if (isInsideAccAddr(record.getAccAddr())){
+                    //内部转账 立即到账
+                    if (record.getTradeType().equalsIgnoreCase(AmountType.mt.name())){
+                        tradeAmount = record.getAccMt();
+                        accMt = getPlayerAccount.getAccMt().subtract(tradeAmount);
+                        accMtAvailable = getPlayerAccount.getAccMtAvailable().subtract(tradeAmount);
+                    }else if (record.getTradeType().equalsIgnoreCase(AmountType.usdt.name())){
+                        tradeAmount = record.getAccUsdt();
+                        accUsdt = getPlayerAccount.getAccUsdt().subtract(tradeAmount);
+                        accUsdtAvailable = getPlayerAccount.getAccUsdtAvailable().subtract(tradeAmount);
+                    }
+                } else {
+                    if (record.getTradeType().equalsIgnoreCase(AmountType.mt.name())){
+                        tradeAmount = record.getAccMt();
+                        accMt = getPlayerAccount.getAccMt();
+                        accMtAvailable = getPlayerAccount.getAccMtAvailable().subtract(tradeAmount);
+                        accMtFreeze = tradeAmount;
+                    }else if (record.getTradeType().equalsIgnoreCase(AmountType.usdt.name())){
+                        tradeAmount = record.getAccUsdt();
+                        accUsdt = getPlayerAccount.getAccUsdt();
+                        accUsdtAvailable = getPlayerAccount.getAccUsdtAvailable().subtract(tradeAmount);
+                        accUsdtFreeze = tradeAmount;
+                    }
                 }
             } else {
                 //转账转入 账户金额加上转账金额
