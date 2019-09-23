@@ -24,6 +24,6 @@ public class NoticeBroadcast extends QuartzJobBean {
         String jsonString = dataMap.get("data").toString();
         Map data = JsonUtil.parseJsonToObj(jsonString,Map.class);
         //推送消息到客户端
-        noticeBroadcastService.pushNoticeBroadcast("BroadcastToAll",data);
+        noticeBroadcastService.pushNoticeBroadcast("clients",data);
     }
 }

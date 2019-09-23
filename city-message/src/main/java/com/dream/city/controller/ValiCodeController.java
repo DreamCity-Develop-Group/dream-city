@@ -37,14 +37,14 @@ public class ValiCodeController {
         msg.setSource(target);
 
         MessageData data = new MessageData("getValiCode", "message");
-        data.setT(code);
+        data.setData(code);
         msg.setData(data);
         return msg;
     }
 
     @RequestMapping("/valiCode")
     public Message valiCode(@RequestBody Message message) {
-        Map<String, String> data = (Map<String, String>) message.getData().getT();
+        Map<String, String> data = (Map<String, String>) message.getData().getData();
         String code = data.get("code");
         String phone = data.get("username");
 
@@ -63,7 +63,7 @@ public class ValiCodeController {
 
         if (ret) {
             MessageData data1 = new MessageData(message.getData().getType(), message.getData().getModel());
-            data1.setT(Boolean.TRUE);
+            data1.setData(Boolean.TRUE);
             return new Message(
                     message.getTarget(),
                     message.getSource(),
@@ -73,7 +73,7 @@ public class ValiCodeController {
             );
         } else {
             MessageData data2 = new MessageData(message.getData().getType(), message.getData().getModel());
-            data2.setT(Boolean.FALSE);
+            data2.setData(Boolean.FALSE);
             return new Message(
                     message.getTarget(),
                     message.getSource(),
@@ -88,19 +88,19 @@ public class ValiCodeController {
     public Message getCode(@RequestBody Message message) {
         String code = String.valueOf(new Random().nextInt(999999));
         MessageData data = new MessageData("getcode", "message");
-        data.setT(null);
+        data.setData(null);
         Message msg = new Message("source", "server",
                 data,
                 "获取认证码",
                 String.valueOf(System.currentTimeMillis()));
 
-        Map map = (Map) message.getData().getT();
+        Map map = (Map) message.getData().getData();
         boolean insertCode = Boolean.FALSE;
         if (map.containsKey("username")){
             insertCode = coderService.insertCode((String) map.get("username"), code);
         }
         if (insertCode){
-            msg.getData().setT(code);
+            msg.getData().setData(code);
             logger.info("############################## 用户[{}]获取认证码: {}",(String) map.get("username"),code);
 
             try {

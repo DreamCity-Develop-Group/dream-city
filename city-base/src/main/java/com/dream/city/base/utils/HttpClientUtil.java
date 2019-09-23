@@ -3,7 +3,7 @@ package com.dream.city.base.utils;
 import com.alibaba.fastjson.JSON;
 import com.dream.city.base.model.Message;
 import com.dream.city.base.model.MessageData;
- import org.apache.http.HttpEntity;
+import org.apache.http.HttpEntity;
 import org.apache.http.ParseException;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -12,6 +12,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
@@ -22,17 +23,38 @@ import java.util.Map;
  */
 public class HttpClientUtil {
 
-    public static void post(Message msg) {
-        CloseableHttpClient client = HttpClientBuilder.create().build();
+    private String initPost(Message msg){
         //网关地址
-        String gateWayUrl = "http://localhost:8020";
+        String gateWayUrl = "http://localhost:8020/consumer";
         MessageData data = msg.getData();
         //网关路由
-        String gateRoutePath = data.getModel();
+        String gateRoutePath = "v1";
         //模块地址
         String serviceModel = data.getModel();
         //请求模块操作行为
         String serviceOpt = data.getType();
+
+        //请求地址url
+        String url = gateWayUrl + "/" + gateRoutePath + "/" + serviceModel + "/" + serviceOpt;
+
+        return url;
+    }
+
+    public static void post(Message msg) {
+        CloseableHttpClient client = HttpClientBuilder.create().build();
+        //网关地址
+        String gateWayUrl = "http://localhost:8020/consumer";
+        MessageData data = msg.getData();
+        //网关路由
+        String gateRoutePath = "v1";
+        //模块地址
+        String serviceModel = data.getModel();
+        //请求模块操作行为
+        String serviceOpt = data.getType();
+
+        //请求地址url
+        //String url = gateWayUrl + "/" + gateRoutePath + "/" + serviceModel + "/" + serviceOpt;
+
         //响应模型
         CloseableHttpResponse response = null;
         // 创建Post请求
@@ -53,13 +75,13 @@ public class HttpClientUtil {
 
             httpPost = new HttpPost(url);
 
-            if (serviceOpt.equals("login") || serviceOpt.equals("reg") || serviceOpt.equals("getValiCode")||serviceOpt.equals("job/push")) {
+            if (serviceOpt.equals("login") || serviceOpt.equals("reg") || serviceOpt.equals("getCode")||serviceOpt.equals("job/push")) {
                 //这里不处理，表示正常放行
                 httpPost.setHeader("method", serviceOpt);
                 httpPost.setHeader("authType", "");
             } else {
-                if (null != data.getT()) {
-                    String dataStr = JsonUtil.parseObjToJson(data.getT());
+                if (null != data.getData()) {
+                    String dataStr = JsonUtil.parseObjToJson(data.getData());
                     Map dataMap = JsonUtil.parseJsonToObj(dataStr, Map.class);
 
                     if (dataMap.containsKey("token") && !StringUtils.isEmpty(dataMap.get("token"))) {
@@ -103,7 +125,7 @@ public class HttpClientUtil {
 
                 if (resp.contains("data") && resp.contains("t")) {
                     Object jsonObject = JSON.parseObject(JSON.toJSONString(JSON.parseObject(resp).get("data"))).get("t");
-                    message.getData().setT(jsonObject);
+                    message.getData().setData(jsonObject);
                 }
 
                 //WebSocketServer.sendInfo(message);

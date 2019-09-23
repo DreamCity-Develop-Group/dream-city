@@ -17,4 +17,7 @@ public interface ConsumerPusherService {
 
     @RequestMapping("/comm/job/push")
     Result jobPush(@RequestBody Message message);
+
+    @RequestMapping("/comm/job/push/notice")
+    Result noticePush(Message message);
 }

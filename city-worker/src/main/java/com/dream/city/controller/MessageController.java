@@ -26,7 +26,7 @@ public class MessageController {
 
     @RequestMapping("/add5RetryJob")
     public String add5RetryJob(@RequestBody Message message){
-        Object msgData = message.getData().getT();
+        Object msgData = message.getData().getData();
         String map = JsonUtil.parseObjToJson(msgData);
         Map dataMap = JsonUtil.parseJsonToObj(map, Map.class);
 

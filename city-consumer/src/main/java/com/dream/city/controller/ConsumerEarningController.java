@@ -38,7 +38,7 @@ public class ConsumerEarningController {
     public Message getEarning(@RequestBody Message msg){
         PlayerEarning earning = DataUtils.getEarningFromJsonReq(msg);
         Result result = earningService.getEarning(earning.getEarnId());
-        msg.getData().setT(JSON.toJSONString(result.getData()));
+        msg.getData().setData(JSON.toJSONString(result.getData()));
         msg.setDesc(result.getMsg());
         return msg;
     }
@@ -52,7 +52,7 @@ public class ConsumerEarningController {
     public Message getEarningList(@RequestBody Message msg){
         PlayerEarning earning = DataUtils.getEarningFromJsonReq(msg);
         Result result = earningService.getEarningList(earning);
-        msg.getData().setT(JSON.toJSONString(result.getData()));
+        msg.getData().setData(JSON.toJSONString(result.getData()));
         msg.setDesc(result.getMsg());
         return msg;
     }
@@ -70,7 +70,7 @@ public class ConsumerEarningController {
 
         Map<String,Object> t = new HashMap<>();
         t.put("desc",result.getSuccess());
-        msg.getData().setT(t);
+        msg.getData().setData(t);
         msg.setDesc(result.getMsg());
         return msg;
     }*/
@@ -87,7 +87,7 @@ public class ConsumerEarningController {
         Result result = earningService.insertEarning(earning);
         Map<String,Object> t = new HashMap<>();
         t.put("desc",result.getSuccess());
-        msg.getData().setT(t);
+        msg.getData().setData(t);
         msg.setDesc(result.getMsg());
         return msg;
     }*/
@@ -103,7 +103,7 @@ public class ConsumerEarningController {
         Result result = earningService.updateEarningById(earning);
         Map<String,Object> t = new HashMap<>();
         t.put("desc",result.getSuccess());
-        msg.getData().setT(t);
+        msg.getData().setData(t);
         msg.setDesc(result.getMsg());
         return msg;
     }*/

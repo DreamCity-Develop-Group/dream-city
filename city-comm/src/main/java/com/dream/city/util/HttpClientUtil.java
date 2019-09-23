@@ -72,8 +72,8 @@ public class HttpClientUtil {
                 httpPost.setHeader("method", serviceOpt);
                 httpPost.setHeader("authType", "");
             } else {
-                if (null != data.getT()) {
-                    String dataStr = JsonUtil.parseObjToJson(data.getT());
+                if (null != data.getData()) {
+                    String dataStr = JsonUtil.parseObjToJson(data.getData());
                     Map dataMap = JsonUtil.parseJsonToObj(dataStr, Map.class);
 
                     if (dataMap.containsKey("token") && !StringUtils.isEmpty(dataMap.get("token"))) {
@@ -118,7 +118,7 @@ public class HttpClientUtil {
 
                 if (resp.contains("data") && resp.contains("t")) {
                     Object jsonObject = JSON.parseObject(JSON.toJSONString(JSON.parseObject(resp).get("data"))).get("t");
-                    message.getData().setT(jsonObject);
+                    message.getData().setData(jsonObject);
                 }
 
                 WebSocketServer.sendInfo(message);

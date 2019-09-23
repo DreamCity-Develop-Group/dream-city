@@ -42,7 +42,7 @@ public class UserController {
             tip= "fail";
         }
 
-        Map<String,String> user = (Map<String, String>) message.getData().getT();
+        Map<String,String> user = (Map<String, String>) message.getData().getData();
         String userName = user.get("username");
         String userPass = user.get("userpass");
         String code = user.get("code");
@@ -74,7 +74,7 @@ public class UserController {
 
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("desc","注册成功");
-        msg.getData().setT(jsonObject);
+        msg.getData().setData(jsonObject);
         System.out.println("**************************************");
         return msg;
 
