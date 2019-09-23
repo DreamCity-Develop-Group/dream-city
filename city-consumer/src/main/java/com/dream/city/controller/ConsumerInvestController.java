@@ -4,7 +4,6 @@ package com.dream.city.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.dream.city.base.model.Message;
-import com.dream.city.service.ConsumerTradeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +22,7 @@ public class ConsumerInvestController {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @Autowired
+    //@Autowired
     //private ConsumerTradeService tradeService;
 
     /**
