@@ -31,6 +31,10 @@ public class PlayerAccountReq implements Serializable {
      * 交易类型（投资usdt，投资mt，转账transfer，充值recharge，提现withdraw）
      */
     private String tradeType;
+    /**
+     * 订单id
+     */
+    private Integer tradeOrderId;
 
     /**
      * 资金动态(进账in,出账out)
@@ -165,5 +169,13 @@ public class PlayerAccountReq implements Serializable {
 
     public void setAccMtFreeze(BigDecimal accMtFreeze) {
         this.accMtFreeze = accMtFreeze;
+    }
+
+    public Integer getTradeOrderId() {
+        return tradeOrderId;
+    }
+
+    public void setTradeOrderId(Integer tradeOrderId) {
+        this.tradeOrderId = tradeOrderId;
     }
 }

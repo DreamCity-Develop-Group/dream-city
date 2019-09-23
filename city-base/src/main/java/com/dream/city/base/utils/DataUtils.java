@@ -93,8 +93,10 @@ public class DataUtils {
         Map map = (Map)msg.getData().getData();
         Integer accId = map.containsKey("accId")?Integer.parseInt(String.valueOf(map.get("accId"))):null;
         String accPlayerId = map.containsKey("playerId")?String.valueOf(map.get("playerId")):null;
-        String userName = map.containsKey("playerId")?String.valueOf(map.get("username")):null;
+        String userName = map.containsKey("username")?String.valueOf(map.get("username")):null;
         String nick = map.containsKey("nick")?String.valueOf(map.get("nick")):null;
+        String accAddr = map.containsKey("accAddr")?String.valueOf(map.get("accAddr")):null;
+        String tradeType = map.containsKey("tradeType")?String.valueOf(map.get("tradeType")):null;
         String accPass = map.containsKey("accPass")?String.valueOf(map.get("accPass")):null;
         BigDecimal accUsdt = map.containsKey("accUsdt")?BigDecimal.valueOf(Double.parseDouble(String.valueOf(map.get("accUsdt")))):null;
         BigDecimal accMt = map.containsKey("accMt")?BigDecimal.valueOf(Double.parseDouble(String.valueOf(map.get("accMt")))):null;

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * 投资订单
  */
 @FeignClient(value = "city-trade")
-@RequestMapping("/invest")
+@RequestMapping("/order")
 public interface ConsumerOrderService {
 
 

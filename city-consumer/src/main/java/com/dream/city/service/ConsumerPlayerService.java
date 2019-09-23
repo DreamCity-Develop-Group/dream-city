@@ -90,8 +90,8 @@ public interface ConsumerPlayerService {
      * @return
      */
     @RequestMapping("/player/getPlayerByName")
-    public Result getPlayerByName(@RequestBody String jsonReq);
+    Result getPlayerByName(@RequestBody String jsonReq);
 
     @RequestMapping("/player/getPlayerByInvite")
-    public Result getPlayerByInvite(@RequestParam String invite);
+    Result getPlayerByInvite(@RequestParam String invite);
 }
