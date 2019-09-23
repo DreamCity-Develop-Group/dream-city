@@ -5,9 +5,9 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.dream.city.base.model.Message;
 import com.dream.city.base.model.Result;
-import com.dream.city.base.model.entity.Player;
 import com.dream.city.base.model.entity.PlayerTrade;
 import com.dream.city.base.model.req.PlayerAccountReq;
+import com.dream.city.base.model.resp.PlayerResp;
 import com.dream.city.base.utils.DataUtils;
 import com.dream.city.service.ConsumerCommonsService;
 import com.dream.city.service.ConsumerTradeService;
@@ -77,7 +77,7 @@ public class ConsumerTradeController {
 
         PlayerAccountReq accountReq = DataUtils.getPlayerAccountReqFromMessage(msg);
         String playerId = accountReq.getAccPlayerId();
-        Player player = null;
+        PlayerResp player = null;
         if (StringUtils.isBlank(playerId)) {
             player = commonsService.getPlayerByNameOrNicke(msg);
             playerId = player.getPlayerId();
@@ -109,7 +109,7 @@ public class ConsumerTradeController {
 
         PlayerAccountReq accountReq = DataUtils.getPlayerAccountReqFromMessage(msg);
         String playerId = accountReq.getAccPlayerId();
-        Player player = null;
+        PlayerResp player = null;
         if (StringUtils.isBlank(playerId)) {
             player = commonsService.getPlayerByNameOrNicke(msg);
             playerId = player.getPlayerId();
@@ -147,7 +147,7 @@ public class ConsumerTradeController {
 
         PlayerAccountReq accountReq = DataUtils.getPlayerAccountReqFromMessage(msg);
         String playerId = accountReq.getAccPlayerId();
-        Player player = null;
+        PlayerResp player = null;
         if (StringUtils.isBlank(playerId)) {
             player = commonsService.getPlayerByNameOrNicke(msg);
             playerId = player.getPlayerId();
@@ -174,7 +174,7 @@ public class ConsumerTradeController {
 
         PlayerAccountReq accountReq = DataUtils.getPlayerAccountReqFromMessage(msg);
         String playerId = accountReq.getAccPlayerId();
-        Player player = null;
+        PlayerResp player = null;
         if (StringUtils.isBlank(playerId)) {
             player = commonsService.getPlayerByNameOrNicke(msg);
             playerId = player.getPlayerId();
@@ -201,12 +201,12 @@ public class ConsumerTradeController {
 
         PlayerAccountReq accountReq = DataUtils.getPlayerAccountReqFromMessage(msg);
         String playerId = accountReq.getAccPlayerId();
-        Player player = null;
+        PlayerResp player = null;
         if (StringUtils.isBlank(playerId)) {
             player = commonsService.getPlayerByNameOrNicke(msg);
             playerId = player.getPlayerId();
         }
-        accountReq.setAccPlayerId(player.getPlayerId());
+        accountReq.setAccPlayerId(playerId);
 
         Result<PlayerTrade> tradeResult = tradeService.playerTransfer(accountReq);
         Map resultMap = JSON.parseObject(JSON.toJSONString(tradeResult.getData()));

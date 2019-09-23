@@ -4,9 +4,12 @@ import com.alibaba.fastjson.JSON;
 import com.dream.city.base.model.CityGlobal;
 import com.dream.city.base.model.Page;
 import com.dream.city.base.model.Result;
+import com.dream.city.base.model.entity.PlayerGrade;
 import com.dream.city.base.model.req.PageReq;
+import com.dream.city.base.model.resp.PlayerResp;
 import com.dream.city.base.utils.KeyGenerator;
 import com.dream.city.base.model.entity.Player;
+import com.dream.city.player.domain.mapper.PlayerGradeMapper;
 import com.dream.city.player.domain.mapper.PlayerMapper;
 import com.dream.city.player.service.PlayerService;
 import org.apache.commons.lang.StringUtils;
@@ -25,6 +28,8 @@ public class PlayerServiceImpl implements PlayerService {
 
     @Autowired
     private PlayerMapper playerMapper;
+    @Autowired
+    private PlayerGradeMapper gradeMapper;
 
     @Value("${spring.application.name}")
     private String appName;
@@ -32,7 +37,7 @@ public class PlayerServiceImpl implements PlayerService {
 
     @Override
     public Result forgetPwd(String username, String newPwd) {
-        Player player = getPlayerByName(username,null);
+        PlayerResp player = getPlayerByName(username,null);
         if (player == null){
             return new Result(Boolean.FALSE, CityGlobal.Constant.USER_NOT_EXIT);
         }
@@ -148,8 +153,13 @@ public class PlayerServiceImpl implements PlayerService {
         List<Map> playersMap = new ArrayList<>();
         if (!CollectionUtils.isEmpty(players)){
             Map map = null;
+            PlayerGrade playerGrade = null;
             for (Player player:players){
                 map = JSON.parseObject(JSON.toJSONString(player),Map.class);
+
+                playerGrade = getPlayerGradeByPlayerId(player.getPlayerId());
+                map.put("commerce_lv",playerGrade.getGrade());
+                map.put("commerce_member",0); //商会成员数 todo
                 playersMap.add(map);
             }
         }
@@ -160,7 +170,7 @@ public class PlayerServiceImpl implements PlayerService {
     }
 
     @Override
-    public Player getPlayerByName(String playerName,String playerNick) {
+    public PlayerResp getPlayerByName(String playerName,String playerNick) {
         Player player = new Player();
         if (StringUtils.isNotBlank(playerName)) {
             player.setPlayerName(playerName);
@@ -172,13 +182,28 @@ public class PlayerServiceImpl implements PlayerService {
         if (StringUtils.isNotBlank(playerName) || StringUtils.isNotBlank(playerNick)) {
             playerByName = playerMapper.getPlayerById(player);
         }
-        return playerByName;
+        PlayerResp playerResp = new PlayerResp();
+        if (playerByName != null){
+            playerResp = JSON.toJavaObject(JSON.parseObject(JSON.toJSONString(playerByName)),PlayerResp.class);
+
+            PlayerGrade playerGrade = getPlayerGradeByPlayerId(player.getPlayerId());
+            playerResp.setGrade(playerGrade.getGrade());
+            playerResp.setCommerceMember(0); //商会成员数 todo
+        }
+        return playerResp;
     }
 
     @Override
     public Player getPlayerByInvite(String invite){
         Player player = playerMapper.getPlayerByInvite(invite);
         return player;
+    }
+
+    @Override
+    public PlayerGrade getPlayerGradeByPlayerId(String playerId) {
+        PlayerGrade record = new PlayerGrade();
+        record.setPlayerId(playerId);
+        return gradeMapper.getPlayerGradeByPlayerId(record);
     }
 
 

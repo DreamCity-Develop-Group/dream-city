@@ -7,6 +7,7 @@ import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.Player;
 import com.dream.city.base.model.entity.PlayerAccount;
 import com.dream.city.base.model.req.UserReq;
+import com.dream.city.base.model.resp.PlayerResp;
 import com.dream.city.base.utils.DataUtils;
 import com.dream.city.service.ConsumerAccountService;
 import com.dream.city.service.ConsumerCommonsService;
@@ -50,7 +51,7 @@ public class ConsumerAccountController {
 
         UserReq userReq = DataUtils.getUserReq(msg);
         String playerId = userReq.getPlayerId();
-        Player player = null;
+        PlayerResp player = null;
         if (StringUtils.isBlank(playerId)) {
             player = commonsService.getPlayerByNameOrNicke(msg);
             playerId = player.getPlayerId();
@@ -66,6 +67,9 @@ public class ConsumerAccountController {
         for (PlayerAccount account : accountList){
             map = JSON.parseObject(JSON.toJSONString(account),Map.class);
             map.put("username",userReq.getUsername());
+            map.put("invite",player.getPlayerInvite());
+            map.put("commerce_lv",player.getGrade());
+            map.put("commerce_member",player.getCommerceMember());
             resultList.add(map);
         }
 

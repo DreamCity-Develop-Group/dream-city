@@ -7,6 +7,7 @@ import com.dream.city.base.model.Page;
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.req.PageReq;
 import com.dream.city.base.model.req.UserReq;
+import com.dream.city.base.model.resp.PlayerResp;
 import com.dream.city.base.utils.InvitedCodeUtil;
 import com.dream.city.base.utils.RedisKeys;
 import com.dream.city.base.utils.RedisUtils;
@@ -69,13 +70,13 @@ public class PlayerController {
             tip=  "用户名或密码为空";
         }
         // 用户是否存在
-        Player playerExistByName = playerService.getPlayerByName(playerName,null);
+        PlayerResp playerExistByName = playerService.getPlayerByName(playerName,null);
         if (playerExistByName != null){
             tip = "["+ playerName +"]" + CityGlobal.Constant.REG_USER_EXIT + ",请直接登录！";
         }
 
         // 昵称已被使用
-        Player playerExistByNick = playerService.getPlayerByName(null,nick);
+        PlayerResp playerExistByNick = playerService.getPlayerByName(null,nick);
         if (playerExistByNick != null){
             tip = "["+ nick +"]" + CityGlobal.Constant.REG_USER_NICK_EXIST;
         }
@@ -107,7 +108,7 @@ public class PlayerController {
 
             if (ret){
                 tip = "注册成功";
-                Player playerInsert = playerService.getPlayerByName(playerName,nick);
+                PlayerResp playerInsert = playerService.getPlayerByName(playerName,nick);
 
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("playerId",playerInsert.getPlayerId());
@@ -116,7 +117,7 @@ public class PlayerController {
                 result.setCode(CityGlobal.ResultCode.success.getStatus());
                 result.setData(jsonObject);
                 // 登录成功保存redis
-                loginToRedis(playerSave);
+                loginToRedis(playerInsert);
             }
         }
 
@@ -151,7 +152,7 @@ public class PlayerController {
             result.setMsg(tip.toString());
         }else {
             // 用户是否存在
-            Player playerExists= playerService.getPlayerByName(username,null);
+            PlayerResp playerExists= playerService.getPlayerByName(username,null);
             if (playerExists == null){
                 result.setMsg(CityGlobal.Constant.USER_NOT_EXIT);
                 tip.append(CityGlobal.Constant.USER_NOT_EXIT);
@@ -191,7 +192,7 @@ public class PlayerController {
      * 登录成功保存redis
      * @param player
      */
-    private void loginToRedis(Player player){
+    private void loginToRedis(PlayerResp player){
         logger.info("登录成功保存redis，{}",player);
         String key = RedisKeys.CURRENT_USER + player.getPlayerName();
         if (redisUtils.hasKey(key)){
@@ -228,7 +229,7 @@ public class PlayerController {
             result.setMsg(tip.toString());
         }else {
             // 用户是否存在
-            Player playerExists = playerService.getPlayerByName(username,null);
+            PlayerResp playerExists = playerService.getPlayerByName(username,null);
             if (playerExists == null){
                 result.setMsg(CityGlobal.Constant.USER_NOT_EXIT);
                 tip.append(CityGlobal.Constant.USER_NOT_EXIT);
@@ -384,7 +385,7 @@ public class PlayerController {
         JSONObject jsonObject = JSON.parseObject(jsonReq);
         String playerName = jsonObject.getString("playerName");
         String playerNick = jsonObject.getString("playerNick");
-        Player player = playerService.getPlayerByName(playerName,playerNick);
+        PlayerResp player = playerService.getPlayerByName(playerName,playerNick);
         Result result = null;
         if (player != null){
             result = new Result(CityGlobal.ResultCode.success.getStatus(),JSONObject.toJSONString(player));

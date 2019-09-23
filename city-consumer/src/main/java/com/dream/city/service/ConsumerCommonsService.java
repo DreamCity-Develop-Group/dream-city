@@ -1,12 +1,12 @@
 package com.dream.city.service;
 
 import com.dream.city.base.model.Message;
-import com.dream.city.base.model.entity.Player;
+import com.dream.city.base.model.resp.PlayerResp;
 
 /**
  * Consumer的公共接口
  */
 public interface ConsumerCommonsService {
 
-    Player getPlayerByNameOrNicke(Message msg);
+    PlayerResp getPlayerByNameOrNicke(Message msg);
 }

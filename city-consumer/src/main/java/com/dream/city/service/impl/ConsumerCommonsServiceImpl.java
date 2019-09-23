@@ -1,11 +1,11 @@
 package com.dream.city.service.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.dream.city.base.model.Message;
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.Player;
 import com.dream.city.base.model.req.PlayerAccountReq;
+import com.dream.city.base.model.resp.PlayerResp;
 import com.dream.city.base.utils.DataUtils;
 import com.dream.city.service.ConsumerCommonsService;
 import com.dream.city.service.ConsumerPlayerService;
@@ -26,7 +26,7 @@ public class ConsumerCommonsServiceImpl implements ConsumerCommonsService {
     private ConsumerPlayerService playerService;
 
     @Override
-    public Player getPlayerByNameOrNicke(Message msg) {
+    public PlayerResp getPlayerByNameOrNicke(Message msg) {
         PlayerAccountReq accountReq = DataUtils.getPlayerAccountReqFromMessage(msg);
         String playerName = accountReq.getUsername();
         String playerNick = accountReq.getNick();
@@ -36,7 +36,7 @@ public class ConsumerCommonsServiceImpl implements ConsumerCommonsService {
 
         Result<String> result = playerService.getPlayerByName(JSON.toJSONString(map));
         if (result.getSuccess()){
-            Player player = JSON.toJavaObject(JSON.parseObject(result.getData()),Player.class);
+            PlayerResp player = JSON.toJavaObject(JSON.parseObject(result.getData()),PlayerResp.class);
             return player;
         }
         return null;

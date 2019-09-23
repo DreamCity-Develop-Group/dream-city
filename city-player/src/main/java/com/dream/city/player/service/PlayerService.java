@@ -2,8 +2,10 @@ package com.dream.city.player.service;
 
 import com.dream.city.base.model.Page;
 import com.dream.city.base.model.Result;
+import com.dream.city.base.model.entity.PlayerGrade;
 import com.dream.city.base.model.req.PageReq;
 import com.dream.city.base.model.entity.Player;
+import com.dream.city.base.model.resp.PlayerResp;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -49,7 +51,17 @@ public interface PlayerService {
      */
     Page getPlayers(PageReq pageReq);
 
-    Player getPlayerByName(String username,String playerNick);
+    PlayerResp getPlayerByName(String username, String playerNick);
 
     Player getPlayerByInvite(String invite);
+
+    /**
+     * 获取玩家等级
+     * @param playerId
+     * @return
+     */
+    PlayerGrade getPlayerGradeByPlayerId(String playerId);
+
+
+
 }

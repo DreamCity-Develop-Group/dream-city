@@ -1,4 +1,4 @@
-package com.dream.city.base.model.entity;
+package com.dream.city.base.model.resp;
 
 import lombok.Data;
 
@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Data
-public class Player implements Serializable {
+public class PlayerResp implements Serializable {
 
     private Long id;
 
@@ -25,6 +25,15 @@ public class Player implements Serializable {
     private Integer playerLevel;
 
     private String isValid;
+
+    //玩家等级
+    private String grade;
+
+    //玩家积分
+    private int integral;
+
+    //商会成员数
+    private int commerceMember;
 
     private Date createTime;
 
@@ -108,5 +117,37 @@ public class Player implements Serializable {
 
     public void setIsValid(String isValid) {
         this.isValid = isValid;
+    }
+
+    public Integer getPlayerLevel() {
+        return playerLevel;
+    }
+
+    public void setPlayerLevel(Integer playerLevel) {
+        this.playerLevel = playerLevel;
+    }
+
+    public String getGrade() {
+        return grade;
+    }
+
+    public void setGrade(String grade) {
+        this.grade = grade;
+    }
+
+    public int getIntegral() {
+        return integral;
+    }
+
+    public void setIntegral(int integral) {
+        this.integral = integral;
+    }
+
+    public int getCommerceMember() {
+        return commerceMember;
+    }
+
+    public void setCommerceMember(int commerceMember) {
+        this.commerceMember = commerceMember;
     }
 }

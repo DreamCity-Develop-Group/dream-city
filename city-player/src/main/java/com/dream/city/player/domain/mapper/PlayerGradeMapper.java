@@ -6,15 +6,15 @@ import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface PlayerGradeMapper {
-    int deleteByPrimaryKey(Long id);
 
-    int insert(PlayerGrade record);
+    int deleteByPrimaryKey(Long id);
 
     int insertSelective(PlayerGrade record);
 
     PlayerGrade selectByPrimaryKey(Long id);
 
-    int updateByPrimaryKeySelective(PlayerGrade record);
+    PlayerGrade getPlayerGradeByPlayerId(PlayerGrade record);
 
-    int updateByPrimaryKey(PlayerGrade record);
+    int updateByPlayerId(PlayerGrade record);
+
 }
