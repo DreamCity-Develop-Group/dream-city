@@ -30,40 +30,6 @@ public class ConsumerEarningController {
 
 
     /**
-     * 删除提现规则
-     * @param msg
-     * @return
-     */
-    @RequestMapping("/deleteEarningById")
-    public Message deleteEarningById(@RequestBody Message msg){
-        PlayerEarning earning = DataUtils.getEarningFromJsonReq(msg);
-        Result result = earningService.deleteEarningById(earning.getEarnId());
-
-        Map<String,Object> t = new HashMap<>();
-        t.put("desc",result.getSuccess());
-        msg.getData().setT(t);
-        msg.setDesc(result.getMsg());
-        return msg;
-    }
-
-
-    /**
-     * 新增提现规则
-     * @param msg
-     * @return
-     */
-    @RequestMapping("/insertEarning")
-    public Message insertEarning(@RequestBody Message msg){
-        PlayerEarning earning = DataUtils.getEarningFromJsonReq(msg);
-        Result result = earningService.insertEarning(earning);
-        Map<String,Object> t = new HashMap<>();
-        t.put("desc",result.getSuccess());
-        msg.getData().setT(t);
-        msg.setDesc(result.getMsg());
-        return msg;
-    }
-
-    /**
      * 查询提现规则
      * @param msg
      * @return
@@ -90,6 +56,41 @@ public class ConsumerEarningController {
         msg.setDesc(result.getMsg());
         return msg;
     }
+
+
+    /**
+     * 删除提现规则
+     * @param msg
+     * @return
+     */
+    /*@RequestMapping("/deleteEarningById")
+    public Message deleteEarningById(@RequestBody Message msg){
+        PlayerEarning earning = DataUtils.getEarningFromJsonReq(msg);
+        Result result = earningService.deleteEarningById(earning.getEarnId());
+
+        Map<String,Object> t = new HashMap<>();
+        t.put("desc",result.getSuccess());
+        msg.getData().setT(t);
+        msg.setDesc(result.getMsg());
+        return msg;
+    }*/
+
+
+    /**
+     * 新增提现规则
+     * @param msg
+     * @return
+     */
+    /*@RequestMapping("/insertEarning")
+    public Message insertEarning(@RequestBody Message msg){
+        PlayerEarning earning = DataUtils.getEarningFromJsonReq(msg);
+        Result result = earningService.insertEarning(earning);
+        Map<String,Object> t = new HashMap<>();
+        t.put("desc",result.getSuccess());
+        msg.getData().setT(t);
+        msg.setDesc(result.getMsg());
+        return msg;
+    }*/
 
     /**
      * 更新提现规则

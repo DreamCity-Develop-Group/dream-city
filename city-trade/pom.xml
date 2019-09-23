@@ -9,9 +9,9 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.dream.city</groupId>
-    <artifactId>city-invest</artifactId>
+    <artifactId>city-trade</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>city-invest</name>
+    <name>city-trade</name>
     <description>玩家投资交易</description>
 
     <properties>

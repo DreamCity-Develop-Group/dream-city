@@ -10,6 +10,7 @@ import com.dream.city.base.model.MessageData;
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.req.PageReq;
 import com.dream.city.base.model.req.UserReq;
+import com.dream.city.base.utils.DataUtils;
 import com.dream.city.base.utils.JsonUtil;
 import com.dream.city.base.utils.RedisKeys;
 import com.dream.city.base.utils.RedisUtils;
@@ -58,7 +59,7 @@ public class ConsumerPlayerController {
     @RequestMapping("/searchfriend")
     public Message searchfriend(@RequestBody Message msg) {
         logger.info("广场玩家列表 换一批", JSONObject.toJSONString(msg));
-        UserReq jsonReq = getUserReq(msg);
+        UserReq jsonReq = DataUtils.getUserReq(msg);
         PageReq<String> pageReq = new PageReq<>();
 
         int pageNo = 1;
@@ -132,7 +133,7 @@ public class ConsumerPlayerController {
     @RequestMapping("/squarefriend")
     public Message squareFriend(@RequestBody Message msg) {
         logger.info("广场玩家列表", JSONObject.toJSONString(msg));
-        UserReq jsonReq = getUserReq(msg);
+        UserReq jsonReq = DataUtils.getUserReq(msg);
         String condition = jsonReq.getNick();
         PageReq<String> pageReq = new PageReq<>((Map) msg.getData().getT());
         pageReq.setCondition(condition);
@@ -157,7 +158,7 @@ public class ConsumerPlayerController {
     @RequestMapping("/pwforget")
     public Message pwforget(@RequestBody Message msg) {
         logger.info("忘记密码", JSONObject.toJSONString(msg));
-        UserReq jsonReq = getUserReq(msg);
+        UserReq jsonReq = DataUtils.getUserReq(msg);
         Result result = consumerPlayerService.forgetPwd(jsonReq.getUsername(), jsonReq.getOldpw());
 
         Map<String, String> t = new HashMap<>();
@@ -177,7 +178,7 @@ public class ConsumerPlayerController {
     @RequestMapping("/expw")
     public Message resetLoginPwd(@RequestBody Message msg) {
         logger.info("修改密码", JSONObject.toJSONString(msg));
-        UserReq jsonReq = getUserReq(msg);
+        UserReq jsonReq = DataUtils.getUserReq(msg);
         Result result = consumerPlayerService.resetLoginPwd(jsonReq.getPlayerId(), jsonReq.getOldpw(), jsonReq.getNewpw());
 
         logger.info("##################### 修改密码 : {}", msg);
@@ -199,7 +200,7 @@ public class ConsumerPlayerController {
     @RequestMapping("/expwshop")
     public Message expwshop(@RequestBody Message msg) {
         logger.info("修改交易密码", JSONObject.toJSONString(msg));
-        UserReq jsonReq = getUserReq(msg);
+        UserReq jsonReq = DataUtils.getUserReq(msg);
         Result result = consumerPlayerService.resetTraderPwd(jsonReq.getPlayerId(), jsonReq.getOldpw(), jsonReq.getNewpw());
         logger.info("##################### 修改交易密码 : {}", msg);
         Map<String, String> t = new HashMap<>();
@@ -221,7 +222,7 @@ public class ConsumerPlayerController {
     @RequestMapping("/reg")
     public Message reg(@RequestBody Message message) {
         logger.info("用户注册", JSONObject.toJSONString(message));
-        UserReq userReq = getUserReq(message);
+        UserReq userReq = DataUtils.getUserReq(message);
         String jsonReq = JSON.toJSONString(userReq);
         Message msg = new Message();
         msg.setSource(message.getSource());
@@ -332,7 +333,7 @@ public class ConsumerPlayerController {
     @RequestMapping("/pwlogoin")
     public Message pwLogoin(@RequestBody Message msg) {
         logger.info("密码登录", JSONObject.toJSONString(msg));
-        UserReq userReq = getUserReq(msg);
+        UserReq userReq = DataUtils.getUserReq(msg);
         String jsonReq = JSON.toJSONString(userReq);
 
         Result result = consumerPlayerService.pwLogoin(jsonReq);
@@ -389,7 +390,7 @@ public class ConsumerPlayerController {
         MessageData data = new MessageData("idlog", "consumer");
         Map<String, String> t = new HashMap<>();
 
-        UserReq userReq = getUserReq(msg);
+        UserReq userReq = DataUtils.getUserReq(msg);
         // 校验认证码
         String descMsg = checkCode(userReq.getCode(), msg.getSource());
         String descT = CityGlobal.Constant.LOGIN_FAIL;
@@ -424,7 +425,7 @@ public class ConsumerPlayerController {
     @RequestMapping("/exit")
     public Message exit(@RequestBody Message msg) {
         logger.info("登出", JSONObject.toJSONString(msg));
-        UserReq jsonReq = getUserReq(msg);
+        UserReq jsonReq = DataUtils.getUserReq(msg);
         Result result = consumerPlayerService.quit(jsonReq.getPlayerId());
         logger.info("##################### 用户登出 :{}", msg);
 
@@ -445,21 +446,6 @@ public class ConsumerPlayerController {
     }
 
 
-    private UserReq getUserReq(Message message) {
-        Map map = (Map) message.getData().getT();
-        UserReq userReq = new UserReq();
-        if (map != null) {
-            userReq.setInvite(map.containsKey("invited") ? (String) map.get("invited") : null);
-            userReq.setNick(map.containsKey("nick") ? (String) map.get("nick") : null);
-            userReq.setPlayerId(map.containsKey("playerId") ? (String) map.get("playerId") : null);
-            userReq.setPwshop(map.containsKey("pwshop") ? (String) map.get("pwshop") : null);
-            userReq.setUsername(map.containsKey("username") ? (String) map.get("username") : null);
-            userReq.setUserpass(map.containsKey("userpass") ? (String) map.get("userpass") : null);
-            userReq.setCode(map.containsKey("code") ? (String) map.get("code") : null);
-            userReq.setOldpw(map.containsKey("oldpw") ? (String) map.get("oldpw") : null);
-            userReq.setNewpw(map.containsKey("newpw") ? (String) map.get("newpw") : null);
-        }
-        return userReq;
-    }
+
 
 }
