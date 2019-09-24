@@ -12,11 +12,21 @@ public interface ConsumerLikesService {
 
     /**
      * 当天是否可以点赞
+     * 好友
      * @param jsonReq
      * @return
      */
     @RequestMapping("/likes/canPlayerCanLikesToday")
     Result<Integer> canPlayerCanLikesToday(@RequestBody String jsonReq);
+
+    /**
+     * 当天是否可以点赞
+     * 投资
+     * @param jsonReq
+     * @return
+     */
+    @RequestMapping("/likes/canInvestLikesToday")
+    Result<Integer> canInvestLikesToday(@RequestBody String jsonReq);
 
     /**
      * 点赞

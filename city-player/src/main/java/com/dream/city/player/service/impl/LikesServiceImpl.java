@@ -67,6 +67,15 @@ public class LikesServiceImpl implements LikesService {
     @Override
     public int playerLikesCountToday(PlayerLikesReq record) {
         PlayerLikesLog likesLog = new PlayerLikesLog();
+        likesLog.setLikeLikedId(record.getLikedPlayerId());
+        likesLog.setLikePlayerId(record.getLikePlayerId());
+        return likesLogMapper.playerLikesCountToday(likesLog);
+    }
+
+    @Override
+    public int investLikesCountToday(PlayerLikesReq record) {
+        PlayerLikesLog likesLog = new PlayerLikesLog();
+        likesLog.setLikeLikedId(record.getLikedPlayerId());
         likesLog.setLikeInvestId(record.getLikedInvestId());
         likesLog.setLikePlayerId(record.getLikePlayerId());
         return likesLogMapper.playerLikesCountToday(likesLog);

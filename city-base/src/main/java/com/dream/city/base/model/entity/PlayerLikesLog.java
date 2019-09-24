@@ -7,10 +7,19 @@ public class PlayerLikesLog implements Serializable {
 
     private Integer likeId;
 
+    /**
+     * 点赞玩家ID
+     */
     private String likePlayerId;
 
+    /**
+     * 收获点赞玩家ID
+     */
     private String likeLikedId;
 
+    /**
+     * 点赞投资ID
+     */
     private Integer likeInvestId;
 
     private Date createTime;

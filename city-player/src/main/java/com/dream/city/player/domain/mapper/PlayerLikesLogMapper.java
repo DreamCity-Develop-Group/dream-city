@@ -20,8 +20,17 @@ public interface PlayerLikesLogMapper {
 
     /**
      * 当天点赞次数
-     * @param record 点赞人di，点赞物业id
+     * 好友
+     * @param record
      * @return
      */
     int playerLikesCountToday(PlayerLikesLog record);
+
+    /**
+     * 当天点赞次数
+     * 投资
+     * @param record
+     * @return
+     */
+    int investLikesCountToday(PlayerLikesLog record);
 }

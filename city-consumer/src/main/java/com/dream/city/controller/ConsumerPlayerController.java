@@ -13,6 +13,8 @@ import com.dream.city.base.utils.JsonUtil;
 import com.dream.city.base.utils.RedisKeys;
 import com.dream.city.base.utils.RedisUtils;
 import com.dream.city.service.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +31,7 @@ import java.util.Map;
  *
  * @author Wvv
  */
+@Api(value = "玩家", description = "玩家")
 @RestController
 @RequestMapping("/consumer")
 public class ConsumerPlayerController {
@@ -55,7 +58,7 @@ public class ConsumerPlayerController {
     @Autowired
     ConsumerFriendsService friendsService;
 
-
+    @ApiOperation(value = "换一批广场玩家列表", notes = "换一批广场玩家列表", response = Message.class)
     @RequestMapping("/searchfriend")
     public Message searchfriend(@RequestBody Message msg) {
         logger.info("广场玩家列表 换一批", JSONObject.toJSONString(msg));
@@ -89,6 +92,7 @@ public class ConsumerPlayerController {
      * @param msg
      * @return
      */
+    @ApiOperation(value = "获取认证码", notes = "获取认证码", response = Message.class)
     @RequestMapping("/getCode")
     public Message getCode(@RequestBody Message msg) {
         logger.info("获取认证码", JSONObject.toJSONString(msg));
@@ -108,6 +112,7 @@ public class ConsumerPlayerController {
      * @param msg
      * @return
      */
+    @ApiOperation(value = "获取当前用户", notes = "获取当前用户", response = Message.class)
     @RequestMapping("/get/user")
     public Message getUser(@RequestBody Message msg) {
         logger.info("获取用户", JSONObject.toJSONString(msg));
@@ -130,6 +135,7 @@ public class ConsumerPlayerController {
      * @param msg
      * @return
      */
+    @ApiOperation(value = "广场玩家列表", notes = "广场玩家列表", response = Message.class)
     @RequestMapping("/squarefriend")
     public Message squareFriend(@RequestBody Message msg) {
         logger.info("广场玩家列表", JSONObject.toJSONString(msg));
@@ -155,6 +161,7 @@ public class ConsumerPlayerController {
      * @param msg
      * @return
      */
+    @ApiOperation(value = "忘记密码", notes = "忘记密码", response = Message.class)
     @RequestMapping("/pwforget")
     public Message pwforget(@RequestBody Message msg) {
         logger.info("忘记密码", JSONObject.toJSONString(msg));
@@ -175,6 +182,7 @@ public class ConsumerPlayerController {
      * @param msg
      * @return
      */
+    @ApiOperation(value = "修改密码", notes = "修改密码", response = Message.class)
     @RequestMapping("/expw")
     public Message resetLoginPwd(@RequestBody Message msg) {
         logger.info("修改密码", JSONObject.toJSONString(msg));
@@ -197,6 +205,7 @@ public class ConsumerPlayerController {
      * @param msg
      * @return
      */
+    @ApiOperation(value = "修改交易密码", notes = "修改交易密码", response = Message.class)
     @RequestMapping("/expwshop")
     public Message expwshop(@RequestBody Message msg) {
         logger.info("修改交易密码", JSONObject.toJSONString(msg));
@@ -219,6 +228,7 @@ public class ConsumerPlayerController {
      * @param message
      * @return
      */
+    @ApiOperation(value = "用户注册", notes = "用户注册", response = Message.class)
     @RequestMapping("/reg")
     public Message reg(@RequestBody Message message) {
         logger.info("用户注册", JSONObject.toJSONString(message));
@@ -336,6 +346,7 @@ public class ConsumerPlayerController {
      * @param msg
      * @return
      */
+    @ApiOperation(value = "密码登录", notes = "密码登录", response = Message.class)
     @RequestMapping("/pwlogoin")
     public Message pwLogoin(@RequestBody Message msg) {
         logger.info("密码登录", JSONObject.toJSONString(msg));
@@ -387,6 +398,7 @@ public class ConsumerPlayerController {
      * @param msg
      * @return
      */
+    @ApiOperation(value = "验证码登录", notes = "验证码登录", response = Message.class)
     @RequestMapping("/codelogoin")
     public Message codeLogoin(@RequestBody Message msg) {
         logger.info("验证码登录", JSONObject.toJSONString(msg));
@@ -428,6 +440,7 @@ public class ConsumerPlayerController {
      * @param msg
      * @return
      */
+    @ApiOperation(value = "登出", notes = "登出", response = Message.class)
     @RequestMapping("/exit")
     public Message exit(@RequestBody Message msg) {
         logger.info("登出", JSONObject.toJSONString(msg));
