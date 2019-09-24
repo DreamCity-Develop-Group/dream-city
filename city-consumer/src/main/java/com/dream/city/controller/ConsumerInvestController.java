@@ -49,7 +49,7 @@ public class ConsumerInvestController {
     @RequestMapping("/getInvest")
     public Message getInvest(@RequestBody Message msg){
         logger.info("查询订单", JSONObject.toJSONString(msg));
-        return orderHandleService.getplayerInvestOrderById(msg);
+        return orderHandleService.getPlayerInvestOrderById(msg);
     }
 
     /**
@@ -60,7 +60,7 @@ public class ConsumerInvestController {
     @RequestMapping("/getInvestList")
     public Message getInvestList(@RequestBody Message msg){
         logger.info("查询投资列表", JSONObject.toJSONString(msg));
-        return orderHandleService.getplayerInvestOrders(msg);
+        return orderHandleService.getPlayerInvestOrders(msg);
     }
 
 
