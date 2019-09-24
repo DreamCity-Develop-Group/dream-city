@@ -135,6 +135,8 @@ public class DataUtils {
         result.setNick(nick);
         result.setAccMt(accMt);
         result.setAccUsdt(accUsdt);
+        result.setAccAddr(accAddr);
+        result.setTradeType(tradeType);
         return result;
     }
 

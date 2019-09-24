@@ -15,8 +15,8 @@ public class PlayerAccountReq implements Serializable {
     /** 账户玩家 */
     private String accPlayerId;
     private String username;
-    private String nick;
 
+    private String nick;
     /** 好友id */
     private String friendId;
 

@@ -12,6 +12,8 @@ public class PlayerResp implements Serializable {
 
     private String playerId;
 
+    private String friendId;
+
     private String playerName;
 
     private String playerNick;
@@ -149,5 +151,13 @@ public class PlayerResp implements Serializable {
 
     public void setCommerceMember(int commerceMember) {
         this.commerceMember = commerceMember;
+    }
+
+    public String getFriendId() {
+        return friendId;
+    }
+
+    public void setFriendId(String friendId) {
+        this.friendId = friendId;
     }
 }

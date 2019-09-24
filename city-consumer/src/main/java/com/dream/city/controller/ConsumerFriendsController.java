@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.dream.city.base.model.*;
 import com.dream.city.base.model.req.PageReq;
 import com.dream.city.service.ConsumerFriendsService;
+import com.dream.city.service.ConsumerOrderHandleService;
 import com.dream.city.service.ConsumerPlayerService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -30,6 +31,21 @@ public class ConsumerFriendsController {
     ConsumerFriendsService consumerFriendsService;
     @Autowired
     ConsumerPlayerService consumerPlayerService;
+    @Autowired
+    ConsumerOrderHandleService orderHandleService;
+
+    /**
+     * 好友主页
+     * @param msg
+     * @return
+     */
+    @ApiOperation(value = "好友主页", notes = "好友主页", response = Message.class)
+    @RequestMapping("/friendHomePage")
+    public Message friendHomePage(@RequestBody Message msg){
+        logger.info("好友主页", JSONObject.toJSONString(msg));
+        return orderHandleService.getplayerInvestOrders(msg);
+    }
+
 
 
     @ApiOperation(value = "添加好友", notes = "添加好友", response = Message.class)

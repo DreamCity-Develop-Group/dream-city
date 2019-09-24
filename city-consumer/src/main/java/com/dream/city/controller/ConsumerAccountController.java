@@ -51,10 +51,14 @@ public class ConsumerAccountController {
 
         UserReq userReq = DataUtils.getUserReq(msg);
         String playerId = userReq.getPlayerId();
+        if (StringUtils.isBlank(playerId) && StringUtils.isBlank(userReq.getUsername())){
+            msg.setDesc("用户名或用户id不能为空");
+            return msg;
+        }
+
         PlayerResp player = null;
         if (StringUtils.isBlank(playerId)) {
-            player = commonsService.getPlayerByNameOrNicke(msg);
-            playerId = player.getPlayerId();
+            player = commonsService.getPlayerByUserName(msg);
         }
 
         PlayerAccount record = new PlayerAccount();
@@ -75,6 +79,7 @@ public class ConsumerAccountController {
         MessageData resultData = new MessageData(msg.getData().getType(),msg.getData().getModel());
         resultData.setData(resultList);
         msg.setData(resultData);
+        msg.setDesc(playerAccountResult.getMsg());
         return msg;
     }
 

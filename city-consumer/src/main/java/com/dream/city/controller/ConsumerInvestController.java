@@ -53,15 +53,17 @@ public class ConsumerInvestController {
     }
 
     /**
-     * 订单列表
+     * 投资列表
      * @param msg
      * @return
      */
     @RequestMapping("/getInvestList")
     public Message getInvestList(@RequestBody Message msg){
-        logger.info("查询订单列表", JSONObject.toJSONString(msg));
+        logger.info("查询投资列表", JSONObject.toJSONString(msg));
         return orderHandleService.getplayerInvestOrders(msg);
     }
+
+
 
 
 
