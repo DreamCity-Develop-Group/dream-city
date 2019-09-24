@@ -149,7 +149,7 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
     public Message getplayerInvestOrderById(Message msg) {
         logger.info("查询订单:{}",msg);
         MessageData messageData = new MessageData(msg.getData().getType(),msg.getData().getModel());
-        PlayerResp player = commonsService.getPlayerByNameOrNicke(msg);
+        PlayerResp player = commonsService.getPlayerByUserName(msg);
         if (player == null){
             messageData.setData(null);
             msg.setData(messageData);
@@ -170,7 +170,7 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
     public Message getplayerInvestOrders(Message msg) {
         logger.info("查询订单列表:{}",msg);
         InvestOrderReq orderReq = DataUtils.getInvestOrderReqFromMessage(msg);
-        PlayerResp player = commonsService.getPlayerByNameOrNicke(msg);
+        PlayerResp player = commonsService.getPlayerByUserName(msg);
 
         InvestOrder record = new InvestOrder();
         record.setOrderId(orderReq.getOrderId());
