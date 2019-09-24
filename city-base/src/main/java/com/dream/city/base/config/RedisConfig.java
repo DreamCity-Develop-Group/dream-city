@@ -1,5 +1,6 @@
 package com.dream.city.base.config;
 
+import com.dream.city.base.utils.RedisUtils;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -232,11 +233,9 @@ public class RedisConfig extends CachingConfigurerSupport {
         return new Jedis(host,port);
     }
 
-/*
     @Bean
     public RedisUtils redisUtils(){
         return new RedisUtils();
     }
-*/
 
 }

@@ -219,7 +219,7 @@ public class WebSocketServer {
             //TODO 第二步: 将异步处理消息逻辑
             httpClientService.post(msg);
 
-            //TODO 第三步: 由任务高度完成对客户端消息的推送
+            //TODO 第三步: 由任务调度完成对客户端消息的推送
 
         }catch (IOException e){
             e.printStackTrace();

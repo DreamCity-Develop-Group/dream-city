@@ -70,7 +70,7 @@ public class HttpClientServiceImpl implements HttpClientService {
         String serviceModel = message.getTarget();
         String serviceOpt = message.getData().getType();
 
-        String url = gateWayUrl + gateWayPath + "/" + serviceModel + "/" + serviceOpt;
+        String url = gateWayUrl + "/" +gateWayPath + "/" + serviceModel + "/" + serviceOpt;
         // 创建Post请求
         HttpPost httpPost = new HttpPost(url);
 
@@ -135,7 +135,7 @@ public class HttpClientServiceImpl implements HttpClientService {
         String gateWayUrl = gateWayConfig.getUrl();
         MessageData data = msg.getData();
         //网关路由
-        String gateRoutePath = "consumer";
+        //String gateRoutePath = "";
         //模块地址
         String serviceModel = data.getModel();
         //请求模块操作行为
@@ -159,7 +159,7 @@ public class HttpClientServiceImpl implements HttpClientService {
             }
 
             //请求地址url
-            String url = gateWayUrl + "/" + gateRoutePath + "/" + serviceModel + "/" + serviceOpt;
+            String url = gateWayUrl + "/" +  serviceModel + "/" + serviceOpt;
 
             httpPost = new HttpPost(url);
             if ("login".equals(serviceOpt) || "reg".equals(serviceOpt) || "getCode".equals(serviceOpt)) {
