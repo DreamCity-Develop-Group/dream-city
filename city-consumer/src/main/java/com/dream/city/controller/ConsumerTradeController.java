@@ -30,7 +30,7 @@ import java.util.Map;
  *  玩家交易
  *  充值、提现、转账
  */
-@Api(value = "API-Consumer Main Default Page",description = "玩家充值、提现、转账")
+@Api(value = "玩家充值、提现、转账",description = "玩家充值、提现、转账")
 @RestController
 @RequestMapping("/consumer")
 public class ConsumerTradeController {
@@ -140,7 +140,7 @@ public class ConsumerTradeController {
      * 玩家充值
      * @return
      */
-    @RequestMapping("/playerRecharge")
+    @RequestMapping("/recharge")
     @ApiOperation(value = "玩家充值",notes = "t参数:playerId,username,nick,accUsdt,accMt", response = Message.class)
     public Message playerRecharge(@RequestBody Message msg){
         logger.info("玩家充值", JSONObject.toJSONString(msg));
@@ -195,7 +195,7 @@ public class ConsumerTradeController {
      * @return
      */
     @ApiOperation(value = "玩家转账",notes = "t参数:playerId,username,nick,accUsdt,accMt", response = Message.class)
-    @RequestMapping("/playerTransfer")
+    @RequestMapping("/transfer")
     public Message playerTransfer(@RequestBody Message msg){
         logger.info("玩家转账", JSONObject.toJSONString(msg));
 

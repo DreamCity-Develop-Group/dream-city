@@ -6,7 +6,6 @@ import com.dream.city.invest.service.AccountService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -39,7 +38,6 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    @Transactional
     public int updatePlayerAccount(PlayerAccount record) {
         Integer integer = accountMapper.updateByPlayerId(record);
         return integer ==null?0:integer;

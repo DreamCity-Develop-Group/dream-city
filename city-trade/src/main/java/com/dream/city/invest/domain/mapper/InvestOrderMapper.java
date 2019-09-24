@@ -11,7 +11,7 @@ public interface InvestOrderMapper {
 
     Integer deleteByPrimaryKey(Integer orderId);
 
-    Integer insertSelective(InvestOrder record);
+    InvestOrder insertSelective(InvestOrder record);
 
     InvestOrder selectByPrimaryKey(InvestOrder record);
 

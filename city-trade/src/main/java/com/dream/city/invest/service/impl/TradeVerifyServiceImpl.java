@@ -27,7 +27,7 @@ public class TradeVerifyServiceImpl implements TradeVerifyService {
     }
 
     @Override
-    public TradeVerify getTradeVerify(Integer verifyId) {
+    public TradeVerify getTradeVerifyBiId(Integer verifyId) {
         return verifyMapper.getTradeVerifyBiId(verifyId);
     }
 

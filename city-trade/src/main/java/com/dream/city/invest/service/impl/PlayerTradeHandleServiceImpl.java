@@ -296,7 +296,7 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
      * 新增交易记录
      * @param record
      */
-    private Result<PlayerTrade> createPlayerTrade(PlayerAccountReq record,BigDecimal tradeAmount,String desc) throws Exception{
+    public Result<PlayerTrade> createPlayerTrade(PlayerAccountReq record,BigDecimal tradeAmount,String desc) throws Exception{
         PlayerTrade tradeReq = new PlayerTrade();
         tradeReq.setTradeType(record.getAmountDynType());
         tradeReq.setTradeAmountType(record.getTradeType());

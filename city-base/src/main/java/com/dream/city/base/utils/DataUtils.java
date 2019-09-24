@@ -94,6 +94,7 @@ public class DataUtils {
         Integer orderId = map.containsKey("orderId")?Integer.parseInt(String.valueOf(map.get("orderId"))):null;
         Integer investId = map.containsKey("investId")?Integer.parseInt(String.valueOf(map.get("investId"))):null;
         BigDecimal orderAmount = map.containsKey("orderAmount")?BigDecimal.valueOf(Double.valueOf(String.valueOf(map.get("orderAmount")))):BigDecimal.ZERO;
+        String amountType = map.containsKey("amountType")?String.valueOf(map.get("amountType")):null;
         String inName = map.containsKey("inName")?String.valueOf(map.get("inName")):null;
         String payerId = map.containsKey("payerId")?String.valueOf(map.get("payerId")):null;
         Integer orderState = map.containsKey("orderState")?Integer.parseInt(String.valueOf(map.get("orderState"))):0;
@@ -104,6 +105,7 @@ public class DataUtils {
         result.setInvestId(investId);
         result.setOrderId(orderId);
         result.setOrderAmount(orderAmount);
+        result.setAmountType(amountType);
         result.setPayerId(payerId);
         result.setOrderRepeat(orderRepeat);
         result.setOrderState(orderState);

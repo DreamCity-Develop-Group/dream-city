@@ -17,7 +17,7 @@ public class InvestOrder implements Serializable {
     private String orderAmount;
 
     /** 状态 */
-    private int orderState;
+    private String orderState;
 
     /** 是否复投 */
     private int orderRepeat;
@@ -52,11 +52,11 @@ public class InvestOrder implements Serializable {
         this.orderPayerId = orderPayerId == null ? null : orderPayerId.trim();
     }
 
-    public int getOrderState() {
+    public String getOrderState() {
         return orderState;
     }
 
-    public void setOrderState(int orderState) {
+    public void setOrderState(String orderState) {
         this.orderState = orderState;
     }
 

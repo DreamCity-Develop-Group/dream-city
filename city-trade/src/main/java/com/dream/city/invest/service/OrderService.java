@@ -16,7 +16,7 @@ public interface OrderService {
      * @param record
      * @return
      */
-    int insertInvestOrder(InvestOrder record);
+    InvestOrder insertInvestOrder(InvestOrder record);
 
     /**
      * 投资订单作废

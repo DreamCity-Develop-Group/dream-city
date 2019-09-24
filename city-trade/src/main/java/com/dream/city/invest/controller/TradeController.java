@@ -31,6 +31,28 @@ public class TradeController {
 
 
     /**
+     * 新增投资记录
+     * @param record
+     * @return
+     */
+    @RequestMapping("/insertPlayerTrade")
+    public Result<PlayerTrade> insertPlayerTrade(@RequestBody PlayerTrade record){
+        logger.info("新增投资记录，{}", record);
+        boolean success = Boolean.FALSE;
+        String desc = "新增投资记录失败";
+        PlayerTrade resultDate = null;
+        try {
+            resultDate = tradeService.insertPlayerTrade(record);
+            desc = "新增投资记录成功";
+            success = Boolean.TRUE;
+        }catch (Exception e){
+            desc = "新增投资记录异常";
+            logger.error(desc,e);
+        }
+        return new Result<PlayerTrade>(success,desc,resultDate);
+    }
+
+    /**
      * 根据tradeId获取投资记录
      * @param tradeId
      * @return

@@ -1,6 +1,7 @@
 package com.dream.city.base.model.entity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 public class CityInvest implements Serializable {
@@ -11,13 +12,13 @@ public class CityInvest implements Serializable {
     private String inName;
 
     /** 限额 */
-    private Float inLimit;
+    private BigDecimal inLimit;
 
     /** 开始时间 */
     private Date inStart;
 
     /** 税金 */
-    private Double inTax;
+    private BigDecimal inTax;
 
     /** 收益倍数 */
     private String inEarning;
@@ -48,11 +49,11 @@ public class CityInvest implements Serializable {
         this.inName = inName == null ? null : inName.trim();
     }
 
-    public Float getInLimit() {
+    public BigDecimal getInLimit() {
         return inLimit;
     }
 
-    public void setInLimit(Float inLimit) {
+    public void setInLimit(BigDecimal inLimit) {
         this.inLimit = inLimit;
     }
 
@@ -64,11 +65,11 @@ public class CityInvest implements Serializable {
         this.inStart = inStart;
     }
 
-    public Double getInTax() {
+    public BigDecimal getInTax() {
         return inTax;
     }
 
-    public void setInTax(Double inTax) {
+    public void setInTax(BigDecimal inTax) {
         this.inTax = inTax;
     }
 

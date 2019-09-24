@@ -23,6 +23,9 @@ public class InvestOrderReq implements Serializable {
     /** 投资金额 */
     private BigDecimal orderAmount;
 
+    /** 金额类型：mt，usdt */
+    private String amountType;
+
     /** 名称 */
     private String inName;
 
@@ -30,7 +33,7 @@ public class InvestOrderReq implements Serializable {
     private String payerId;
 
     /** 订单状态 */
-    private int orderState;
+    private String orderState;
 
     /** 订单是否复投 */
     private int orderRepeat;
@@ -89,11 +92,11 @@ public class InvestOrderReq implements Serializable {
         this.payerId = payerId;
     }
 
-    public int getOrderState() {
+    public String getOrderState() {
         return orderState;
     }
 
-    public void setOrderState(int orderState) {
+    public void setOrderState(String orderState) {
         this.orderState = orderState;
     }
 
@@ -167,5 +170,13 @@ public class InvestOrderReq implements Serializable {
 
     public void setOrderAmount(BigDecimal orderAmount) {
         this.orderAmount = orderAmount;
+    }
+
+    public String getAmountType() {
+        return amountType;
+    }
+
+    public void setAmountType(String amountType) {
+        this.amountType = amountType;
     }
 }

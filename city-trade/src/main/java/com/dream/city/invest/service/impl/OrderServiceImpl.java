@@ -19,21 +19,20 @@ public class OrderServiceImpl implements OrderService {
 
 
     @Override
-    public int insertInvestOrder(InvestOrder record) {
-        Integer integer = orderMapper.updateByPrimaryKeySelective(record);
-        return integer ==null?0:integer;
+    public InvestOrder insertInvestOrder(InvestOrder record) {
+        return orderMapper.insertSelective(record);
     }
 
     @Override
     public int investOrderInvalid(InvestOrder record) {
-        record.setOrderState(OrderState.INVALID.getStatus());
+        record.setOrderState(OrderState.INVALID.name());
         Integer integer = orderMapper.updateByPrimaryKeySelective(record);
         return integer ==null?0:integer;
     }
 
     @Override
     public int investOrderCancel(InvestOrder record) {
-        record.setOrderState(OrderState.CANCEL.getStatus());
+        record.setOrderState(OrderState.CANCEL.name());
         Integer integer = orderMapper.updateByPrimaryKeySelective(record);
         return integer ==null?0:integer;
     }
