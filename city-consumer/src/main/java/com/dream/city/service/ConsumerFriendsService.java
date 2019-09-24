@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @FeignClient(value = "city-player")
-@RequestMapping("/trade")
+@RequestMapping("/friends")
 public interface ConsumerFriendsService {
 
 
@@ -18,7 +18,7 @@ public interface ConsumerFriendsService {
      * @param friendId
      * @return
      */
-    @RequestMapping("/friends/addFriend")
+    @RequestMapping("/addFriend")
     boolean addFriend(@RequestParam("playerId") String playerId,
                       @RequestParam("friendId") String friendId);
 
@@ -28,7 +28,7 @@ public interface ConsumerFriendsService {
      * @param friendId
      * @return
      */
-    @RequestMapping("/friends/agreeAddFriend")
+    @RequestMapping("/agreeAddFriend")
     boolean agreeAddFriend(@RequestParam("playerId") String playerId,
                            @RequestParam("friendId") String friendId);
 
@@ -37,7 +37,7 @@ public interface ConsumerFriendsService {
      * @param pageReq
      * @return
      */
-    @RequestMapping("/friends/friendList")
+    @RequestMapping("/friendList")
     Page friendList(@RequestBody PageReq pageReq);
 
     /**
@@ -45,7 +45,7 @@ public interface ConsumerFriendsService {
      * @param pageReq
      * @return
      */
-    @RequestMapping("/friends/applyFriendList")
+    @RequestMapping("/applyFriendList")
     Page applyFriendList(@RequestBody PageReq pageReq);
 
 }

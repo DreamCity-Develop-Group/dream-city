@@ -15,6 +15,7 @@ import java.util.List;
  *  充值、提现、转账
  */
 @FeignClient(value = "city-trade")
+@RequestMapping("/trade")
 public interface ConsumerTradeService {
 
     /**

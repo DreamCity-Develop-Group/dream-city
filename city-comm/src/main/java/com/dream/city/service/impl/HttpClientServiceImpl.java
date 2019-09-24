@@ -212,8 +212,8 @@ public class HttpClientServiceImpl implements HttpClientService {
                 message.getData().setType(msg.getData().getType());
                 message.getData().setModel(msg.getData().getModel());
 
-                if (resp.contains("data") && resp.contains("t")) {
-                    Object jsonObject = JSON.parseObject(JSON.toJSONString(JSON.parseObject(resp).get("data"))).get("t");
+                if (resp.contains("data")) {
+                    Object jsonObject = JSON.parseObject(JSON.toJSONString(JSON.parseObject(resp).get("data"))).get("data");
                     message.getData().setData(jsonObject);
                 }
 

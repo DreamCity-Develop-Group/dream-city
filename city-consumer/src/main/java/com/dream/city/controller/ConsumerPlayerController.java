@@ -89,7 +89,7 @@ public class ConsumerPlayerController {
      * @param msg
      * @return
      */
-    @RequestMapping("/message/getCode")
+    @RequestMapping("/getCode")
     public Message getCode(@RequestBody Message msg) {
         logger.info("获取认证码", JSONObject.toJSONString(msg));
         Map<String, Object> map = new HashMap<>();
@@ -308,15 +308,18 @@ public class ConsumerPlayerController {
     private String checkCode(String code, String msgSource) {
         String descMsg = null;
         // 校验验证码
-        if (StringUtils.isBlank(code)) { //验证码不能为空
+        //验证码不能为空
+        if (StringUtils.isBlank(code)) {
             descMsg = CityGlobal.Constant.USER_VLCODE_NULL;
         } else {
             String redisValidCodekey = RedisKeys.REDIS_KEY_VALIDCODE + msgSource;
-            if (!redisUtils.hasKey(redisValidCodekey)) { //该验证码超时
+            //该验证码超时
+            if (!redisUtils.hasKey(redisValidCodekey)) {
                 descMsg = CityGlobal.Constant.USER_VLCODE_TIMEOUT;
             }
-            String redisValidCode = redisUtils.getStr(redisValidCodekey);
-            if (!code.equalsIgnoreCase(redisValidCode)) { //验证码不正确
+            String redisValidCode = String.valueOf(redisUtils.get(redisValidCodekey));
+            //验证码不正确
+            if (!code.equalsIgnoreCase(redisValidCode)) {
                 descMsg = CityGlobal.Constant.USER_VLCODE_ERROR;
             }
         }
