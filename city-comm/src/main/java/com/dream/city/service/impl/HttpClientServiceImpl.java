@@ -54,15 +54,15 @@ public class HttpClientServiceImpl implements HttpClientService {
     public void send(Message message) {
         String gateWayUrl = gateWayConfig.getUrl();
         if (null == gateWayUrl){
-            System.out.println("simpleProp: " + myProps.getSimpleProp());
-            System.out.println("arrayProps: " + (myProps.getArrayProps()));
-            System.out.println("listProp1: " + (myProps.getListProp1()));
-            System.out.println("listProp2: " + (myProps.getListProp2()));
-            System.out.println("mapProps: " + (myProps.getMapProps()));
+            log.info("simpleProp: " + myProps.getSimpleProp());
+            log.info("arrayProps: " + (myProps.getArrayProps()));
+            log.info("listProp1: " + (myProps.getListProp1()));
+            log.info("listProp2: " + (myProps.getListProp2()));
+            log.info("mapProps: " + (myProps.getMapProps()));
         }
-        System.out.println(appName);
+        log.info("App-Name:"+appName);
         String url1 = gateWayConfig.getUrl();
-        System.out.println(url1);
+        log.info("GateWay-Url:"+url1);
 
         CloseableHttpClient httpClient = HttpClientBuilder.create().build();
 
@@ -72,6 +72,7 @@ public class HttpClientServiceImpl implements HttpClientService {
         String serviceOpt = message.getData().getType();
 
         String url = gateWayUrl + "/" +gateWayPath + "/" + serviceModel + "/" + serviceOpt;
+        log.info("Request-Url:"+url);
         // 创建Post请求
         HttpPost httpPost = new HttpPost(url);
 
@@ -91,19 +92,19 @@ public class HttpClientServiceImpl implements HttpClientService {
             // 从响应模型中获取响应实体
             HttpEntity responseEntity = response.getEntity();
 
-            System.out.println("响应状态为:" + response.getStatusLine());
+            log.info("Send=响应状态为:" + response.getStatusLine());
             int code = response.getStatusLine().getStatusCode();
             if (responseEntity != null && code == 200) {
-                System.out.println("响应内容长度为:" + responseEntity.getContentLength());
-                System.out.println(responseEntity.getContent());
+                log.info("Send=响应内容长度为:" + responseEntity.getContentLength());
+                log.info(responseEntity.getContent().toString());
                 String resp = EntityUtils.toString(responseEntity);
-                System.out.println("响应内容为:" + resp);
+                log.info("Send=响应内容为:" + resp);
 
                 Message msg = JSON.parseObject(resp, Message.class);
 
                 //WebSocketServer.sendInfo(msg);
                 log.info("加入任务成功！");
-                System.out.println(msg.getDesc());
+                log.info(msg.getDesc());
             }else{
                 log.info("加入任务失败!");
             }
@@ -161,6 +162,7 @@ public class HttpClientServiceImpl implements HttpClientService {
 
             //请求地址url
             String url = gateWayUrl + "/" +  serviceModel + "/" + serviceOpt;
+            log.info("Request-Url:"+url);
 
             httpPost = new HttpPost(url);
             if ("login".equals(serviceOpt) || "reg".equals(serviceOpt) || "getCode".equals(serviceOpt)) {
@@ -197,17 +199,19 @@ public class HttpClientServiceImpl implements HttpClientService {
             // 从响应模型中获取响应实体
             HttpEntity responseEntity = response.getEntity();
 
-            System.out.println("响应状态为:" + response.getStatusLine());
+           log.info("Post=响应状态为:" + response.getStatusLine());
             int responseCode = response.getStatusLine().getStatusCode();
             if (responseEntity != null && responseCode==200) {
-                System.out.println("响应内容长度为:" + responseEntity.getContentLength());
-                System.out.println(responseEntity.getContent());
+                log.info("Post=响应内容长度为:" + responseEntity.getContentLength());
+                log.info("Post=>内容："+responseEntity.getContent().toString());
                 String resp = EntityUtils.toString(responseEntity);
-                System.out.println("响应内容为:" + resp);
+                log.info("Post=响应内容为:" + resp);
 
                 //转换请求的反馈
                 Message message = JSON.parseObject(resp, Message.class);
-                System.out.println(message.toString());
+                log.info("=================================message==================================");
+                log.info(message.toString());
+                log.info("===========================^^^^==message======^^^^^=====================");
                 //message.setData(new MessageData());
                 message.setSource("server");
                 message.setTarget(msg.getSource());

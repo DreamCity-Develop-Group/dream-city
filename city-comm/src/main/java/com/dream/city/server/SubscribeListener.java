@@ -8,6 +8,7 @@ import javax.websocket.Session;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.dream.city.util.JsonUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -15,6 +16,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 /**
  * @author WVV 描述：订阅监听类
  */
+@Slf4j
 public class SubscribeListener implements MessageListener {
 
     private StringRedisTemplate stringRedisTemplate;
@@ -33,11 +35,11 @@ public class SubscribeListener implements MessageListener {
         //com.dream.city.base.model.Message jsonObject = JSON.parseObject(msg,com.dream.city.base.model.Message.class);
 
         com.dream.city.base.model.Message _msg = JsonUtil.parseJsonToObj(msg, com.dream.city.base.model.Message.class);
-        System.out.println(new String(pattern) + "主题发布：" + msg);
+        log.info(new String(pattern) + "主题发布：" + msg);
         if(null!=session){
             try {
                 RemoteEndpoint.Basic endpoint = session.getBasicRemote();
-                System.out.println(session.getId());
+                log.info("clientId:"+session.getId());
                 String[] strs = _msg.getTarget().trim().split("-");
                 if (strs.length>1){
                     String id = strs[1];

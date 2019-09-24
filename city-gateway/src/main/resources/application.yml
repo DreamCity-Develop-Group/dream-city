@@ -16,8 +16,13 @@ spring:
 zuul:
   routes:
     city-consumer:
+      #url: localhost
       path: /consumer/**
       serviceId: city-consumer
+  host:
+    socket-timeout-millis: 60000
+    connect-timeout-millis: 60000
+
 
 
 eureka:
