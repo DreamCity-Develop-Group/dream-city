@@ -95,7 +95,7 @@ public class ConsumerPlayerController {
         Map<String, Object> map = new HashMap<>();
         Message code = messageService.getCode(msg);
         map.put("code", code.getData().getData());
-        MessageData messageData = new MessageData();
+        MessageData messageData = new MessageData(msg.getData().getType(),msg.getData().getModel());
         messageData.setData(map);
         Message message = new Message(msg.getSource(), msg.getTarget(), messageData);
         return message;
@@ -117,9 +117,9 @@ public class ConsumerPlayerController {
 
         Map<String, Object> t = new HashMap<>();
         t.put("user", player.getData());
-        MessageData messageData = new MessageData();
-        messageData.setData(t);
-        Message message = new Message(msg.getSource(), msg.getTarget(), messageData);
+        MessageData data = new MessageData(msg.getData().getType(),msg.getData().getModel());
+        data.setData(t);
+        Message message = new Message(msg.getSource(), msg.getTarget(), data);
         return message;
     }
 
@@ -142,9 +142,9 @@ public class ConsumerPlayerController {
 
         Map<String, Object> t = new HashMap<>();
         t.put("userList", players.getData());
-        MessageData messageData = new MessageData();
-        messageData.setData(t);
-        Message message = new Message(msg.getSource(), msg.getTarget(), messageData);
+        MessageData data = new MessageData(msg.getData().getType(),msg.getData().getModel());
+        data.setData(t);
+        Message message = new Message(msg.getSource(), msg.getTarget(), data);
         return message;
     }
 
@@ -163,7 +163,7 @@ public class ConsumerPlayerController {
 
         Map<String, String> t = new HashMap<>();
         t.put("desc", result.getMsg());
-        MessageData data = new MessageData();
+        MessageData data = new MessageData(msg.getData().getType(),msg.getData().getModel());
         data.setData(t);
         Message message = new Message(msg.getSource(), msg.getTarget(), data);
         return message;
@@ -185,7 +185,7 @@ public class ConsumerPlayerController {
         Map<String, String> t = new HashMap<>();
         t.put("desc", result.getMsg());
 
-        MessageData data = new MessageData();
+        MessageData data = new MessageData(msg.getData().getType(),msg.getData().getModel());
         data.setData(t);
         Message message = new Message(msg.getSource(), msg.getTarget(), data);
         return message;
@@ -206,7 +206,7 @@ public class ConsumerPlayerController {
         Map<String, String> t = new HashMap<>();
         t.put("desc", result.getMsg());
 
-        MessageData data = new MessageData();
+        MessageData data = new MessageData(msg.getData().getType(),msg.getData().getModel());
         data.setData(t);
         Message message = new Message(msg.getSource(), msg.getTarget(), data);
         return message;
@@ -228,7 +228,7 @@ public class ConsumerPlayerController {
         msg.setSource(message.getSource());
         msg.setTarget(message.getTarget());
 
-        MessageData data = new MessageData();
+        MessageData data = new MessageData(msg.getData().getType(),msg.getData().getModel());
         data.setType("reg");
         data.setModel("consumer");
 
@@ -442,7 +442,7 @@ public class ConsumerPlayerController {
 
         Map<String, String> t = new HashMap<>();
         t.put("desc", result.getMsg());
-        MessageData data = new MessageData();
+        MessageData data = new MessageData(msg.getData().getType(),msg.getData().getModel());
         data.setData(t);
         Message message = new Message(msg.getSource(), msg.getTarget(), data);
         return message;
