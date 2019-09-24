@@ -59,7 +59,7 @@ public class ConsumerTradeController {
         Result<PlayerTrade> tradeResult = tradeService.getPlayerTradeById(accountReq.getAccId());
         Map result = JSON.parseObject(JSON.toJSONString(tradeResult.getData()));
         result.put("username",accountReq.getUsername());
-        msg.getData().setT(result);
+        msg.getData().setData(result);
         msg.setDesc("");
         return msg;
     }
@@ -92,7 +92,7 @@ public class ConsumerTradeController {
         Result<PlayerTrade> tradeResult = tradeService.getPlayerTrade(record);
         Map resultMap = JSON.parseObject(JSON.toJSONString(tradeResult.getData()));
         resultMap.put("username",accountReq.getUsername());
-        msg.getData().setT(resultMap);
+        msg.getData().setData(resultMap);
         msg.setDesc(tradeResult.getMsg());
         return msg;
     }
@@ -130,7 +130,7 @@ public class ConsumerTradeController {
             resultList.add(map);
         }
 
-        msg.getData().setT(resultList);
+        msg.getData().setData(resultList);
         msg.setDesc(tradeResult.getMsg());
         return msg;
     }
@@ -157,7 +157,7 @@ public class ConsumerTradeController {
         Result<PlayerTrade> tradeResult = tradeService.playerRecharge(accountReq);
         Map resultMap = JSON.parseObject(JSON.toJSONString(tradeResult.getData()));
         resultMap.put("username",accountReq.getUsername());
-        msg.getData().setT(resultMap);
+        msg.getData().setData(resultMap);
         msg.setDesc(tradeResult.getMsg());
         return msg;
     }
@@ -184,7 +184,7 @@ public class ConsumerTradeController {
         Result<PlayerTrade> tradeResult = tradeService.playerWithdraw(accountReq);
         Map resultMap = JSON.parseObject(JSON.toJSONString(tradeResult.getData()));
         resultMap.put("username",accountReq.getUsername());
-        msg.getData().setT(resultMap);
+        msg.getData().setData(resultMap);
         msg.setDesc(tradeResult.getMsg());
         return msg;
     }
@@ -211,7 +211,7 @@ public class ConsumerTradeController {
         Result<PlayerTrade> tradeResult = tradeService.playerTransfer(accountReq);
         Map resultMap = JSON.parseObject(JSON.toJSONString(tradeResult.getData()));
         resultMap.put("username",accountReq.getUsername());
-        msg.getData().setT(resultMap);
+        msg.getData().setData(resultMap);
         msg.setDesc(tradeResult.getMsg());
         return msg;
     }

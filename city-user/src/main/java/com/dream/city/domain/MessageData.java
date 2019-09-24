@@ -12,5 +12,5 @@ public class MessageData<T> {
     //接收事件处理的模块
     String model;
     //具体业务数据
-    T t;
+    T data;
 }
