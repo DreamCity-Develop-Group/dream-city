@@ -4,6 +4,7 @@ package com.dream.city.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.dream.city.base.model.Message;
+import com.dream.city.service.ConsumerOrderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +23,7 @@ public class ConsumerInvestController {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    //@Autowired
-    //private ConsumerTradeService tradeService;
+
 
     /**
      * 用户下单
@@ -34,15 +34,7 @@ public class ConsumerInvestController {
     public Message createOrder(@RequestBody Message msg){
         logger.info("用户下单", JSONObject.toJSONString(msg));
 
-        //物业扣减金额
 
-
-        //生成订单
-
-
-        //下单用户账户扣减金额
-
-        //用户账户流水
 
 
         msg.getData().setData(JSON.toJSONString(""));

@@ -4,6 +4,7 @@ package com.dream.city.base.utils;
 import com.dream.city.base.model.Message;
 import com.dream.city.base.model.entity.CityInvest;
 import com.dream.city.base.model.entity.PlayerEarning;
+import com.dream.city.base.model.req.InvestOrderReq;
 import com.dream.city.base.model.req.PlayerAccountReq;
 import com.dream.city.base.model.req.UserReq;
 import org.apache.commons.lang.StringUtils;
@@ -79,12 +80,33 @@ public class DataUtils {
 
     public static CityInvest getInvestFromMessage(Message msg){
         Map map = (Map)msg.getData().getData();
-        Integer inId = map.containsKey("inId")?Integer.parseInt(String.valueOf(map.get("inId"))):null;
+        Integer investId = map.containsKey("investId")?Integer.parseInt(String.valueOf(map.get("investId"))):null;
         String inName = map.containsKey("inName")?String.valueOf(map.get("inName")):null;
 
         CityInvest result = new CityInvest();
-        result.setInId(inId);
+        result.setInId(investId);
         result.setInName(inName);
+        return result;
+    }
+
+    public static InvestOrderReq getInvestOrderReqFromMessage(Message msg){
+        Map map = (Map)msg.getData().getData();
+        Integer orderId = map.containsKey("orderId")?Integer.parseInt(String.valueOf(map.get("orderId"))):null;
+        Integer investId = map.containsKey("investId")?Integer.parseInt(String.valueOf(map.get("investId"))):null;
+        BigDecimal orderAmount = map.containsKey("orderAmount")?BigDecimal.valueOf(Double.valueOf(String.valueOf(map.get("orderAmount")))):BigDecimal.ZERO;
+        String inName = map.containsKey("inName")?String.valueOf(map.get("inName")):null;
+        String payerId = map.containsKey("payerId")?String.valueOf(map.get("payerId")):null;
+        Integer orderState = map.containsKey("orderState")?Integer.parseInt(String.valueOf(map.get("orderState"))):0;
+        Integer orderRepeat = map.containsKey("orderRepeat")?Integer.parseInt(String.valueOf(map.get("orderRepeat"))):0;
+
+        InvestOrderReq result = new InvestOrderReq();
+        result.setInName(inName);
+        result.setInvestId(investId);
+        result.setOrderId(orderId);
+        result.setOrderAmount(orderAmount);
+        result.setPayerId(payerId);
+        result.setOrderRepeat(orderRepeat);
+        result.setOrderState(orderState);
         return result;
     }
 

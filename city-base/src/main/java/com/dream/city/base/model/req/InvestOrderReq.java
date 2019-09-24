@@ -3,6 +3,7 @@ package com.dream.city.base.model.req;
 import lombok.ToString;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -18,6 +19,9 @@ public class InvestOrderReq implements Serializable {
 
     /** 项目ID */
     private Integer investId;
+
+    /** 投资金额 */
+    private BigDecimal orderAmount;
 
     /** 名称 */
     private String inName;
@@ -157,5 +161,11 @@ public class InvestOrderReq implements Serializable {
         this.inEnd = inEnd;
     }
 
+    public BigDecimal getOrderAmount() {
+        return orderAmount;
+    }
 
+    public void setOrderAmount(BigDecimal orderAmount) {
+        this.orderAmount = orderAmount;
+    }
 }
