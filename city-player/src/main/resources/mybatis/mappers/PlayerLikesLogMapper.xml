@@ -104,7 +104,7 @@
     where like_id = #{likeId,jdbcType=INTEGER}
   </update>
 
-  <select id="playerTodayLikesCountToday" resultType="INTEGER" parameterType="com.dream.city.base.model.entity.PlayerLikesLog" >
+  <select id="playerLikesCountToday" resultType="INTEGER" parameterType="com.dream.city.base.model.entity.PlayerLikesLog" >
     SELECT IFNULL(COUNT(like_invest_id),0) FROM likes_log
     WHERE date_format(create_time,'%Y-%m-%d') = curdate()
     and like_player_id = #{likedPlayerId,jdbcType=VARCHAR}

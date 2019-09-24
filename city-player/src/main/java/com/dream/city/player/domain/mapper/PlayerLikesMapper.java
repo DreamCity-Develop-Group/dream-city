@@ -2,7 +2,7 @@ package com.dream.city.player.domain.mapper;
 
 
 import com.dream.city.base.model.entity.PlayerLikes;
-import com.dream.city.player.domain.req.PlayerLikesReq;
+import com.dream.city.base.model.req.PlayerLikesReq;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;

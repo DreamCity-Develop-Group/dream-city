@@ -1,11 +1,13 @@
 package com.dream.city.base.utils;
 
 
+import com.alibaba.fastjson.JSON;
 import com.dream.city.base.model.Message;
 import com.dream.city.base.model.entity.CityInvest;
 import com.dream.city.base.model.entity.PlayerEarning;
 import com.dream.city.base.model.req.InvestOrderReq;
 import com.dream.city.base.model.req.PlayerAccountReq;
+import com.dream.city.base.model.req.PlayerLikesReq;
 import com.dream.city.base.model.req.UserReq;
 import org.apache.commons.lang.StringUtils;
 
@@ -97,7 +99,7 @@ public class DataUtils {
         String amountType = map.containsKey("amountType")?String.valueOf(map.get("amountType")):null;
         String inName = map.containsKey("inName")?String.valueOf(map.get("inName")):null;
         String payerId = map.containsKey("payerId")?String.valueOf(map.get("payerId")):null;
-        Integer orderState = map.containsKey("orderState")?Integer.parseInt(String.valueOf(map.get("orderState"))):0;
+        String orderState = map.containsKey("orderState")?String.valueOf(map.get("orderState")):null;
         Integer orderRepeat = map.containsKey("orderRepeat")?Integer.parseInt(String.valueOf(map.get("orderRepeat"))):0;
 
         InvestOrderReq result = new InvestOrderReq();
@@ -139,6 +141,25 @@ public class DataUtils {
 
 
 
+    public static PlayerLikesReq getPlayerLikes(String jsonReq){
+        Map map = JSON.parseObject(jsonReq,Map.class);
+        String likedIdStr = map.containsKey("likedId")?(String)map.get("likedId"):null;
+        String likedInvestIdStr = map.containsKey("likedInvestId")?(String)map.get("likedInvestId"):null;
+        Integer likedInvestTotal = map.containsKey("likedInvestTotal")?(Integer)map.get("likedInvestTotal"):1;
+        String likedPlayerId = map.containsKey("likedPlayerId")?(String)map.get("likedPlayerId"):null;
+        String likePlayerId = map.containsKey("likePlayerId")?(String)map.get("likePlayerId"):null;
+
+        Integer likedId = likedIdStr == null? null: Integer.parseInt(likedIdStr);
+        Integer likedInvestId = likedInvestIdStr == null? null: Integer.parseInt(likedInvestIdStr);
+
+        PlayerLikesReq likes = new PlayerLikesReq();
+        likes.setLikedId(likedId);
+        likes.setLikedPlayerId(likedPlayerId);
+        likes.setLikedInvestId(likedInvestId);
+        likes.setLikedInvestTotal(likedInvestTotal);
+        likes.setLikePlayerId(likePlayerId);
+        return likes;
+    }
 
 
 

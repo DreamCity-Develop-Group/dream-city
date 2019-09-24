@@ -35,6 +35,31 @@ public class ConsumerLikesController {
     ConsumerPlayerService consumerPlayerService;
 
 
+
+    /**
+     * 当天是否可以点赞
+     * @param msg
+     * @return
+     */
+    @RequestMapping("/canLikeToday")
+    public Message canLikeToday(@RequestBody Message msg){
+        logger.info("点赞", JSONObject.toJSONString(msg));
+        Message message = new Message(msg.getSource(), msg.getTarget(),
+                new MessageData<Boolean>(msg.getData().getType(),msg.getData().getModel()));
+
+        Map<String, Object> conditionMap = getConditionMap(msg);
+        Result<Integer> result = likesService.canPlayerCanLikesToday(JSON.toJSONString(conditionMap));
+        if (result.getSuccess() && result.getData() > 0){
+            message.getData().setData(Boolean.FALSE);
+        }else {
+            message.getData().setData(Boolean.TRUE);
+        }
+        message.setDesc(result.getMsg());
+        return message;
+    }
+
+
+
     /**
      * 点赞
      * @param msg
