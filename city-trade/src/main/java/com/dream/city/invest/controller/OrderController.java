@@ -6,6 +6,7 @@ import com.dream.city.invest.service.OrderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -46,14 +47,15 @@ public class OrderController {
 
     /**
      * 查询投资项
-     * @param order
+     * @param orderId
      * @return
      */
-    @RequestMapping("/getOrder")
-    public Result getInvestOrder(@RequestBody InvestOrder order) {
-        logger.info("查询投资，{}", order);
+    @RequestMapping("/getOrderById/{orderId}")
+    public Result getInvestOrderById(@PathVariable Integer orderId) {
+        logger.info("查询投资，orderId:{}", orderId);
+        InvestOrder order = new InvestOrder();
 
-        InvestOrder investOrder = orderService.getInvestOrder(order);
+        InvestOrder investOrder = orderService.getInvestOrderById(order);
         String desc = "新建投资失败";
         if (investOrder != null){
             desc = "新建投资成功";
@@ -112,7 +114,7 @@ public class OrderController {
         String desc = "投资订单列表失败";
         List<InvestOrder> data = null;
         try {
-            data = orderService.getInvestOrders(order);
+            data = orderService.getInvestOrderList(order);
             desc = "投资订单列表成功";
         } catch (Exception e) {
             logger.error("投资订单列表异常", e);

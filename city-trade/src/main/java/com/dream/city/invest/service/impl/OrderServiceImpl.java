@@ -39,7 +39,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public InvestOrder getInvestOrder(InvestOrder record) {
+    public InvestOrder getInvestOrderById(InvestOrder record) {
         if (record.getOrderId() == null){
             return null;
         }
@@ -47,7 +47,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<InvestOrder> getInvestOrders(InvestOrder record) {
+    public List<InvestOrder> getInvestOrderList(InvestOrder record) {
         return orderMapper.getInvestOrders(record);
     }
 

@@ -37,14 +37,14 @@ public interface OrderService {
      * @param record
      * @return
      */
-    InvestOrder getInvestOrder(InvestOrder record);
+    InvestOrder getInvestOrderById(InvestOrder record);
 
     /**
      * 投资订单列表
      * @param record
      * @return
      */
-    List<InvestOrder> getInvestOrders(InvestOrder record);
+    List<InvestOrder> getInvestOrderList(InvestOrder record);
 
 
 

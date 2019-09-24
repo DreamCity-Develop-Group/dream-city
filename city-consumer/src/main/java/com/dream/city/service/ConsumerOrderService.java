@@ -3,6 +3,7 @@ package com.dream.city.service;
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.InvestOrder;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -41,11 +42,11 @@ public interface ConsumerOrderService {
 
     /**
      * 查询订单
-     * @param record
+     * @param orderId
      * @return
      */
-    @RequestMapping("/getOrder")
-    Result getOrder(@RequestBody InvestOrder record);
+    @RequestMapping("/getOrderById/{orderId}")
+    Result getOrderById(@PathVariable Integer orderId);
 
     /**
      * 订单列表
