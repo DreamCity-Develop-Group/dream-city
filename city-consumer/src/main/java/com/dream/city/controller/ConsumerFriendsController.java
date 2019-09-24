@@ -43,7 +43,7 @@ public class ConsumerFriendsController {
     @RequestMapping("/friendHomePage")
     public Message friendHomePage(@RequestBody Message msg){
         logger.info("好友主页", JSONObject.toJSONString(msg));
-        return orderHandleService.getplayerInvestOrders(msg);
+        return orderHandleService.getPlayerInvestOrders(msg);
     }
 
 
