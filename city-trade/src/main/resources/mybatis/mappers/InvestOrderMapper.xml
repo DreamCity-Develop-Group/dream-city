@@ -5,6 +5,7 @@
     <id column="order_id" property="orderId" jdbcType="INTEGER" />
     <result column="order_invest_id" property="orderInvestId" jdbcType="INTEGER" />
     <result column="order_payer_id" property="orderPayerId" jdbcType="VARCHAR" />
+    <result column="order_amount" property="orderAmount" jdbcType="DECIMAL" />
     <result column="order_state" property="orderState" jdbcType="TINYINT" />
     <result column="order_repeat" property="orderRepeat" jdbcType="TINYINT" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
@@ -12,7 +13,7 @@
   </resultMap>
 
   <sql id="Base_Column_List" >
-    order_id, order_invest_id, order_payer_id, order_state, order_repeat, create_time, 
+    order_id, order_invest_id, order_payer_id, order_amount, order_state, order_repeat, create_time,
     update_time
   </sql>
 
@@ -41,6 +42,9 @@
       </if>
       <if test="orderState !=null">
         and  order_state = #{orderState,jdbcType=TINYINT}
+      </if>
+      <if test="orderAmount !=null">
+        and  order_amount = #{orderAmount,jdbcType=DECIMAL}
       </if>
       <if test="order_repeat !=null">
         and  order_state = #{order_repeat,jdbcType=TINYINT}
@@ -72,6 +76,9 @@
       <if test="orderState != null" >
         order_state,
       </if>
+      <if test="orderAmount != null" >
+        order_amount,
+      </if>
       <if test="orderRepeat != null" >
         order_repeat,
       </if>
@@ -89,6 +96,9 @@
       </if>
       <if test="orderState != null" >
         #{orderState,jdbcType=TINYINT},
+      </if>
+      <if test="orderAmount != null" >
+        #{orderAmount,jdbcType=DECIMAL},
       </if>
       <if test="orderRepeat != null" >
         #{orderRepeat,jdbcType=TINYINT},
@@ -108,6 +118,9 @@
       </if>
       <if test="orderState != null" >
         order_state = #{orderState,jdbcType=TINYINT},
+      </if>
+      <if test="orderAmount != null" >
+        order_amount = #{orderAmount,jdbcType=DECIMAL},
       </if>
       <if test="orderRepeat != null" >
         order_repeat = #{orderRepeat,jdbcType=TINYINT},
