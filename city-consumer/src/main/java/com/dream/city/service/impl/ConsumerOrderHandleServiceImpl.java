@@ -146,8 +146,8 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
 
 
     @Override
-    public Message getplayerInvestOrderById(Message msg) {
-        logger.info("查询订单:{}",msg);
+    public Message getPlayerInvestOrderById(Message msg) {
+        logger.info("查询投资:{}",msg);
         MessageData messageData = new MessageData(msg.getData().getType(),msg.getData().getModel());
         PlayerResp player = commonsService.getPlayerByUserName(msg);
         if (player == null){
@@ -167,8 +167,8 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
     }
 
     @Override
-    public Message getplayerInvestOrders(Message msg) {
-        logger.info("查询订单列表:{}",msg);
+    public Message getPlayerInvestOrders(Message msg) {
+        logger.info("查询投资列表:{}",msg);
         InvestOrderReq orderReq = DataUtils.getInvestOrderReqFromMessage(msg);
         PlayerResp player = commonsService.getPlayerByUserName(msg);
 
@@ -198,6 +198,37 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
         return msg;
     }
 
+    @Override
+    public Message getFriendInvestOrders(Message msg) {
+        logger.info("查询好友投资列表:{}",msg);
+        InvestOrderReq orderReq = DataUtils.getInvestOrderReqFromMessage(msg);
+        PlayerResp friend = commonsService.getFriendByNick(msg);
+
+        InvestOrder record = new InvestOrder();
+        record.setOrderId(orderReq.getOrderId());
+        record.setOrderInvestId(orderReq.getInvestId());
+        record.setOrderPayerId(friend.getPlayerId());
+        record.setOrderState(orderReq.getOrderState());
+        record.setOrderRepeat(orderReq.getOrderRepeat());
+        Result<List<InvestOrder>> ordersResult = orderService.getOrders(record);
+
+        List<InvestOrder> orderList = ordersResult.getData();
+        List<Map> list = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(orderList)){
+            Map map = null;
+            for (InvestOrder order: orderList){
+                map = JSON.parseObject(JSON.toJSONString(order));
+                map.put("username",friend.getPlayerName());
+                list.add(map);
+            }
+        }
+
+        MessageData messageData = new MessageData(msg.getData().getType(),msg.getData().getModel());
+        messageData.setData(JSON.toJSONString(list));
+        msg.setData(messageData);
+        msg.setDesc(ordersResult.getMsg());
+        return msg;
+    }
 
 
     @Override
