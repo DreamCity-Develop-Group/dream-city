@@ -49,7 +49,7 @@ public class PlayerController {
      * @return
      */
     @RequestMapping("/reg")
-    public Result reg(@RequestBody String jsonReq){
+    public Result<JSONObject> reg(@RequestBody String jsonReq){
         logger.info("用户注册，{}",jsonReq);
         Result<JSONObject> result = new Result<>();
         if (StringUtils.isBlank(jsonReq) || (StringUtils.isNotBlank(jsonReq) && "{}".equals(jsonReq))){
@@ -410,7 +410,7 @@ public class PlayerController {
     public Result getPlayerByInvite(@RequestParam("invite")String invite){
         Player player = playerService.getPlayerByInvite(invite);
 
-        return new Result(true,"success",200,player);
+        return new Result<Player>(true,"success",200,player);
     }
 
 }

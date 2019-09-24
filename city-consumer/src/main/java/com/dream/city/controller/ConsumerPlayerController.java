@@ -1,9 +1,7 @@
 package com.dream.city.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.parser.Feature;
 import com.dream.city.base.model.CityGlobal;
 import com.dream.city.base.model.Message;
 import com.dream.city.base.model.MessageData;
@@ -25,7 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Consumer;
 
 /**
  * 玩家Controller
@@ -54,6 +51,9 @@ public class ConsumerPlayerController {
     //区块账户
     @Autowired
     ConsumerPlayerBlockChainService playerBlockChainService;
+    //区块账户
+    @Autowired
+    ConsumerFriendsService friendsService;
 
 
     @RequestMapping("/searchfriend")
@@ -229,18 +229,16 @@ public class ConsumerPlayerController {
         msg.setTarget(message.getTarget());
 
         MessageData data = new MessageData(msg.getData().getType(),msg.getData().getModel());
-        data.setType("reg");
-        data.setModel("consumer");
 
         //验证码验证
         String descMsg = checkCode(userReq.getCode(), msg.getSource());
         String descT = CityGlobal.Constant.REG_FAIL;
-        Result reg1 = null;
+        Result<JSONObject> reg = null;
         //验证成功
         if (StringUtils.isBlank(descMsg)) {
             Map<String, String> t = new HashMap<>();
 
-            Result reg = consumerPlayerService.reg(jsonReq);
+            reg = consumerPlayerService.reg(jsonReq);
             logger.info("##################### 玩家注册: {}", msg);
 
             //玩家注册成功
@@ -289,6 +287,10 @@ public class ConsumerPlayerController {
 
                     //glk关系
                     Result result = treeService.addTree(parentId, playerId, playerInvite);
+
+                    //创建好友关系 待同意
+                    friendsService.addFriend(playerId,parentId);
+
                 }
 
 
