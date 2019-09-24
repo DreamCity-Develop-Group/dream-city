@@ -1,4 +1,4 @@
-package com.dream.city.player.domain.req;
+package com.dream.city.base.model.req;
 
 import java.io.Serializable;
 import java.util.Date;

@@ -20,6 +20,7 @@ public class AccountServiceImpl implements AccountService {
 
 
     @Override
+    @Transactional
     public int createPlayerAccount(PlayerAccount record) {
         Integer integer = accountMapper.insertSelective(record);
         return integer ==null?0:integer;

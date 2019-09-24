@@ -2,13 +2,12 @@ package com.dream.city.player.service.impl;
 
 import com.dream.city.base.model.entity.PlayerLikes;
 import com.dream.city.base.model.entity.PlayerLikesLog;
+import com.dream.city.base.model.req.PlayerLikesReq;
 import com.dream.city.player.domain.mapper.PlayerLikesLogMapper;
 import com.dream.city.player.domain.mapper.PlayerLikesMapper;
-import com.dream.city.player.domain.req.PlayerLikesReq;
 import com.dream.city.player.service.LikesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -24,7 +23,6 @@ public class LikesServiceImpl implements LikesService {
 
 
     @Override
-    @Transactional
     public int playerLike(PlayerLikesReq record) {
         Integer i = 0;
         if (record.getLikedId() == null){
@@ -44,7 +42,6 @@ public class LikesServiceImpl implements LikesService {
 
 
     @Override
-    @Transactional
     public int cancelLike(PlayerLikesReq record) {
         int count = getLikeCount(record.getLikedId());
         record.setUpdateTime(new Date());
@@ -68,11 +65,11 @@ public class LikesServiceImpl implements LikesService {
     }
 
     @Override
-    public Integer playerTodayLikesCountToday(PlayerLikesReq record) {
+    public int playerLikesCountToday(PlayerLikesReq record) {
         PlayerLikesLog likesLog = new PlayerLikesLog();
         likesLog.setLikeInvestId(record.getLikedInvestId());
         likesLog.setLikePlayerId(record.getLikePlayerId());
-        return likesLogMapper.playerTodayLikesCountToday(likesLog);
+        return likesLogMapper.playerLikesCountToday(likesLog);
     }
 
 

@@ -20,4 +20,6 @@ public interface CityInvestMapper {
 
     Integer updateByPrimaryKeySelective(CityInvest record);
 
+    Integer deduct(CityInvest record);
+
 }

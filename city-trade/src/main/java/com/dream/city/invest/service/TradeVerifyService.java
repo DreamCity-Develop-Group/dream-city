@@ -9,12 +9,32 @@ import java.util.List;
  */
 public interface TradeVerifyService {
 
+    /**
+     * 新增审核
+     * @param record
+     * @return
+     */
     int insertTradeVerify(TradeVerify record);
 
+    /**
+     * 审核
+     * @param record
+     * @return
+     */
     int updateTradeVerify(TradeVerify record);
 
-    TradeVerify getTradeVerify(Integer verifyId);
+    /**
+     * 根据id获取审核
+     * @param verifyId
+     * @return
+     */
+    TradeVerify getTradeVerifyBiId(Integer verifyId);
 
+    /**
+     * 审核列表
+     * @param record
+     * @return
+     */
     List<TradeVerify> getTradeVerifyList(TradeVerify record);
 
 }

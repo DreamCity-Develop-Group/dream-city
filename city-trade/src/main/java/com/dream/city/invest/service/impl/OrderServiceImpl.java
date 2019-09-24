@@ -6,6 +6,7 @@ import com.dream.city.invest.domain.mapper.InvestOrderMapper;
 import com.dream.city.invest.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -19,21 +20,23 @@ public class OrderServiceImpl implements OrderService {
 
 
     @Override
-    public int insertInvestOrder(InvestOrder record) {
-        Integer integer = orderMapper.updateByPrimaryKeySelective(record);
-        return integer ==null?0:integer;
+    @Transactional
+    public InvestOrder insertInvestOrder(InvestOrder record) {
+        return orderMapper.insertSelective(record);
     }
 
     @Override
+    @Transactional
     public int investOrderInvalid(InvestOrder record) {
-        record.setOrderState(OrderState.INVALID.getStatus());
+        record.setOrderState(OrderState.INVALID.name());
         Integer integer = orderMapper.updateByPrimaryKeySelective(record);
         return integer ==null?0:integer;
     }
 
     @Override
+    @Transactional
     public int investOrderCancel(InvestOrder record) {
-        record.setOrderState(OrderState.CANCEL.getStatus());
+        record.setOrderState(OrderState.CANCEL.name());
         Integer integer = orderMapper.updateByPrimaryKeySelective(record);
         return integer ==null?0:integer;
     }

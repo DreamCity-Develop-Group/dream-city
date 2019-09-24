@@ -33,15 +33,17 @@ public class OrderController {
      * @return
      */
     @RequestMapping("/insertOrder")
-    public Result insertInvestOrder(@RequestBody InvestOrder order) {
+    public Result<InvestOrder> insertInvestOrder(@RequestBody InvestOrder order) {
         logger.info("新建投资，{}", order);
 
-        int i = orderService.insertInvestOrder(order);
+        InvestOrder investOrder = orderService.insertInvestOrder(order);
         String desc = "新建投资失败";
-        if (i > 0){
+        boolean success = Boolean.FALSE;
+        if (investOrder != null){
             desc = "新建投资成功";
+            success = Boolean.TRUE;
         }
-        Result<Integer> result = new Result<>(Boolean.TRUE,desc,i);
+        Result<InvestOrder> result = new Result<>(success,desc,investOrder);
         return result;
     }
 
@@ -57,10 +59,12 @@ public class OrderController {
 
         InvestOrder investOrder = orderService.getInvestOrderById(order);
         String desc = "新建投资失败";
+        boolean success = Boolean.FALSE;
         if (investOrder != null){
             desc = "新建投资成功";
+            success = Boolean.TRUE;
         }
-        Result<InvestOrder> result = new Result<>(Boolean.TRUE,desc,investOrder);
+        Result<InvestOrder> result = new Result<>(success,desc,investOrder);
         return result;
     }
 
@@ -75,10 +79,12 @@ public class OrderController {
 
         int i = orderService.investOrderInvalid(order);
         String desc = "投资订单作废失败";
+        boolean success = Boolean.FALSE;
         if (i > 0){
             desc = "投资订单作废成功";
+            success = Boolean.TRUE;
         }
-        Result<Integer> result = new Result<>(Boolean.TRUE,desc,i);
+        Result<Integer> result = new Result<>(success,desc,i);
         return result;
     }
 
@@ -94,10 +100,12 @@ public class OrderController {
 
         int i = orderService.investOrderCancel(order);
         String desc = "投资订单取消失败";
+        boolean success = Boolean.FALSE;
         if (i > 0){
             desc = "投资订单取消成功";
+            success = Boolean.TRUE;
         }
-        Result<Integer> result = new Result<>(Boolean.TRUE,desc,i);
+        Result<Integer> result = new Result<>(success,desc,i);
         return result;
     }
 
@@ -112,14 +120,16 @@ public class OrderController {
         logger.info("投资订单列表，{}", order);
 
         String desc = "投资订单列表失败";
+        boolean success = Boolean.FALSE;
         List<InvestOrder> data = null;
         try {
             data = orderService.getInvestOrderList(order);
             desc = "投资订单列表成功";
+            success = Boolean.TRUE;
         } catch (Exception e) {
             logger.error("投资订单列表异常", e);
         }
-        Result<List<InvestOrder>> result = new Result<>(Boolean.TRUE, desc, data);
+        Result<List<InvestOrder>> result = new Result<>(success, desc, data);
         return result;
     }
 

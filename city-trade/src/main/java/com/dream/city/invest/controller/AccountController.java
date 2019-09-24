@@ -66,7 +66,7 @@ public class AccountController {
             b = Boolean.FALSE;
             logger.error("获取玩家账户异常",e);
         }
-        Result result = new Result<>(b,desc,account);
+        Result<PlayerAccount> result = new Result<>(b,desc,account);
         return result;
     }
 

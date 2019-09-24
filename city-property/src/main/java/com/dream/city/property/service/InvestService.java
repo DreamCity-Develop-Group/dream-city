@@ -19,7 +19,7 @@ public interface InvestService {
 
     /**
      * 查询物业
-     * @param record
+     * @param record: inId 、inName
      * @return
      */
     CityInvest getInvest(CityInvest record);

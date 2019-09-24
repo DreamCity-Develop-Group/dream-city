@@ -1,14 +1,12 @@
 package com.dream.city.invest.service.impl;
 
+import com.dream.city.base.exception.BusinessException;
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.PlayerAccount;
 import com.dream.city.base.model.entity.PlayerEarning;
 import com.dream.city.base.model.entity.PlayerTrade;
 import com.dream.city.base.model.entity.TradeVerify;
-import com.dream.city.base.model.enu.AmountDynType;
-import com.dream.city.base.model.enu.AmountType;
-import com.dream.city.base.model.enu.TradeType;
-import com.dream.city.base.model.enu.VerifyStatus;
+import com.dream.city.base.model.enu.*;
 import com.dream.city.base.model.req.PlayerAccountReq;
 import com.dream.city.invest.service.*;
 import org.slf4j.Logger;
@@ -54,6 +52,7 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
             createPlayerTrade(record, updateAccountResult.getData(),updateAccountResult.getMsg());
         }catch (Exception e){
             logger.error("充值异常",e);
+            throw new BusinessException("充值异常");
         }
 
         if (success){
@@ -65,6 +64,7 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
     }
 
     @Override
+    @Transactional
     public Result playerWithdraw(PlayerAccountReq record) {
         boolean success = Boolean.FALSE;
         String msg = null;
@@ -101,12 +101,14 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
             }
         }catch (Exception e){
             logger.error("提现异常",e);
+            throw new BusinessException("提现异常");
         }
         return new Result(success,msg,success);
     }
 
 
     @Override
+    @Transactional
     public Result playerTransfer(PlayerAccountReq recordOut) {
         boolean success = Boolean.FALSE;
 
@@ -147,7 +149,7 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
                 recordIn.setAccId(playerAccountIn.getAccId());
                 createPlayerTrade(recordIn,transferInResult.getData(), transferInResult.getMsg());
             }else {
-                //外部转账 相当于体现 TODO
+                //外部转账 相当于提现 TODO
 
             }
 
@@ -158,6 +160,7 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
             }
         }catch (Exception e){
             logger.error("转账异常",e);
+            throw new BusinessException("转账异常");
         }
         return new Result(success,updateAccountResult.getMsg(),success);
     }

@@ -18,6 +18,15 @@ import java.util.List;
 @RequestMapping("/trade")
 public interface ConsumerTradeService {
 
+
+    /**
+     * 新增投资记录
+     * @param record
+     * @return
+     */
+    @RequestMapping("/insertPlayerTrade")
+    Result<PlayerTrade> insertPlayerTrade(@RequestBody PlayerTrade record);
+
     /**
      * 根据tradeId获取投资记录
      * @param tradeId

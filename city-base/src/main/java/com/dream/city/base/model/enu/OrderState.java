@@ -4,19 +4,21 @@ public enum OrderState {
 
     CANCEL(0,"取消"),
 
-    //create(1,"新建"),
+    CREATE(1,"新建"),
 
     PAID(2,"待支付"),
 
     PAY(3,"已支付"),
 
-    TOBESHIPPED(4,"待发货"),
+    WAITVERIFY(4,"待审核"),
 
-    SHIPPED(5,"已发货"),
+    TOBESHIPPED(5,"待发货"),
 
-    RECEIVED(6,"已收货"),
+    SHIPPED(6,"已发货"),
 
-    CLOSE(7,"关闭"),
+    RECEIVED(7,"已收货"),
+
+    CLOSE(8,"关闭"),
 
     INVALID(-1,"作废");
 
@@ -26,8 +28,8 @@ public enum OrderState {
     private String desc;
 
     OrderState(int status, String name){
-        this.name = name;
         this.status = status;
+        this.name = name;
     }
 
     public String getCode() {

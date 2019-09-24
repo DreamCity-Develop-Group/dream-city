@@ -6,7 +6,7 @@
     <result column="order_invest_id" property="orderInvestId" jdbcType="INTEGER" />
     <result column="order_payer_id" property="orderPayerId" jdbcType="VARCHAR" />
     <result column="order_amount" property="orderAmount" jdbcType="DECIMAL" />
-    <result column="order_state" property="orderState" jdbcType="TINYINT" />
+    <result column="order_state" property="orderState" jdbcType="VARCHAR" />
     <result column="order_repeat" property="orderRepeat" jdbcType="TINYINT" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
     <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
@@ -41,7 +41,7 @@
         and  order_payer_id = #{orderPayerId,jdbcType=VARCHAR}
       </if>
       <if test="orderState !=null">
-        and  order_state = #{orderState,jdbcType=TINYINT}
+        and  order_state = #{orderState,jdbcType=VARCHAR}
       </if>
       <if test="orderAmount !=null">
         and  order_amount = #{orderAmount,jdbcType=DECIMAL}
@@ -62,6 +62,9 @@
 
 
   <insert id="insertSelective" parameterType="com.dream.city.base.model.entity.InvestOrder" >
+    <selectKey keyProperty="order_id" resultType="int" order="AFTER">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
     insert into invest_order
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="orderId != null" >
@@ -95,7 +98,7 @@
         #{orderPayerId,jdbcType=VARCHAR},
       </if>
       <if test="orderState != null" >
-        #{orderState,jdbcType=TINYINT},
+        #{orderState,jdbcType=VARCHAR},
       </if>
       <if test="orderAmount != null" >
         #{orderAmount,jdbcType=DECIMAL},
@@ -117,7 +120,7 @@
         order_payer_id = #{orderPayerId,jdbcType=VARCHAR},
       </if>
       <if test="orderState != null" >
-        order_state = #{orderState,jdbcType=TINYINT},
+        order_state = #{orderState,jdbcType=VARCHAR},
       </if>
       <if test="orderAmount != null" >
         order_amount = #{orderAmount,jdbcType=DECIMAL},

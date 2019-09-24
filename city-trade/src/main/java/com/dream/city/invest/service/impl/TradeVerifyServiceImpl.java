@@ -5,6 +5,7 @@ import com.dream.city.invest.domain.mapper.TradeVerifyMapper;
 import com.dream.city.invest.service.TradeVerifyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -21,13 +22,14 @@ public class TradeVerifyServiceImpl implements TradeVerifyService {
     }
 
     @Override
+    @Transactional
     public int updateTradeVerify(TradeVerify record) {
         Integer integer = verifyMapper.updateByPrimaryKeySelective(record);
         return integer == null? 0: integer;
     }
 
     @Override
-    public TradeVerify getTradeVerify(Integer verifyId) {
+    public TradeVerify getTradeVerifyBiId(Integer verifyId) {
         return verifyMapper.getTradeVerifyBiId(verifyId);
     }
 
