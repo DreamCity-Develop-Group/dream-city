@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 /**
  * @author Wvv
  */
-@FeignClient(value = "city-message")
+@FeignClient(value = "city-message",url = "localhost")
 public interface CityMessageService {
 
     /**

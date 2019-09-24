@@ -295,6 +295,7 @@ public class ConsumerPlayerController {
 
             }
         }
+        msg.setDesc(descMsg);
         return msg;
     }
 

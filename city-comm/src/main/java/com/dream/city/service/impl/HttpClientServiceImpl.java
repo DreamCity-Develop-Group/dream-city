@@ -1,6 +1,7 @@
 package com.dream.city.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.dream.city.base.model.MessageData;
 import com.dream.city.config.GateWayConfig;
 import com.dream.city.base.model.Message;
@@ -204,18 +205,25 @@ public class HttpClientServiceImpl implements HttpClientService {
                 String resp = EntityUtils.toString(responseEntity);
                 System.out.println("响应内容为:" + resp);
 
+                //转换请求的反馈
                 Message message = JSON.parseObject(resp, Message.class);
                 System.out.println(message.toString());
                 //message.setData(new MessageData());
                 message.setSource("server");
                 message.setTarget(msg.getSource());
-                message.getData().setType(msg.getData().getType());
-                message.getData().setModel(msg.getData().getModel());
+                MessageData msgData = new MessageData();
+                msgData.setType(msg.getData().getType());
+                msgData.setModel(msg.getData().getModel());
 
-                if (resp.contains("data")) {
-                    Object jsonObject = JSON.parseObject(JSON.toJSONString(JSON.parseObject(resp).get("data"))).get("data");
+                message.setData(msgData);
+                /*if (resp.contains("data")) {
+                    String json = JSON.toJSONString(JSON.parseObject(resp).get("data"));
+                    JSONObject jsonObject = JSON.parseObject(json);
+
                     message.getData().setData(jsonObject);
-                }
+                }else {
+                    message.getData().setData(null);
+                }*/
 
                 // TODO 推送消息到客户端
                 WebSocketServer.sendInfo(message);
