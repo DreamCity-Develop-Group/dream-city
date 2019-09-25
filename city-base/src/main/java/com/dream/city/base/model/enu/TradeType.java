@@ -6,9 +6,9 @@ package com.dream.city.base.model.enu;
 public enum TradeType {
 
     USDTINVEST("usdt_invest","投资usdt"),
+    USDTINVESTTAX("usdt_invest_tax","usdt投资税金"),
     MTINVEST("mt_invest","投资mt"),
     USDTEARNINGS("usdt_earnings","usdt投资收益"),
-    MTEARNINGS("mt_earnings","mt投资收益"),
     TRANSFER("transfer","转账"),
     RECHARGE("recharge","充值"),
     WITHDRAW("withdraw","提现");

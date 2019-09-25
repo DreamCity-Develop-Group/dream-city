@@ -48,6 +48,7 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
 
         //获取项目数据
         CityInvest invest = getInvestByIdOrinName(orderReq.getInvestId(),orderReq.getInName());
+        BigDecimal inTax = BigDecimal.valueOf(invest.getInTax());
         //获取当前时间  后改为数据库时间 TODO
         Date investTime = new Date();
 
@@ -80,17 +81,16 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
         Result<InvestOrder> orderResult = this.orderCreate(invest.getInId(),orderReq.getPayerId(),orderRepeat,desc);
         InvestOrder order = orderResult.getData();
 
-        //下单用户账户扣减金额
+        //投资扣减用户账户金额
         Map<String,String> updatePlayerAccountResult = null;
         boolean updatePlayerAccountSuccess = Boolean.FALSE;
         int updatePlayerAccountDate = 0;
         String updatePlayerAccountMsg = "";
         String amountType = "";
-        String tradeAmountType = "";
+        String tradeAmountType = TradeType.MTINVEST.getCode();
         if (order != null && order.getOrderId() != null){
-            updatePlayerAccountResult = this.deductPlayerAccountAmount(orderReq);
+            updatePlayerAccountResult = this.deductPlayerAccountAmount(orderReq,tradeAmountType,inTax);
             amountType = updatePlayerAccountResult.get("amountType");
-            tradeAmountType = updatePlayerAccountResult.get("tradeType");
             updatePlayerAccountDate = Integer.parseInt(updatePlayerAccountResult.get("data"));
             updatePlayerAccountSuccess = Boolean.parseBoolean(updatePlayerAccountResult.get("success"));
             updatePlayerAccountMsg = updatePlayerAccountResult.get("msg");
@@ -102,6 +102,7 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
         Result<PlayerTrade> playerTradeResult = null;
         PlayerTrade trade = null;
         if (updatePlayerAccountResult != null && updatePlayerAccountSuccess && updatePlayerAccountDate > 0){
+
             playerTradeResult = this.createPlayerTrade(orderReq.getPayerId(), order.getOrderId(),
                     orderReq.getOrderAmount(), amountType, tradeAmountType);
             trade = playerTradeResult.getData();
@@ -109,19 +110,30 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
             desc = updatePlayerAccountMsg;
         }
 
-        //冻结扣金 从账户冻结，提取成功后直接扣除税金 TODO
-
-        //生成待审核
         Result<Integer> tradeVerifyResult = null;
+        Map<String, String> deductTaxMap = null;
         if (playerTradeResult != null && playerTradeResult.getSuccess() && trade != null){
+            //冻结税金 从账户冻结，提取成功后直接扣除税金
+            tradeAmountType = TradeType.USDTINVESTTAX.getCode();
+            deductTaxMap = this.deductPlayerAccountAmount(orderReq, tradeAmountType, inTax);
+
+            //生成投资待审核
             tradeVerifyResult = this.createTradeVerify(trade);
         }else {
             desc = playerTradeResult.getMsg();
         }
-        if (tradeVerifyResult == null || !tradeVerifyResult.getSuccess()
-                || tradeVerifyResult.getData() == null
+        if (tradeVerifyResult == null || !tradeVerifyResult.getSuccess() || tradeVerifyResult.getData() == null
                 || (tradeVerifyResult.getData() != null && tradeVerifyResult.getData() < 1)){
             desc = tradeVerifyResult.getMsg();
+        }
+
+        //扣税金流水
+        amountType = deductTaxMap.get("amountType");
+        updatePlayerAccountDate = Integer.parseInt(deductTaxMap.get("data"));
+        updatePlayerAccountSuccess = Boolean.parseBoolean(deductTaxMap.get("success"));
+        if (deductTaxMap != null && updatePlayerAccountSuccess && updatePlayerAccountDate > 0){
+            this.createPlayerTrade(orderReq.getPayerId(), order.getOrderId(),
+                    orderReq.getOrderAmount(), amountType, tradeAmountType);
         }
 
         msg.setDesc(desc);
@@ -167,44 +179,87 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
 
     /**
      * 下单用户账户扣减金额
+     * 冻结金额
+     * 投资只能用usdt
      * @param orderReq
      * @return
      */
-    private Map<String,String> deductPlayerAccountAmount(InvestOrderReq orderReq){
-        String amountType = "";
-        String tradeAmountType = "";
+    private Map<String,String> deductPlayerAccountAmount(InvestOrderReq orderReq,String tradeAmountType,BigDecimal inTax){
+        String amountType = AmountType.usdt.name();
+        String msg = "";
         PlayerAccount getPlayerAccount = new PlayerAccount();
         getPlayerAccount.setAccPlayerId(orderReq.getPayerId());
-        //updatePlayerAccount TODO
         Result<PlayerAccount> playerAccountResult = accountService.getPlayerAccount(getPlayerAccount);
+        BigDecimal mtAvailable = playerAccountResult.getData().getAccMtAvailable();
+        BigDecimal usdtAvailable = playerAccountResult.getData().getAccUsdtAvailable();
 
-        PlayerAccount playerAccount = new PlayerAccount();
-        if (playerAccountResult.getSuccess() && playerAccountResult.getData() != null){
-            playerAccount.setAccId(playerAccountResult.getData().getAccId());
-            playerAccount.setAccPlayerId(playerAccountResult.getData().getAccPlayerId());
+        //usdt余额是否充足
+        if (orderReq.getOrderAmount().compareTo(usdtAvailable) > 0){
+            msg = "usdt金额不足";
         }
-        if (orderReq.getAmountType().equalsIgnoreCase(AmountType.mt.name())){
-            amountType = AmountType.mt.name();
-            tradeAmountType = TradeType.MTINVEST.getCode();
-            playerAccount.setAccMt(playerAccount.getAccMt().subtract(orderReq.getOrderAmount()));
+        //是否可扣税金
+        if (inTax.compareTo(mtAvailable) > 0){
+            msg = "mt金额不足";
         }
-        if (orderReq.getAmountType().equalsIgnoreCase(AmountType.usdt.name())){
-            amountType = AmountType.usdt.name();
-            tradeAmountType = TradeType.MTINVEST.getCode();
-            playerAccount.setAccUsdt(playerAccount.getAccUsdt().subtract(orderReq.getOrderAmount()));
-        }
-        Result<Integer> updatePlayerAccountResult = accountService.updatePlayerAccount(playerAccount);
+
         String success = "";
         String data = "";
-        String msg = updatePlayerAccountResult.getMsg();
-        if (updatePlayerAccountResult != null){
-            success=String.valueOf(updatePlayerAccountResult.getSuccess());
+        if (StringUtils.isBlank(msg)){
+            PlayerAccount playerAccount = new PlayerAccount();
+            if (playerAccountResult.getSuccess() && playerAccountResult.getData() != null){
+                playerAccount.setAccId(playerAccountResult.getData().getAccId());
+                playerAccount.setAccPlayerId(playerAccountResult.getData().getAccPlayerId());
+            }
+            /*if (orderReq.getAmountType().equalsIgnoreCase(AmountType.mt.name())){
+                amountType = AmountType.mt.name();
+                tradeAmountType = TradeType.MTINVEST.getCode();
+                playerAccount.setAccMt(playerAccount.getAccMt().subtract(orderReq.getOrderAmount()));
+            }*/
+
+            if (StringUtils.isBlank(tradeAmountType)){
+                tradeAmountType = TradeType.MTINVEST.getCode();
+            }
+            if (tradeAmountType.equalsIgnoreCase(TradeType.MTINVEST.getCode())
+                    && orderReq.getAmountType().equalsIgnoreCase(AmountType.usdt.name())){
+                amountType = AmountType.usdt.name();
+                playerAccount.setAccUsdt(playerAccount.getAccUsdt().subtract(orderReq.getOrderAmount()));
+                playerAccount.setAccUsdtAvailable(playerAccount.getAccUsdtAvailable().subtract(orderReq.getOrderAmount()));
+                playerAccount.setAccUsdtFreeze(playerAccount.getAccUsdtFreeze().add(orderReq.getOrderAmount()));
+            }
+
+            if (tradeAmountType.equalsIgnoreCase(TradeType.USDTINVESTTAX.getCode())
+                    && orderReq.getAmountType().equalsIgnoreCase(AmountType.usdt.name())){
+                playerAccount.setAccMt(playerAccount.getAccUsdt().subtract(inTax));
+                playerAccount.setAccMtAvailable(playerAccount.getAccMtAvailable().subtract(inTax));
+                playerAccount.setAccMtFreeze(playerAccount.getAccMtFreeze().add(inTax));
+            }
+            //updatePlayerAccount TODO
+            Result<Integer> updatePlayerAccountResult = accountService.updatePlayerAccount(playerAccount);
+            success = String.valueOf(updatePlayerAccountResult.getSuccess());
             data = String.valueOf(updatePlayerAccountResult.getData());
+
+            if (tradeAmountType.equalsIgnoreCase(TradeType.MTINVEST.getCode()) && Boolean.parseBoolean(success)
+                    && Integer.parseInt(data) > 0){
+                msg = "投资成功！";
+                success = String.valueOf(Boolean.TRUE);
+            }else {
+                msg = "投资失败！";
+                success = String.valueOf(Boolean.FALSE);
+            }
+            if (tradeAmountType.equalsIgnoreCase(TradeType.USDTINVESTTAX.getCode()) && Boolean.parseBoolean(success)
+                    && Integer.parseInt(data) > 0){
+                msg = "扣除税金成功！";
+                success = String.valueOf(Boolean.TRUE);
+            }else {
+                msg = "扣除税金失败！";
+                success = String.valueOf(Boolean.FALSE);
+            }
         }
 
         Map<String,String> result = new HashMap<>();
         result.put("amountType",amountType);
         result.put("tradeAmountType",tradeAmountType);
+        result.put("mtAvailable",String.valueOf(mtAvailable));
         result.put("data",data);
         result.put("msg",msg);
         result.put("success",success);
