@@ -4,11 +4,13 @@ import com.alibaba.fastjson.JSON;
 import com.dream.city.base.model.CityGlobal;
 import com.dream.city.base.model.Page;
 import com.dream.city.base.model.Result;
+import com.dream.city.base.model.entity.PlayerExt;
 import com.dream.city.base.model.entity.PlayerGrade;
 import com.dream.city.base.model.req.PageReq;
 import com.dream.city.base.model.resp.PlayerResp;
 import com.dream.city.base.utils.KeyGenerator;
 import com.dream.city.base.model.entity.Player;
+import com.dream.city.player.domain.mapper.PlayerExtMapper;
 import com.dream.city.player.domain.mapper.PlayerGradeMapper;
 import com.dream.city.player.domain.mapper.PlayerMapper;
 import com.dream.city.player.service.PlayerService;
@@ -16,6 +18,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.*;
@@ -28,6 +31,8 @@ public class PlayerServiceImpl implements PlayerService {
 
     @Autowired
     private PlayerMapper playerMapper;
+    @Autowired
+    private PlayerExtMapper playerExtMapper;
     @Autowired
     private PlayerGradeMapper gradeMapper;
 
@@ -105,19 +110,16 @@ public class PlayerServiceImpl implements PlayerService {
     }
 
     @Override
+    @Transactional
     public boolean save(Player player) {
-        player.setPlayerId(KeyGenerator.getUUID());
         player.setCreateTime(new Date());
-        //加密  前端加密，后端不加密
-        player.setPlayerPass(player.getPlayerPass());
-        // todo
-        //player.setPlayerInvite("");
-        return playerMapper.insertSelective(player)>0?Boolean.TRUE:Boolean.FALSE;
+        Integer integer = playerMapper.insertSelective(player);
+        return (integer != null && integer>0)?Boolean.TRUE:Boolean.FALSE;
     }
 
     @Override
-    public void delete(String playerId) {
-        playerMapper.deleteByPlayerId(playerId);
+    public Integer delete(String playerId) {
+        return playerMapper.deleteByPlayerId(playerId);
     }
 
     @Override

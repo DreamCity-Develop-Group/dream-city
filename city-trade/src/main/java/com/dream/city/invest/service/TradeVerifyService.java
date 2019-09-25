@@ -18,6 +18,7 @@ public interface TradeVerifyService {
 
     /**
      * 审核
+     * 提现、转账、投资
      * @param record
      * @return
      */

@@ -4,17 +4,20 @@ package com.dream.city.domain.mapper;
 import com.dream.city.base.model.entity.CityFile;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 @Mapper
 public interface CityFileMapper {
-    int deleteByPrimaryKey(Long id);
 
-    int insert(CityFile record);
 
-    int insertSelective(CityFile record);
+    Integer deleteByPrimaryKey(Long id);
 
-    CityFile selectByPrimaryKey(Long id);
+    Integer insertSelective(CityFile record);
 
-    int updateByPrimaryKeySelective(CityFile record);
+    CityFile getFileById(Long id);
 
-    int updateByPrimaryKey(CityFile record);
+    List<CityFile> getFileList(CityFile record);
+
+    Integer updateByPrimaryKeySelective(CityFile record);
+
 }

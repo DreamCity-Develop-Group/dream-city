@@ -36,7 +36,7 @@ public interface PlayerService {
 
     boolean save(Player player);
 
-    void delete(String playerId);
+    Integer delete(String playerId);
 
     Player update(Player player);
 

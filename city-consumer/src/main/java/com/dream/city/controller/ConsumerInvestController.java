@@ -3,6 +3,7 @@ package com.dream.city.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.dream.city.base.model.Message;
 import com.dream.city.service.ConsumerOrderHandleService;
+import com.dream.city.service.ConsumerTradeVerifyService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
@@ -26,6 +27,16 @@ public class ConsumerInvestController {
 
     @Autowired
     ConsumerOrderHandleService orderHandleService;
+    @Autowired
+    ConsumerTradeVerifyService verifyService;
+
+
+
+
+    //预约投资 TODO
+
+
+
 
 
     /**

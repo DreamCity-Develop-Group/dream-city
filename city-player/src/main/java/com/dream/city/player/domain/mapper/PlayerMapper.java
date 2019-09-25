@@ -10,9 +10,9 @@ import java.util.List;
 @Mapper
 public interface PlayerMapper {
 
-    int deleteByPlayerId(String playerId);
+    Integer deleteByPlayerId(String playerId);
 
-    int insertSelective(Player record);
+    Integer insertSelective(Player record);
 
     Player getPlayerById(Player record);
 
@@ -24,7 +24,7 @@ public interface PlayerMapper {
     List<Player> getPlayers(PageReq pageReq);
     Integer getPlayersCount(PageReq pageReq);
 
-    int updateByPlayerId(Player record);
+    Integer updateByPlayerId(Player record);
 
     Player getPlayerByInvite(String invite);
 

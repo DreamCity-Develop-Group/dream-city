@@ -1,6 +1,7 @@
 package com.dream.city.base.model.entity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 public class InvestOrder implements Serializable {
@@ -14,7 +15,7 @@ public class InvestOrder implements Serializable {
     private String orderPayerId;
 
     /** 投资金额 */
-    private String orderAmount;
+    private BigDecimal orderAmount;
 
     /** 状态 */
     private String orderState;
@@ -82,5 +83,13 @@ public class InvestOrder implements Serializable {
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public BigDecimal getOrderAmount() {
+        return orderAmount;
+    }
+
+    public void setOrderAmount(BigDecimal orderAmount) {
+        this.orderAmount = orderAmount;
     }
 }

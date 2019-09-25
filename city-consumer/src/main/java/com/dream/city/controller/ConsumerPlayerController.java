@@ -6,8 +6,10 @@ import com.dream.city.base.model.CityGlobal;
 import com.dream.city.base.model.Message;
 import com.dream.city.base.model.MessageData;
 import com.dream.city.base.model.Result;
+import com.dream.city.base.model.entity.PlayerExt;
 import com.dream.city.base.model.req.PageReq;
 import com.dream.city.base.model.req.UserReq;
+import com.dream.city.base.model.resp.PlayerResp;
 import com.dream.city.base.utils.DataUtils;
 import com.dream.city.base.utils.JsonUtil;
 import com.dream.city.base.utils.RedisKeys;
@@ -57,6 +59,33 @@ public class ConsumerPlayerController {
     //区块账户
     @Autowired
     ConsumerFriendsService friendsService;
+    @Autowired
+    ConsumerCommonsService commonsService;
+
+
+    /**
+     * 修改玩家头像
+     * @param msg
+     * @return
+     */
+    @ApiOperation(value = "修改玩家头像", notes = "修改玩家头像，参数：username,", response = Message.class)
+    @RequestMapping("/updatePlayerHeadImg")
+    public Message updatePlayerHeadImg(@RequestBody Message msg){
+        logger.info("修改玩家头像", JSONObject.toJSONString(msg));
+        UserReq jsonReq = DataUtils.getUserReq(msg);
+        PlayerResp player = commonsService.getPlayerByUserName(msg);
+        PlayerExt record = new PlayerExt();
+        record.setPlayerId(player.getPlayerId());
+        record.setImgurl(jsonReq.getImgUrl());
+        Result<Boolean> result = consumerPlayerService.updatePlayerHeadImg(record);
+
+        MessageData messageData = new MessageData(msg.getData().getType(), msg.getData().getModel());
+        messageData.setData(result.getData());
+        Message message = new Message(msg.getSource(), msg.getTarget(), messageData);
+        message.setDesc(result.getMsg());
+        return message;
+    }
+
 
     @ApiOperation(value = "换一批广场玩家列表", notes = "换一批广场玩家列表", response = Message.class)
     @RequestMapping("/searchfriend")
