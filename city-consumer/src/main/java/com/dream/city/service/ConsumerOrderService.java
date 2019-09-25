@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.List;
+
 
 /**
  * 投资订单
@@ -22,7 +24,7 @@ public interface ConsumerOrderService {
      * @return
      */
     @RequestMapping("/insertOrder")
-    Result insertOrder(@RequestBody InvestOrder record);
+    Result<InvestOrder> insertOrder(@RequestBody InvestOrder record);
 
     /**
      * 订单作废
@@ -30,7 +32,7 @@ public interface ConsumerOrderService {
      * @return
      */
     @RequestMapping("/orderInvalid")
-    Result orderInvalid(@RequestBody InvestOrder record);
+    Result<Integer> orderInvalid(@RequestBody InvestOrder record);
 
     /**
      * 订单取消
@@ -38,7 +40,7 @@ public interface ConsumerOrderService {
      * @return
      */
     @RequestMapping("/orderCancel")
-    Result investOrderCancel(@RequestBody InvestOrder record);
+    Result<Integer> investOrderCancel(@RequestBody InvestOrder record);
 
     /**
      * 查询订单
@@ -54,8 +56,7 @@ public interface ConsumerOrderService {
      * @return
      */
     @RequestMapping("/getOrders")
-    Result getOrders(@RequestBody InvestOrder record);
-
+    Result<List<InvestOrder>> getOrders(@RequestBody InvestOrder record);
 
 
 }

@@ -18,10 +18,10 @@ public class CityInvest implements Serializable {
     private Date inStart;
 
     /** 税金 */
-    private BigDecimal inTax;
+    private Float inTax;
 
     /** 收益倍数 */
-    private String inEarning;
+    private Integer inEarning;
 
 
     private String isValid;
@@ -65,20 +65,20 @@ public class CityInvest implements Serializable {
         this.inStart = inStart;
     }
 
-    public BigDecimal getInTax() {
+    public Float getInTax() {
         return inTax;
     }
 
-    public void setInTax(BigDecimal inTax) {
+    public void setInTax(Float inTax) {
         this.inTax = inTax;
     }
 
-    public String getInEarning() {
+    public Integer getInEarning() {
         return inEarning;
     }
 
-    public void setInEarning(String inEarning) {
-        this.inEarning = inEarning == null ? null : inEarning.trim();
+    public void setInEarning(Integer inEarning) {
+        this.inEarning = inEarning == null ? 0 : inEarning;
     }
 
     public Date getInEnd() {

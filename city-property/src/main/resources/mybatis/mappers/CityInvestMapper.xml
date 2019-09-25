@@ -6,8 +6,8 @@
     <result column="in_name" property="inName" jdbcType="VARCHAR" />
     <result column="in_limit" property="inLimit" jdbcType="DECIMAL" />
     <result column="in_start" property="inStart" jdbcType="TIMESTAMP" />
-    <result column="in_tax" property="inTax" jdbcType="DECIMAL" />
-    <result column="in_earning" property="inEarning" jdbcType="VARCHAR" />
+    <result column="in_tax" property="inTax" jdbcType="REAL" />
+    <result column="in_earning" property="inEarning" jdbcType="TINYINT" />
     <result column="in_end" property="inEnd" jdbcType="TIMESTAMP" />
     <result column="is_valid" property="isValid" jdbcType="CHAR" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
@@ -27,7 +27,7 @@
         and in_id = #{inId,jdbcType=INTEGER}
       </if>
       <if test="inName !=null">
-        and in_name = #{inName,jdbcType=INTEGER}
+        and in_name = #{inName,jdbcType=VARCHAR}
       </if>
 
     </where>
@@ -43,8 +43,11 @@
       <if test="inId !=null">
         and in_id = #{inId,jdbcType=INTEGER}
       </if>
-      <if test="inName !=null">
-        and in_name = #{inName,jdbcType=INTEGER}
+      <if test="inName !=null and inName !=''">
+        and in_name = #{inName,jdbcType=VARCHAR}
+      </if>
+      <if test="isValid !=null">
+        and is_valid = #{isValid,jdbcType=CHAR}
       </if>
 
     </where>
@@ -97,10 +100,10 @@
         #{inStart,jdbcType=TIMESTAMP},
       </if>
       <if test="inTax != null" >
-        #{inTax,jdbcType=DECIMAL},
+        #{inTax,jdbcType=REAL},
       </if>
       <if test="inEarning != null" >
-        #{inEarning,jdbcType=VARCHAR},
+        #{inEarning,jdbcType=TINYINT},
       </if>
       <if test="inEnd != null" >
         #{inEnd,jdbcType=TIMESTAMP},
@@ -121,10 +124,10 @@
         in_start = #{inStart,jdbcType=TIMESTAMP},
       </if>
       <if test="inTax != null" >
-        in_tax = #{inTax,jdbcType=DECIMAL},
+        in_tax = #{inTax,jdbcType=REAL},
       </if>
       <if test="inEarning != null" >
-        in_earning = #{inEarning,jdbcType=VARCHAR},
+        in_earning = #{inEarning,jdbcType=TINYINT},
       </if>
       <if test="inEnd != null" >
         in_end = #{inEnd,jdbcType=TIMESTAMP},
