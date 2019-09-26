@@ -68,7 +68,7 @@ public class ConsumerPlayerController {
      * @param msg
      * @return
      */
-    @ApiOperation(value = "修改玩家头像", notes = "修改玩家头像，参数：username,", response = Message.class)
+    @ApiOperation(value = "修改玩家头像", notes = "修改玩家头像，参数：username,imgUrl", response = Message.class)
     @RequestMapping("/updatePlayerHeadImg")
     public Message updatePlayerHeadImg(@RequestBody Message msg){
         logger.info("修改玩家头像", JSONObject.toJSONString(msg));
@@ -88,8 +88,8 @@ public class ConsumerPlayerController {
 
 
     @ApiOperation(value = "换一批广场玩家列表", notes = "换一批广场玩家列表", response = Message.class)
-    @RequestMapping("/searchfriend")
-    public Message searchfriend(@RequestBody Message msg) {
+    @RequestMapping("/searchFriend")
+    public Message searchFriend(@RequestBody Message msg) {
         logger.info("广场玩家列表 换一批", JSONObject.toJSONString(msg));
         UserReq jsonReq = DataUtils.getUserReq(msg);
         PageReq<String> pageReq = new PageReq<>();
@@ -165,7 +165,7 @@ public class ConsumerPlayerController {
      * @return
      */
     @ApiOperation(value = "广场玩家列表", notes = "广场玩家列表", response = Message.class)
-    @RequestMapping("/squarefriend")
+    @RequestMapping("/squareFriend")
     public Message squareFriend(@RequestBody Message msg) {
         logger.info("广场玩家列表", JSONObject.toJSONString(msg));
         UserReq jsonReq = DataUtils.getUserReq(msg);
