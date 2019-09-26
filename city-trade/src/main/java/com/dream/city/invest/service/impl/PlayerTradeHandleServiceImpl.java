@@ -67,13 +67,12 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
     @Transactional
     public Result playerWithdraw(PlayerAccountReq record) {
         boolean success = Boolean.FALSE;
-        String msg = null;
+        String msg = "玩家提现";
         record.setAmountDynType(AmountDynType.out.name());
         record.setTradeType(TradeType.WITHDRAW.name());
         Result<BigDecimal> updateAccountResult = null;
         try {
             //校验提现规则 todo
-            PlayerEarning playerEarning = earningService.getPlayerEarningByPlayerId(record.getAccPlayerId());
 
             //提现 冻结金额
             updateAccountResult = updatePlayerAccount(record);
@@ -90,15 +89,6 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
                 createTradeVerify(createPlayerTradeResult.getData().getTradeId(),updateAccountResult.getData(),
                         VerifyStatus.wait.name(),updateAccountResult.getMsg());
             }
-
-            /*String accAddr = record.getAccAddr();
-            if (isInsideAccAddr(accAddr)){
-                //内部提现 todo
-
-            } else {
-                //外部提现 todo
-
-            }*/
         }catch (Exception e){
             logger.error("提现异常",e);
             throw new BusinessException("提现异常");
