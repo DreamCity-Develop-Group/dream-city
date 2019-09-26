@@ -54,7 +54,7 @@ public class ConsumerMessageController {
      * @param account
      * @return
      */
-    @RequestMapping("/getCode")
+    @RequestMapping("/checkCode")
     public Result checkCode(@RequestParam("code")String code,@RequestParam("phone")String account) {
         if (StringUtils.isBlank(code) || StringUtils.isBlank(account)){
             return Result.result(false,"参数为空",500);
