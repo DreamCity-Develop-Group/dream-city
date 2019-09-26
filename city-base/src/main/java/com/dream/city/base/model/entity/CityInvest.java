@@ -11,6 +11,9 @@ public class CityInvest implements Serializable {
     /** 名称 */
     private String inName;
 
+    /** 项目图片地址 */
+    private String inImg;
+
     /** 限额 */
     private BigDecimal inLimit;
 
@@ -111,5 +114,13 @@ public class CityInvest implements Serializable {
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public String getInImg() {
+        return inImg;
+    }
+
+    public void setInImg(String inImg) {
+        this.inImg = inImg;
     }
 }

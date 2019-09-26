@@ -165,7 +165,7 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
         CityInvest investReq = new CityInvest();
         investReq.setInId(inId);
         investReq.setInName(inName);
-        Result<CityInvest> investResult = propertyService.getInvest(investReq);
+        Result<CityInvest> investResult = propertyService.getInvestByIdOrName(investReq);
         return  investResult.getData();
     }
 
@@ -362,13 +362,29 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
         List<InvestOrder> orderList = ordersResult.getData();
         List<Map> list = new ArrayList<>();
         if (!CollectionUtils.isEmpty(orderList)){
-            Map map = null;
+            Map<String,Object> map = null;
+            CityInvest getInvest = null;
             for (InvestOrder order: orderList){
-                map = JSON.parseObject(JSON.toJSONString(order));
+                map = new HashMap<>();
+                getInvest = new CityInvest();
+                getInvest.setInId(order.getOrderInvestId());
+                Result<CityInvest> investResult = propertyService.getInvestByIdOrName(getInvest);
+                CityInvest invest = investResult.getData();
+
                 map.put("username",player.getPlayerName());
+                map.put("inImg",invest.getInImg());
+                map.put("inName",invest.getInName());
+                map.put("inId",invest.getInId());
+                map.put("profit",invest.getInTax());
+                map.put("orderAmount",order.getOrderAmount());
+                map.put("personalInTax",0); //TODO
+                map.put("enterpriseIntax",0); //TODO
                 list.add(map);
             }
         }
+        /*personalInTax	个人所得税
+        enterpriseIntax	企业所得税
+        profit	获利*/
 
         MessageData messageData = new MessageData(msg.getData().getType(),msg.getData().getModel());
         messageData.setData(JSON.toJSONString(list));

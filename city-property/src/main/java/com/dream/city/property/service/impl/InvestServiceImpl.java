@@ -25,7 +25,7 @@ public class InvestServiceImpl implements InvestService {
     }
 
     @Override
-    public CityInvest getInvest(CityInvest record) {
+    public CityInvest getInvestByIdOrName(CityInvest record) {
         if (record.getInId() == null && StringUtils.isBlank(record.getInName())){
             return null;
         }
