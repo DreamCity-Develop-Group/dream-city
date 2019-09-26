@@ -33,12 +33,18 @@ public class CityInvestReq implements Serializable {
     /** 投资结束时间 */
     private Date inEnd;
 
-    private Date createTime;
-
-    private Date updateTime;
-
     /** 玩家ID */
     private String payerId;
+    private String username;
+
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
     public Integer getInId() {
         return inId;
@@ -102,22 +108,6 @@ public class CityInvestReq implements Serializable {
 
     public void setIsValid(String isValid) {
         this.isValid = isValid;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public Date getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
     }
 
     public String getInImg() {

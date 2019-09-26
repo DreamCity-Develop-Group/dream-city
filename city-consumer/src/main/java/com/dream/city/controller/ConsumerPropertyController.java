@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.dream.city.base.model.Message;
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.CityInvest;
+import com.dream.city.base.model.req.CityInvestReq;
 import com.dream.city.base.utils.DataUtils;
 import com.dream.city.service.ConsumerPropertyHandleService;
 import io.swagger.annotations.Api;
@@ -15,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Map;
 
 /**
  * 物业/投资项
@@ -41,8 +44,9 @@ public class ConsumerPropertyController {
     public Message getProperty(@RequestBody Message msg){
         logger.info("查询物业", JSONObject.toJSONString(msg));
 
-        CityInvest invest = DataUtils.getInvestFromMessage(msg);
-        Result result = investService.getInvestByIdOrName(invest);
+        CityInvestReq investReq = DataUtils.getInvestFromMessage(msg);
+        CityInvest invest = JSON.toJavaObject(JSON.parseObject(JSON.toJSONString(investReq)),CityInvest.class);
+        Result result = investService.getPropertyByIdOrName(invest);
         msg.getData().setData(JSON.toJSONString(result.getData()));
         msg.setDesc(result.getMsg());
         return msg;
@@ -58,8 +62,8 @@ public class ConsumerPropertyController {
     public Message getPropertyLsit(@RequestBody Message msg){
         logger.info("物业列表", JSONObject.toJSONString(msg));
 
-        CityInvest invest = DataUtils.getInvestFromMessage(msg);
-        Result result = investService.getInvestLsit(invest);
+        CityInvestReq invest = DataUtils.getInvestFromMessage(msg);
+        Result result = investService.getPropertyLsit(invest);
         msg.getData().setData(JSON.toJSONString(result.getData()));
         msg.setDesc(result.getMsg());
         return msg;
