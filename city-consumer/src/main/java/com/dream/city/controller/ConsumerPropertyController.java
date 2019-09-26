@@ -6,7 +6,7 @@ import com.dream.city.base.model.Message;
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.CityInvest;
 import com.dream.city.base.utils.DataUtils;
-import com.dream.city.service.ConsumerPropertyService;
+import com.dream.city.service.ConsumerPropertyHandleService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
@@ -27,7 +27,7 @@ public class ConsumerPropertyController {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    private ConsumerPropertyService investService;
+    private ConsumerPropertyHandleService investService;
 
 
 

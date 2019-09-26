@@ -54,5 +54,10 @@ public class OrderServiceImpl implements OrderService {
         return orderMapper.getInvestOrders(record);
     }
 
+    @Override
+    public int countOrdersByPayerIdInvestId(InvestOrder record) {
+        return orderMapper.countOrdersByPayerIdInvestId(record);
+    }
+
 
 }

@@ -58,5 +58,12 @@ public interface ConsumerOrderService {
     @RequestMapping("/getOrders")
     Result<List<InvestOrder>> getOrders(@RequestBody InvestOrder record);
 
+    /**
+     * 投资数量
+     * @param record orderInvestId、orderPayerId、orderState
+     * @return
+     */
+    @RequestMapping("/countOrdersByPayerIdInvestId")
+    Result<Integer> countOrdersByPayerIdInvestId(@RequestBody InvestOrder record);
 
 }

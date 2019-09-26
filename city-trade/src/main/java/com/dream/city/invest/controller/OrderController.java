@@ -135,7 +135,28 @@ public class OrderController {
 
 
 
+    /**
+     * 投资数量
+     * @param record orderInvestId、orderPayerId、orderState
+     * @return
+     */
+    @RequestMapping("/countOrdersByPayerIdInvestId")
+    public Result<Integer> countOrdersByPayerIdInvestId(@RequestBody InvestOrder record){
+        logger.info("获取投资数量，{}", record);
 
+        String desc = "获取投资数量失败";
+        boolean success = Boolean.FALSE;
+        Integer data = null;
+        try {
+            data = orderService.countOrdersByPayerIdInvestId(record);
+            desc = "获取投资数量成功";
+            success = Boolean.TRUE;
+        } catch (Exception e) {
+            logger.error("获取投资数量异常", e);
+        }
+        Result<Integer> result = new Result<>(success, desc, data);
+        return result;
+    }
 
 
 

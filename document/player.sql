@@ -143,7 +143,7 @@ INSERT INTO `player` VALUES ('105', '8ABBDDFE576647F88B055214259F1E1B', '1787950
 INSERT INTO `player` VALUES ('106', '035510F21E1F45FF87A25AE9C466BEFC', '17879502055', 'joj', '12345678', null, '', '1', '2019-09-12 06:30:04', null);
 
 -- ----------------------------
--- Table structure for city_player_ext
+-- Table structure for player_ext
 -- ----------------------------
 DROP TABLE IF EXISTS `player_ext`;
 CREATE TABLE `player_ext` (
@@ -157,7 +157,7 @@ CREATE TABLE `player_ext` (
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COMMENT='用户扩展表（玩家）';
 
 -- ----------------------------
--- Records of city_player_ext
+-- Records of player_ext
 -- ----------------------------
 INSERT INTO `player_ext` VALUES ('1', 'FD826FE2E378445594D23CA84C0C485D', 'friendlink', 'imgurl', null, null);
 INSERT INTO `player_ext` VALUES ('2', '55ACB2722E33436F81040D0C8F257BF3', 'friendlink', 'imgurl', null, null);

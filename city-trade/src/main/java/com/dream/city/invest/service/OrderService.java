@@ -46,6 +46,10 @@ public interface OrderService {
      */
     List<InvestOrder> getInvestOrderList(InvestOrder record);
 
-
-
+    /**
+     * 投资数量
+     * @param record orderInvestId、orderPayerId、orderState
+     * @return
+     */
+    int countOrdersByPayerIdInvestId(InvestOrder record);
 }

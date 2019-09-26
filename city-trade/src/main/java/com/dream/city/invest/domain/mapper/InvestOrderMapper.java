@@ -19,4 +19,6 @@ public interface InvestOrderMapper {
 
     List<InvestOrder> getInvestOrders(InvestOrder record);
 
+    int countOrdersByPayerIdInvestId(InvestOrder record);
+
 }

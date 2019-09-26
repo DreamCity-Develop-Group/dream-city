@@ -1,10 +1,11 @@
-package com.dream.city.base.model.entity;
+package com.dream.city.base.model.req;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
-public class CityInvest implements Serializable {
+public class CityInvestReq implements Serializable {
+
     /** 标识 */
     private Integer inId;
 
@@ -36,6 +37,8 @@ public class CityInvest implements Serializable {
 
     private Date updateTime;
 
+    /** 玩家ID */
+    private String payerId;
 
     public Integer getInId() {
         return inId;
@@ -126,4 +129,11 @@ public class CityInvest implements Serializable {
     }
 
 
+    public String getPayerId() {
+        return payerId;
+    }
+
+    public void setPayerId(String payerId) {
+        this.payerId = payerId;
+    }
 }
