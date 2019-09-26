@@ -52,7 +52,8 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
         //获取当前时间  后改为数据库时间 TODO
         Date investTime = new Date();
 
-        String desc = null;
+        String desc = "";
+        boolean success = Boolean.FALSE;
         //校验项目投资规则
         //1是否复投
         int orderRepeat = 0;
@@ -89,6 +90,7 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
         String amountType = "";
         String tradeAmountType = TradeType.MTINVEST.getCode();
         if (order != null && order.getOrderId() != null){
+            success = Boolean.TRUE;
             updatePlayerAccountResult = this.deductPlayerAccountAmount(orderReq,tradeAmountType,inTax);
             amountType = updatePlayerAccountResult.get("amountType");
             updatePlayerAccountDate = Integer.parseInt(updatePlayerAccountResult.get("data"));
@@ -102,17 +104,19 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
         Result<PlayerTrade> playerTradeResult = null;
         PlayerTrade trade = null;
         if (updatePlayerAccountResult != null && updatePlayerAccountSuccess && updatePlayerAccountDate > 0){
-
+            success = Boolean.TRUE;
             playerTradeResult = this.createPlayerTrade(orderReq.getPayerId(), order.getOrderId(),
                     orderReq.getOrderAmount(), amountType, tradeAmountType);
             trade = playerTradeResult.getData();
         }else {
             desc = updatePlayerAccountMsg;
+            success = Boolean.FALSE;
         }
 
         Result<Integer> tradeVerifyResult = null;
         Map<String, String> deductTaxMap = null;
         if (playerTradeResult != null && playerTradeResult.getSuccess() && trade != null){
+            success = Boolean.TRUE;
             //冻结税金 从账户冻结，提取成功后直接扣除税金
             tradeAmountType = TradeType.USDTINVESTTAX.getCode();
             deductTaxMap = this.deductPlayerAccountAmount(orderReq, tradeAmountType, inTax);
@@ -121,10 +125,14 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
             tradeVerifyResult = this.createTradeVerify(trade);
         }else {
             desc = playerTradeResult.getMsg();
+            success = Boolean.FALSE;
         }
         if (tradeVerifyResult == null || !tradeVerifyResult.getSuccess() || tradeVerifyResult.getData() == null
                 || (tradeVerifyResult.getData() != null && tradeVerifyResult.getData() < 1)){
             desc = tradeVerifyResult.getMsg();
+            success = Boolean.FALSE;
+        }else {
+            success = Boolean.TRUE;
         }
 
         //扣税金流水
@@ -132,12 +140,17 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
         updatePlayerAccountDate = Integer.parseInt(deductTaxMap.get("data"));
         updatePlayerAccountSuccess = Boolean.parseBoolean(deductTaxMap.get("success"));
         if (deductTaxMap != null && updatePlayerAccountSuccess && updatePlayerAccountDate > 0){
-            this.createPlayerTrade(orderReq.getPayerId(), order.getOrderId(),
+            Result<PlayerTrade> playerTradeTaxResult = this.createPlayerTrade(orderReq.getPayerId(), order.getOrderId(),
                     orderReq.getOrderAmount(), amountType, tradeAmountType);
+            if (playerTradeTaxResult != null && playerTradeTaxResult.getSuccess() && playerTradeTaxResult.getData() != null) {
+                success = Boolean.TRUE;
+            }else {
+                success = Boolean.FALSE;
+            }
         }
 
         msg.setDesc(desc);
-        msg.getData().setData(desc);
+        msg.getData().setData(success);
         return msg;
     }
 
