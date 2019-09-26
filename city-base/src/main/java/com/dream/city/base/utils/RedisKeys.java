@@ -1,5 +1,8 @@
 package com.dream.city.base.utils;
 
+/**
+ * @author nh
+ */
 public final class RedisKeys {
 
     public static final String REDIS_PRE_KEY = "REDIS_PRE_KEY_";

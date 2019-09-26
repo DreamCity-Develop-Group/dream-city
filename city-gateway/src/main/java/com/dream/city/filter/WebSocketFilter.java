@@ -6,12 +6,9 @@ import com.netflix.zuul.context.RequestContext;
 import com.netflix.zuul.exception.ZuulException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashSet;
 
@@ -21,8 +18,6 @@ import java.util.HashSet;
 @Component
 @Slf4j
 public class WebSocketFilter extends ZuulFilter {
-    @Autowired
-    RedisTemplate redisTemplate;
     @Autowired
     RedisUtils redisUtils;
 

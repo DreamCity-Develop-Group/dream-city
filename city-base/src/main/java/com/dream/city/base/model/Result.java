@@ -2,19 +2,23 @@ package com.dream.city.base.model;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
 /**
- * 操作结果
  * @param <T>
+ * @author wvv
+ * <p>
+ * 操作结果
  */
 @ApiModel(description = "返回响应数据")
+@Data
 public class Result<T> {
 
     /**
      * 操作是否成功
      */
     @ApiModelProperty(value = "是否成功")
-    private boolean success;
+    private  boolean success;
 
     /**
      * 返回码
@@ -43,7 +47,7 @@ public class Result<T> {
         super();
         this.msg = msg;
         this.code = code;
-        if (code == CityGlobal.ResultCode.success.getStatus()){
+        if (code == CityGlobal.ResultCode.success.getStatus()) {
             this.success = Boolean.TRUE;
         }
     }
@@ -52,7 +56,7 @@ public class Result<T> {
         super();
         this.code = code;
         this.data = data;
-        if (code == CityGlobal.ResultCode.success.getStatus()){
+        if (code == CityGlobal.ResultCode.success.getStatus()) {
             this.success = Boolean.TRUE;
         }
     }
@@ -61,7 +65,7 @@ public class Result<T> {
         super();
         this.msg = msg;
         this.data = data;
-        if (success){
+        if (success) {
             this.code = CityGlobal.ResultCode.success.getStatus();
         }
     }
@@ -70,7 +74,7 @@ public class Result<T> {
         super();
         this.success = success;
         this.msg = msg;
-        if (success){
+        if (success) {
             this.code = CityGlobal.ResultCode.success.getStatus();
         }
     }
@@ -79,7 +83,7 @@ public class Result<T> {
         super();
         this.success = success;
         this.data = data;
-        if (success){
+        if (success) {
             this.code = CityGlobal.ResultCode.success.getStatus();
         }
     }
@@ -89,7 +93,7 @@ public class Result<T> {
         this.msg = msg;
         this.code = code;
         this.data = data;
-        if (code == CityGlobal.ResultCode.success.getStatus()){
+        if (code == CityGlobal.ResultCode.success.getStatus()) {
             this.success = Boolean.TRUE;
         }
     }
@@ -102,37 +106,39 @@ public class Result<T> {
         this.data = data;
     }
 
-    public String getMsg() {
-        return msg;
-    }
-
-    public void setMsg(String msg) {
-        this.msg = msg;
-    }
-
-    public int getCode() {
-        return code;
-    }
-
-    public void setCode(int code) {
-        this.code = code;
-    }
-
-    public T getData() {
-        return data;
-    }
-
-    public void setData(T data) {
-        this.data = data;
+    public Result(boolean success){
+        super();
+        this.success = success;
     }
 
     public boolean getSuccess() {
         return success;
     }
 
-    public void setSuccess(boolean success) {
-        this.success = success;
+    public static Result result(boolean success, String msg, int code, Object data) {
+        return new Result(success, msg, code, data);
     }
+
+    public static Result result(boolean success, String msg, int code) {
+        return new Result(success, msg, code);
+    }
+
+    public static Result result(boolean success, String msg) {
+        return new Result(success, msg);
+    }
+
+    public static Result result(boolean success, int code) {
+        return new Result(success, code);
+    }
+
+    public static Result result(String msg, int code, Object data) {
+        return new Result(msg, code, data);
+    }
+
+    public static Result result(boolean success) {
+        return new Result(success);
+    }
+
 
     @Override
     public String toString() {
@@ -144,3 +150,6 @@ public class Result<T> {
                 '}';
     }
 }
+
+
+

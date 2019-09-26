@@ -13,9 +13,10 @@ import com.dream.city.base.utils.JsonUtil;
 import com.dream.city.base.utils.RedisKeys;
 import com.dream.city.base.utils.RedisUtils;
 import com.dream.city.service.*;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.log;
+import org.slf4j.logFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,11 +30,10 @@ import java.util.Map;
  *
  * @author Wvv
  */
+@Slf4j
 @RestController
-@RequestMapping("/consumer")
+@RequestMapping("/consumer/player")
 public class ConsumerPlayerController {
-
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private ConsumerPlayerService consumerPlayerService;
@@ -58,7 +58,7 @@ public class ConsumerPlayerController {
 
     @RequestMapping("/searchfriend")
     public Message searchfriend(@RequestBody Message msg) {
-        logger.info("广场玩家列表 换一批", JSONObject.toJSONString(msg));
+        log.info("广场玩家列表 换一批", JSONObject.toJSONString(msg));
         UserReq jsonReq = DataUtils.getUserReq(msg);
         PageReq<String> pageReq = new PageReq<>();
 
@@ -83,23 +83,7 @@ public class ConsumerPlayerController {
     }
 
 
-    /**
-     * 获取认证码
-     *
-     * @param msg
-     * @return
-     */
-    @RequestMapping("/getCode")
-    public Message getCode(@RequestBody Message msg) {
-        logger.info("获取认证码", JSONObject.toJSONString(msg));
-        Map<String, Object> map = new HashMap<>();
-        Message code = messageService.getCode(msg);
-        map.put("code", code.getData().getData());
-        MessageData messageData = new MessageData(msg.getData().getType(),msg.getData().getModel());
-        messageData.setData(map);
-        Message message = new Message(msg.getSource(), msg.getTarget(), messageData);
-        return message;
-    }
+
 
 
     /**
@@ -110,7 +94,7 @@ public class ConsumerPlayerController {
      */
     @RequestMapping("/get/user")
     public Message getUser(@RequestBody Message msg) {
-        logger.info("获取用户", JSONObject.toJSONString(msg));
+        log.info("获取用户", JSONObject.toJSONString(msg));
         Map<String, Object> map = (Map<String, Object>) msg.getData().getData();
         String id = map.get("id").toString();
         Result player = consumerPlayerService.getPlayer(id);
@@ -132,7 +116,7 @@ public class ConsumerPlayerController {
      */
     @RequestMapping("/squarefriend")
     public Message squareFriend(@RequestBody Message msg) {
-        logger.info("广场玩家列表", JSONObject.toJSONString(msg));
+        log.info("广场玩家列表", JSONObject.toJSONString(msg));
         UserReq jsonReq = DataUtils.getUserReq(msg);
         String condition = jsonReq.getNick();
         PageReq<String> pageReq = new PageReq<>((Map) msg.getData().getData());
@@ -157,7 +141,7 @@ public class ConsumerPlayerController {
      */
     @RequestMapping("/pwforget")
     public Message pwforget(@RequestBody Message msg) {
-        logger.info("忘记密码", JSONObject.toJSONString(msg));
+        log.info("忘记密码", JSONObject.toJSONString(msg));
         UserReq jsonReq = DataUtils.getUserReq(msg);
         Result result = consumerPlayerService.forgetPwd(jsonReq.getUsername(), jsonReq.getOldpw());
 
@@ -177,11 +161,11 @@ public class ConsumerPlayerController {
      */
     @RequestMapping("/expw")
     public Message resetLoginPwd(@RequestBody Message msg) {
-        logger.info("修改密码", JSONObject.toJSONString(msg));
+        log.info("修改密码", JSONObject.toJSONString(msg));
         UserReq jsonReq = DataUtils.getUserReq(msg);
         Result result = consumerPlayerService.resetLoginPwd(jsonReq.getPlayerId(), jsonReq.getOldpw(), jsonReq.getNewpw());
 
-        logger.info("##################### 修改密码 : {}", msg);
+        log.info("##################### 修改密码 : {}", msg);
         Map<String, String> t = new HashMap<>();
         t.put("desc", result.getMsg());
 
@@ -199,10 +183,10 @@ public class ConsumerPlayerController {
      */
     @RequestMapping("/expwshop")
     public Message expwshop(@RequestBody Message msg) {
-        logger.info("修改交易密码", JSONObject.toJSONString(msg));
+        log.info("修改交易密码", JSONObject.toJSONString(msg));
         UserReq jsonReq = DataUtils.getUserReq(msg);
         Result result = consumerPlayerService.resetTraderPwd(jsonReq.getPlayerId(), jsonReq.getOldpw(), jsonReq.getNewpw());
-        logger.info("##################### 修改交易密码 : {}", msg);
+        log.info("##################### 修改交易密码 : {}", msg);
         Map<String, String> t = new HashMap<>();
         t.put("desc", result.getMsg());
 
@@ -216,12 +200,29 @@ public class ConsumerPlayerController {
     /**
      * 用户注册
      *
-     * @param message
+     * @param message : {
+     *        source: clientId,
+     *        target: server,
+     *        desc:"",
+     *        createtime:2019-09-09,
+     *        data:{
+     *              type: reg,
+     *              model: consumer,
+     *              data: {
+     *                username: wvv,
+     *                password: 123456,
+     *                nick: wvv1,
+     *                invite: 2qwef21,
+     *                code: 324512
+     *              }
+     *        }
+     *
+     * }
      * @return
      */
     @RequestMapping("/reg")
     public Message reg(@RequestBody Message message) {
-        logger.info("用户注册", JSONObject.toJSONString(message));
+        log.info("用户注册", JSONObject.toJSONString(message));
         UserReq userReq = DataUtils.getUserReq(message);
         String jsonReq = JSON.toJSONString(userReq);
         Message msg = new Message();
@@ -229,75 +230,79 @@ public class ConsumerPlayerController {
         msg.setTarget(message.getTarget());
 
         MessageData data = new MessageData(msg.getData().getType(),msg.getData().getModel());
+        String jsonData = JsonUtil.parseObjToJson(data.getData());
+        JSONObject jsonObject = JSON.parseObject(jsonData);
+        String account = jsonObject.getString("username");
+        String code = jsonObject.getString("code");
+        /*todo************************************************************/
+        // TODO [[验证码验证]]
+        /*todo************************************************************/
+        Result ret = messageService.checkCode(code,account);
 
-        //验证码验证
-        String descMsg = checkCode(userReq.getCode(), msg.getSource());
         String descT = CityGlobal.Constant.REG_FAIL;
         Result<JSONObject> reg = null;
         //验证成功
-        if (StringUtils.isBlank(descMsg)) {
+        if (ret.getSuccess()) {
             Map<String, String> t = new HashMap<>();
-
+            /*todo************************************************************/
+            // TODO [[插入玩家信息]]
+            /*todo************************************************************/
             reg = consumerPlayerService.reg(jsonReq);
-            logger.info("##################### 玩家注册: {}", msg);
+            log.info("##################### 玩家注册: {}", msg);
 
             //玩家注册成功
-            descMsg = reg.getMsg();
             if (reg.getSuccess()) {
-                descT = CityGlobal.Constant.REG_SUCCESS;
+                String regSuccess = CityGlobal.Constant.REG_SUCCESS;
 
-                //登录或注册成功后保存token
+                /*todo************************************************************/
+                // TODO [[登录或注册成功后保存token]]
+                /*todo************************************************************/
                 String token = saveToken(userReq.getUsername());
                 t.put("token", token);
                 t.put("desc", CityGlobal.Constant.REG_SUCCESS);
                 data.setData(t);
                 msg.setData(data);
-                msg.setDesc(descMsg);
+                msg.setDesc(regSuccess);
 
 
-
+                /*todo************************************************************/
+                // TODO [[取出message 中的账户和邀请码]]
+                /*todo************************************************************/
                 String json = JsonUtil.parseObjToJson(message);
-                JSONObject jsonObject = JSON.parseObject(json);
-                JSONObject jsonT = jsonObject.getJSONObject("data").getJSONObject("t");
-                String invite = jsonT.getString("invite");
-                String username = jsonT.getString("username");
-                //注册成功的用户信息
+                JSONObject jsonMsg = JSON.parseObject(json);
+                JSONObject dataMsg = jsonMsg.getJSONObject("data").getJSONObject("data");
+                String invite = dataMsg.getString("invite");
+                String username = dataMsg.getString("username");
+                //todo 1、取到注册成功的用户信息
                 JSONObject jsonObject1 = JSON.parseObject(JsonUtil.parseObjToJson(reg.getData()));
                 String playerId = jsonObject1.getString("playerId");
                 String playerInvite = jsonObject1.getString("playerCode");
 
-                //创建用户账户
+                /*todo************************************************************/
+                // TODO [[todo 2、创建用户USDT钱包账户]]
+                /*todo************************************************************/
                 Result accRet = playerBlockChainService.createBlockChainAccount(username);
                 String address = accRet.getData().toString();
                 if (!StringUtils.isBlank(address)){
-                    //todo-----------------------
                     playerAccountService.createAccount(playerId,address);
-
                 }
 
-
-
-                //邀请码不为空，设置商会关系
-                //邀请码为空，不设置关系
+                /*todo************************************************************/
+                // TODO [[todo 3、邀请码不为空，设置商会关系,邀请码为空，不设置关系]]
+                /*todo************************************************************/
                 if(!StringUtils.isBlank(invite)){
                     Result resultParent = consumerPlayerService.getPlayerByInvite(invite);
                     JSONObject parent = JSON.parseObject(JsonUtil.parseObjToJson(resultParent.getData()));
                     String parentId = parent.getString("playerId");
 
-
                     //glk关系
                     Result result = treeService.addTree(parentId, playerId, playerInvite);
-
                     //创建好友关系 待同意
                     friendsService.addFriend(playerId,parentId);
-
                 }
-
-
-
             }
         }
-        msg.setDesc(descMsg);
+        msg.setDesc(ret.getMsg());
         return msg;
     }
 
@@ -308,6 +313,7 @@ public class ConsumerPlayerController {
      * @param code
      * @return
      */
+    @Deprecated
     private String checkCode(String code, String msgSource) {
         String descMsg = null;
         // 校验验证码
@@ -338,12 +344,12 @@ public class ConsumerPlayerController {
      */
     @RequestMapping("/pwlogoin")
     public Message pwLogoin(@RequestBody Message msg) {
-        logger.info("密码登录", JSONObject.toJSONString(msg));
+        log.info("密码登录", JSONObject.toJSONString(msg));
         UserReq userReq = DataUtils.getUserReq(msg);
         String jsonReq = JSON.toJSONString(userReq);
 
         Result result = consumerPlayerService.pwLogoin(jsonReq);
-        logger.info("##################### 用户登录: {}", result);
+        log.info("##################### 用户登录: {}", result);
 
         Map<String, String> t = new HashMap<>();
         String descT = CityGlobal.Constant.LOGIN_FAIL;
@@ -389,7 +395,7 @@ public class ConsumerPlayerController {
      */
     @RequestMapping("/codelogoin")
     public Message codeLogoin(@RequestBody Message msg) {
-        logger.info("验证码登录", JSONObject.toJSONString(msg));
+        log.info("验证码登录", JSONObject.toJSONString(msg));
         Message message = new Message();
         message.setSource(msg.getSource());
         message.setTarget(msg.getTarget());
@@ -403,7 +409,7 @@ public class ConsumerPlayerController {
 
         if (StringUtils.isBlank(descMsg)) {
             Result idlog = consumerPlayerService.codeLogoin(JSON.toJSONString(userReq));
-            logger.info("##################### 验证码登录: {}", idlog);
+            log.info("##################### 验证码登录: {}", idlog);
             descMsg = idlog.getMsg();
 
             if (idlog.getSuccess()) {
@@ -430,10 +436,10 @@ public class ConsumerPlayerController {
      */
     @RequestMapping("/exit")
     public Message exit(@RequestBody Message msg) {
-        logger.info("登出", JSONObject.toJSONString(msg));
+        log.info("登出", JSONObject.toJSONString(msg));
         UserReq jsonReq = DataUtils.getUserReq(msg);
         Result result = consumerPlayerService.quit(jsonReq.getPlayerId());
-        logger.info("##################### 用户登出 :{}", msg);
+        log.info("##################### 用户登出 :{}", msg);
 
         String redisKey = RedisKeys.LOGIN_USER_TOKEN + jsonReq.getUsername();
         if (redisUtils.hasKey(redisKey)) {

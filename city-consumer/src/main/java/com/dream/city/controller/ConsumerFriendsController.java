@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/consumer")
+@RequestMapping("/consumer/player/friend")
 public class ConsumerFriendsController {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -30,7 +30,7 @@ public class ConsumerFriendsController {
 
 
 
-    @RequestMapping("/addfriend")
+    @RequestMapping("/addFriend")
     public Message addFriend(@RequestBody Message msg){
         logger.info("添加好友", JSONObject.toJSONString(msg));
         Map map = getPlayerIdOrFriendId(msg);

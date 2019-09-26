@@ -2,6 +2,7 @@ package com.dream.city.controller;
 
 import com.dream.city.base.model.Message;
 import com.dream.city.base.model.MessageData;
+import com.dream.city.base.model.Result;
 import com.dream.city.base.utils.RedisKeys;
 import com.dream.city.base.utils.RedisUtils;
 import com.dream.city.service.CodeService;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
@@ -43,44 +45,69 @@ public class ValiCodeController {
     }
 
     @RequestMapping("/valiCode")
-    public Message valiCode(@RequestBody Message message) {
+    public Result valiCode(@RequestBody Message message) {
         Map<String, String> data = (Map<String, String>) message.getData().getData();
         String code = data.get("code");
         String phone = data.get("username");
+        Message msg;
 
-        boolean ret =Boolean.FALSE;
+        boolean ret = Boolean.FALSE;
         String redisCode = null;
         String redisKey = RedisKeys.REDIS_KEY_VALIDCODE + message.getSource();
-        if (redisUtils.hasKey(redisKey)){
+        if (redisUtils.hasKey(redisKey)) {
             redisCode = redisUtils.getStr(redisKey);
             if (!StringUtils.isEmpty(code) && !StringUtils.isEmpty(redisCode) &&
-                    redisCode.equalsIgnoreCase(code)){
-                ret =Boolean.TRUE;
+                    redisCode.equalsIgnoreCase(code)) {
+                ret = Boolean.TRUE;
             }
-        }else {
+        } else {
             ret = coderService.valid(phone, code);
         }
 
         if (ret) {
             MessageData data1 = new MessageData(message.getData().getType(), message.getData().getModel());
             data1.setData(Boolean.TRUE);
-            return new Message(
+            msg = new Message(
                     message.getTarget(),
                     message.getSource(),
                     data1,
                     "验证成功！",
                     String.valueOf(System.currentTimeMillis())
             );
+            return new Result(false, "验证成功！", 200, msg);
         } else {
             MessageData data2 = new MessageData(message.getData().getType(), message.getData().getModel());
             data2.setData(Boolean.FALSE);
-            return new Message(
+            msg = new Message(
                     message.getTarget(),
                     message.getSource(),
                     data2,
                     "验证失败！",
                     String.valueOf(System.currentTimeMillis())
             );
+            return new Result(true, "验证失败！", 200, msg);
+        }
+    }
+
+    @RequestMapping("/checkCode")
+    public Result checkCode(@RequestParam("code")String code,@RequestParam("phone")String account) {
+        boolean ret = Boolean.FALSE;
+        String redisCode = null;
+        String redisKey = RedisKeys.REDIS_KEY_VALIDCODE + account;
+        if (redisUtils.hasKey(redisKey)) {
+            redisCode = redisUtils.getStr(redisKey);
+            if (!StringUtils.isEmpty(code) && !StringUtils.isEmpty(redisCode) &&
+                    redisCode.equalsIgnoreCase(code)) {
+                ret = Boolean.TRUE;
+            }
+        } else {
+            ret = coderService.valid(account, code);
+        }
+
+        if (ret) {
+            return Result.result(true, "验证成功！", 200);
+        } else {
+            return Result.result(true, "验证失败！", 200);
         }
     }
 
@@ -96,18 +123,18 @@ public class ValiCodeController {
 
         Map map = (Map) message.getData().getData();
         boolean insertCode = Boolean.FALSE;
-        if (map.containsKey("username")){
+        if (null != map && map.containsKey("username")) {
             insertCode = coderService.insertCode((String) map.get("username"), code);
         }
-        if (insertCode){
+        if (insertCode) {
             msg.getData().setData(code);
-            logger.info("############################## 用户[{}]获取认证码: {}",(String) map.get("username"),code);
+            logger.info("############################## 用户[{}]获取认证码: {}", (String) map.get("username"), code);
 
             try {
                 //保存10分钟
-                redisUtils.set(RedisKeys.REDIS_KEY_VALIDCODE+message.getSource(),code,600);
-            }catch (Exception e){
-                logger.error("getCode Exception !",e);
+                redisUtils.set(RedisKeys.REDIS_KEY_VALIDCODE + message.getSource(), code, 600);
+            } catch (Exception e) {
+                logger.error("getCode Exception !", e);
             }
         }
         return msg;

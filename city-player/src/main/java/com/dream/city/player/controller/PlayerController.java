@@ -5,14 +5,14 @@ import com.alibaba.fastjson.JSONObject;
 import com.dream.city.base.model.CityGlobal;
 import com.dream.city.base.model.Page;
 import com.dream.city.base.model.Result;
+import com.dream.city.base.model.entity.LoginLog;
+import com.dream.city.base.model.entity.Player;
 import com.dream.city.base.model.req.PageReq;
 import com.dream.city.base.model.req.UserReq;
 import com.dream.city.base.model.resp.PlayerResp;
 import com.dream.city.base.utils.InvitedCodeUtil;
 import com.dream.city.base.utils.RedisKeys;
 import com.dream.city.base.utils.RedisUtils;
-import com.dream.city.base.model.entity.LoginLog;
-import com.dream.city.base.model.entity.Player;
 import com.dream.city.player.service.LoginLogServcie;
 import com.dream.city.player.service.PlayerService;
 import org.apache.commons.lang.StringUtils;
@@ -21,8 +21,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
