@@ -6,15 +6,15 @@ import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface PlayerExtMapper {
-    int deleteByPrimaryKey(Long id);
 
-    int insert(PlayerExt record);
+    Integer deleteByPrimaryKey(Long id);
 
-    int insertSelective(PlayerExt record);
+    Integer insertSelective(PlayerExt record);
 
     PlayerExt selectByPrimaryKey(Long id);
 
-    int updateByPrimaryKeySelective(PlayerExt record);
+    Integer updateByPrimaryKeySelective(PlayerExt record);
 
-    int updateByPrimaryKey(PlayerExt record);
+    Integer updateByPlayerIdSelective(PlayerExt record);
+
 }

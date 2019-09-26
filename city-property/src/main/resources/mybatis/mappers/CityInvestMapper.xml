@@ -4,17 +4,18 @@
   <resultMap id="BaseResultMap" type="com.dream.city.base.model.entity.CityInvest" >
     <id column="in_id" property="inId" jdbcType="INTEGER" />
     <result column="in_name" property="inName" jdbcType="VARCHAR" />
+    <result column="in_img" property="inImg" jdbcType="VARCHAR" />
     <result column="in_limit" property="inLimit" jdbcType="DECIMAL" />
     <result column="in_start" property="inStart" jdbcType="TIMESTAMP" />
-    <result column="in_tax" property="inTax" jdbcType="DECIMAL" />
-    <result column="in_earning" property="inEarning" jdbcType="VARCHAR" />
+    <result column="in_tax" property="inTax" jdbcType="REAL" />
+    <result column="in_earning" property="inEarning" jdbcType="TINYINT" />
     <result column="in_end" property="inEnd" jdbcType="TIMESTAMP" />
     <result column="is_valid" property="isValid" jdbcType="CHAR" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <sql id="Base_Column_List" >
-    in_id, in_name, in_limit, in_start, in_tax, in_earning, in_end,create_time, update_time,is_valid
+    in_id, in_name, in_limit, in_start, in_tax, in_earning, in_end,create_time, update_time,is_valid,in_img
   </sql>
 
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.dream.city.base.model.entity.CityInvest" >
@@ -27,7 +28,7 @@
         and in_id = #{inId,jdbcType=INTEGER}
       </if>
       <if test="inName !=null">
-        and in_name = #{inName,jdbcType=INTEGER}
+        and in_name = #{inName,jdbcType=VARCHAR}
       </if>
 
     </where>
@@ -43,8 +44,11 @@
       <if test="inId !=null">
         and in_id = #{inId,jdbcType=INTEGER}
       </if>
-      <if test="inName !=null">
-        and in_name = #{inName,jdbcType=INTEGER}
+      <if test="inName !=null and inName !=''">
+        and in_name = #{inName,jdbcType=VARCHAR}
+      </if>
+      <if test="isValid !=null">
+        and is_valid = #{isValid,jdbcType=CHAR}
       </if>
 
     </where>
@@ -81,6 +85,9 @@
       <if test="inEnd != null" >
         in_end,
       </if>
+      <if test="inImg != null" >
+        in_img,
+      </if>
       create_time,
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
@@ -97,13 +104,16 @@
         #{inStart,jdbcType=TIMESTAMP},
       </if>
       <if test="inTax != null" >
-        #{inTax,jdbcType=DECIMAL},
+        #{inTax,jdbcType=REAL},
       </if>
       <if test="inEarning != null" >
-        #{inEarning,jdbcType=VARCHAR},
+        #{inEarning,jdbcType=TINYINT},
       </if>
       <if test="inEnd != null" >
         #{inEnd,jdbcType=TIMESTAMP},
+      </if>
+      <if test="inImg != null" >
+        #{inImg,jdbcType=VARCHAR},
       </if>
       now()
     </trim>
@@ -121,16 +131,19 @@
         in_start = #{inStart,jdbcType=TIMESTAMP},
       </if>
       <if test="inTax != null" >
-        in_tax = #{inTax,jdbcType=DECIMAL},
+        in_tax = #{inTax,jdbcType=REAL},
       </if>
       <if test="inEarning != null" >
-        in_earning = #{inEarning,jdbcType=VARCHAR},
+        in_earning = #{inEarning,jdbcType=TINYINT},
       </if>
       <if test="inEnd != null" >
         in_end = #{inEnd,jdbcType=TIMESTAMP},
       </if>
       <if test="isValid != null" >
         is_valid = #{isValid,jdbcType=CHAR},
+      </if>
+      <if test="inImg != null" >
+        in_img = #{inImg,jdbcType=VARCHAR},
       </if>
       update_time = now(),
     </set>

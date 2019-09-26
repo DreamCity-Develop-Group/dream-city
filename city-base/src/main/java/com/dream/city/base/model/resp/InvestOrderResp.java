@@ -3,6 +3,7 @@ package com.dream.city.base.model.resp;
 import lombok.ToString;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -36,8 +37,15 @@ public class InvestOrderResp implements Serializable {
     /** 限额 */
     private Float inLimit;
 
-    /** 税金 */
-    private Double inTax;
+    /** 税金 定额税*/
+    private BigDecimal inTax;
+
+    /** 个人所得税 */
+    private BigDecimal personalInTax;
+    /** 企业所得税 */
+    private BigDecimal enterpriseIntax;
+    /** 获利 */
+     private BigDecimal profit;
 
     /** 收益倍数 */
     private String inEarning;
@@ -102,11 +110,11 @@ public class InvestOrderResp implements Serializable {
         this.inLimit = inLimit;
     }
 
-    public Double getInTax() {
+    public BigDecimal getInTax() {
         return inTax;
     }
 
-    public void setInTax(Double inTax) {
+    public void setInTax(BigDecimal inTax) {
         this.inTax = inTax;
     }
 
@@ -142,4 +150,27 @@ public class InvestOrderResp implements Serializable {
         this.playerNick = playerNick;
     }
 
+    public BigDecimal getPersonalInTax() {
+        return personalInTax;
+    }
+
+    public void setPersonalInTax(BigDecimal personalInTax) {
+        this.personalInTax = personalInTax;
+    }
+
+    public BigDecimal getEnterpriseIntax() {
+        return enterpriseIntax;
+    }
+
+    public void setEnterpriseIntax(BigDecimal enterpriseIntax) {
+        this.enterpriseIntax = enterpriseIntax;
+    }
+
+    public BigDecimal getProfit() {
+        return profit;
+    }
+
+    public void setProfit(BigDecimal profit) {
+        this.profit = profit;
+    }
 }

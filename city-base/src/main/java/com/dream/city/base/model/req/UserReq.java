@@ -18,6 +18,8 @@ public class UserReq implements Serializable {
 
     private String username;
 
+    private String imgUrl;
+
     private String nick;
 
     private String userpass;
@@ -134,5 +136,13 @@ public class UserReq implements Serializable {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public String getImgUrl() {
+        return imgUrl;
+    }
+
+    public void setImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl;
     }
 }

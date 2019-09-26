@@ -79,7 +79,7 @@ public class ConsumerTradeController {
         String playerId = accountReq.getAccPlayerId();
         PlayerResp player = null;
         if (StringUtils.isBlank(playerId)) {
-            player = commonsService.getPlayerByNameOrNicke(msg);
+            player = commonsService.getPlayerByUserName(msg);
             playerId = player.getPlayerId();
         }
         PlayerTrade record = new PlayerTrade();
@@ -111,7 +111,7 @@ public class ConsumerTradeController {
         String playerId = accountReq.getAccPlayerId();
         PlayerResp player = null;
         if (StringUtils.isBlank(playerId)) {
-            player = commonsService.getPlayerByNameOrNicke(msg);
+            player = commonsService.getPlayerByUserName(msg);
             playerId = player.getPlayerId();
         }
         PlayerTrade record = new PlayerTrade();
@@ -149,7 +149,7 @@ public class ConsumerTradeController {
         String playerId = accountReq.getAccPlayerId();
         PlayerResp player = null;
         if (StringUtils.isBlank(playerId)) {
-            player = commonsService.getPlayerByNameOrNicke(msg);
+            player = commonsService.getPlayerByUserName(msg);
             playerId = player.getPlayerId();
         }
         accountReq.setAccPlayerId(playerId);
@@ -176,7 +176,7 @@ public class ConsumerTradeController {
         String playerId = accountReq.getAccPlayerId();
         PlayerResp player = null;
         if (StringUtils.isBlank(playerId)) {
-            player = commonsService.getPlayerByNameOrNicke(msg);
+            player = commonsService.getPlayerByUserName(msg);
             playerId = player.getPlayerId();
         }
         accountReq.setAccPlayerId(playerId);
@@ -203,7 +203,7 @@ public class ConsumerTradeController {
         String playerId = accountReq.getAccPlayerId();
         PlayerResp player = null;
         if (StringUtils.isBlank(playerId)) {
-            player = commonsService.getPlayerByNameOrNicke(msg);
+            player = commonsService.getPlayerByUserName(msg);
             playerId = player.getPlayerId();
         }
         accountReq.setAccPlayerId(playerId);

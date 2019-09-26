@@ -53,7 +53,7 @@ public class OrderController {
      * @return
      */
     @RequestMapping("/getOrderById/{orderId}")
-    public Result getInvestOrderById(@PathVariable Integer orderId) {
+    public Result<InvestOrder> getInvestOrderById(@PathVariable Integer orderId) {
         logger.info("查询投资，orderId:{}", orderId);
         InvestOrder order = new InvestOrder();
 
@@ -74,7 +74,7 @@ public class OrderController {
      * @return
      */
     @RequestMapping("/orderInvalid")
-    public Result investOrderInvalid(@RequestBody InvestOrder order){
+    public Result<Integer> investOrderInvalid(@RequestBody InvestOrder order){
         logger.info("投资订单作废，{}", order);
 
         int i = orderService.investOrderInvalid(order);
@@ -95,7 +95,7 @@ public class OrderController {
      * @return
      */
     @RequestMapping("/orderCancel")
-    public Result investOrderCancel(@RequestBody InvestOrder order){
+    public Result<Integer> investOrderCancel(@RequestBody InvestOrder order){
         logger.info("投资订单取消，{}", order);
 
         int i = orderService.investOrderCancel(order);
@@ -116,7 +116,7 @@ public class OrderController {
      * @return
      */
     @RequestMapping("/getOrders")
-    public Result getInvestOrders(@RequestBody InvestOrder order) {
+    public Result<List<InvestOrder>> getInvestOrders(@RequestBody InvestOrder order) {
         logger.info("投资订单列表，{}", order);
 
         String desc = "投资订单列表失败";

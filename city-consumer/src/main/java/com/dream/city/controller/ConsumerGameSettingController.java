@@ -8,6 +8,8 @@ import com.dream.city.base.utils.RedisKeys;
 import com.dream.city.base.utils.RedisUtils;
 import com.dream.city.service.ConsumerGameSettingService;
 import com.dream.city.service.ConsumerPlayerService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
+@Api(value = "游戏设置", description = "游戏设置")
 @RestController
 @RequestMapping("/consumer")
 public class ConsumerGameSettingController {
@@ -31,7 +34,7 @@ public class ConsumerGameSettingController {
     @Autowired
     private RedisUtils redisUtils;
 
-
+    @ApiOperation(value = "游戏设置", notes = "游戏音效，背景音效设置", response = Message.class)
     @RequestMapping("/voice")
     public Object voice(@RequestBody Message msg){
         logger.info("游戏设置", JSONObject.toJSONString(msg));

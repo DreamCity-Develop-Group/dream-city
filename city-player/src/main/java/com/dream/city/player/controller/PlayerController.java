@@ -5,8 +5,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.dream.city.base.model.CityGlobal;
 import com.dream.city.base.model.Page;
 import com.dream.city.base.model.Result;
-import com.dream.city.base.model.entity.LoginLog;
-import com.dream.city.base.model.entity.Player;
 import com.dream.city.base.model.req.PageReq;
 import com.dream.city.base.model.req.UserReq;
 import com.dream.city.base.model.resp.PlayerResp;
@@ -14,6 +12,8 @@ import com.dream.city.base.utils.InvitedCodeUtil;
 import com.dream.city.base.utils.RedisKeys;
 import com.dream.city.base.utils.RedisUtils;
 import com.dream.city.player.service.LoginLogServcie;
+import com.dream.city.player.service.PlayerExtService;
+import com.dream.city.player.service.PlayerHandleService;
 import com.dream.city.player.service.PlayerService;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -36,9 +36,13 @@ public class PlayerController {
     @Autowired
     PlayerService playerService;
     @Autowired
+    PlayerHandleService playerHandleService;
+    @Autowired
     LoginLogServcie loginLogServcie;
     @Autowired
     RedisUtils redisUtils;
+    @Autowired
+    PlayerExtService playerExtService;
 
 
     /**
@@ -102,7 +106,7 @@ public class PlayerController {
             playerSave.setPlayerPass(playerPass);
             playerSave.setPlayerInvite(inviteCode);
             playerSave.setPlayerNick(nick);
-            boolean ret = playerService.save(playerSave);
+            boolean ret = playerHandleService.createPlayer(playerSave);
 
             if (ret){
                 tip = "注册成功";
@@ -409,6 +413,20 @@ public class PlayerController {
         Player player = playerService.getPlayerByInvite(invite);
 
         return new Result<Player>(true,"success",200,player);
+    }
+
+    /**
+     * 修改玩家头像
+     * @param record
+     * @return
+     */
+    @RequestMapping("/updatePlayerHeadImg")
+    public Result<Boolean> updatePlayerHeadImg(@RequestBody PlayerExt record){
+        Integer integer = playerExtService.updatePlayerExtByPlayerId(record);
+        if (integer != null && integer > 0){
+            return new Result<Boolean>(true,"success",200,true);
+        }
+        return new Result<Boolean>(true,"fail",200,false);
     }
 
 }

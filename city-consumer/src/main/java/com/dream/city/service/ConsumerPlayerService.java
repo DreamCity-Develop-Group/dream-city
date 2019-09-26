@@ -2,6 +2,7 @@ package com.dream.city.service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.dream.city.base.model.Result;
+import com.dream.city.base.model.entity.PlayerExt;
 import com.dream.city.base.model.req.PageReq;
 import com.dream.city.service.impl.FallBackPlayer;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -18,6 +19,14 @@ public interface ConsumerPlayerService {
 
     @RequestMapping("/player/get/{playerId}")
     Result getPlayer(@PathVariable("playerId") String playerId);
+
+    /**
+     * 修改玩家头像
+     * @param record
+     * @return
+     */
+    @RequestMapping("/player/updatePlayerHeadImg")
+    Result<Boolean> updatePlayerHeadImg(@RequestBody PlayerExt record);
 
     /**
      * 广场玩家列表

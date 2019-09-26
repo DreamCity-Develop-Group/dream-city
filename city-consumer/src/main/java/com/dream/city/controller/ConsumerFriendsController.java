@@ -5,7 +5,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.dream.city.base.model.*;
 import com.dream.city.base.model.req.PageReq;
 import com.dream.city.service.ConsumerFriendsService;
+import com.dream.city.service.ConsumerOrderHandleService;
 import com.dream.city.service.ConsumerPlayerService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.HashMap;
 import java.util.Map;
 
+@Api(value = "好友", description = "好友")
 @RestController
 @RequestMapping("/consumer/player/friend")
 public class ConsumerFriendsController {
@@ -27,35 +31,50 @@ public class ConsumerFriendsController {
     ConsumerFriendsService consumerFriendsService;
     @Autowired
     ConsumerPlayerService consumerPlayerService;
+    @Autowired
+    ConsumerOrderHandleService orderHandleService;
+
+    /**
+     * 好友主页
+     * @param msg
+     * @return
+     */
+    @ApiOperation(value = "好友主页", notes = "好友主页", response = Message.class)
+    @RequestMapping("/friendHomePage")
+    public Message friendHomePage(@RequestBody Message msg){
+        logger.info("好友主页", JSONObject.toJSONString(msg));
+        return orderHandleService.getPlayerInvestOrders(msg);
+    }
 
 
 
     @RequestMapping("/addFriend")
+    @ApiOperation(value = "添加好友", notes = "添加好友", response = Message.class)
     public Message addFriend(@RequestBody Message msg){
         logger.info("添加好友", JSONObject.toJSONString(msg));
         Map map = getPlayerIdOrFriendId(msg);
         String playerId = map.containsKey("playerId")?(String)map.get("playerId"):null;
-        String friendId = map.containsKey("playerId")?(String)map.get("playerId"):null;
+        String friendId = map.containsKey("friendId")?(String)map.get("friendId"):null;
 
         boolean b = consumerFriendsService.addFriend(playerId,friendId);
         Message message = getResultMessage(b,"添加好友");
         return message;
     }
 
-
+    @ApiOperation(value = "通过好友", notes = "通过好友", response = Message.class)
     @RequestMapping("/agreeAddFriend")
     public Message agreeAddFriend(@RequestBody Message msg){
         logger.info("通过好友", JSONObject.toJSONString(msg));
         Map map = getPlayerIdOrFriendId(msg);
         String playerId = map.containsKey("playerId")?(String)map.get("playerId"):null;
-        String friendId = map.containsKey("playerId")?(String)map.get("playerId"):null;
+        String friendId = map.containsKey("friendId")?(String)map.get("friendId"):null;
 
         boolean b = consumerFriendsService.agreeAddFriend(playerId, friendId);
         Message message = getResultMessage(b,"通过好友");
         return message;
     }
 
-
+    @ApiOperation(value = "获取好友列表", notes = "获取好友列表", response = Message.class)
     @RequestMapping("/friendList")
     public Message friendList(@RequestBody Message msg){
         logger.info("获取好友列表", JSONObject.toJSONString(msg));
@@ -78,7 +97,7 @@ public class ConsumerFriendsController {
         return message;
     }
 
-
+    @ApiOperation(value = "获取好友申请列表", notes = "获取好友申请列表", response = Message.class)
     @RequestMapping("/applyfriend")
     public Message applyfriend(@RequestBody Message msg){
         logger.info("获取好友申请列表", JSONObject.toJSONString(msg));

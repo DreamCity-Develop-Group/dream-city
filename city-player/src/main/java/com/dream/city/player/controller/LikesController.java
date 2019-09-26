@@ -8,6 +8,7 @@ import com.dream.city.base.model.req.PlayerLikesReq;
 import com.dream.city.base.utils.DataUtils;
 import com.dream.city.player.domain.mapper.PlayerLikesLogMapper;
 import com.dream.city.player.service.LikesService;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,7 @@ public class LikesController {
 
     /**
      * 当天是否可以点赞
+     * 好友
      * @param jsonReq
      * @return
      */
@@ -42,19 +44,61 @@ public class LikesController {
         Result<Integer> result = new Result<>();
         boolean success = Boolean.TRUE;
         String msg = "今天是可以点赞";
+        int countToday = 0;
 
         PlayerLikesReq playerLikes = DataUtils.getPlayerLikes(jsonReq);
-        //当天点赞次数
-        int countToday = likesService.playerLikesCountToday(playerLikes);
-        if (countToday > 0){
-            success = Boolean.FALSE;
-            msg = CityGlobal.Constant.USER_LIKES_ONLY_ONE_ETIME;
+        if (StringUtils.isBlank(playerLikes.getLikedPlayerId()) || StringUtils.isBlank(playerLikes.getLikedPlayerId())){
+            msg = "点赞人和被赞人都不能为空";
+        }else {
+            //当天点赞次数
+            countToday = likesService.playerLikesCountToday(playerLikes);
+            if (countToday > 0){
+                success = Boolean.FALSE;
+                msg = CityGlobal.Constant.USER_LIKES_ONLY_ONE_ETIME;
+            }
         }
+
         result.setData(countToday);
         result.setSuccess(success);
         result.setMsg(msg);
         return result;
     }
+
+
+    /**
+     * 当天是否可以点赞
+     * 投资
+     * @param jsonReq
+     * @return
+     */
+    @RequestMapping("/canInvestLikesToday")
+    public Result<Integer> canInvestLikesToday(@RequestBody String jsonReq){
+        logger.info("当天是否可以点赞，{}",jsonReq);
+        Result<Integer> result = new Result<>();
+        boolean success = Boolean.TRUE;
+        String msg = "今天是可以点赞";
+        int countToday = 0;
+
+        PlayerLikesReq playerLikes = DataUtils.getPlayerLikes(jsonReq);
+        if (StringUtils.isBlank(playerLikes.getLikedPlayerId())
+                || StringUtils.isBlank(playerLikes.getLikedPlayerId())
+                || playerLikes.getLikedInvestId() == null){
+            msg = "点赞人、被赞人和项目不能为空";
+        }else {
+            //当天点赞次数
+            countToday = likesService.investLikesCountToday(playerLikes);
+            if (countToday > 0){
+                success = Boolean.FALSE;
+                msg = CityGlobal.Constant.USER_LIKES_ONLY_ONE_ETIME;
+            }
+        }
+
+        result.setData(countToday);
+        result.setSuccess(success);
+        result.setMsg(msg);
+        return result;
+    }
+
 
     /**
      * 点赞

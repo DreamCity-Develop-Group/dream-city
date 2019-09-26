@@ -3,6 +3,7 @@ package com.dream.city.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.dream.city.base.model.Message;
 import com.dream.city.service.ConsumerOrderHandleService;
+import com.dream.city.service.ConsumerTradeVerifyService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
@@ -26,6 +27,16 @@ public class ConsumerInvestController {
 
     @Autowired
     ConsumerOrderHandleService orderHandleService;
+    @Autowired
+    ConsumerTradeVerifyService verifyService;
+
+
+
+
+    //预约投资 TODO
+
+
+
 
 
     /**
@@ -49,19 +60,21 @@ public class ConsumerInvestController {
     @RequestMapping("/getInvest")
     public Message getInvest(@RequestBody Message msg){
         logger.info("查询订单", JSONObject.toJSONString(msg));
-        return orderHandleService.getplayerInvestOrderById(msg);
+        return orderHandleService.getPlayerInvestOrderById(msg);
     }
 
     /**
-     * 订单列表
+     * 投资列表
      * @param msg
      * @return
      */
     @RequestMapping("/getInvestList")
     public Message getInvestList(@RequestBody Message msg){
-        logger.info("查询订单列表", JSONObject.toJSONString(msg));
-        return orderHandleService.getplayerInvestOrders(msg);
+        logger.info("查询投资列表", JSONObject.toJSONString(msg));
+        return orderHandleService.getPlayerInvestOrders(msg);
     }
+
+
 
 
 

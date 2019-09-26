@@ -60,6 +60,7 @@ public class DataUtils {
             userReq.setCode(map.containsKey("code") ? (String) map.get("code") : null);
             userReq.setOldpw(map.containsKey("oldpw") ? (String) map.get("oldpw") : null);
             userReq.setNewpw(map.containsKey("newpw") ? (String) map.get("newpw") : null);
+            userReq.setImgUrl(map.containsKey("imgUrl") ? (String) map.get("imgUrl") : null);
         }
         return userReq;
     }
@@ -135,6 +136,8 @@ public class DataUtils {
         result.setNick(nick);
         result.setAccMt(accMt);
         result.setAccUsdt(accUsdt);
+        result.setAccAddr(accAddr);
+        result.setTradeType(tradeType);
         return result;
     }
 

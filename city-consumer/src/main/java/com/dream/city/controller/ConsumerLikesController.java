@@ -8,6 +8,8 @@ import com.dream.city.base.model.Result;
 import com.dream.city.base.utils.DataUtils;
 import com.dream.city.service.ConsumerLikesService;
 import com.dream.city.service.ConsumerPlayerService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +25,7 @@ import java.util.Map;
 /**
  * 点赞
  */
+@Api(value = "点赞", description = "点赞")
 @RestController
 @RequestMapping("/consumer")
 public class ConsumerLikesController {
@@ -38,11 +41,13 @@ public class ConsumerLikesController {
 
     /**
      * 当天是否可以点赞
+     * 好友
      * @param msg
      * @return
      */
-    @RequestMapping("/canLikeToday")
-    public Message canLikeToday(@RequestBody Message msg){
+    @ApiOperation(value = "当天是否可以点赞", notes = "当天是否可以点赞（好友）", response = Message.class)
+    @RequestMapping("/canLikePlayerToday")
+    public Message canLikePlayerToday(@RequestBody Message msg){
         logger.info("点赞", JSONObject.toJSONString(msg));
         Message message = new Message(msg.getSource(), msg.getTarget(),
                 new MessageData<Boolean>(msg.getData().getType(),msg.getData().getModel()));
@@ -59,12 +64,37 @@ public class ConsumerLikesController {
     }
 
 
+    /**
+     * 当天是否可以点赞
+     * 投资
+     * @param msg
+     * @return
+     */
+    @ApiOperation(value = "当天是否可以点赞", notes = "当天是否可以点赞（投资）", response = Message.class)
+    @RequestMapping("/canLikeInvestToday")
+    public Message canLikeInvestToday(@RequestBody Message msg){
+        logger.info("点赞", JSONObject.toJSONString(msg));
+        Message message = new Message(msg.getSource(), msg.getTarget(),
+                new MessageData<Boolean>(msg.getData().getType(),msg.getData().getModel()));
+
+        Map<String, Object> conditionMap = getConditionMap(msg);
+        Result<Integer> result = likesService.canInvestLikesToday(JSON.toJSONString(conditionMap));
+        if (result.getSuccess() && result.getData() > 0){
+            message.getData().setData(Boolean.FALSE);
+        }else {
+            message.getData().setData(Boolean.TRUE);
+        }
+        message.setDesc(result.getMsg());
+        return message;
+    }
+
 
     /**
      * 点赞
      * @param msg
      * @return
      */
+    @ApiOperation(value = "点赞", notes = "点赞", response = Message.class)
     @RequestMapping("/likefriend")
     public Message playerLike(@RequestBody Message msg){
         logger.info("点赞", JSONObject.toJSONString(msg));
@@ -101,10 +131,11 @@ public class ConsumerLikesController {
     }*/
 
     /**
-     * 玩家点赞总数
+     * 玩家被点赞总数
      * @param msg
      * @return
      */
+    @ApiOperation(value = "玩家被点赞总数", notes = "玩家被点赞总数", response = Message.class)
     @RequestMapping("/likesCount")
     public Message playerLikesCount(@RequestBody Message msg){
         logger.info("获取玩家点赞总数，{}",msg);
@@ -125,6 +156,7 @@ public class ConsumerLikesController {
      * @param msg
      * @return
      */
+    @ApiOperation(value = "点赞项目", notes = "点赞项目", response = Message.class)
     @RequestMapping("/likesList")
     public Message playerLikesList(@RequestBody Message msg) {
         logger.info("获取点赞项目，{}", msg);

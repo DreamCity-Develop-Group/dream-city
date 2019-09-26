@@ -39,7 +39,7 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
         boolean success = Boolean.FALSE;
         String msg = null;
         record.setAmountDynType(AmountDynType.in.name());
-        record.setTradeType(TradeType.recharge.name());
+        record.setTradeType(TradeType.RECHARGE.name());
         Result<BigDecimal> updateAccountResult = null;
         try {
             //充值
@@ -67,13 +67,12 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
     @Transactional
     public Result playerWithdraw(PlayerAccountReq record) {
         boolean success = Boolean.FALSE;
-        String msg = null;
+        String msg = "玩家提现";
         record.setAmountDynType(AmountDynType.out.name());
-        record.setTradeType(TradeType.withdraw.name());
+        record.setTradeType(TradeType.WITHDRAW.name());
         Result<BigDecimal> updateAccountResult = null;
         try {
             //校验提现规则 todo
-            PlayerEarning playerEarning = earningService.getPlayerEarningByPlayerId(record.getAccPlayerId());
 
             //提现 冻结金额
             updateAccountResult = updatePlayerAccount(record);
@@ -90,15 +89,6 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
                 createTradeVerify(createPlayerTradeResult.getData().getTradeId(),updateAccountResult.getData(),
                         VerifyStatus.wait.name(),updateAccountResult.getMsg());
             }
-
-            String accAddr = record.getAccAddr();
-            if (isInsideAccAddr(accAddr)){
-                //内部提现 todo
-
-            } else {
-                //外部提现 todo
-
-            }
         }catch (Exception e){
             logger.error("提现异常",e);
             throw new BusinessException("提现异常");
@@ -111,58 +101,62 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
     @Transactional
     public Result playerTransfer(PlayerAccountReq recordOut) {
         boolean success = Boolean.FALSE;
-
-        recordOut.setTradeType(TradeType.transfer.name());
+        String msg = "玩家转账";
+        recordOut.setTradeType(TradeType.TRANSFER.name());
         Result<BigDecimal> updateAccountResult = null;
         try {
-            //转账 出账
+            String verifyStatus = VerifyStatus.wait.name();
+            //获取转账账户信息
             PlayerAccount accountOut = new PlayerAccount();
             accountOut.setAccPlayerId(recordOut.getAccPlayerId());
             PlayerAccount playerAccountOut = accountService.getPlayerAccount(accountOut);
-
             recordOut.setAccId(playerAccountOut.getAccId());
+
+            //转账账户 出账
             recordOut.setAmountDynType(AmountDynType.out.name());
             updateAccountResult = updatePlayerAccount(recordOut);
             success = updateAccountResult.getSuccess();
-
-            //新增交易记录
-            Result<PlayerTrade> createPlayerTradeResult = createPlayerTrade(recordOut,
-                    updateAccountResult.getData(), updateAccountResult.getMsg());
-
-            String verifyStatus = VerifyStatus.wait.name();
             if (isInsideAccAddr(recordOut.getAccAddr())){
                 //内部转账 立即到账
+                msg = "玩家内部转账";
                 verifyStatus = VerifyStatus.pass.name();
+                //转账账户出账成功就立即到账
+                if (success){
+                    msg = "玩家内部转账成功";
+                    //获取转入账户信息
+                    PlayerAccount accountIn = new PlayerAccount();
+                    accountIn.setAccPlayerId(recordOut.getFriendId());
+                    PlayerAccount playerAccountIn = accountService.getPlayerAccount(accountIn);
+                    //内部转账 立即到账 转入账户入账
+                    PlayerAccountReq recordIn = new PlayerAccountReq();
+                    recordIn.setAccId(playerAccountIn.getAccId());
+                    recordIn.setAccPlayerId(recordOut.getFriendId());
+                    recordIn.setAmountDynType(AmountDynType.in.name());
+                    Result<BigDecimal> transferInResult = updatePlayerAccount(recordIn);
 
-                //立即到账 入账
-                PlayerAccount accountIn = new PlayerAccount();
-                accountIn.setAccPlayerId(recordOut.getFriendId());
-                PlayerAccount playerAccountIn = accountService.getPlayerAccount(accountIn);
-
-                PlayerAccountReq recordIn = recordOut;
-                recordIn.setAccId(playerAccountIn.getAccId());
-                recordIn.setAccPlayerId(recordOut.getFriendId());
-                recordIn.setAmountDynType(AmountDynType.in.name());
-                Result<BigDecimal> transferInResult = updatePlayerAccount(recordIn);
-
-                //新增交易记录 入账
-                recordIn.setAccId(playerAccountIn.getAccId());
-                createPlayerTrade(recordIn,transferInResult.getData(), transferInResult.getMsg());
+                    //新增交易记录 入账
+                    recordIn.setAccId(playerAccountIn.getAccId());
+                    createPlayerTrade(recordIn,transferInResult.getData(), transferInResult.getMsg());
+                }
             }else {
-                //外部转账 相当于提现 TODO
-
+                //外部转账 相当于提现 待审核
+                msg = "玩家外部转账,待审核";
             }
 
-            //新增交易审核 不是内部转账
+            //新增交易记录 出账
+            Result<PlayerTrade> createPlayerTradeResult = createPlayerTrade(recordOut,
+                    updateAccountResult.getData(), msg);
+
+            //新增交易审核 内部转账：审核通过；外部转账：待审核
             if (createPlayerTradeResult.getSuccess() && !isInsideAccAddr(recordOut.getAccAddr())){
                 createTradeVerify(createPlayerTradeResult.getData().getTradeId(),updateAccountResult.getData(),
-                        verifyStatus,updateAccountResult.getMsg());
+                        verifyStatus, msg);
             }
         }catch (Exception e){
             logger.error("转账异常",e);
             throw new BusinessException("转账异常");
         }
-        return new Result(success,updateAccountResult.getMsg(),success);
+        return new Result(success,msg,success);
     }
 
     /**
@@ -205,8 +199,8 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
 
         BigDecimal tradeAmount = BigDecimal.ZERO;
         //充值
-        if (record.getTradeType().equalsIgnoreCase(TradeType.recharge.name())){
-            tradeType = TradeType.recharge.getDesc();
+        if (record.getTradeType().equalsIgnoreCase(TradeType.RECHARGE.name())){
+            tradeType = TradeType.RECHARGE.getDesc();
             //            //账户金额加上充值金额
             if (record.getTradeType().equalsIgnoreCase(AmountType.mt.name())){
                 tradeAmount = record.getAccMt();
@@ -219,8 +213,8 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
             }
         }
         //提现
-        if (record.getTradeType().equalsIgnoreCase(TradeType.withdraw.name())){
-            tradeType = TradeType.withdraw.getDesc();
+        if (record.getTradeType().equalsIgnoreCase(TradeType.WITHDRAW.name())){
+            tradeType = TradeType.WITHDRAW.getDesc();
             //账户金额减去提现金额
             if (record.getTradeType().equalsIgnoreCase(AmountType.mt.name())){
                 tradeAmount = record.getAccMt();
@@ -235,8 +229,8 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
             }
         }
         //转账
-        if (record.getTradeType().equalsIgnoreCase(TradeType.transfer.name())){
-            tradeType = TradeType.transfer.getDesc();
+        if (record.getTradeType().equalsIgnoreCase(TradeType.TRANSFER.name())){
+            tradeType = TradeType.TRANSFER.getDesc();
             if (record.getAmountDynType().equalsIgnoreCase(AmountDynType.out.name())){
                 //转账转出 账户金额减去转账金额
                 if (isInsideAccAddr(record.getAccAddr())){

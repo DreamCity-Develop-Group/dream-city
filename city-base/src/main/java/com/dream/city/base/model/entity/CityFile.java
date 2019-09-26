@@ -19,6 +19,8 @@ public class CityFile implements Serializable {
     /** 添加人id */
     private String fromId;
 
+    private String descr;
+
     /**  */
     private Date createTime;
 
@@ -79,5 +81,21 @@ public class CityFile implements Serializable {
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public Boolean getValid() {
+        return isValid;
+    }
+
+    public void setValid(Boolean valid) {
+        isValid = valid;
+    }
+
+    public String getDescr() {
+        return descr;
+    }
+
+    public void setDescr(String descr) {
+        this.descr = descr;
     }
 }

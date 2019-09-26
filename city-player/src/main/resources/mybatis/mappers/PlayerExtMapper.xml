@@ -9,27 +9,24 @@
     <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
     <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
   </resultMap>
+
   <sql id="Base_Column_List">
     id, player_id, friendlink, imgurl, create_date, update_date
   </sql>
+
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from player_ext
     where id = #{id,jdbcType=BIGINT}
   </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from player_ext
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.dream.city.base.model.entity.PlayerExt">
-    insert into city_player_ext (id, player_id, friendlink,
-      imgurl, create_date, update_date
-      )
-    values (#{id,jdbcType=BIGINT}, #{playerId,jdbcType=VARCHAR}, #{friendlink,jdbcType=VARCHAR}, 
-      #{imgurl,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, #{updateDate,jdbcType=TIMESTAMP}
-      )
-  </insert>
+
+
   <insert id="insertSelective" parameterType="com.dream.city.base.model.entity.PlayerExt">
     insert into city_player_ext
     <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -73,6 +70,7 @@
       </if>
     </trim>
   </insert>
+
   <update id="updateByPrimaryKeySelective" parameterType="com.dream.city.base.model.entity.PlayerExt">
     update city_player_ext
     <set>
@@ -85,23 +83,27 @@
       <if test="imgurl != null">
         imgurl = #{imgurl,jdbcType=VARCHAR},
       </if>
-      <if test="createDate != null">
-        create_date = #{createDate,jdbcType=TIMESTAMP},
-      </if>
       <if test="updateDate != null">
         update_date = #{updateDate,jdbcType=TIMESTAMP},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.dream.city.base.model.entity.PlayerExt">
+
+  <update id="updateByPlayerIdSelective" parameterType="com.dream.city.base.model.entity.PlayerExt">
     update city_player_ext
-    set player_id = #{playerId,jdbcType=VARCHAR},
-      friendlink = #{friendlink,jdbcType=VARCHAR},
-      imgurl = #{imgurl,jdbcType=VARCHAR},
-      create_date = #{createDate,jdbcType=TIMESTAMP},
-      update_date = #{updateDate,jdbcType=TIMESTAMP}
-    where id = #{id,jdbcType=BIGINT}
+    <set>
+      <if test="friendlink != null">
+        friendlink = #{friendlink,jdbcType=VARCHAR},
+      </if>
+      <if test="imgurl != null">
+        imgurl = #{imgurl,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where player_id = #{playerId,jdbcType=VARCHAR}
   </update>
 
 </mapper>

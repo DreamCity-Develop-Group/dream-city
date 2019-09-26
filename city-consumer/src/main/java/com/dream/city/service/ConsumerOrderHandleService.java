@@ -36,20 +36,29 @@ public interface ConsumerOrderHandleService {
     Message playerInvestCancel(Message msg);
 
     /**
-     * 查询订单
+     * 查询投资
      * @param msg
      * @return
      */
     @RequestMapping("/getOrderById/{orderId}")
-    Message getplayerInvestOrderById(Message msg);
+    Message getPlayerInvestOrderById(Message msg);
 
     /**
-     * 订单列表
+     * 投资列表
      * @param msg
      * @return
      */
     @RequestMapping("/getOrders")
-    Message getplayerInvestOrders(Message msg);
+    Message getPlayerInvestOrders(Message msg);
+
+
+    /**
+     * 好友投资列表
+     * @param msg
+     * @return
+     */
+    @RequestMapping("/getOrders")
+    Message getFriendInvestOrders(Message msg);
 
 
 
