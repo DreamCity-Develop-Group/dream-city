@@ -3,6 +3,7 @@ package com.dream.city.base.utils;
 
 import com.alibaba.fastjson.JSON;
 import com.dream.city.base.model.Message;
+import com.dream.city.base.model.entity.CityFile;
 import com.dream.city.base.model.entity.CityInvest;
 import com.dream.city.base.model.entity.PlayerEarning;
 import com.dream.city.base.model.req.*;
@@ -165,6 +166,19 @@ public class DataUtils {
         likes.setLikedInvestTotal(likedInvestTotal);
         likes.setLikePlayerId(likePlayerId);
         return likes;
+    }
+
+    public static CityFile getCityFileFromMsg(Message msg){
+        Map map = (Map)msg.getData().getData();
+        String id = map.containsKey("id")?(String)map.get("id"):"0";
+        String fileName = map.containsKey("fileName")?(String)map.get("fileName"):null;
+        String fileType = map.containsKey("fileType")?(String)map.get("fileType"):null;
+
+        CityFile data = new CityFile();
+        data.setId(Long.parseLong(id));
+        data.setFileName(fileName);
+        data.setFileType(fileType);
+        return data;
     }
 
 

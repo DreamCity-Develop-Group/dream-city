@@ -10,6 +10,8 @@ public class CityFile implements Serializable {
     /** 文件访问路径 */
     private String fileUrl;
 
+    private String fileName;
+
     /** 文件类型 */
     private String fileType;
 
@@ -97,5 +99,13 @@ public class CityFile implements Serializable {
 
     public void setDescr(String descr) {
         this.descr = descr;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 }
