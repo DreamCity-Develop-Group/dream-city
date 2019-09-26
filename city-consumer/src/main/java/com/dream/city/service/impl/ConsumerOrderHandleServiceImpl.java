@@ -77,6 +77,18 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
         if (orderReq.getOrderAmount().compareTo(invest.getInLimit())>0){
             desc = "超过项目投资限额，投资限额为：" + invest.getInLimit();
         }
+        PlayerAccount getPlayerAccount = new PlayerAccount();
+        getPlayerAccount.setAccPlayerId(orderReq.getPayerId());
+        Result<PlayerAccount> playerAccountResult = accountService.getPlayerAccount(getPlayerAccount);
+        PlayerAccount playerAccount = playerAccountResult.getData();
+        //5USDT不足
+        if (orderReq.getOrderAmount().compareTo(playerAccount.getAccUsdtAvailable()) > 0){
+            desc = "USDT不足";
+        }
+        //6MT不足
+        if (BigDecimal.valueOf(Double.parseDouble(String .valueOf(invest.getInTax()))).compareTo(playerAccount.getAccMtAvailable()) > 0){
+            desc = "MT不足";
+        }
 
         //生成订单
         Result<InvestOrder> orderResult = this.orderCreate(invest.getInId(),orderReq.getPayerId(),orderRepeat,desc);
@@ -91,7 +103,7 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
         String tradeAmountType = TradeType.MTINVEST.getCode();
         if (order != null && order.getOrderId() != null){
             success = Boolean.TRUE;
-            updatePlayerAccountResult = this.deductPlayerAccountAmount(orderReq,tradeAmountType,inTax);
+            updatePlayerAccountResult = this.deductPlayerAccountAmount(orderReq,playerAccount,tradeAmountType,inTax);
             amountType = updatePlayerAccountResult.get("amountType");
             updatePlayerAccountDate = Integer.parseInt(updatePlayerAccountResult.get("data"));
             updatePlayerAccountSuccess = Boolean.parseBoolean(updatePlayerAccountResult.get("success"));
@@ -119,7 +131,7 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
             success = Boolean.TRUE;
             //冻结税金 从账户冻结，提取成功后直接扣除税金
             tradeAmountType = TradeType.USDTINVESTTAX.getCode();
-            deductTaxMap = this.deductPlayerAccountAmount(orderReq, tradeAmountType, inTax);
+            deductTaxMap = this.deductPlayerAccountAmount(orderReq,playerAccount,tradeAmountType, inTax);
 
             //生成投资待审核
             tradeVerifyResult = this.createTradeVerify(trade);
@@ -197,14 +209,11 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
      * @param orderReq
      * @return
      */
-    private Map<String,String> deductPlayerAccountAmount(InvestOrderReq orderReq,String tradeAmountType,BigDecimal inTax){
+    private Map<String,String> deductPlayerAccountAmount(InvestOrderReq orderReq,PlayerAccount playerAccount,String tradeAmountType,BigDecimal inTax){
         String amountType = AmountType.usdt.name();
         String msg = "";
-        PlayerAccount getPlayerAccount = new PlayerAccount();
-        getPlayerAccount.setAccPlayerId(orderReq.getPayerId());
-        Result<PlayerAccount> playerAccountResult = accountService.getPlayerAccount(getPlayerAccount);
-        BigDecimal mtAvailable = playerAccountResult.getData().getAccMtAvailable();
-        BigDecimal usdtAvailable = playerAccountResult.getData().getAccUsdtAvailable();
+        BigDecimal mtAvailable = playerAccount.getAccMtAvailable();
+        BigDecimal usdtAvailable = playerAccount.getAccUsdtAvailable();
 
         //usdt余额是否充足
         if (orderReq.getOrderAmount().compareTo(usdtAvailable) > 0){
@@ -218,11 +227,8 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
         String success = "";
         String data = "";
         if (StringUtils.isBlank(msg)){
-            PlayerAccount playerAccount = new PlayerAccount();
-            if (playerAccountResult.getSuccess() && playerAccountResult.getData() != null){
-                playerAccount.setAccId(playerAccountResult.getData().getAccId());
-                playerAccount.setAccPlayerId(playerAccountResult.getData().getAccPlayerId());
-            }
+            playerAccount.setAccId(playerAccount.getAccId());
+            playerAccount.setAccPlayerId(playerAccount.getAccPlayerId());
             /*if (orderReq.getAmountType().equalsIgnoreCase(AmountType.mt.name())){
                 amountType = AmountType.mt.name();
                 tradeAmountType = TradeType.MTINVEST.getCode();

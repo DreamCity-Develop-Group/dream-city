@@ -42,7 +42,7 @@ public class ConsumerPropertyController {
         logger.info("查询物业", JSONObject.toJSONString(msg));
 
         CityInvest invest = DataUtils.getInvestFromMessage(msg);
-        Result result = investService.getInvest(invest);
+        Result result = investService.getInvestByIdOrName(invest);
         msg.getData().setData(JSON.toJSONString(result.getData()));
         msg.setDesc(result.getMsg());
         return msg;
