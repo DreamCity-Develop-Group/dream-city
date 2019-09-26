@@ -37,10 +37,10 @@
       <if test="orderInvestId !=null">
         and  order_invest_id = #{orderInvestId,jdbcType=INTEGER}
       </if>
-      <if test="orderPayerId !=null">
+      <if test="orderPayerId !=null and orderPayerId !=''">
         and  order_payer_id = #{orderPayerId,jdbcType=VARCHAR}
       </if>
-      <if test="orderState !=null">
+      <if test="orderState !=null and orderState !=''">
         and  order_state = #{orderState,jdbcType=VARCHAR}
       </if>
       <if test="orderAmount !=null">
@@ -53,6 +53,20 @@
     order by create_time
   </select>
 
+
+  <select id="countOrdersByPayerIdInvestId" resultMap="BaseResultMap" parameterType="com.dream.city.base.model.entity.InvestOrder" >
+    SELECT IFNULL(COUNT(order_invest_id),0) FROM invest_order
+    WHERE order_state != 'INVALID'
+    <if test="orderState !=null and orderState !=''">
+      and  order_state in(#{orderState,jdbcType=VARCHAR})
+    </if>
+    <if test="orderInvestId !=null">
+      and  order_invest_id = #{orderInvestId,jdbcType=INTEGER}
+    </if>
+    <if test="orderPayerId !=null and orderPayerId !=''">
+      and  order_payer_id = #{orderPayerId,jdbcType=VARCHAR}
+    </if>
+  </select>
 
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >

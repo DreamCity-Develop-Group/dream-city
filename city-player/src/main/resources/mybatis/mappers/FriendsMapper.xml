@@ -51,26 +51,28 @@
   <!-- 申请列表  -->
   <select id="applyFriendList" parameterType="com.dream.city.base.model.req.PageReq" resultType="java.util.Map">
     select a.id, a.player_id playerId, a.friend_id friendId, a.agree,
-      b.friend_name friendName,b.friend_nick friendNick,b.friendlink,b.imgurl FROM
-      (select f.id, f.player_id, f.friend_id , f.agree,f.create_time FROM player_friends f,city_player p
+      b.friend_name friendName,b.friend_nick friendNick,b.friendlink,b.imgurl,g.grade,g.integral
+    FROM (select f.id, f.player_id, f.friend_id , f.agree,f.create_time FROM player_friends f,city_player p
       where f.player_id =p.player_id and f.agree =0 and p.player_name = #{condition.username,jdbcType=VARCHAR}
       ) a,
       (SELECT p.player_id friend_id,p.player_name friend_name,p.player_nick friend_nick,e.friendlink,e.imgurl
       FROM city_player p,player_ext e WHERE p.player_id=e.player_id) b
-    WHERE a.friend_id = b.friend_id
-    <if test="condition.nick != null">
-      and b.friend_nick = #{condition.nick,jdbcType=VARCHAR}
-    </if>
+      ,player_grade g
+      WHERE a.friend_id = b.friend_id and b.friend_id=g.player_id
+      <if test="condition.nick != null">
+        and b.friend_nick = #{condition.nick,jdbcType=VARCHAR}
+      </if>
     ORDER BY a.create_time DESC limit ${start},${pageSize}
   </select>
   <select id="applyFriendCount" parameterType="com.dream.city.base.model.req.PageReq" resultType="java.lang.Integer">
-    select COUNT(a.friend_id) FROM
-      (select f.id, f.player_id, f.friend_id , f.agree,f.create_time FROM player_friends f,city_player p
+    select COUNT(a.friend_id)
+    FROM (select f.id, f.player_id, f.friend_id , f.agree,f.create_time FROM player_friends f,city_player p
       where f.player_id =p.player_id and f.agree =0 and p.player_name = #{condition.username,jdbcType=VARCHAR}
       ) a,
       (SELECT p.player_id friend_id,p.player_name friend_name,p.player_nick friend_nick,e.friendlink,e.imgurl
       FROM city_player p,player_ext e WHERE p.player_id=e.player_id) b
-    WHERE a.friend_id = b.friend_id
+      ,player_grade g
+    WHERE a.friend_id = b.friend_id and b.friend_id=g.player_id
     <if test="condition.nick != null">
       and b.friend_nick = #{condition.nick,jdbcType=VARCHAR}
     </if>

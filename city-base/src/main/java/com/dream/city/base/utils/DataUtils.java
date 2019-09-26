@@ -3,12 +3,10 @@ package com.dream.city.base.utils;
 
 import com.alibaba.fastjson.JSON;
 import com.dream.city.base.model.Message;
+import com.dream.city.base.model.entity.CityFile;
 import com.dream.city.base.model.entity.CityInvest;
 import com.dream.city.base.model.entity.PlayerEarning;
-import com.dream.city.base.model.req.InvestOrderReq;
-import com.dream.city.base.model.req.PlayerAccountReq;
-import com.dream.city.base.model.req.PlayerLikesReq;
-import com.dream.city.base.model.req.UserReq;
+import com.dream.city.base.model.req.*;
 import org.apache.commons.lang.StringUtils;
 
 import java.math.BigDecimal;
@@ -81,14 +79,20 @@ public class DataUtils {
         return earning;
     }
 
-    public static CityInvest getInvestFromMessage(Message msg){
+    public static CityInvestReq getInvestFromMessage(Message msg){
         Map map = (Map)msg.getData().getData();
-        Integer investId = map.containsKey("investId")?Integer.parseInt(String.valueOf(map.get("investId"))):null;
+        Integer inId = map.containsKey("inId")?Integer.parseInt(String.valueOf(map.get("inId"))):null;
         String inName = map.containsKey("inName")?String.valueOf(map.get("inName")):null;
+        String isValid = map.containsKey("isValid")?String.valueOf(map.get("isValid")):null;
+        String payerId = map.containsKey("payerId")?String.valueOf(map.get("payerId")):null;
+        String username = map.containsKey("username")?String.valueOf(map.get("username")):null;
 
-        CityInvest result = new CityInvest();
-        result.setInId(investId);
+        CityInvestReq result = new CityInvestReq();
+        result.setInId(inId);
         result.setInName(inName);
+        result.setIsValid(isValid);
+        result.setPayerId(payerId);
+        result.setUsername(username);
         return result;
     }
 
@@ -162,6 +166,19 @@ public class DataUtils {
         likes.setLikedInvestTotal(likedInvestTotal);
         likes.setLikePlayerId(likePlayerId);
         return likes;
+    }
+
+    public static CityFile getCityFileFromMsg(Message msg){
+        Map map = (Map)msg.getData().getData();
+        String id = map.containsKey("id")?(String)map.get("id"):"0";
+        String fileName = map.containsKey("fileName")?(String)map.get("fileName"):null;
+        String fileType = map.containsKey("fileType")?(String)map.get("fileType"):null;
+
+        CityFile data = new CityFile();
+        data.setId(Long.parseLong(id));
+        data.setFileName(fileName);
+        data.setFileType(fileType);
+        return data;
     }
 
 

@@ -104,11 +104,12 @@ public class TradeController {
     public Result<List<PlayerTrade>> getPlayerTradeList(@RequestBody PlayerTrade record){
         logger.info("获取投资记录，{}", record);
         boolean success = Boolean.FALSE;
-        String desc = "获取投资记录成功";
+        String desc = "获取投资记录失败";
         List<PlayerTrade> resultDate = null;
         try {
             resultDate = tradeService.getPlayerTradeList(record);
             success = Boolean.TRUE;
+            desc = "获取投资记录成功";
         }catch (Exception e){
             desc = "获取投资记录异常";
             logger.error(desc,e);

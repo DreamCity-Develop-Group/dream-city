@@ -21,7 +21,7 @@ public interface ConsumerPropertyService {
      * @return
      */
     @RequestMapping("/insertInvest")
-    Result insertInvest(@RequestBody CityInvest record);
+    Result<Integer> insertInvest(@RequestBody CityInvest record);
 
 
     /**
@@ -38,7 +38,7 @@ public interface ConsumerPropertyService {
      * @return
      */
     @RequestMapping("/updateInvest")
-    Result updateInvest(@RequestBody CityInvest record);
+    Result<Integer> updateInvest(@RequestBody CityInvest record);
 
     /**
      * 物业列表
@@ -46,7 +46,7 @@ public interface ConsumerPropertyService {
      * @return
      */
     @RequestMapping("/getInvestLsit")
-    Result getInvestLsit(@RequestBody CityInvest record);
+    Result<List<CityInvest>> getInvestLsit(@RequestBody CityInvest record);
 
 
 

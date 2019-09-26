@@ -31,15 +31,16 @@ public class PropertyController {
      * @return
      */
     @RequestMapping("/insertInvest")
-    public Result insertInvest(@RequestBody CityInvest invest) {
+    public Result<Integer> insertInvest(@RequestBody CityInvest invest) {
         logger.info("新建物业，{}", invest);
-
+        boolean success = Boolean.FALSE;
         int i = investService.insertInvest(invest);
         String desc = "新建物业失败";
         if (i > 0){
             desc = "新建物业成功";
+            success = Boolean.TRUE;
         }
-        Result<Integer> result = new Result<>(Boolean.TRUE,desc,i);
+        Result<Integer> result = new Result<>(success,desc,i);
         return result;
     }
 
@@ -51,13 +52,14 @@ public class PropertyController {
     @RequestMapping("/getInvestByIdOrName")
     public Result<CityInvest> getInvestByIdOrName(@RequestBody CityInvest invest) {
         logger.info("查询物业，{}", invest);
-
+        boolean success = Boolean.FALSE;
         CityInvest data = investService.getInvestByIdOrName(invest);
         String desc = "查询物业失败";
         if (data != null){
             desc = "查询物业成功";
+            success = Boolean.TRUE;
         }
-        Result<CityInvest> result = new Result<>(Boolean.TRUE,desc,data);
+        Result<CityInvest> result = new Result<>(success,desc,data);
         return result;
     }
 
@@ -67,15 +69,16 @@ public class PropertyController {
      * @return
      */
     @RequestMapping("/updateInvest")
-    public Result updateInvest(@RequestBody CityInvest invest){
+    public Result<Integer> updateInvest(@RequestBody CityInvest invest){
         logger.info("更新物业，{}", invest);
-
+        boolean success = Boolean.FALSE;
         int i = investService.updateInvest(invest);
         String desc = "更新物业失败";
         if (i > 0){
             desc = "更新物业成功";
+            success = Boolean.FALSE;
         }
-        Result<Integer> result = new Result<>(Boolean.TRUE,desc,i);
+        Result<Integer> result = new Result<>(success,desc,i);
         return result;
     }
 
@@ -85,18 +88,19 @@ public class PropertyController {
      * @return
      */
     @RequestMapping("/getInvestLsit")
-    public Result getInvestLsit(@RequestBody CityInvest invest) {
+    public Result<List<CityInvest>> getInvestLsit(@RequestBody CityInvest invest) {
         logger.info("物业列表，{}", invest);
-
+        boolean success = Boolean.FALSE;
         String desc = "查询物业列表失败";
         List<CityInvest> data = null;
         try {
             data = investService.getInvestLsit(invest);
             desc = "查询物业列表成功";
+            success = Boolean.FALSE;
         }catch (Exception e){
             logger.error("查询物业列表异常",e);
         }
-        Result<List<CityInvest>> result = new Result<>(Boolean.TRUE,desc,data);
+        Result<List<CityInvest>> result = new Result<>(success,desc,data);
         return result;
     }
 

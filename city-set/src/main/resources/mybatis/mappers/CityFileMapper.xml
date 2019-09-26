@@ -3,6 +3,7 @@
 <mapper namespace="com.dream.city.domain.mapper.CityFileMapper" >
   <resultMap id="BaseResultMap" type="com.dream.city.base.model.entity.CityFile" >
     <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="file_name" property="fileName" jdbcType="VARCHAR" />
     <result column="file_url" property="fileUrl" jdbcType="VARCHAR" />
     <result column="file_type" property="fileType" jdbcType="VARCHAR" />
     <result column="is_valid" property="isValid" jdbcType="BIT" />

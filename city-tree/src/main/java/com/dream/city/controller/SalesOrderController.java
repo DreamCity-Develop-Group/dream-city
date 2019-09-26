@@ -44,7 +44,7 @@ public class SalesOrderController {
         if (StringUtils.isBlank(playerId)){
             return new Result("参数错误",501);
         }
-        if (buyAmount.compareTo(new BigDecimal(0.00))<=1){
+        if (buyAmount.compareTo(new BigDecimal(0.00)) < 0){
             return new Result("购买额度不能小于0",500);
         }
         //支付比率 USDT 和 MT

@@ -47,11 +47,11 @@
   </select>
 
   <select id="getPlayers" parameterType="com.dream.city.base.model.req.PageReq" resultMap="BaseResultMap">
-    SELECT p.player_id playerId,p.player_name playerName,p.player_nick playerNick,p.create_time,
-        e.friendlink playerLink,e.imgurl
-    from city_player p,city_player_ext e
+    SELECT p.player_id playerId,p.player_name username,p.player_nick playerNick,p.create_time,
+        e.friendlink playerLink,e.imgurl,g.grade,g.integral
+    from city_player p,player_ext e,player_grade g
     <where>
-      p.player_id=e.player_id
+      p.player_id=e.player_id and p.player_id=g.player_id
       <if test="condition != null and condition != ''">
         and p.player_nick = #{_parameter}
       </if>
@@ -60,13 +60,12 @@
   </select>
   <select id="getPlayersCount" parameterType="com.dream.city.base.model.req.PageReq" resultType="java.lang.Integer">
     SELECT COUNT(p.player_id)
-    from city_player p,city_player_ext e
+    from city_player p,player_ext e,player_grade g
     <where>
-      p.player_id=e.player_id
+      p.player_id=e.player_id and p.player_id=g.player_id
       <if test="condition != null and condition != ''">
-        and p.player_nick = #{_parameter} 
+        and p.player_nick = #{_parameter}
       </if>
-
     </where>
   </select>
 

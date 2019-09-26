@@ -169,8 +169,8 @@ public class ConsumerPlayerController {
      * @return
      */
     @ApiOperation(value = "广场玩家列表", notes = "广场玩家列表", response = Message.class)
-    @RequestMapping("/squareFriend")
-    public Message squareFriend(@RequestBody Message msg) {
+    @RequestMapping("/squareFriends")
+    public Message squareFriends(@RequestBody Message msg) {
         log.info("广场玩家列表", JSONObject.toJSONString(msg));
         UserReq jsonReq = DataUtils.getUserReq(msg);
         String condition = jsonReq.getNick();
