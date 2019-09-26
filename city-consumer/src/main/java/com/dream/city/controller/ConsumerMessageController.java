@@ -35,17 +35,17 @@ public class ConsumerMessageController {
      * @return
      */
     @RequestMapping("/getCode")
-    public Result getCode(@RequestBody Message msg) {
+    public Message getCode(@RequestBody Message msg) {
         log.info("获取认证码:"+JSONObject.toJSONString(msg));
         Map<String, Object> map = new HashMap<>();
-        Message code = messageService.getCode(msg);
-        map.put("code", code.getData().getData());
+        Result code = messageService.getCode(msg);
         MessageData messageData = new MessageData(msg.getData().getType(),msg.getData().getModel());
-        messageData.setData(map);
         Message message = new Message(msg.getSource(), msg.getTarget(), messageData);
 
-
-        return new Result(true,"验证码",200,message);
+        map.put("code", code.getData());
+        messageData.setData(map);
+        message.setDesc(code.getMsg());
+       return message;
     }
 
     /**
@@ -55,12 +55,25 @@ public class ConsumerMessageController {
      * @return
      */
     @RequestMapping("/checkCode")
-    public Result checkCode(@RequestParam("code")String code,@RequestParam("phone")String account) {
+    public Message checkCode(@RequestParam("code")String code,@RequestParam("phone")String account) {
+        MessageData messageData = new MessageData("checkCode","consumer/message");
+        Message message = new Message();
         if (StringUtils.isBlank(code) || StringUtils.isBlank(account)){
-            return Result.result(false,"参数为空",500);
+            message.setDesc("参数为空");
+            message.setData(messageData);
+            message.setCreatetime(String.valueOf(System.currentTimeMillis()));
+            message.setTarget("");
+            message.setSource("server");
+            return message;
         }
         Result result = messageService.checkCode(code,account);
 
-        return result;
+        message.setDesc(result.getMsg());
+        message.setData(messageData);
+        message.setCreatetime(String.valueOf(System.currentTimeMillis()));
+        message.setTarget("");
+        message.setSource("server");
+
+        return message;
     }
 }

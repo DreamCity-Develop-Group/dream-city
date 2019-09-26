@@ -212,14 +212,15 @@ public class HttpClientServiceImpl implements HttpClientService {
                 log.info("=================================message==================================");
                 log.info(message.toString());
                 log.info("===========================^^^^==message======^^^^^=====================");
+                //WebSocketServer.sendInfo(message);
                 //message.setData(new MessageData());
                 message.setSource("server");
                 message.setTarget(msg.getSource());
-                MessageData msgData = new MessageData();
+                /*MessageData msgData = new MessageData();
                 msgData.setType(msg.getData().getType());
                 msgData.setModel(msg.getData().getModel());
 
-                message.setData(msgData);
+                message.setData(msgData);*/
                 /*if (resp.contains("data")) {
                     String json = JSON.toJSONString(JSON.parseObject(resp).get("data"));
                     JSONObject jsonObject = JSON.parseObject(json);

@@ -184,13 +184,16 @@ public class PlayerServiceImpl implements PlayerService {
         if (StringUtils.isNotBlank(playerName) || StringUtils.isNotBlank(playerNick)) {
             playerByName = playerMapper.getPlayerById(player);
         }
-        PlayerResp playerResp = new PlayerResp();
+        PlayerResp playerResp = null;
         if (playerByName != null){
             playerResp = JSON.toJavaObject(JSON.parseObject(JSON.toJSONString(playerByName)),PlayerResp.class);
 
+            /*这里不用查询级别
             PlayerGrade playerGrade = getPlayerGradeByPlayerId(player.getPlayerId());
             playerResp.setGrade(playerGrade.getGrade());
             playerResp.setCommerceMember(0); //商会成员数 todo
+            */
+            return playerResp;
         }
         return playerResp;
     }

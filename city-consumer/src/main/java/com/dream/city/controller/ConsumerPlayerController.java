@@ -125,12 +125,17 @@ public class ConsumerPlayerController {
     public Message getCode(@RequestBody Message msg) {
         log.info("获取认证码", JSONObject.toJSONString(msg));
         Map<String, Object> map = new HashMap<>();
-        Message code = messageService.getCode(msg);
-        map.put("code", code.getData().getData());
-        MessageData messageData = new MessageData(msg.getData().getType(),msg.getData().getModel());
-        messageData.setData(map);
-        Message message = new Message(msg.getSource(), msg.getTarget(), messageData);
-        return message;
+        Result code = messageService.getCode(msg);
+        if (code.getSuccess()) {
+            map.put("code", code.getData());
+            MessageData messageData = new MessageData(msg.getData().getType(), msg.getData().getModel());
+            messageData.setData(map);
+            Message message = new Message(msg.getSource(), msg.getTarget(), messageData);
+            return message;
+        }else {
+            msg.setDesc(code.getMsg());
+            return msg;
+        }
     }
 
 
@@ -277,17 +282,37 @@ public class ConsumerPlayerController {
     @RequestMapping("/reg")
     public Message reg(@RequestBody Message message) {
         log.info("用户注册", JSONObject.toJSONString(message));
+        Map<String, String> dataInner = new HashMap<>();
         UserReq userReq = DataUtils.getUserReq(message);
         String jsonReq = JSON.toJSONString(userReq);
         Message msg = new Message();
-        msg.setSource(message.getSource());
-        msg.setTarget(message.getTarget());
+        msg.setSource(message.getTarget());
+        msg.setTarget("server");
 
-        MessageData data = new MessageData(msg.getData().getType(),msg.getData().getModel());
-        String jsonData = JsonUtil.parseObjToJson(data.getData());
+        if (null == message.getData() || null == message.getData().getData()){
+            msg.setDesc("参数错误或不能识别");
+            msg.setCreatetime(String.valueOf(System.currentTimeMillis()));
+            MessageData messageData =  message.getData();
+            dataInner.put("desc","参数错误或不能识别");
+            messageData.setData(dataInner);
+            msg.setData(messageData);
+            return msg;
+        }
+        MessageData data = new MessageData(message.getData().getType(),message.getData().getModel());
+        String jsonData = JsonUtil.parseObjToJson(message.getData().getData());
+
         JSONObject jsonObject = JSON.parseObject(jsonData);
         String account = jsonObject.getString("username");
         String code = jsonObject.getString("code");
+        if (StringUtils.isBlank(account) || StringUtils.isBlank(code)){
+            msg.setDesc("参数值不能为空");
+            msg.setCreatetime(String.valueOf(System.currentTimeMillis()));
+            MessageData messageData =  message.getData();
+            dataInner.put("desc","参数值不能为空");
+            messageData.setData(dataInner);
+            msg.setData(message.getData());
+            return msg;
+        }
         /*todo************************************************************/
         // TODO [[验证码验证]]
         /*todo************************************************************/
@@ -297,7 +322,7 @@ public class ConsumerPlayerController {
         Result<JSONObject> reg = null;
         //验证成功
         if (ret.getSuccess()) {
-            Map<String, String> t = new HashMap<>();
+
             /*todo************************************************************/
             // TODO [[插入玩家信息]]
             /*todo************************************************************/
@@ -312,9 +337,12 @@ public class ConsumerPlayerController {
                 // TODO [[登录或注册成功后保存token]]
                 /*todo************************************************************/
                 String token = saveToken(userReq.getUsername());
-                t.put("token", token);
-                t.put("desc", CityGlobal.Constant.REG_SUCCESS);
-                data.setData(t);
+                MessageData messageData =  message.getData();
+                dataInner.put("desc","参数值不能为空");
+
+                dataInner.put("token", token);
+                dataInner.put("desc", CityGlobal.Constant.REG_SUCCESS);
+                data.setData(dataInner);
                 msg.setData(data);
                 msg.setDesc(regSuccess);
 
@@ -349,13 +377,18 @@ public class ConsumerPlayerController {
                     JSONObject parent = JSON.parseObject(JsonUtil.parseObjToJson(resultParent.getData()));
                     String parentId = parent.getString("playerId");
 
-                    //glk关系
+                    //商会关系
                     Result result = treeService.addTree(parentId, playerId, playerInvite);
                     //创建好友关系 待同意
                     friendsService.addFriend(playerId,parentId);
                 }
+            }else{
+                msg.setDesc(reg.getMsg());
+                msg.setData(message.getData());
+                return  msg;
             }
         }
+        msg.setData(message.getData());
         msg.setDesc(ret.getMsg());
         return msg;
     }

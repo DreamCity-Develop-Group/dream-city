@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 /**
  * @author Wvv
  */
-@FeignClient(value = "city-message",url = "localhost")
+@FeignClient(value = "city-message")
 public interface CityMessageService {
 
     /**
@@ -18,7 +18,7 @@ public interface CityMessageService {
      * @return
      */
     @RequestMapping("/message/getCode")
-    Message getCode(@RequestBody Message message);
+    Result getCode(@RequestBody Message message);
 
     @RequestMapping("/message/checkCode")
     Result checkCode(@RequestParam("code")String code,@RequestParam("account")String account);

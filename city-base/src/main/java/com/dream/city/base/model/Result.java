@@ -63,6 +63,7 @@ public class Result<T> {
 
     public Result(boolean success, String msg, T data) {
         super();
+        this.success = success;
         this.msg = msg;
         this.data = data;
         if (success) {
@@ -148,6 +149,14 @@ public class Result<T> {
                 ", msg='" + msg + '\'' +
                 ", data=" + data +
                 '}';
+    }
+
+    public static void main(String[] args) {
+        Result result = Result.result(true,"tesst",200);
+        if (result.getSuccess()){
+            System.out.println("true");
+        }
+        assert result.getSuccess();
     }
 }
 

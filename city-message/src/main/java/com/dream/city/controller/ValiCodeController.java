@@ -90,7 +90,7 @@ public class ValiCodeController {
     }
 
     @RequestMapping("/checkCode")
-    public Result checkCode(@RequestParam("code")String code,@RequestParam("phone")String account) {
+    public Result checkCode(@RequestParam("code")String code,@RequestParam("account")String account) {
         boolean ret = Boolean.FALSE;
         String redisCode = null;
         String redisKey = RedisKeys.REDIS_KEY_VALIDCODE + account;
@@ -112,7 +112,7 @@ public class ValiCodeController {
     }
 
     @RequestMapping("/getCode")
-    public Message getCode(@RequestBody Message message) {
+    public Result getCode(@RequestBody Message message) {
         String code = String.valueOf(new Random().nextInt(999999));
         MessageData data = new MessageData("getcode", "message");
         data.setData(null);
@@ -125,19 +125,22 @@ public class ValiCodeController {
         boolean insertCode = Boolean.FALSE;
         if (null != map && map.containsKey("username")) {
             insertCode = coderService.insertCode((String) map.get("username"), code);
-        }
-        if (insertCode) {
-            msg.getData().setData(code);
-            logger.info("############################## 用户[{}]获取认证码: {}", (String) map.get("username"), code);
+            if (insertCode) {
+                msg.getData().setData(code);
+                logger.info("############################## 用户[{}]获取认证码: {}", (String) map.get("username"), code);
 
-            try {
-                //保存10分钟
-                redisUtils.set(RedisKeys.REDIS_KEY_VALIDCODE + message.getSource(), code, 600);
-            } catch (Exception e) {
-                logger.error("getCode Exception !", e);
+                try {
+                    //保存10分钟
+                    redisUtils.set(RedisKeys.REDIS_KEY_VALIDCODE + message.getSource(), code, 600);
+                    return Result.result(true,"获取验证码成功",200,code);
+                } catch (Exception e) {
+                    logger.error("getCode Exception !", e);
+                }
             }
+            return Result.result(false,"获取验证码失败",200,null);
+        }else{
+            return Result.result(false,"账号/手机号不能为空",500,null);
         }
-        return msg;
     }
 
 }

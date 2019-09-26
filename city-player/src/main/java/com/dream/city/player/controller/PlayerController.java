@@ -18,6 +18,7 @@ import com.dream.city.player.service.LoginLogServcie;
 import com.dream.city.player.service.PlayerExtService;
 import com.dream.city.player.service.PlayerHandleService;
 import com.dream.city.player.service.PlayerService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,12 +31,10 @@ import java.util.Map;
  * 玩家
  * @author Wvv
  */
+@Slf4j
 @RestController
 @RequestMapping("/player")
 public class PlayerController {
-
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
-
     @Autowired
     PlayerService playerService;
     @Autowired
@@ -55,7 +54,7 @@ public class PlayerController {
      */
     @RequestMapping("/reg")
     public Result<JSONObject> reg(@RequestBody String jsonReq){
-        logger.info("用户注册，{}",jsonReq);
+        log.info("用户注册，{}",jsonReq);
         Result<JSONObject> result = new Result<>();
         if (StringUtils.isBlank(jsonReq) || (StringUtils.isNotBlank(jsonReq) && "{}".equals(jsonReq))){
             result.setSuccess(Boolean.FALSE);
@@ -73,17 +72,22 @@ public class PlayerController {
         String tip = "";
         if(StringUtils.isBlank(playerName) || StringUtils.isBlank(playerPass)){
             tip=  "用户名或密码为空";
+            return Result.result(false,tip,500,null);
         }
         // 用户是否存在
         PlayerResp playerExistByName = playerService.getPlayerByName(playerName,null);
         if (playerExistByName != null){
             tip = "["+ playerName +"]" + CityGlobal.Constant.REG_USER_EXIT + ",请直接登录！";
+            return Result.result(false,tip,500,null);
         }
-
+        if (StringUtils.isBlank(nick)){
+            nick = playerName;
+        }
         // 昵称已被使用
         PlayerResp playerExistByNick = playerService.getPlayerByName(null,nick);
         if (playerExistByNick != null){
             tip = "["+ nick +"]" + CityGlobal.Constant.REG_USER_NICK_EXIST;
+            return Result.result(false,tip,500,null);
         }
 
         /*if(StringUtils.isBlank(code)){
@@ -93,9 +97,7 @@ public class PlayerController {
         /*if(StringUtils.isBlank(invite)){
             tip = "邀请码为空";
         }*/
-        if (StringUtils.isBlank(nick)){
-            nick = playerName;
-        }
+
         //生成用户的邀请码 TODO 邀请码重复待处理
         String inviteCode = InvitedCodeUtil.getCode();
         boolean isExists = (playerService.getPlayerByInvite(inviteCode)==null);
@@ -123,7 +125,11 @@ public class PlayerController {
                 result.setData(jsonObject);
                 // 登录成功保存redis
                 loginToRedis(playerInsert);
+
+                return Result.result(true,tip,200,playerInsert);
             }
+        }else {
+            tip="注册失败";
         }
 
         result.setMsg(tip);
@@ -137,7 +143,7 @@ public class PlayerController {
      */
     @RequestMapping("/pwlogoin")
     public Result pwLogoin(@RequestBody String jsonReq){
-        logger.info("用户密码登录，{}",jsonReq);
+        log.info("用户密码登录，{}",jsonReq);
         Map map = JSON.parseObject(jsonReq,Map.class);
         Result result = new Result();
         result.setCode(CityGlobal.ResultCode.fail.getStatus());
@@ -198,7 +204,7 @@ public class PlayerController {
      * @param player
      */
     private void loginToRedis(PlayerResp player){
-        logger.info("登录成功保存redis，{}",player);
+        log.info("登录成功保存redis，{}",player);
         String key = RedisKeys.CURRENT_USER + player.getPlayerName();
         if (redisUtils.hasKey(key)){
             redisUtils.del(key);
@@ -217,7 +223,7 @@ public class PlayerController {
      */
     @RequestMapping("/codelogoin")
     public Result codeLogoin(@RequestBody String jsonReq){
-        logger.info("验证码登录，{}",jsonReq);
+        log.info("验证码登录，{}",jsonReq);
         Map map = JSON.parseObject(jsonReq,Map.class);
         Result result = new Result();
         result.setCode(CityGlobal.ResultCode.fail.getStatus());
@@ -275,7 +281,7 @@ public class PlayerController {
      */
     @RequestMapping("/quit")
     public Result quit(@RequestParam("playerId")String playerId){
-        logger.info("用户退出，playerId:{}",playerId);
+        log.info("用户退出，playerId:{}",playerId);
         Result result = new Result(Boolean.TRUE,"退出成功",CityGlobal.ResultCode.success.getStatus());
         // 用户是否存在
         Player player = new Player();
@@ -308,7 +314,7 @@ public class PlayerController {
     @RequestMapping("/forgetPwd")
     public Result forgetPwd(@RequestParam("username")String username,
                                 @RequestParam("oldPwd") String oldPwd){
-        logger.info("忘记密码，userName:{},oldPwd:{}",username,oldPwd);
+        log.info("忘记密码，userName:{},oldPwd:{}",username,oldPwd);
         return playerService.forgetPwd(username, oldPwd);
     }
 
@@ -323,7 +329,7 @@ public class PlayerController {
     public Result resetLoginPwd(@RequestParam("playerId")String playerId,
                                 @RequestParam("oldPwd") String oldPwd,
                                 @RequestParam("newPwd")  String newPwd){
-        logger.info("重置登录密码，playerId:{},oldPwd:{},newPwd:{}",playerId,oldPwd,newPwd);
+        log.info("重置登录密码，playerId:{},oldPwd:{},newPwd:{}",playerId,oldPwd,newPwd);
         return playerService.resetLoginPwd(playerId, oldPwd,newPwd);
     }
 
@@ -339,7 +345,7 @@ public class PlayerController {
     public Result resetTraderPwd(@RequestParam("playerId")String playerId,
                                  @RequestParam("oldPwd") String oldPwd,
                                  @RequestParam("newPwd")  String newPwd){
-        logger.info("重置交易密码，playerId:{},oldPwd:{},newPwd:{}",playerId,oldPwd,newPwd);
+        log.info("重置交易密码，playerId:{},oldPwd:{},newPwd:{}",playerId,oldPwd,newPwd);
         return playerService.resetTraderPwd(playerId, oldPwd,newPwd);
     }
 
@@ -350,7 +356,7 @@ public class PlayerController {
      */
     @RequestMapping("/get/{playerId}")
     public Result getPlayer(@PathVariable("playerId")String playerId){
-        logger.info("获取玩家，playerId:{}",playerId);
+        log.info("获取玩家，playerId:{}",playerId);
         Player player = playerService.getPlayerById(playerId);
         Result result = null;
         if (player != null){
@@ -369,7 +375,7 @@ public class PlayerController {
      */
     @RequestMapping("/getPlayers")
     public Result<String> getPlayers(@RequestBody PageReq pageReq){
-        logger.info("获取广场玩家列表，{}",pageReq);
+        log.info("获取广场玩家列表，{}",pageReq);
         Result result = null;
         Page page = null;
 
@@ -386,7 +392,7 @@ public class PlayerController {
 
     @RequestMapping(value = "/getPlayerByName",method = RequestMethod.POST,produces="application/json; utf-8")
     public Result getPlayerByName(@RequestBody String jsonReq){
-        logger.info("根据用户名或昵称获取玩家，{}",jsonReq);
+        log.info("根据用户名或昵称获取玩家，{}",jsonReq);
         JSONObject jsonObject = JSON.parseObject(jsonReq);
         String playerName = jsonObject.getString("playerName");
         String playerNick = jsonObject.getString("playerNick");
