@@ -1,40 +1,19 @@
 /*
 Navicat MySQL Data Transfer
 
-Source Server         : mysql-localhost
+Source Server         : dream-city192.168.0.88
 Source Server Version : 50562
-Source Host           : localhost:3306
+Source Host           : 192.168.0.88:3306
 Source Database       : dreamcity
 
 Target Server Type    : MYSQL
 Target Server Version : 50562
 File Encoding         : 65001
 
-Date: 2019-09-21 19:36:59
+Date: 2019-09-26 18:42:30
 */
 
 SET FOREIGN_KEY_CHECKS=0;
-
--- ----------------------------
--- Table structure for account_dynamic
--- ----------------------------
-DROP TABLE IF EXISTS `account_dynamic`;
-CREATE TABLE `account_dynamic` (
-  `dyn_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `dyn_acc_id` int(10) unsigned NOT NULL COMMENT '账户id',
-  `dyn_player_id` varchar(64) DEFAULT NULL COMMENT '玩家id',
-  `order_id` int(11) unsigned DEFAULT NULL COMMENT '订单id',
-  `dyn_amount` decimal(9,4) NOT NULL DEFAULT '0.0000' COMMENT '动账金额',
-  `dyn_type` char(3) DEFAULT NULL COMMENT '动账类型(入账in,出账out)',
-  `dyn_amount_type` varchar(10) DEFAULT NULL COMMENT '资金类型（投资usdt，投资mt，转账transfer，提现withdraw）',
-  `dyn_desc` varchar(100) DEFAULT NULL COMMENT '动账描述',
-  `create_time` datetime DEFAULT NULL COMMENT '动账金额',
-  PRIMARY KEY (`dyn_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='动账记录表（收入支出）';
-
--- ----------------------------
--- Records of account_dynamic
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for city_auth_code
@@ -45,16 +24,29 @@ CREATE TABLE `city_auth_code` (
   `code` varchar(12) CHARACTER SET utf8 NOT NULL COMMENT '认证码',
   `phone` varchar(12) CHARACTER SET utf8 DEFAULT NULL,
   `user_id` varchar(64) CHARACTER SET utf8 DEFAULT NULL COMMENT '用户id',
-  `create_date` datetime DEFAULT NULL,
+  `createtime` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `index_code` (`code`),
   KEY `index_phone` (`phone`),
   KEY `index_user_id` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='认证码';
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COMMENT='认证码';
 
 -- ----------------------------
 -- Records of city_auth_code
 -- ----------------------------
+INSERT INTO `city_auth_code` VALUES ('1', '337219', '17895648524', null, '2019-09-24 03:50:48');
+INSERT INTO `city_auth_code` VALUES ('2', '468360', '13956489561', null, '2019-09-24 03:57:07');
+INSERT INTO `city_auth_code` VALUES ('3', '663288', '13956489561', null, '2019-09-24 04:07:33');
+INSERT INTO `city_auth_code` VALUES ('4', '817277', '13956489561', null, '2019-09-24 04:07:33');
+INSERT INTO `city_auth_code` VALUES ('5', '788875', '13956489561', null, '2019-09-24 04:07:34');
+INSERT INTO `city_auth_code` VALUES ('6', '772209', '15478951564', null, '2019-09-24 04:12:13');
+INSERT INTO `city_auth_code` VALUES ('7', '112666', '15478951564', null, '2019-09-24 04:13:45');
+INSERT INTO `city_auth_code` VALUES ('8', '354758', '1', null, '2019-09-24 04:21:31');
+INSERT INTO `city_auth_code` VALUES ('9', '376427', '12', null, '2019-09-24 04:24:22');
+INSERT INTO `city_auth_code` VALUES ('10', '921368', '123', null, '2019-09-24 04:27:08');
+INSERT INTO `city_auth_code` VALUES ('11', '322331', '1234', null, '2019-09-24 04:32:49');
+INSERT INTO `city_auth_code` VALUES ('12', '728758', '1234', null, '2019-09-24 04:51:17');
+INSERT INTO `city_auth_code` VALUES ('13', '29943', '1234', null, '2019-09-24 04:53:11');
 
 -- ----------------------------
 -- Table structure for city_file
@@ -62,10 +54,12 @@ CREATE TABLE `city_auth_code` (
 DROP TABLE IF EXISTS `city_file`;
 CREATE TABLE `city_file` (
   `id` bigint(20) NOT NULL,
+  `file_name` varchar(255) DEFAULT NULL,
   `file_url` varchar(255) DEFAULT NULL COMMENT '文件访问路径',
-  `file_type` varchar(20) DEFAULT NULL COMMENT '文件类型',
+  `file_type` varchar(20) DEFAULT NULL COMMENT '文件类型（玩家头像:player_img，物业：property）',
   `is_valid` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '是否可用的',
   `from_id` varchar(64) DEFAULT NULL COMMENT '添加人id',
+  `descr` varchar(50) DEFAULT NULL,
   `create_time` datetime DEFAULT NULL,
   `update_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -83,12 +77,13 @@ DROP TABLE IF EXISTS `city_invest`;
 CREATE TABLE `city_invest` (
   `in_id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '标识',
   `in_name` varchar(255) DEFAULT NULL COMMENT '名称',
-  `in_limit` float unsigned DEFAULT NULL COMMENT '限额',
+  `in_limit` decimal(9,4) unsigned DEFAULT NULL COMMENT '限额',
   `in_start` datetime DEFAULT NULL COMMENT '开始时间',
-  `in_tax` double unsigned DEFAULT NULL COMMENT '税金',
-  `in_earning` varchar(255) DEFAULT NULL COMMENT '收益倍数',
+  `in_tax` float(6,4) unsigned zerofill DEFAULT NULL COMMENT '税金',
+  `in_earning` tinyint(3) unsigned DEFAULT NULL COMMENT '收益倍数',
   `in_end` datetime DEFAULT NULL COMMENT '投资结束时间',
-  `is_valid` char(1) DEFAULT 'Y' COMMENT '是否可用',
+  `in_img` varchar(255) DEFAULT NULL COMMENT '项目图片地址(默认主图)',
+  `is_valid` char(1) DEFAULT 'Y' COMMENT '是否可投',
   `create_time` datetime DEFAULT NULL,
   `update_time` datetime DEFAULT NULL,
   PRIMARY KEY (`in_id`) USING BTREE
@@ -97,7 +92,7 @@ CREATE TABLE `city_invest` (
 -- ----------------------------
 -- Records of city_invest
 -- ----------------------------
-INSERT INTO `city_invest` VALUES ('1', '测试项目1', '5', '2019-09-18 17:56:20', '0.1', '0.5', '2019-09-30 17:56:50', null, null, null);
+INSERT INTO `city_invest` VALUES ('1', '测试项目1', '5.0000', '2019-09-18 17:56:20', '0.0200', '2', '2019-09-30 17:56:50', null, null, null, null);
 
 -- ----------------------------
 -- Table structure for city_message
@@ -140,45 +135,12 @@ CREATE TABLE `city_player` (
   UNIQUE KEY `index_player_name` (`player_name`) USING BTREE,
   KEY `index_player_nick` (`player_nick`),
   KEY `index_player_invite` (`player_invite`)
-) ENGINE=InnoDB AUTO_INCREMENT=134 DEFAULT CHARSET=utf8mb4 COMMENT='用户表（玩家）';
+) ENGINE=InnoDB AUTO_INCREMENT=101 DEFAULT CHARSET=utf8mb4 COMMENT='用户表（玩家）';
 
 -- ----------------------------
 -- Records of city_player
 -- ----------------------------
-INSERT INTO `city_player` VALUES ('99', '55ACB2722E33436F81040D0C8F257BF3', '17879502056', 'sd', '12345678', null, null, '1', '2019-09-11 12:23:10', null);
 INSERT INTO `city_player` VALUES ('100', 'FD826FE2E378445594D23CA84C0C485D', '123', '123', '123', null, '', '1', '2019-09-12 02:37:37', null);
-INSERT INTO `city_player` VALUES ('102', 'A1351FDFF0E344908A6EBBDDAC7D506D', '17856454567', 'qw', '12345678', null, '', '1', '2019-09-12 03:29:52', null);
-INSERT INTO `city_player` VALUES ('103', '758DEB6C0A854D569FF2FC8AC9B422C9', '17856457895', 'qwe', '12345678', null, '', '1', '2019-09-12 03:33:02', null);
-INSERT INTO `city_player` VALUES ('104', '727311B48CB4404EB9CACA6B9B235251', '17845685468', 'wqe', '12345678', null, '', '1', '2019-09-12 03:38:00', null);
-INSERT INTO `city_player` VALUES ('105', '8ABBDDFE576647F88B055214259F1E1B', '17879502059', 'wqe', '12345678', null, '', '1', '2019-09-12 05:05:17', null);
-INSERT INTO `city_player` VALUES ('106', '035510F21E1F45FF87A25AE9C466BEFC', '17879502055', 'joj', '12345678', null, '', '1', '2019-09-12 06:30:04', null);
-INSERT INTO `city_player` VALUES ('107', 'D16D96E2A4584DCFBDBFBDD465C24A9D', '123456', '123', '123', null, '', '1', '2019-09-18 13:45:55', null);
-INSERT INTO `city_player` VALUES ('108', 'CF3ACC42551F485884333875B91B98CE', '12345', '123', '123', null, '', '1', '2019-09-18 13:51:16', null);
-INSERT INTO `city_player` VALUES ('109', '1C644121C866488B821098B1889C9443', '12333', '123', '123', null, '', '1', '2019-09-18 13:54:53', null);
-INSERT INTO `city_player` VALUES ('110', '3A0D407A2D3941BEB7A3BEB558BF7115', '12334', '123', '123', null, '', '1', '2019-09-18 13:59:07', null);
-INSERT INTO `city_player` VALUES ('111', 'A3574CBFB89C4EC19066EC93812895FF', '12335', '123', '123', null, '', '1', '2019-09-18 13:59:47', null);
-INSERT INTO `city_player` VALUES ('112', '7AEB3D7B32C64B4494CCB7A95679DA82', '12336', '123', '123', null, '', '1', '2019-09-18 14:00:52', null);
-INSERT INTO `city_player` VALUES ('113', 'C9B2117DBB9F48B7861691DFCA8DA230', '12337', '123', '123', null, '', '1', '2019-09-18 14:01:27', null);
-INSERT INTO `city_player` VALUES ('114', 'A913D88C807D49B99E920F9D08955A74', '17845618956', 'sw', '12345678', null, '', '1', '2019-09-18 17:51:24', null);
-INSERT INTO `city_player` VALUES ('115', '85935D38078B4AC489ADA0F0052C2DFD', '13645675678', 'wqe', '12345678', null, '', '1', '2019-09-18 17:55:22', null);
-INSERT INTO `city_player` VALUES ('116', 'ABCACE3C53AE49D3838B901189484F04', '16567896545', 'werw', '12345678', null, '', '1', '2019-09-18 18:01:12', null);
-INSERT INTO `city_player` VALUES ('117', '6892624972C44E5DB02970A01388AF9E', '14354642345', 'ewqe', '12345678', null, '', '1', '2019-09-18 18:09:43', null);
-INSERT INTO `city_player` VALUES ('118', 'FBA48491B83C48E3B04306BF4EA1A56E', '15323456789', 'qwe', '12345678', null, '', '1', '2019-09-18 18:11:37', null);
-INSERT INTO `city_player` VALUES ('119', '1CFC1FE9DAE2412194A861C812D50FE2', '16734324324', '231', '11111111', null, '', '1', '2019-09-18 18:15:04', null);
-INSERT INTO `city_player` VALUES ('120', '98154ACBBF104388BF463F50D032A528', '15642342345', 'qwe', 'qwe213213', null, '', '1', '2019-09-18 18:23:44', null);
-INSERT INTO `city_player` VALUES ('121', '1D50EFC8CAC2479A94E8A96A8E4D93CC', '14523455676', 'qweqwe', 'qweqweqwe', null, '', '1', '2019-09-18 18:35:49', null);
-INSERT INTO `city_player` VALUES ('122', 'F60E0C63FE8C4BE383AD82972DF4A6D6', '15678465234', 'qwe', 'qweqwewq', null, '', '1', '2019-09-18 19:08:10', null);
-INSERT INTO `city_player` VALUES ('123', 'BDA36993CD064A5DB7CD29EB96967C97', '19812346543', 'wqe', '11111111', null, '', '1', '2019-09-18 20:00:01', null);
-INSERT INTO `city_player` VALUES ('124', '17C13935AC0E431BB2602F61E4C9C001', '12312321311', 'wqe', '11111111', null, '', '1', '2019-09-18 20:01:53', null);
-INSERT INTO `city_player` VALUES ('125', '9C9536019EFF4844844868A3C1B3BBE8', '17823424324', 'awree', '11111111', null, '', '1', '2019-09-18 20:11:03', null);
-INSERT INTO `city_player` VALUES ('126', 'D889560F137B404FBBF9B56B792463CD', 'wew', 'wev', '23adf2sdfwe', null, '', '1', '2019-09-19 11:10:45', null);
-INSERT INTO `city_player` VALUES ('127', '3EF1AC04DE1C446E9197B03E3D4E7F0B', 'we2w', 'wev', '23adf2sdfwe', null, '', '1', '2019-09-19 11:13:26', null);
-INSERT INTO `city_player` VALUES ('128', '154F611725D049748CCB16EB9DDB29C2', 'we22w', 'wev', '23adf2sdfwe', null, '', '1', '2019-09-19 11:17:45', null);
-INSERT INTO `city_player` VALUES ('129', 'DA41A96A45E44138A16E4EDE36282F68', 'we222w', 'wev', '23adf2sdfwe', null, '', '1', '2019-09-19 11:27:16', null);
-INSERT INTO `city_player` VALUES ('130', 'AD091F75AA4342819998F69FCC29F372', 'we22322w', 'wev', '23adf2sdfwe', null, '', '1', '2019-09-19 11:30:41', null);
-INSERT INTO `city_player` VALUES ('131', 'D544958A976C4370B6A625FD3825CEDA', 'we2232w2w', 'wev', '23adf2sdfwe', null, '', '1', '2019-09-19 11:33:46', null);
-INSERT INTO `city_player` VALUES ('132', '5CEE59F40B5B45ABBE0AC7450CB27F6D', 'we2232ww2w', 'wev', '23adf2sdfwe', null, '', '1', '2019-09-19 11:37:44', null);
-INSERT INTO `city_player` VALUES ('133', '1CD633148E73434A979BCE71F8060087', 'w0ww2w', 'wev', '23adf2sdfwe', null, '', '1', '2019-09-19 11:55:16', null);
 
 -- ----------------------------
 -- Table structure for city_setting
@@ -227,8 +189,9 @@ CREATE TABLE `invest_order` (
   `order_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `order_invest_id` int(11) unsigned DEFAULT NULL COMMENT '投资项目ID',
   `order_payer_id` varchar(255) DEFAULT NULL COMMENT '玩家ID',
-  `order_state` tinyint(4) DEFAULT NULL COMMENT '状态',
-  `order_repeat` tinyint(4) DEFAULT NULL COMMENT '是否复投',
+  `order_amount` decimal(9,4) unsigned DEFAULT NULL COMMENT '投资金额',
+  `order_state` varchar(20) DEFAULT NULL COMMENT '状态(PAID待支付,PAY已支付,WAIT待审核，TOBESHIPPED待发货，SHIPPED已发货，CLOSE关闭，INVALID作废)',
+  `order_repeat` tinyint(4) unsigned DEFAULT '0' COMMENT '是否复投（0否，1是）',
   `create_time` datetime DEFAULT NULL,
   `update_time` datetime DEFAULT NULL,
   PRIMARY KEY (`order_id`) USING BTREE,
@@ -320,7 +283,7 @@ CREATE TABLE `player_earning` (
   `create_time` datetime DEFAULT NULL,
   PRIMARY KEY (`earn_id`) USING BTREE,
   KEY `index_earn_player_id` (`earn_player_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='玩家提现规则';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='玩家提现收益';
 
 -- ----------------------------
 -- Records of player_earning
@@ -446,6 +409,31 @@ INSERT INTO `player_login_log` VALUES ('58', 'FD826FE2E378445594D23CA84C0C485D',
 INSERT INTO `player_login_log` VALUES ('59', 'FD826FE2E378445594D23CA84C0C485D', null, null, 'login', null, '2019-09-20 15:52:34');
 
 -- ----------------------------
+-- Table structure for player_trade
+-- ----------------------------
+DROP TABLE IF EXISTS `player_trade`;
+CREATE TABLE `player_trade` (
+  `trade_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `trade_acc_id` int(10) unsigned NOT NULL COMMENT '账户id',
+  `trade_player_id` varchar(64) DEFAULT NULL COMMENT '玩家id',
+  `trade_order_id` int(11) unsigned DEFAULT NULL COMMENT '订单id',
+  `trade_amount` decimal(9,4) NOT NULL DEFAULT '0.0000' COMMENT '交易金额',
+  `trade_type` char(3) DEFAULT NULL COMMENT '动账类型(入账in,出账out)',
+  `trade_amount_type` varchar(10) DEFAULT NULL COMMENT '资金类型（usdt投资:usdt_invest，mt投资:mt_invest，转账:transfer，提现:withdraw,usdt投资收益:usdt_earnings,mt投资收益:mt_earnings,usdt投资税金:usdt_invest_tax）',
+  `trade_desc` varchar(100) DEFAULT NULL COMMENT '动账描述',
+  `create_time` datetime DEFAULT NULL COMMENT '动账金额',
+  `update_time` datetime DEFAULT NULL,
+  PRIMARY KEY (`trade_id`),
+  KEY `index_trade_amount_type` (`trade_amount_type`) USING BTREE,
+  KEY `index_trade_player_id` (`trade_player_id`),
+  KEY `index_trade_order_id` (`trade_order_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='交易记录表';
+
+-- ----------------------------
+-- Records of player_trade
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for rule_item
 -- ----------------------------
 DROP TABLE IF EXISTS `rule_item`;
@@ -462,4 +450,24 @@ CREATE TABLE `rule_item` (
 
 -- ----------------------------
 -- Records of rule_item
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for trade_verify
+-- ----------------------------
+DROP TABLE IF EXISTS `trade_verify`;
+CREATE TABLE `trade_verify` (
+  `verify_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `verify_trade_id` int(11) unsigned DEFAULT NULL COMMENT '交易id(交易记录表)',
+  `verify_emp_id` int(11) unsigned DEFAULT NULL COMMENT '审核人id(员工表)',
+  `verify_amount` decimal(9,4) DEFAULT NULL,
+  `verify_status` varchar(20) DEFAULT NULL COMMENT '审核状态(待审核wait，审核中verifying，pass审核通过，notpass审核不通过)',
+  `verify_desc` varchar(255) DEFAULT NULL COMMENT '审核意见',
+  `create_time` datetime DEFAULT NULL,
+  `update_time` datetime DEFAULT NULL,
+  PRIMARY KEY (`verify_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='交易审核表';
+
+-- ----------------------------
+-- Records of trade_verify
 -- ----------------------------
