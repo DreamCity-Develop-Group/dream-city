@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 import java.util.List;
 
 /**
- * 玩家提现规则
+ * 玩家提现收入
  */
 @Mapper
 public interface PlayerEarningMapper {

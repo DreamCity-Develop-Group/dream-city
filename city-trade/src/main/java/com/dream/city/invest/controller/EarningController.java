@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * 提现规则
+ * 玩家提现收入
  */
 @RestController
 @RequestMapping("/earning")
@@ -28,46 +28,46 @@ public class EarningController {
 
 
     /**
-     * 删除提现规则
+     * 删除玩家提现收入
      * @param earnId
      * @return
      */
     @RequestMapping("/deleteEarningById")
     public Result deleteEarningById(@RequestParam Integer earnId) {
-        logger.info("游戏音效设置,earnId:{}", earnId);
+        logger.info("删除玩家提现收入,earnId:{}", earnId);
 
         int i = 0;
         boolean b = Boolean.TRUE;
-        String descr = "删除提现规则成功";
+        String descr = "删除玩家提现收入成功";
         try {
             i = earningService.deleteEarningById(earnId);
         }catch (Exception e){
             b = Boolean.FALSE;
-            descr = "删除提现规则失败";
-            logger.error("删除提现规则异常",e);
+            descr = "删除玩家提现收入失败";
+            logger.error("删除玩家提现收入异常",e);
         }
         Result result = new Result(b,descr,i);
         return result;
     }
 
     /**
-     * 新增提现规则
+     * 新增玩家提现收入
      * @param record
      * @return
      */
     @RequestMapping("/insertEarning")
     public Result insertEarning(@RequestBody PlayerEarning record){
-        logger.info("新增提现规则:{}", record);
+        logger.info("新增玩家提现收入:{}", record);
 
         int i = 0;
         boolean b = Boolean.TRUE;
-        String descr = "新增提现规则成功";
+        String descr = "新增玩家提现收入成功";
         try {
             i = earningService.insertEarning(record);
         }catch (Exception e){
             b = Boolean.TRUE;
-            descr = "新增提现规则失败";
-            logger.error("新增提现规则异常",e);
+            descr = "新增玩家提现收入失败";
+            logger.error("新增玩家提现收入异常",e);
         }
 
         Result result = new Result(b,descr,i);
@@ -75,24 +75,24 @@ public class EarningController {
     }
 
     /**
-     * 查询提现规则
+     * 查询玩家提现收入
      * @param earnId
      * @return
      */
     @RequestMapping("/getEarning")
     public Result getEarning(@RequestParam Integer earnId){
-        logger.info("查询提现规则,earnId:{}", earnId);
+        logger.info("查询玩家提现收入,earnId:{}", earnId);
 
         PlayerEarning earning = null;
         boolean b = Boolean.TRUE;
-        String descr = "查询提现规则成功";
+        String descr = "查询玩家提现收入成功";
 
         try {
             earning = earningService.getEarning(earnId);
         }catch (Exception e){
             b = Boolean.FALSE;
-            descr = "查询提现规则失败";
-            logger.error("查询提现规则异常",e);
+            descr = "查询玩家提现收入失败";
+            logger.error("查询玩家提现收入异常",e);
         }
 
         Result result = new Result(b, descr,earning);
@@ -100,24 +100,24 @@ public class EarningController {
     }
 
     /**
-     * 查询提现规则列表
+     * 查询玩家提现收入列表
      * @param record
      * @return
      */
     @RequestMapping("/getEarningList")
     public Result getEarningList(@RequestBody PlayerEarning record) {
-        logger.info("查询提现规则列表:{}", record);
+        logger.info("查询玩家提现收入列表:{}", record);
 
         List<PlayerEarning> earnings = null;
         boolean b = Boolean.TRUE;
-        String descr = "查询提现规则列表成功";
+        String descr = "查询玩家提现收入列表成功";
 
         try {
             earnings = earningService.getEarningList(record);
         } catch (Exception e) {
             b = Boolean.FALSE;
-            descr = "查询提现规则列表失败";
-            logger.error("查询提现规则列表异常", e);
+            descr = "查询玩家提现收入列表失败";
+            logger.error("查询玩家提现收入列表异常", e);
         }
 
         Result result = new Result(b, descr, earnings);
@@ -126,21 +126,21 @@ public class EarningController {
 
 
     /**
-     * 更新提现规则
+     * 更新玩家提现收入
      * @param record
      * @return
      */
     @RequestMapping("/updateEarningById")
     public Result updateEarningById(@RequestBody PlayerEarning record) {
-        logger.info("更新提现规则:{}", record);
+        logger.info("更新玩家提现收入:{}", record);
 
         int i = 0;
         boolean b = Boolean.TRUE;
-        String descr = "更新提现规则成功";
+        String descr = "更新玩家提现收入成功";
         try {
             i = earningService.insertEarning(record);
         }catch (Exception e){
-            descr = "更新提现规则失败";
+            descr = "更新玩家提现收入失败";
             b = Boolean.FALSE;
         }
 
