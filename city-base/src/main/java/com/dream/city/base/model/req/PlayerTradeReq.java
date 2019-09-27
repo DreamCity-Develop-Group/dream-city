@@ -1,30 +1,31 @@
-package com.dream.city.base.model.entity;
+package com.dream.city.base.model.req;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
-public class PlayerTrade implements Serializable {
+public class PlayerTradeReq implements Serializable {
 
     private Integer tradeId;
 
-    private Integer tradeAccId;
+    private Integer accId;
 
-    private String tradePlayerId;
+    private String playerId;
 
-    private Integer tradeOrderId;
+    private Integer orderId;
 
     private BigDecimal tradeAmount;
 
     private String tradeType;
 
-    private String tradeAmountType;
+    private String amountType;
 
     private String tradeDesc;
 
     private Date createTime;
 
     private Date updateTime;
+
 
     public Integer getTradeId() {
         return tradeId;
@@ -34,28 +35,28 @@ public class PlayerTrade implements Serializable {
         this.tradeId = tradeId;
     }
 
-    public Integer getTradeAccId() {
-        return tradeAccId;
+    public Integer getAccId() {
+        return accId;
     }
 
-    public void setTradeAccId(Integer tradeAccId) {
-        this.tradeAccId = tradeAccId;
+    public void setAccId(Integer accId) {
+        this.accId = accId;
     }
 
-    public String getTradePlayerId() {
-        return tradePlayerId;
+    public String getPlayerId() {
+        return playerId;
     }
 
-    public void setTradePlayerId(String tradePlayerId) {
-        this.tradePlayerId = tradePlayerId == null ? null : tradePlayerId.trim();
+    public void setPlayerId(String playerId) {
+        this.playerId = playerId;
     }
 
-    public Integer getTradeOrderId() {
-        return tradeOrderId;
+    public Integer getOrderId() {
+        return orderId;
     }
 
-    public void setTradeOrderId(Integer tradeOrderId) {
-        this.tradeOrderId = tradeOrderId;
+    public void setOrderId(Integer orderId) {
+        this.orderId = orderId;
     }
 
     public BigDecimal getTradeAmount() {
@@ -71,15 +72,15 @@ public class PlayerTrade implements Serializable {
     }
 
     public void setTradeType(String tradeType) {
-        this.tradeType = tradeType == null ? null : tradeType.trim();
+        this.tradeType = tradeType;
     }
 
-    public String getTradeAmountType() {
-        return tradeAmountType;
+    public String getAmountType() {
+        return amountType;
     }
 
-    public void setTradeAmountType(String tradeAmountType) {
-        this.tradeAmountType = tradeAmountType == null ? null : tradeAmountType.trim();
+    public void setAmountType(String amountType) {
+        this.amountType = amountType;
     }
 
     public String getTradeDesc() {
@@ -87,7 +88,7 @@ public class PlayerTrade implements Serializable {
     }
 
     public void setTradeDesc(String tradeDesc) {
-        this.tradeDesc = tradeDesc == null ? null : tradeDesc.trim();
+        this.tradeDesc = tradeDesc;
     }
 
     public Date getCreateTime() {
@@ -105,5 +106,4 @@ public class PlayerTrade implements Serializable {
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
     }
-
 }

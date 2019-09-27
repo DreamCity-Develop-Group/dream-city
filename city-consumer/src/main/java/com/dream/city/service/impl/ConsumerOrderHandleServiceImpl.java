@@ -100,7 +100,7 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
         int updatePlayerAccountDate = 0;
         String updatePlayerAccountMsg = "";
         String amountType = "";
-        String tradeAmountType = TradeType.MTINVEST.getCode();
+        String tradeAmountType = TradeAmountType.MTINVEST.getCode();
         if (order != null && order.getOrderId() != null){
             success = Boolean.TRUE;
             updatePlayerAccountResult = this.deductPlayerAccountAmount(orderReq,playerAccount,tradeAmountType,inTax);
@@ -130,7 +130,7 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
         if (playerTradeResult != null && playerTradeResult.getSuccess() && trade != null){
             success = Boolean.TRUE;
             //冻结税金 从账户冻结，提取成功后直接扣除税金
-            tradeAmountType = TradeType.USDTINVESTTAX.getCode();
+            tradeAmountType = TradeAmountType.USDTINVESTTAX.getCode();
             deductTaxMap = this.deductPlayerAccountAmount(orderReq,playerAccount,tradeAmountType, inTax);
 
             //生成投资待审核
@@ -231,14 +231,14 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
             playerAccount.setAccPlayerId(playerAccount.getAccPlayerId());
             /*if (orderReq.getAmountType().equalsIgnoreCase(AmountType.mt.name())){
                 amountType = AmountType.mt.name();
-                tradeAmountType = TradeType.MTINVEST.getCode();
+                tradeAmountType = TradeAmountType.MTINVEST.getCode();
                 playerAccount.setAccMt(playerAccount.getAccMt().subtract(orderReq.getOrderAmount()));
             }*/
 
             if (StringUtils.isBlank(tradeAmountType)){
-                tradeAmountType = TradeType.MTINVEST.getCode();
+                tradeAmountType = TradeAmountType.MTINVEST.getCode();
             }
-            if (tradeAmountType.equalsIgnoreCase(TradeType.MTINVEST.getCode())
+            if (tradeAmountType.equalsIgnoreCase(TradeAmountType.MTINVEST.getCode())
                     && orderReq.getAmountType().equalsIgnoreCase(AmountType.usdt.name())){
                 amountType = AmountType.usdt.name();
                 playerAccount.setAccUsdt(playerAccount.getAccUsdt().subtract(orderReq.getOrderAmount()));
@@ -246,7 +246,7 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
                 playerAccount.setAccUsdtFreeze(playerAccount.getAccUsdtFreeze().add(orderReq.getOrderAmount()));
             }
 
-            if (tradeAmountType.equalsIgnoreCase(TradeType.USDTINVESTTAX.getCode())
+            if (tradeAmountType.equalsIgnoreCase(TradeAmountType.USDTINVESTTAX.getCode())
                     && orderReq.getAmountType().equalsIgnoreCase(AmountType.usdt.name())){
                 playerAccount.setAccMt(playerAccount.getAccUsdt().subtract(inTax));
                 playerAccount.setAccMtAvailable(playerAccount.getAccMtAvailable().subtract(inTax));
@@ -257,7 +257,7 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
             success = String.valueOf(updatePlayerAccountResult.getSuccess());
             data = String.valueOf(updatePlayerAccountResult.getData());
 
-            if (tradeAmountType.equalsIgnoreCase(TradeType.MTINVEST.getCode()) && Boolean.parseBoolean(success)
+            if (tradeAmountType.equalsIgnoreCase(TradeAmountType.MTINVEST.getCode()) && Boolean.parseBoolean(success)
                     && Integer.parseInt(data) > 0){
                 msg = "投资成功！";
                 success = String.valueOf(Boolean.TRUE);
@@ -265,7 +265,7 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
                 msg = "投资失败！";
                 success = String.valueOf(Boolean.FALSE);
             }
-            if (tradeAmountType.equalsIgnoreCase(TradeType.USDTINVESTTAX.getCode()) && Boolean.parseBoolean(success)
+            if (tradeAmountType.equalsIgnoreCase(TradeAmountType.USDTINVESTTAX.getCode()) && Boolean.parseBoolean(success)
                     && Integer.parseInt(data) > 0){
                 msg = "扣除税金成功！";
                 success = String.valueOf(Boolean.TRUE);

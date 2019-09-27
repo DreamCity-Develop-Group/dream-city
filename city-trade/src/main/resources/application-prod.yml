@@ -22,5 +22,11 @@ spring:
         min-idle: 1
 
 
+#平台账户id，多个，都号隔开来自player_account表
+dreamcity:
+  platform:
+    account:
+      accIds: 888888888,999999999
+
 
 

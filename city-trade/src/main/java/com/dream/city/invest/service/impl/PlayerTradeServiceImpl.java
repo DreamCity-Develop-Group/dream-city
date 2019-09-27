@@ -23,7 +23,7 @@ public class PlayerTradeServiceImpl implements PlayerTradeService {
     @Transactional
     public PlayerTrade insertPlayerTrade(PlayerTrade record) {
         Integer integer = tradeMapper.insertSelective(record);
-        if (integer ==null || integer < 1){
+        if (integer == null || integer < 1){
             return null;
         }
         return record;

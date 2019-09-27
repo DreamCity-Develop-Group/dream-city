@@ -38,4 +38,13 @@ public interface AccountService {
      */
     int updatePlayerAccount(PlayerAccount record);
 
+
+    /**
+     * 获取平台账户
+     * @param record
+     * @return
+     */
+    List<PlayerAccount> getPlatformAccounts(PlayerAccountReq record);
+
+
 }
