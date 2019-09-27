@@ -5,6 +5,11 @@ spring:
   application:
     name: city-admin
 
+  profiles:
+    active: dev
+  main:
+    allow-bean-definition-overriding: true
+
 eureka:
   instance:
     hostname: localhost

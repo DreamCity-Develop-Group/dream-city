@@ -2,14 +2,11 @@ package com.dream.city.controller;
 
 import com.dream.city.base.model.Message;
 import com.dream.city.base.model.Result;
-import com.dream.city.service.CityMessageService;
-import com.dream.city.service.CityUserService;
-import com.dream.city.service.ConsumerPlayerService;
+import com.dream.city.service.ConsumerMessageService;
 import com.dream.city.service.ConsumerPusherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -19,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/consumer")
 public class ConsumerPusherController {
     @Autowired
-    CityMessageService messageService;
+    ConsumerMessageService messageService;
 
     @Autowired
     ConsumerPusherService consumerPusherService;

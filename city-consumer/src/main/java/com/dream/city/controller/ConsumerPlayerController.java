@@ -42,7 +42,7 @@ public class ConsumerPlayerController {
     @Autowired
     private ConsumerPlayerService consumerPlayerService;
     @Autowired
-    private CityMessageService messageService;
+    private ConsumerMessageService messageService;
     @Autowired
     private RedisUtils redisUtils;
     @Autowired
@@ -372,9 +372,9 @@ public class ConsumerPlayerController {
                         log.info("商会关系创建完成");
                     }
                     //创建好友关系 待同意
-                    boolean added = friendsService.addFriend(playerId, parentId);
+                    Result<Boolean> addFriend = friendsService.addFriend(playerId, parentId);
 
-                    if (added) {
+                    if (addFriend.getSuccess()) {
                         log.info("添加默认好友关系成功");
                     }
                 }else {
