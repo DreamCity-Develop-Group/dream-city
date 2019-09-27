@@ -193,7 +193,7 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
                 //审核通过
                 //玩家账户扣除金额 扣冻结金额
                 Result<Integer> updatePlayerAccountResult = this.updatePlayerAccount(earning, playerAccount, msg);
-                int updatePlayerAccount = updatePlayerAccount = updatePlayerAccountResult.getData();
+                int updatePlayerAccount = updatePlayerAccountResult.getData();
                 msg = updatePlayerAccountResult.getMsg();
                 success = updatePlayerAccountResult.getSuccess();
 
@@ -201,7 +201,7 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
                 Result<PlayerTrade> createPlayerTradeResult = null;
                 PlayerTrade createPlayerTrade = null;
                 if (updatePlayerAccount > 0){
-                    createPlayerTradeResult = createPlayerTradeResult(earning,playerAccount,msg);
+                    createPlayerTradeResult = this.createPlayerTradeResult(earning,playerAccount,msg);
                     createPlayerTrade = createPlayerTradeResult.getData();
                     msg = updatePlayerAccountResult.getMsg();
                     success = createPlayerTradeResult.getSuccess();
@@ -234,7 +234,7 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
                     //获取平台账户
                     PlayerAccount platformAccount = null;
                     if (createPlayerTradeResult.getSuccess() && createPlayerTrade != null){
-                        Result<PlayerAccount> updatePlatformAccountResult = updatePlatformAccount(earning, msg);
+                        Result<PlayerAccount> updatePlatformAccountResult = this.updatePlatformAccount(earning, msg);
                         platformAccount = updatePlatformAccountResult.getData();
                         success = updatePlatformAccountResult.getSuccess();
                         msg = updatePlatformAccountResult.getMsg();
