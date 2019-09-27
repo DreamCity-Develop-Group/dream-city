@@ -1,6 +1,7 @@
 package com.dream.city.service;
 
 import com.dream.city.base.model.Page;
+import com.dream.city.base.model.Result;
 import com.dream.city.base.model.req.PageReq;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,8 +20,8 @@ public interface ConsumerFriendsService {
      * @return
      */
     @RequestMapping("/addFriend")
-    boolean addFriend(@RequestParam("playerId") String playerId,
-                      @RequestParam("friendId") String friendId);
+    Result<Boolean> addFriend(@RequestParam("playerId") String playerId,
+                              @RequestParam("friendId") String friendId);
 
     /**
      * 同意添加好友
@@ -29,7 +30,7 @@ public interface ConsumerFriendsService {
      * @return
      */
     @RequestMapping("/agreeAddFriend")
-    boolean agreeAddFriend(@RequestParam("playerId") String playerId,
+    Result<Boolean> agreeAddFriend(@RequestParam("playerId") String playerId,
                            @RequestParam("friendId") String friendId);
 
     /**
@@ -38,7 +39,7 @@ public interface ConsumerFriendsService {
      * @return
      */
     @RequestMapping("/friendList")
-    Page friendList(@RequestBody PageReq pageReq);
+    Result<Page> friendList(@RequestBody PageReq pageReq);
 
     /**
      * 好友申请列表
@@ -46,6 +47,6 @@ public interface ConsumerFriendsService {
      * @return
      */
     @RequestMapping("/applyFriendList")
-    Page applyFriendList(@RequestBody PageReq pageReq);
+    Result<Page> applyFriendList(@RequestBody PageReq pageReq);
 
 }

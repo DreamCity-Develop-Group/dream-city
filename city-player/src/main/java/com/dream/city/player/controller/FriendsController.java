@@ -2,6 +2,7 @@ package com.dream.city.player.controller;
 
 
 import com.dream.city.base.model.Page;
+import com.dream.city.base.model.Result;
 import com.dream.city.base.model.req.PageReq;
 import com.dream.city.base.model.entity.Friends;
 import com.dream.city.player.service.FriendsService;
@@ -32,15 +33,16 @@ public class FriendsController {
      * @return
      */
     @RequestMapping("/addFriend")
-    public boolean addFriend(@RequestParam("playerId") String playerId,
-                      @RequestParam("friendId") String friendId){
+    public Result<Boolean> addFriend(@RequestParam("playerId") String playerId,
+                                     @RequestParam("friendId") String friendId){
         logger.info("addFriend，playerId：{},friendId:{}",playerId,friendId);
         Friends friend = getFriendFromUsername(playerId,friendId);
-        return friendsService.addFriend(friend);
+        boolean addFriend = friendsService.addFriend(friend);
+        return new Result<>(addFriend,"添加好友");
     }
 
 
-    public Friends getFriendFromUsername(String playerId,String friendId){
+    private Friends getFriendFromUsername(String playerId,String friendId){
         Friends friend = new Friends();
         friend.setPlayerId(playerId);
         friend.setFriendId(friendId);
@@ -54,11 +56,12 @@ public class FriendsController {
      * @return
      */
     @RequestMapping("/agreeAddFriend")
-    public boolean agreeAddFriend(@RequestParam("playerId") String playerId,
+    public Result<Boolean> agreeAddFriend(@RequestParam("playerId") String playerId,
                            @RequestParam("friendId") String friendId){
         logger.info("agreeAddFriend，playerId：{},friendId:{}",playerId,friendId);
         Friends friend = getFriendFromUsername(playerId,friendId);
-        return friendsService.agreeAddFriend(friend);
+        boolean agreeAddFriend = friendsService.agreeAddFriend(friend);
+        return new Result<>(agreeAddFriend,"同意添加好友");
     }
 
     /**
@@ -67,9 +70,10 @@ public class FriendsController {
      * @return
      */
     @RequestMapping("/friendList")
-    public Page friendList(@RequestBody PageReq pageReq){
+    public Result<Page> friendList(@RequestBody PageReq pageReq){
         logger.info("friendList，pageReq：{}",pageReq);
-        return friendsService.friendList(pageReq);
+        Page page = friendsService.friendList(pageReq);
+        return new Result<>(Boolean.TRUE,"好友列表",page);
     }
 
 
@@ -79,9 +83,10 @@ public class FriendsController {
      * @return
      */
     @RequestMapping("/applyFriendList")
-    public Page applyFriendList(@RequestBody PageReq pageReq){
+    public Result<Page> applyFriendList(@RequestBody PageReq pageReq){
         logger.info("applyFriendList，pageReq：{}",pageReq);
-        return friendsService.applyFriendList(pageReq);
+        Page page = friendsService.applyFriendList(pageReq);
+        return new Result<>(Boolean.TRUE,"好友申请列表",page);
     }
 
 

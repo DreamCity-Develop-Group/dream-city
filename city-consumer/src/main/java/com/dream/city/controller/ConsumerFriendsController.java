@@ -56,8 +56,8 @@ public class ConsumerFriendsController {
         String playerId = map.containsKey("playerId")?(String)map.get("playerId"):null;
         String friendId = map.containsKey("friendId")?(String)map.get("friendId"):null;
 
-        boolean b = consumerFriendsService.addFriend(playerId,friendId);
-        Message message = getResultMessage(b,"添加好友");
+        Result<Boolean> b = consumerFriendsService.addFriend(playerId,friendId);
+        Message message = getResultMessage(b.getSuccess(),"添加好友",msg);
         return message;
     }
 
@@ -69,8 +69,8 @@ public class ConsumerFriendsController {
         String playerId = map.containsKey("playerId")?(String)map.get("playerId"):null;
         String friendId = map.containsKey("friendId")?(String)map.get("friendId"):null;
 
-        boolean b = consumerFriendsService.agreeAddFriend(playerId, friendId);
-        Message message = getResultMessage(b,"通过好友");
+        Result<Boolean> b = consumerFriendsService.agreeAddFriend(playerId, friendId);
+        Message message = getResultMessage(b.getSuccess(),"通过好友",msg);
         return message;
     }
 
@@ -79,15 +79,15 @@ public class ConsumerFriendsController {
     public Message friendList(@RequestBody Message msg){
         logger.info("获取好友列表", JSONObject.toJSONString(msg));
         Message message = new Message();
-        MessageData data = new MessageData("addfriend","consumer");
+        MessageData data = new MessageData(msg.getData().getType(),msg.getData().getModel());
         String desc = "获取好友成功";
         try {
             Map condition = getCheckCondition(msg);
             PageReq<Map> pageReq = new PageReq<>((Map)msg.getData().getData());
             pageReq.setCondition(condition);
 
-            Page page = consumerFriendsService.friendList(pageReq);
-            data.setData(page);
+            Result<Page> page = consumerFriendsService.friendList(pageReq);
+            data.setData(page.getData());
         }catch (Exception e){
             desc = "获取好友失败";
             logger.error(desc,e);
@@ -102,15 +102,15 @@ public class ConsumerFriendsController {
     public Message applyfriend(@RequestBody Message msg){
         logger.info("获取好友申请列表", JSONObject.toJSONString(msg));
         Message message = new Message();
-        MessageData data = new MessageData("applyfriend","consumer");
+        MessageData data = new MessageData(msg.getData().getType(),msg.getData().getModel());
         String desc = "获取好友申请列表成功";
         try {
             Map condition = getCheckCondition(msg);
             PageReq<Map> pageReq = new PageReq<>((Map)msg.getData().getData());
             pageReq.setCondition(condition);
 
-            Page page = consumerFriendsService.applyFriendList(pageReq);
-            data.setData(page);
+            Result<Page> page = consumerFriendsService.applyFriendList(pageReq);
+            data.setData(page.getData());
         }catch (Exception e){
             desc = "获取好友申请列表失败";
             logger.error(desc,e);
@@ -128,9 +128,9 @@ public class ConsumerFriendsController {
      * @param desc
      * @return
      */
-    private Message getResultMessage(boolean b,String desc){
+    private Message getResultMessage(boolean b,String desc,Message msg){
         Message message = new Message();
-        MessageData<String> data = new MessageData<>("addfriend","consumer");
+        MessageData<String> data = new MessageData(msg.getData().getType(),msg.getData().getModel());
         String name = CityGlobal.ResultCode.fail.name();
         desc = desc + "失败";
         if (b) {
