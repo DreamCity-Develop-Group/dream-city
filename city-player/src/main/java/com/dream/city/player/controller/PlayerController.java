@@ -420,8 +420,8 @@ public class PlayerController {
     @RequestMapping("/getPlayerByInvite")
     public Result getPlayerByInvite(@RequestParam("invite")String invite){
         Player player = playerService.getPlayerByInvite(invite);
-
-        return new Result<Player>(true,"success",200,player);
+        Result<Player>result = new Result<>(true,"获取玩家",200,player);
+        return result;
     }
 
     /**

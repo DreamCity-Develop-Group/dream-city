@@ -34,19 +34,6 @@ CREATE TABLE `city_auth_code` (
 -- ----------------------------
 -- Records of city_auth_code
 -- ----------------------------
-INSERT INTO `city_auth_code` VALUES ('1', '337219', '17895648524', null, '2019-09-24 03:50:48');
-INSERT INTO `city_auth_code` VALUES ('2', '468360', '13956489561', null, '2019-09-24 03:57:07');
-INSERT INTO `city_auth_code` VALUES ('3', '663288', '13956489561', null, '2019-09-24 04:07:33');
-INSERT INTO `city_auth_code` VALUES ('4', '817277', '13956489561', null, '2019-09-24 04:07:33');
-INSERT INTO `city_auth_code` VALUES ('5', '788875', '13956489561', null, '2019-09-24 04:07:34');
-INSERT INTO `city_auth_code` VALUES ('6', '772209', '15478951564', null, '2019-09-24 04:12:13');
-INSERT INTO `city_auth_code` VALUES ('7', '112666', '15478951564', null, '2019-09-24 04:13:45');
-INSERT INTO `city_auth_code` VALUES ('8', '354758', '1', null, '2019-09-24 04:21:31');
-INSERT INTO `city_auth_code` VALUES ('9', '376427', '12', null, '2019-09-24 04:24:22');
-INSERT INTO `city_auth_code` VALUES ('10', '921368', '123', null, '2019-09-24 04:27:08');
-INSERT INTO `city_auth_code` VALUES ('11', '322331', '1234', null, '2019-09-24 04:32:49');
-INSERT INTO `city_auth_code` VALUES ('12', '728758', '1234', null, '2019-09-24 04:51:17');
-INSERT INTO `city_auth_code` VALUES ('13', '29943', '1234', null, '2019-09-24 04:53:11');
 
 -- ----------------------------
 -- Table structure for city_file
@@ -92,7 +79,6 @@ CREATE TABLE `city_invest` (
 -- ----------------------------
 -- Records of city_invest
 -- ----------------------------
-INSERT INTO `city_invest` VALUES ('1', '测试项目1', '5.0000', '2019-09-18 17:56:20', '0.0200', '2', '2019-09-30 17:56:50', null, null, null, null);
 
 -- ----------------------------
 -- Table structure for city_message
@@ -140,7 +126,6 @@ CREATE TABLE `city_player` (
 -- ----------------------------
 -- Records of city_player
 -- ----------------------------
-INSERT INTO `city_player` VALUES ('100', 'FD826FE2E378445594D23CA84C0C485D', '123', '123', '123', null, '', '1', '2019-09-12 02:37:37', null);
 
 -- ----------------------------
 -- Table structure for city_setting
@@ -242,10 +227,6 @@ CREATE TABLE `likes_log` (
 -- ----------------------------
 -- Records of likes_log
 -- ----------------------------
-INSERT INTO `likes_log` VALUES ('1', 'FD826FE2E378445594D23CA84C0C485D', 'FD826FE2E378445594D23CA84C0C485D', '1', '2019-09-18 11:59:08', null);
-INSERT INTO `likes_log` VALUES ('2', 'FD826FE2E378445594D23CA84C0C485D', 'FD826FE2E378445594D23CA84C0C485D', '1', '2019-09-18 11:59:20', null);
-INSERT INTO `likes_log` VALUES ('3', 'FD826FE2E378445594D23CA84C0C485D', 'FD826FE2E378445594D23CA84C0C485D', '1', '2019-09-18 12:02:44', null);
-INSERT INTO `likes_log` VALUES ('4', 'FD826FE2E378445594D23CA84C0C485D', 'FD826FE2E378445594D23CA84C0C485D', '1', '2019-09-19 12:02:54', null);
 
 -- ----------------------------
 -- Table structure for player_account
@@ -306,11 +287,6 @@ CREATE TABLE `player_ext` (
 
 -- ----------------------------
 -- Records of player_ext
--- ----------------------------
-INSERT INTO `player_ext` VALUES ('1', 'FD826FE2E378445594D23CA84C0C485D', 'friendlink', 'imgurl', null, null);
-INSERT INTO `player_ext` VALUES ('2', '55ACB2722E33436F81040D0C8F257BF3', 'friendlink', 'imgurl', null, null);
-INSERT INTO `player_ext` VALUES ('3', 'A1351FDFF0E344908A6EBBDDAC7D506D', 'friendlink', 'imgurl', null, null);
-INSERT INTO `player_ext` VALUES ('4', '758DEB6C0A854D569FF2FC8AC9B422C9', 'friendlink', 'imgurl', null, null);
 
 -- ----------------------------
 -- Table structure for player_friends
@@ -334,10 +310,6 @@ CREATE TABLE `player_friends` (
 -- ----------------------------
 -- Records of player_friends
 -- ----------------------------
-INSERT INTO `player_friends` VALUES ('1', 'FD826FE2E378445594D23CA84C0C485D', '55ACB2722E33436F81040D0C8F257BF3', '1', null, '0', '2019-09-11 17:04:40', '2019-09-12 09:44:19');
-INSERT INTO `player_friends` VALUES ('2', 'FD826FE2E378445594D23CA84C0C485D', 'A1351FDFF0E344908A6EBBDDAC7D506D', '0', '123', '0', '2019-09-12 17:21:09', null);
-INSERT INTO `player_friends` VALUES ('3', 'FD826FE2E378445594D23CA84C0C485D', '758DEB6C0A854D569FF2FC8AC9B422C9', '0', null, '0', '2019-09-12 09:57:41', null);
-INSERT INTO `player_friends` VALUES ('4', 'FD826FE2E378445594D23CA84C0C485D', '727311B48CB4404EB9CACA6B9B235251', '1', null, '1', '2019-09-16 16:29:23', '2019-09-16 16:32:11');
 
 -- ----------------------------
 -- Table structure for player_grade
@@ -378,12 +350,6 @@ CREATE TABLE `player_likes` (
 -- ----------------------------
 -- Records of player_likes
 -- ----------------------------
-INSERT INTO `player_likes` VALUES ('1', 'FD826FE2E378445594D23CA84C0C485D', '1', '2', '2019-09-08 15:58:07', null);
-INSERT INTO `player_likes` VALUES ('2', 'FD826FE2E378445594D23CA84C0C485D', '2', '1', '2019-09-09 15:58:23', null);
-INSERT INTO `player_likes` VALUES ('3', 'FD826FE2E378445594D23CA84C0C485D', null, '1', '2019-09-18 11:59:08', null);
-INSERT INTO `player_likes` VALUES ('4', 'FD826FE2E378445594D23CA84C0C485D', null, '1', '2019-09-18 11:59:13', null);
-INSERT INTO `player_likes` VALUES ('5', 'FD826FE2E378445594D23CA84C0C485D', null, '1', '2019-09-18 12:02:44', null);
-INSERT INTO `player_likes` VALUES ('6', 'FD826FE2E378445594D23CA84C0C485D', null, '1', '2019-09-18 12:02:44', null);
 
 -- ----------------------------
 -- Table structure for player_login_log
@@ -405,8 +371,6 @@ CREATE TABLE `player_login_log` (
 -- ----------------------------
 -- Records of player_login_log
 -- ----------------------------
-INSERT INTO `player_login_log` VALUES ('58', 'FD826FE2E378445594D23CA84C0C485D', null, null, 'login', null, '2019-09-20 15:29:30');
-INSERT INTO `player_login_log` VALUES ('59', 'FD826FE2E378445594D23CA84C0C485D', null, null, 'login', null, '2019-09-20 15:52:34');
 
 -- ----------------------------
 -- Table structure for player_trade

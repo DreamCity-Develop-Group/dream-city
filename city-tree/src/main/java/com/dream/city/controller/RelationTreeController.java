@@ -120,5 +120,22 @@ public class RelationTreeController {
         return  account;
     }
 
+    /**
+     * 账户创建
+     * @param playerId
+     * @param address
+     * @return
+     */
+    @RequestMapping("/account/create")
+    public Result createAccount(@RequestParam("playerId")String playerId,@RequestParam("address")String address){
+        accountService.createAccount(playerId,address);
+        PlayerAccount account = accountService.getPlayerAccount(playerId);
+        if (null != account ){
+            return Result.result(true,"玩家账户开设成功",200,account);
+        }
+
+        return Result.result(false,"玩家账户开设失败",200,null);
+    }
+
 
 }

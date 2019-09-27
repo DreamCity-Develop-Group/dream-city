@@ -17,7 +17,7 @@ import java.util.List;
 public interface PlayerAccountMapper {
 
     @Results(id = "BasePlayerAccountResultMap", value = {
-            @Result(property = "accId", column = "id", id = true),
+            @Result(property = "accId", column = "acc_id", id = true),
             @Result(property = "accPlayerId", column = "acc_player_id"),
             @Result(property = "accAddr", column = "acc_addr"),
             @Result(property = "accPass", column = "acc_pass"),
@@ -47,6 +47,10 @@ public interface PlayerAccountMapper {
 
     @Update("update player_account set acc_usdt = acc_usdt-#{payAmount} ,acc_usdt_availble=acc_usdt_availble-#{payAmount} where 1=1 adnd acc_player_id=#{playerId}")
     void subtractAmount(BigDecimal payAmount, String playerId);
+
+    @Insert("insert into `player_account`(acc_id,acc_player_id,acc_addr)value(0,#{playerId},#{address})")
+    //@Options(useGeneratedKeys = true, keyProperty = "acc_id")
+    void createAccount(String playerId,String address);
 
     @Update({"<script>" +
             "<foreach collection=\"accounts\" item=\"item\" separator=\";\">" +

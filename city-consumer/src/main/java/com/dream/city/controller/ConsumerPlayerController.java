@@ -6,6 +6,7 @@ import com.dream.city.base.model.CityGlobal;
 import com.dream.city.base.model.Message;
 import com.dream.city.base.model.MessageData;
 import com.dream.city.base.model.Result;
+import com.dream.city.base.model.entity.Player;
 import com.dream.city.base.model.entity.PlayerExt;
 import com.dream.city.base.model.req.PageReq;
 import com.dream.city.base.model.req.UserReq;
@@ -63,12 +64,13 @@ public class ConsumerPlayerController {
 
     /**
      * 修改玩家头像
+     *
      * @param msg
      * @return
      */
     @ApiOperation(value = "修改玩家头像", notes = "修改玩家头像，参数：username,imgUrl", response = Message.class)
     @RequestMapping("/updatePlayerHeadImg")
-    public Message updatePlayerHeadImg(@RequestBody Message msg){
+    public Message updatePlayerHeadImg(@RequestBody Message msg) {
         log.info("修改玩家头像", JSONObject.toJSONString(msg));
         UserReq jsonReq = DataUtils.getUserReq(msg);
         PlayerResp player = commonsService.getPlayerByUserName(msg);
@@ -132,7 +134,7 @@ public class ConsumerPlayerController {
             messageData.setData(map);
             Message message = new Message(msg.getSource(), msg.getTarget(), messageData);
             return message;
-        }else {
+        } else {
             msg.setDesc(code.getMsg());
             return msg;
         }
@@ -155,7 +157,7 @@ public class ConsumerPlayerController {
 
         Map<String, Object> t = new HashMap<>();
         t.put("user", player.getData());
-        MessageData data = new MessageData(msg.getData().getType(),msg.getData().getModel());
+        MessageData data = new MessageData(msg.getData().getType(), msg.getData().getModel());
         data.setData(t);
         Message message = new Message(msg.getSource(), msg.getTarget(), data);
         return message;
@@ -181,7 +183,7 @@ public class ConsumerPlayerController {
 
         Map<String, Object> t = new HashMap<>();
         t.put("userList", players.getData());
-        MessageData data = new MessageData(msg.getData().getType(),msg.getData().getModel());
+        MessageData data = new MessageData(msg.getData().getType(), msg.getData().getModel());
         data.setData(t);
         Message message = new Message(msg.getSource(), msg.getTarget(), data);
         return message;
@@ -203,7 +205,7 @@ public class ConsumerPlayerController {
 
         Map<String, String> t = new HashMap<>();
         t.put("desc", result.getMsg());
-        MessageData data = new MessageData(msg.getData().getType(),msg.getData().getModel());
+        MessageData data = new MessageData(msg.getData().getType(), msg.getData().getModel());
         data.setData(t);
         Message message = new Message(msg.getSource(), msg.getTarget(), data);
         return message;
@@ -226,7 +228,7 @@ public class ConsumerPlayerController {
         Map<String, String> t = new HashMap<>();
         t.put("desc", result.getMsg());
 
-        MessageData data = new MessageData(msg.getData().getType(),msg.getData().getModel());
+        MessageData data = new MessageData(msg.getData().getType(), msg.getData().getModel());
         data.setData(t);
         Message message = new Message(msg.getSource(), msg.getTarget(), data);
         return message;
@@ -248,7 +250,7 @@ public class ConsumerPlayerController {
         Map<String, String> t = new HashMap<>();
         t.put("desc", result.getMsg());
 
-        MessageData data = new MessageData(msg.getData().getType(),msg.getData().getModel());
+        MessageData data = new MessageData(msg.getData().getType(), msg.getData().getModel());
         data.setData(t);
         Message message = new Message(msg.getSource(), msg.getTarget(), data);
         return message;
@@ -259,23 +261,23 @@ public class ConsumerPlayerController {
      * 用户注册
      *
      * @param message : {
-     *        source: clientId,
-     *        target: server,
-     *        desc:"",
-     *        createtime:2019-09-09,
-     *        data:{
-     *              type: reg,
-     *              model: consumer,
-     *              data: {
+     *                source: clientId,
+     *                target: server,
+     *                desc:"",
+     *                createtime:2019-09-09,
+     *                data:{
+     *                type: reg,
+     *                model: consumer,
+     *                data: {
      *                username: wvv,
      *                password: 123456,
      *                nick: wvv1,
      *                invite: 2qwef21,
      *                code: 324512
-     *              }
-     *        }
-     *
-     * }
+     *                }
+     *                }
+     *                <p>
+     *                }
      * @return
      */
     @ApiOperation(value = "用户注册", notes = "用户注册", response = Message.class)
@@ -289,26 +291,26 @@ public class ConsumerPlayerController {
         msg.setSource(message.getTarget());
         msg.setTarget("server");
 
-        if (null == message.getData() || null == message.getData().getData()){
+        if (null == message.getData() || null == message.getData().getData()) {
             msg.setDesc("参数错误或不能识别");
             msg.setCreatetime(String.valueOf(System.currentTimeMillis()));
-            MessageData messageData =  message.getData();
-            dataInner.put("desc","参数错误或不能识别");
+            MessageData messageData = message.getData();
+            dataInner.put("desc", "参数错误或不能识别");
             messageData.setData(dataInner);
             msg.setData(messageData);
             return msg;
         }
-        MessageData data = new MessageData(message.getData().getType(),message.getData().getModel());
+        MessageData data = new MessageData(message.getData().getType(), message.getData().getModel());
         String jsonData = JsonUtil.parseObjToJson(message.getData().getData());
 
         JSONObject jsonObject = JSON.parseObject(jsonData);
         String account = jsonObject.getString("username");
         String code = jsonObject.getString("code");
-        if (StringUtils.isBlank(account) || StringUtils.isBlank(code)){
+        if (StringUtils.isBlank(account) || StringUtils.isBlank(code)) {
             msg.setDesc("参数值不能为空");
             msg.setCreatetime(String.valueOf(System.currentTimeMillis()));
-            MessageData messageData =  message.getData();
-            dataInner.put("desc","参数值不能为空");
+            MessageData messageData = message.getData();
+            dataInner.put("desc", "参数值不能为空");
             messageData.setData(dataInner);
             msg.setData(message.getData());
             return msg;
@@ -316,7 +318,7 @@ public class ConsumerPlayerController {
         /*todo************************************************************/
         // TODO [[验证码验证]]
         /*todo************************************************************/
-        Result ret = messageService.checkCode(code,account);
+        Result ret = messageService.checkCode(code, account);
 
         String descT = CityGlobal.Constant.REG_FAIL;
         Result<JSONObject> reg = null;
@@ -331,22 +333,6 @@ public class ConsumerPlayerController {
 
             //玩家注册成功
             if (reg.getSuccess()) {
-                String regSuccess = CityGlobal.Constant.REG_SUCCESS;
-
-                /*todo************************************************************/
-                // TODO [[登录或注册成功后保存token]]
-                /*todo************************************************************/
-                String token = saveToken(userReq.getUsername());
-                MessageData messageData =  message.getData();
-                dataInner.put("desc","参数值不能为空");
-
-                dataInner.put("token", token);
-                dataInner.put("desc", CityGlobal.Constant.REG_SUCCESS);
-                data.setData(dataInner);
-                msg.setData(data);
-                msg.setDesc(regSuccess);
-
-
                 /*todo************************************************************/
                 // TODO [[取出message 中的账户和邀请码]]
                 /*todo************************************************************/
@@ -358,34 +344,65 @@ public class ConsumerPlayerController {
                 //todo 1、取到注册成功的用户信息
                 JSONObject jsonObject1 = JSON.parseObject(JsonUtil.parseObjToJson(reg.getData()));
                 String playerId = jsonObject1.getString("playerId");
-                String playerInvite = jsonObject1.getString("playerCode");
+                String playerInvite = jsonObject1.getString("playerInvite");
 
                 /*todo************************************************************/
                 // TODO [[todo 2、创建用户USDT钱包账户]]
                 /*todo************************************************************/
                 Result accRet = playerBlockChainService.createBlockChainAccount(username);
                 String address = accRet.getData().toString();
-                if (!StringUtils.isBlank(address)){
-                    playerAccountService.createAccount(playerId,address);
+                if (!StringUtils.isBlank(address)) {
+                    Result create = playerAccountService.createAccount(playerId, address);
+                    if (create.getSuccess()) {
+                        log.info("玩家账户创建成功");
+                    }
                 }
 
                 /*todo************************************************************/
                 // TODO [[todo 3、邀请码不为空，设置商会关系,邀请码为空，不设置关系]]
                 /*todo************************************************************/
-                if(!StringUtils.isBlank(invite)){
+                if (!StringUtils.isBlank(invite)) {
                     Result resultParent = consumerPlayerService.getPlayerByInvite(invite);
-                    JSONObject parent = JSON.parseObject(JsonUtil.parseObjToJson(resultParent.getData()));
-                    String parentId = parent.getString("playerId");
+                    Player parent = JsonUtil.parseJsonToObj((JSON.toJSONString(resultParent.getData())),Player.class);
+                    String parentId = parent.getPlayerId();
 
                     //商会关系
                     Result result = treeService.addTree(parentId, playerId, playerInvite);
+                    if (result.getSuccess()) {
+                        log.info("商会关系创建完成");
+                    }
                     //创建好友关系 待同意
-                    friendsService.addFriend(playerId,parentId);
+                    boolean added = friendsService.addFriend(playerId, parentId);
+
+                    if (added) {
+                        log.info("添加默认好友关系成功");
+                    }
+                }else {
+                    log.info("没有写邀请码");
                 }
-            }else{
+
+                String regSuccess = CityGlobal.Constant.REG_SUCCESS;
+
+                /*todo************************************************************/
+                // TODO [[登录或注册成功后保存token]]
+                /*todo************************************************************/
+                String token = saveToken(userReq.getUsername());
+                MessageData messageData = message.getData();
+                dataInner.put("desc", "参数值不能为空");
+
+                dataInner.put("token", token);
+                dataInner.put("desc", CityGlobal.Constant.REG_SUCCESS);
+                data.setData(dataInner);
+                msg.setData(data);
+                msg.setDesc(regSuccess);
+            } else {
                 msg.setDesc(reg.getMsg());
-                msg.setData(message.getData());
-                return  msg;
+
+                MessageData messageData = message.getData();
+                dataInner.put("desc", reg.getMsg());
+                messageData.setData(dataInner);
+                msg.setData(messageData);
+                return msg;
             }
         }
         msg.setData(message.getData());
@@ -541,13 +558,11 @@ public class ConsumerPlayerController {
 
         Map<String, String> t = new HashMap<>();
         t.put("desc", result.getMsg());
-        MessageData data = new MessageData(msg.getData().getType(),msg.getData().getModel());
+        MessageData data = new MessageData(msg.getData().getType(), msg.getData().getModel());
         data.setData(t);
         Message message = new Message(msg.getSource(), msg.getTarget(), data);
         return message;
     }
-
-
 
 
 }

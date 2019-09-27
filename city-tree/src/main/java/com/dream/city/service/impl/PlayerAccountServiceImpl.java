@@ -53,5 +53,10 @@ public class PlayerAccountServiceImpl implements PlayerAccountService {
         return  playerAccountMapper.getPlayerAccount(playerId);
     }
 
+    @Override
+    public void createAccount(String playerId,String address){
+         playerAccountMapper.createAccount(playerId,address);
+    }
+
 
 }

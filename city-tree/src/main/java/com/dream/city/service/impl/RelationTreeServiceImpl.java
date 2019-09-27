@@ -9,6 +9,7 @@ import com.dream.city.domain.mapper.TreeMapper;
 import com.dream.city.domain.mapper.UserMapper;
 import com.dream.city.service.RelationTreeService;
 import com.dream.city.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,7 @@ import java.util.Map;
  * @author Wvv
  */
 @Service
+@Slf4j
 public class RelationTreeServiceImpl implements RelationTreeService {
 
     @Autowired
@@ -33,7 +35,11 @@ public class RelationTreeServiceImpl implements RelationTreeService {
         RelationTree parentTree = treeMapper.getByPlayer(parent);
         RelationTree playerTree = treeMapper.getByPlayer(child);
         if(StringUtils.isBlank(parent) || StringUtils.isBlank(child) || StringUtils.isBlank(invite)){
-            return new Result(CityGlobal.Constant.TREE_PARAMS_ERROR, 501);
+            return Result.result(false,CityGlobal.Constant.TREE_PARAMS_ERROR, 501);
+        }
+        if(null == parentTree){
+            log.info("玩家上级邀请码关系不存在");
+            return Result.result(false,"失败",201);
         }
         if(null == playerTree) {
             tree.setId(0);
@@ -41,9 +47,10 @@ public class RelationTreeServiceImpl implements RelationTreeService {
             tree.setPlayerId(child);
             tree.setRelation(parentTree.getRelation() + "/" + invite);
             treeMapper.saveTree(tree);
-            return new Result("成功", 200);
+            log.info("保存树成功");
+            return Result.result(true,"成功", 200);
         }
-        return new Result(CityGlobal.Constant.TREE_RELATION_EXISTS, 201);
+        return Result.result(false,CityGlobal.Constant.TREE_RELATION_EXISTS, 201);
 
     }
 

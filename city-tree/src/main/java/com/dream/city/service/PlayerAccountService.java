@@ -17,4 +17,6 @@ public interface PlayerAccountService {
     Result checkPayPass(String playerId, String payPass);
 
     PlayerAccount getPlayerAccount(String playerId);
+
+    void createAccount(String playerId,String address);
 }

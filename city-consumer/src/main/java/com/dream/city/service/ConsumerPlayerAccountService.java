@@ -20,8 +20,8 @@ public interface ConsumerPlayerAccountService {
     /**
      * 用户账户添加
      */
-    @RequestMapping("/tree/get/{username}")
-    String createAccount(@PathVariable("playerId") String playerId,@RequestParam("address")String address);
+    @RequestMapping("/tree/account/create")
+    Result createAccount(@RequestParam("playerId") String playerId,@RequestParam("address")String address);
 
 
     /*@RequestMapping("/tree/get/{username}")
