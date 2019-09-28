@@ -5,7 +5,6 @@
     <id column="trade_id" property="tradeId" jdbcType="INTEGER" />
     <result column="trade_acc_id" property="tradeAccId" jdbcType="INTEGER" />
     <result column="trade_player_id" property="tradePlayerId" jdbcType="VARCHAR" />
-    <result column="trade_order_id" property="tradeOrderId" jdbcType="INTEGER" />
     <result column="trade_amount" property="tradeAmount" jdbcType="DECIMAL" />
     <result column="trade_type" property="tradeType" jdbcType="CHAR" />
     <result column="trade_amount_type" property="tradeAmountType" jdbcType="VARCHAR" />
@@ -48,7 +47,7 @@
         and trade_type = #{dynType,tradeType=CHAR},
       </if>
       <if test="tradeAmountType != null and tradeAmountType != ''" >
-        and trade_amount_type = #{tradeAmountType,jdbcType=CHAR}
+        and trade_amount_type = #{tradeAmountType,jdbcType=VARCHAR}
       </if>
     </where>
     linit 1

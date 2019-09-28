@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.dream.city.base.model.Message;
 import com.dream.city.base.model.MessageData;
 import com.dream.city.base.model.Result;
-import com.dream.city.service.CityMessageService;
+import com.dream.city.service.ConsumerMessageService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ import java.util.Map;
 @Slf4j
 public class ConsumerMessageController {
     @Autowired
-    private CityMessageService messageService;
+    private ConsumerMessageService messageService;
 
 
     /**

@@ -20,7 +20,10 @@ public class PlayerEarning implements Serializable {
     /** 税金 */
     private BigDecimal earnTax;
 
+    private String isWithdrew;
+
     private Date createTime;
+    private Date updateTime;
 
     public Integer getEarnId() {
         return earnId;
@@ -60,5 +63,21 @@ public class PlayerEarning implements Serializable {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+
+    public String getIsWithdrew() {
+        return isWithdrew;
+    }
+
+    public void setIsWithdrew(String isWithdrew) {
+        this.isWithdrew = isWithdrew;
+    }
+
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
     }
 }

@@ -15,13 +15,20 @@
     <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
   </resultMap>
 
+
+  <sql id="Base_Column_List" >
+    acc_id, acc_player_id, acc_usdt, acc_usdt_available, acc_usdt_freeze, acc_mt, acc_mt_available,
+    acc_mt_freeze,acc_income, create_time, update_time
+  </sql>
+
+
   <select id="getPlayerAccount" resultMap="BaseResultMap"
-          parameterType="com.dream.city.base.model.entity.PlayerAccount" >
+          parameterType="com.dream.city.base.model.req.PlayerAccountReq" >
     select
     <include refid="Base_Column_List" />
     from player_account
     <where>
-        1=1
+      and acc_id not in(#{platformAccIds,jdbcType=VARCHAR})
       <if test="accId != null">
         and acc_id = #{accId,jdbcType=INTEGER}
       </if>
@@ -32,13 +39,27 @@
     limit 1
   </select>
 
+  <select id="getPlatformAccounts" resultMap="BaseResultMap"
+          parameterType="com.dream.city.base.model.req.PlayerAccountReq" >
+    select
+    <include refid="Base_Column_List" />
+    from player_account
+    <where>
+      and acc_id in(#{platformAccIds,jdbcType=VARCHAR})
+      <if test="accPlayerId != null and accPlayerId != '' ">
+        and acc_player_id = #{accPlayerId,jdbcType=VARCHAR}
+      </if>
+    </where>
+    order by create_time desc
+  </select>
+
   <select id="getPlayerAccountList" resultMap="BaseResultMap"
           parameterType="com.dream.city.base.model.entity.PlayerAccount" >
     select
     <include refid="Base_Column_List" />
     from player_account
     <where>
-        1=1
+      and acc_id not in(#{platformAccIds,jdbcType=VARCHAR})
       <if test="accId != null">
         and acc_id = #{accId,jdbcType=INTEGER}
       </if>
@@ -49,10 +70,6 @@
     order by create_time desc
   </select>
 
-  <sql id="Base_Column_List" >
-    acc_id, acc_player_id, acc_usdt, acc_usdt_available, acc_usdt_freeze, acc_mt, acc_mt_available,
-    acc_mt_freeze,acc_income, create_time, update_time
-  </sql>
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from player_account

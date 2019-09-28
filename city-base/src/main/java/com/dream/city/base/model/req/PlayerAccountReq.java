@@ -9,8 +9,11 @@ import java.util.Date;
  */
 public class PlayerAccountReq implements Serializable {
 
-    /** 账号id */
+    /** 玩家账号id */
     private Integer accId;
+
+    /** 平台账号id */
+    private String platformAccIds;
 
     /** 账户玩家 */
     private String accPlayerId;
@@ -31,9 +34,9 @@ public class PlayerAccountReq implements Serializable {
     private String accPass;
 
     /**
-     * 交易类型（投资usdt，投资mt，转账transfer，充值recharge，提现withdraw）
+     * 资金类型（usdt投资:usdt_invest，mt投资:mt_invest，转账:transfer，提现:withdraw,usdt投资收益:usdt_earnings,mt投资收益:mt_earnings,usdt投资税金:usdt_invest_tax）
      */
-    private String tradeType;
+    private String tradeAmountType;
     /**
      * 订单id
      */
@@ -42,7 +45,7 @@ public class PlayerAccountReq implements Serializable {
     /**
      * 资金动态(进账in,出账out)
      */
-    private String amountDynType;
+    private String tradeType;
 
     /** 账户usdt额度 */
     private BigDecimal accUsdt;
@@ -61,6 +64,7 @@ public class PlayerAccountReq implements Serializable {
 
     /** mt冻结金额 */
     private BigDecimal accMtFreeze;
+
 
     public Integer getAccId() {
         return accId;
@@ -134,14 +138,6 @@ public class PlayerAccountReq implements Serializable {
         this.tradeType = tradeType;
     }
 
-    public String getAmountDynType() {
-        return amountDynType;
-    }
-
-    public void setAmountDynType(String amountDynType) {
-        this.amountDynType = amountDynType;
-    }
-
     public BigDecimal getAccUsdtAvailable() {
         return accUsdtAvailable;
     }
@@ -188,5 +184,22 @@ public class PlayerAccountReq implements Serializable {
 
     public void setFriendId(String friendId) {
         this.friendId = friendId;
+    }
+
+
+    public String getPlatformAccIds() {
+        return platformAccIds;
+    }
+
+    public void setPlatformAccIds(String platformAccIds) {
+        this.platformAccIds = platformAccIds;
+    }
+
+    public String getTradeAmountType() {
+        return tradeAmountType;
+    }
+
+    public void setTradeAmountType(String tradeAmountType) {
+        this.tradeAmountType = tradeAmountType;
     }
 }

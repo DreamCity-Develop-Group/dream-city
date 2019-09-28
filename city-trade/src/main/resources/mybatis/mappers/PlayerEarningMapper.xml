@@ -6,11 +6,13 @@
     <result column="earn_player_id" property="earnPlayerId" jdbcType="VARCHAR" />
     <result column="earn_max" property="earnMax" jdbcType="DECIMAL" />
     <result column="earn_tax" property="earnTax" jdbcType="DECIMAL" />
+    <result column="is_withdrew" property="isWithdrew" jdbcType="CHAR" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
   </resultMap>
 
   <sql id="Base_Column_List" >
-    earn_id, earn_player_id, earn_max, earn_tax, create_time
+    earn_id, earn_player_id, earn_max, earn_tax, is_withdrew,create_time,update_time
   </sql>
 
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
@@ -45,6 +47,9 @@
         <if test="earnTax != null">
           and earn_tax = #{earnTax,jdbcType=DECIMAL}
         </if>
+        <if test="isWithdrew != null">
+          and is_withdrew = #{isWithdrew,jdbcType=CHAR}
+        </if>
 
     </where>
     order by create_time desc
@@ -70,6 +75,9 @@
       <if test="earnTax != null" >
         earn_tax,
       </if>
+      <if test="isWithdrew != null" >
+        is_withdrew,
+      </if>
       create_time
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
@@ -84,6 +92,9 @@
       </if>
       <if test="earnTax != null" >
         #{earnTax,jdbcType=DOUBLE},
+      </if>
+      <if test="isWithdrew != null" >
+        #{isWithdrew,jdbcType=CHAR},
       </if>
       now()
     </trim>
@@ -101,6 +112,10 @@
       <if test="earnTax != null" >
         earn_tax = #{earnTax,jdbcType=DOUBLE},
       </if>
+      <if test="isWithdrew != null" >
+        is_withdrew = #{isWithdrew,jdbcType=CHAR},
+      </if>
+      update_time = now(),
     </set>
     where earn_id = #{earnId,jdbcType=INTEGER}
   </update>

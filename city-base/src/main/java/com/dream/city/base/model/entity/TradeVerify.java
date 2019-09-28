@@ -9,6 +9,7 @@ public class TradeVerify  implements Serializable {
 
     /** 交易id(交易记录表) */
     private Integer verifyTradeId;
+    private Integer verifyOrderId;
 
     /**  审核人id(员工表) */
     private Integer verifyEmpId;
@@ -87,5 +88,13 @@ public class TradeVerify  implements Serializable {
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public Integer getVerifyOrderId() {
+        return verifyOrderId;
+    }
+
+    public void setVerifyOrderId(Integer verifyOrderId) {
+        this.verifyOrderId = verifyOrderId;
     }
 }
