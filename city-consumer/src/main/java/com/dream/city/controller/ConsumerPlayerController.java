@@ -178,11 +178,8 @@ public class ConsumerPlayerController {
         log.info("广场玩家列表", JSONObject.toJSONString(msg));
         UserReq jsonReq = DataUtils.getUserReq(msg);
         String condition = jsonReq.getNick();
-        if (StringUtils.isBlank(condition)){
-            condition = jsonReq.getUsername();
-        }
         Map<String,String> conditionMap = new HashMap<>();
-        conditionMap.put("username",condition);
+        conditionMap.put("nick",condition);
         PageReq<Map<String,String>> pageReq = new PageReq<>((Map) msg.getData().getData());
         pageReq.setCondition(conditionMap);
 

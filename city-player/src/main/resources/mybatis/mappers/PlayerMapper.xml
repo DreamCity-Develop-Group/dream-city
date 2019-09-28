@@ -58,17 +58,17 @@
   </select>
 
   <select id="getPlayers" parameterType="com.dream.city.base.model.req.PageReq" resultType="java.util.Map">
-    SELECT p.player_id playerId,p.player_name username,p.player_nick playerNick,p.create_time createTime,
+    SELECT p.player_id playerId,p.player_name username,p.player_nick nick,p.create_time createTime,
         e.friendlink playerLink,e.imgurl,g.grade,g.integral
     from city_player p INNER JOIN player_ext e ON p.player_id=e.player_id
         INNER JOIN player_grade g ON p.player_id=g.player_id
     <where>
       p.player_id=e.player_id and p.player_id=g.player_id
-      <if test="condition.username != null">
-        and p.player_nick = #{condition.username}
+      <if test="condition.nick != null">
+        and p.player_nick = #{condition.nick}
       </if>
-      <if test="condition.username != null">
-        or p.player_name = #{condition.username}
+      <if test="condition.nick != null">
+        or p.player_name = #{condition.nick}
       </if>
     </where>
     ORDER BY p.create_time DESC limit ${start},${pageSize}
@@ -79,11 +79,11 @@
         INNER JOIN player_grade g ON p.player_id=g.player_id
     <where>
       p.player_id=e.player_id and p.player_id=g.player_id
-      <if test="condition.username != null">
-        and p.player_nick = #{condition.username}
+      <if test="condition.nick != null">
+        and p.player_nick = #{condition.nick}
       </if>
-      <if test="condition.username != null">
-        or p.player_name = #{condition.username}
+      <if test="condition.nick != null">
+        or p.player_name = #{condition.nick}
       </if>
     </where>
   </select>
