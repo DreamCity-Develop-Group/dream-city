@@ -4,12 +4,10 @@ import com.alibaba.fastjson.JSON;
 import com.dream.city.base.model.CityGlobal;
 import com.dream.city.base.model.Page;
 import com.dream.city.base.model.Result;
-import com.dream.city.base.model.entity.PlayerExt;
 import com.dream.city.base.model.entity.PlayerGrade;
 import com.dream.city.base.model.req.PageReq;
 import com.dream.city.base.model.resp.PlayerResp;
 import com.dream.city.base.utils.DateUtils;
-import com.dream.city.base.utils.KeyGenerator;
 import com.dream.city.base.model.entity.Player;
 import com.dream.city.player.domain.mapper.PlayerExtMapper;
 import com.dream.city.player.domain.mapper.PlayerGradeMapper;
@@ -53,7 +51,8 @@ public class PlayerServiceImpl implements PlayerService {
 
     @Override
     public Result resetLoginPwd(String playerId, String oldPwd, String newPwd) {
-        Result result = changePwdVelid(playerId, oldPwd);
+        String pwdType = "resetLoginPwd";
+        Result result = changePwdVelid(playerId, oldPwd,pwdType);
         if (!result.getSuccess()){
             return result;
         }
@@ -76,7 +75,8 @@ public class PlayerServiceImpl implements PlayerService {
 
     @Override
     public Result resetTraderPwd(String playerId, String oldPwd, String newPwd) {
-        Result result = changePwdVelid(playerId, oldPwd);
+        String pwdType = "resetTraderPwd";
+        Result result = changePwdVelid(playerId, oldPwd,pwdType);
         if (!result.getSuccess()){
             return result;
         }
@@ -92,7 +92,7 @@ public class PlayerServiceImpl implements PlayerService {
         return new Result(Boolean.FALSE, CityGlobal.Constant.USER_CHANGE_TRADERPWD_FAIL);
     }
 
-    private Result changePwdVelid(String playerId, String oldPwd){
+    private Result changePwdVelid(String playerId, String oldPwd,String pwdType){
         Player player = new Player();
         player.setPlayerId(playerId);
         Player playerExit = playerMapper.getPlayerById(player);
@@ -103,7 +103,13 @@ public class PlayerServiceImpl implements PlayerService {
         }
 
         // 旧密码不正确
-        if (playerExit.getPlayerPass().equals(oldPwd)){
+        if ("resetLoginPwd".equalsIgnoreCase(pwdType) && playerExit.getPlayerPass().equals(oldPwd)){
+            return new Result(Boolean.FALSE, CityGlobal.Constant.USER_OLD_PWD_ERROR);
+        }
+        // 交易密码 没有交易密码的设置交易密码，有交易密码的修改交易密码
+        if ("resetTraderPwd".equalsIgnoreCase(pwdType)
+                && StringUtils.isNotBlank(playerExit.getPlayerTradePass())
+                && playerExit.getPlayerTradePass().equals(oldPwd)){
             return new Result(Boolean.FALSE, CityGlobal.Constant.USER_OLD_PWD_ERROR);
         }
 

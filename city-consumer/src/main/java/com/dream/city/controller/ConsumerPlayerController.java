@@ -88,7 +88,7 @@ public class ConsumerPlayerController {
     }
 
 
-    @RequestMapping("/searchfriend")
+    @RequestMapping("/searchFriend")
     @ApiOperation(value = "换一批广场玩家列表", notes = "换一批广场玩家列表", response = Message.class)
     public Message searchfriend(@RequestBody Message msg) {
         log.info("广场玩家列表 换一批", JSONObject.toJSONString(msg));
@@ -235,12 +235,12 @@ public class ConsumerPlayerController {
     }
 
     /**
-     * 修改交易密码
+     * 设置、修改交易密码
      *
      * @param msg
      * @return
      */
-    @ApiOperation(value = "修改交易密码", notes = "修改交易密码", response = Message.class)
+    @ApiOperation(value = "设置、修改交易密码", notes = "修改交易密码，没有交易密码的设置交易密码，有交易密码的修改交易密码", response = Message.class)
     @RequestMapping("/expwshop")
     public Message expwshop(@RequestBody Message msg) {
         log.info("修改交易密码", JSONObject.toJSONString(msg));

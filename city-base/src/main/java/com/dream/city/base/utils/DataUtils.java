@@ -49,7 +49,7 @@ public class DataUtils {
         Map map = (Map) message.getData().getData();
         UserReq userReq = new UserReq();
         if (map != null) {
-            userReq.setInvite(map.containsKey("invited") ? (String) map.get("invited") : null);
+            userReq.setInvite(map.containsKey("invite") ? (String) map.get("invite") : null);
             userReq.setNick(map.containsKey("nick") ? (String) map.get("nick") : null);
             userReq.setPlayerId(map.containsKey("playerId") ? (String) map.get("playerId") : null);
             userReq.setPwshop(map.containsKey("pwshop") ? (String) map.get("pwshop") : null);
