@@ -132,10 +132,11 @@ public class ConsumerFriendsController {
         Message message = new Message();
         MessageData<String> data = new MessageData(msg.getData().getType(),msg.getData().getModel());
         String name = CityGlobal.ResultCode.fail.name();
-        desc = desc + "失败";
         if (b) {
             name = CityGlobal.ResultCode.success.name();
             desc = desc + "成功";
+        }else {
+            desc = desc + "失败";
         }
         data.setData(name);
         message.setData(data);

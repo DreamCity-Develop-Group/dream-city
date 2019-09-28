@@ -27,7 +27,7 @@ import java.util.Map;
  */
 @Api(value = "点赞", description = "点赞")
 @RestController
-@RequestMapping("/consumer")
+@RequestMapping("/consumer/player/like")
 public class ConsumerLikesController {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
