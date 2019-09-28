@@ -22,6 +22,8 @@ spring:
       show-sql: true
   main:
     allow-bean-definition-overriding: true
+  profiles:
+    active: dev
 
 eureka:
   instance:

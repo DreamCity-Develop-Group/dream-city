@@ -3,9 +3,11 @@ package com.dream.city.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.dream.city.base.model.MessageData;
+import com.dream.city.base.utils.RedisUtils;
 import com.dream.city.config.GateWayConfig;
 import com.dream.city.base.model.Message;
 import com.dream.city.server.Prop;
+import com.dream.city.server.PublishServer;
 import com.dream.city.server.WebSocketServer;
 import com.dream.city.service.HttpClientService;
 import com.dream.city.util.JsonUtil;
@@ -49,20 +51,26 @@ public class HttpClientServiceImpl implements HttpClientService {
     @Value(value = "${gate.zuul.url}")
     private String getWayUrl;
 
+    @Autowired
+    RedisUtils redisUtils;
+
+    @Autowired
+    PublishServer publishServer;
+
 
     @Override
     public void send(Message message) {
         String gateWayUrl = gateWayConfig.getUrl();
-        if (null == gateWayUrl){
+        if (null == gateWayUrl) {
             log.info("simpleProp: " + myProps.getSimpleProp());
             log.info("arrayProps: " + (myProps.getArrayProps()));
             log.info("listProp1: " + (myProps.getListProp1()));
             log.info("listProp2: " + (myProps.getListProp2()));
             log.info("mapProps: " + (myProps.getMapProps()));
         }
-        log.info("App-Name:"+appName);
+        log.info("App-Name:" + appName);
         String url1 = gateWayConfig.getUrl();
-        log.info("GateWay-Url:"+url1);
+        log.info("GateWay-Url:" + url1);
 
         CloseableHttpClient httpClient = HttpClientBuilder.create().build();
 
@@ -71,8 +79,8 @@ public class HttpClientServiceImpl implements HttpClientService {
         String serviceModel = message.getTarget();
         String serviceOpt = message.getData().getType();
 
-        String url = gateWayUrl + "/" +gateWayPath + "/" + serviceModel + "/" + serviceOpt;
-        log.info("Request-Url:"+url);
+        String url = gateWayUrl + "/" + gateWayPath + "/" + serviceModel + "/" + serviceOpt;
+        log.info("Request-Url:" + url);
         // 创建Post请求
         HttpPost httpPost = new HttpPost(url);
 
@@ -105,7 +113,13 @@ public class HttpClientServiceImpl implements HttpClientService {
                 //WebSocketServer.sendInfo(msg);
                 log.info("加入任务成功！");
                 log.info(msg.getDesc());
-            }else{
+            } else {
+                // 由客户端执行(发送)Post请求
+                /**TODO**********将不成功的任务放入到redis，由任务中心自己调度处理******************************/
+                JSONObject jsonObject = JSON.parseObject(JsonUtil.parseObjToJson(message.getData().getData()));
+                String channel = jsonObject.getString("channel");
+                publishServer.publishMessage(channel,message);
+                /**TODO**********不成功的任务放入到redis******************************/
                 log.info("加入任务失败!");
             }
         } catch (ClientProtocolException e) {
@@ -161,11 +175,11 @@ public class HttpClientServiceImpl implements HttpClientService {
             }
 
             //请求地址url
-            String url = gateWayUrl + "/" +  serviceModel + "/" + serviceOpt;
-            log.info("Request-Url:"+url);
+            String url = gateWayUrl + "/" + serviceModel + "/" + serviceOpt;
+            log.info("Request-Url:" + url);
 
             httpPost = new HttpPost(url);
-            if ("login".equals(serviceOpt) || "reg".equals(serviceOpt) || "getCode".equals(serviceOpt)||"codeLogin".equals(serviceOpt)) {
+            if ("login".equals(serviceOpt) || "reg".equals(serviceOpt) || "getCode".equals(serviceOpt) || "codeLogin".equals(serviceOpt)) {
                 //这里不处理，表示正常放行
                 httpPost.setHeader("method", serviceOpt);
                 httpPost.setHeader("authType", "");
@@ -179,7 +193,7 @@ public class HttpClientServiceImpl implements HttpClientService {
                         String username = dataMap.get("username").toString();
                         httpPost.setHeader("authType", "Bearer");
                         httpPost.setHeader("username", username);
-                        httpPost.setHeader("method",serviceOpt);
+                        httpPost.setHeader("method", serviceOpt);
                         httpPost.setHeader("Authorization", "Bearer " + token);
                     }
                 }
@@ -195,15 +209,19 @@ public class HttpClientServiceImpl implements HttpClientService {
 
 
             // 由客户端执行(发送)Post请求
+            /**TODO**********完成客户端请求逻辑******************************/
             response = client.execute(httpPost);
+            /**TODO**********完成客户端请求逻辑******************************/
+
             // 从响应模型中获取响应实体
             HttpEntity responseEntity = response.getEntity();
 
-           log.info("Post=响应状态为:" + response.getStatusLine());
+            log.info("Post=响应状态为:" + response.getStatusLine());
             int responseCode = response.getStatusLine().getStatusCode();
-            if (responseEntity != null && responseCode==200) {
+            //TODO 是否完成请求
+            if (responseEntity != null && responseCode == 200) {
                 log.info("Post=响应内容长度为:" + responseEntity.getContentLength());
-                log.info("Post=>内容："+responseEntity.getContent().toString());
+                log.info("Post=>内容：" + responseEntity.getContent().toString());
                 String resp = EntityUtils.toString(responseEntity);
                 log.info("Post=响应内容为:" + resp);
 
@@ -216,24 +234,15 @@ public class HttpClientServiceImpl implements HttpClientService {
                 //message.setData(new MessageData());
                 message.setSource("server");
                 message.setTarget(msg.getSource());
-                /*MessageData msgData = new MessageData();
-                msgData.setType(msg.getData().getType());
-                msgData.setModel(msg.getData().getModel());
 
-                message.setData(msgData);*/
-                /*if (resp.contains("data")) {
-                    String json = JSON.toJSONString(JSON.parseObject(resp).get("data"));
-                    JSONObject jsonObject = JSON.parseObject(json);
 
-                    message.getData().setData(jsonObject);
-                }else {
-                    message.getData().setData(null);
-                }*/
 
-                // TODO 推送消息到客户端
+                /**TODO**********完成请求，推送最终数据******************************/
                 WebSocketServer.sendInfo(message);
-            }else {
-                /**TODO**********完成任务创建******************************/
+                /**TODO**********完*************************************/
+
+            } else {
+                /**TODO**********完成任务创建***********未完成相应请求，创建任务*******************/
                 createWork(msg);
                 /**TODO**********完成任务创建******************************/
 
@@ -255,15 +264,15 @@ public class HttpClientServiceImpl implements HttpClientService {
         }
     }
 
-    private void createWork(Message message){
+    private void createWork(Message message) {
         // TODO ===> 调用自方法，创建任务处理
-        Map<String,Object> job = new HashMap<>();
+        Map<String, Object> job = new HashMap<>();
         //要做的任务
-        job.put("todo","jobCreate");
+        job.put("todo", "jobCreate");
         //任务完成推送的对象
-        job.put("applyTo",message.getSource());
+        job.put("applyTo", message.getSource());
         //job任务的源数据
-        job.put("sourceData",message);
+        job.put("sourceData", message);
         Message jobMsg = new Message();
         MessageData messageData = new MessageData();
 

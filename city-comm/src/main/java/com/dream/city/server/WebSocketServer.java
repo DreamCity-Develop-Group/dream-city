@@ -7,6 +7,7 @@ import com.dream.city.base.model.MessageData;
 import com.dream.city.base.utils.JsonUtil;
 import com.dream.city.base.utils.RedisUtils;
 import com.dream.city.base.utils.SpringUtils;
+import com.dream.city.config.RedisSubListenerConfig;
 import com.dream.city.service.HttpClientService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -43,11 +44,13 @@ public class WebSocketServer {
     private StringRedisTemplate redisTampate = SpringUtils.getBean(StringRedisTemplate.class);
 
     private RedisMessageListenerContainer redisMessageListenerContainer = SpringUtils.getBean(RedisMessageListenerContainer.class);
+    //RedisSubListenerConfig config = SpringUtils.getBean(RedisSubListenerConfig.class);
 
     private RedisUtils redisUtils = SpringUtils.getBean(RedisUtils.class);
 
     private HttpClientService httpClientService = SpringUtils.getBean(HttpClientService.class);
     private PublishServer publishService = SpringUtils.getBean(PublishServer.class);
+
     //@Autowired
     //HttpClientService httpClientService;
 
@@ -86,9 +89,9 @@ public class WebSocketServer {
      * @param session
      */
     @OnOpen
-    public void onOpen(Session session,@PathParam("topic") String topic) {
+    public void onOpen(Session session,@PathParam("topic") String topic,@PathParam("name")String name) {
         sid = session.getId();
-        log.info("有新窗口开始监听:" + sid + ",当前在线人数为" + getOnlineCount());
+        log.info("有新窗口["+name+"@"+topic+"]开始监听:" + sid + ",当前在线人数为" + getOnlineCount());
         this.session = session;
         //加入set中
         webSocketSet.add(this);
@@ -104,6 +107,10 @@ public class WebSocketServer {
         //设置订阅topic
         redisMessageListenerContainer.addMessageListener(subscribeListener, new ChannelTopic(topic));
         redisMessageListenerContainer.setTaskExecutor(newFixedThreadPool(4));
+
+        //redisMessageListenerContainer.addMessageListener(subscribeListener, new ChannelTopic(topic+":"+name));
+        //redisMessageListenerContainer.setTaskExecutor(newFixedThreadPool(4));
+
         //redisMessageListenerContainer.start();
 
         this.sid = sid;
@@ -111,7 +118,8 @@ public class WebSocketServer {
             //初始化连接的客户端，返回clientId
             String clientId = String.valueOf(new Random().nextInt(99999)) + "-" + String.valueOf(sid);
             this.clientId = clientId;
-            log.info("有新窗口开始监听:" + clientId + ",当前在线人数为" + getOnlineCount());
+            log.info("有新窗口["+name+"@"+topic+"]开始监听:" + clientId + ",当前在线人数为" + getOnlineCount());
+
 
             //String data = "{\"cmd\":\"init\",\"clientId\":\""+clientId+"\",\"msg\":\"连接成功\"}";
             //sendMessage(data);
@@ -168,8 +176,6 @@ public class WebSocketServer {
 
             //解析出客户端发来的消息
             Message msg = JSONObject.parseObject(message, Message.class);
-
-
 
             if (null != msg.getData().getData()) {
                 Map data = JsonUtil.parseJsonToObj(msg.getData().getData().toString(),Map.class);
