@@ -36,7 +36,7 @@ public class PlayerGrade implements Serializable {
         return grade;
     }
 
-    public void setGrade(String grade) {
+    public void  setGrade(String grade) {
         this.grade = grade == null ? null : grade.trim();
     }
 

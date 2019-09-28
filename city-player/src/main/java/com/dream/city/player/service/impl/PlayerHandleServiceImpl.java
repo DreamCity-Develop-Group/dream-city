@@ -2,7 +2,9 @@ package com.dream.city.player.service.impl;
 
 import com.dream.city.base.model.entity.Player;
 import com.dream.city.base.model.entity.PlayerExt;
+import com.dream.city.base.model.entity.PlayerGrade;
 import com.dream.city.base.utils.KeyGenerator;
+import com.dream.city.player.domain.mapper.PlayerGradeMapper;
 import com.dream.city.player.service.PlayerExtService;
 import com.dream.city.player.service.PlayerHandleService;
 import com.dream.city.player.service.PlayerService;
@@ -18,7 +20,8 @@ public class PlayerHandleServiceImpl implements PlayerHandleService {
     PlayerService playerService;
     @Autowired
     PlayerExtService playerExtService;
-
+    @Autowired
+    private PlayerGradeMapper gradeMapper;
 
 
     @Override
@@ -34,6 +37,11 @@ public class PlayerHandleServiceImpl implements PlayerHandleService {
             playerExt.setPlayerId(playerId);
             Integer integer = playerExtService.insertPlayerExt(playerExt);
             save = (integer != null && integer > 0)? Boolean.TRUE: Boolean.FALSE;
+
+            PlayerGrade grade = new PlayerGrade();
+            grade.setPlayerId(playerId);
+            grade.setGrade("L1");
+            gradeMapper.insertSelective(grade);
         }
         return save;
     }
