@@ -68,8 +68,9 @@ public class ConsumerFriendsController {
         Map map = getPlayerIdOrFriendId(msg);
         String playerId = map.containsKey("playerId")?(String)map.get("playerId"):null;
         String friendId = map.containsKey("friendId")?(String)map.get("friendId"):null;
+        String agree = map.containsKey("agree")?(String)map.get("agree"):"disagreed";
 
-        Result<Boolean> b = consumerFriendsService.agreeAddFriend(playerId, friendId);
+        Result<Boolean> b = consumerFriendsService.agreeAddFriend(playerId, friendId,agree);
         Message message = getResultMessage(b.getSuccess(),"通过好友",msg);
         return message;
     }
@@ -175,6 +176,7 @@ public class ConsumerFriendsController {
     private Map getPlayerIdOrFriendId(Message msg){
         Map map = (Map)msg.getData().getData();
 
+        String agree = map.containsKey("agree")?(String) map.get("agree"):null;
         String playerName = map.containsKey("playerName")?(String) map.get("playerName"):null;
         if (StringUtils.isBlank(playerName)){
             playerName = map.containsKey("username")?(String) map.get("username"):null;
@@ -200,6 +202,7 @@ public class ConsumerFriendsController {
         Map<String,String> resultMap = new HashMap<>();
         resultMap.put("playerId",playerId);
         resultMap.put("friendId",friendId);
+        resultMap.put("agree",agree);
         return resultMap;
     }
 

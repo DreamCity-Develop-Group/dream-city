@@ -26,7 +26,6 @@ public class FriendsServiceImpl implements FriendsService {
 
     @Override
     public boolean agreeAddFriend(Friends friend) {
-        friend.setAgree(1);
         return friendsMapper.agreeAddFriend(friend)>0?Boolean.TRUE:Boolean.FALSE;
     }
 

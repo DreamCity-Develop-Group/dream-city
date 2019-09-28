@@ -31,7 +31,7 @@ public interface ConsumerFriendsService {
      */
     @RequestMapping("/agreeAddFriend")
     Result<Boolean> agreeAddFriend(@RequestParam("playerId") String playerId,
-                           @RequestParam("friendId") String friendId);
+                           @RequestParam("friendId") String friendId,@RequestParam("agree") String agree);
 
     /**
      * 好友列表

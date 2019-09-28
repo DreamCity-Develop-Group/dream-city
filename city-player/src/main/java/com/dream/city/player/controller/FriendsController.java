@@ -58,9 +58,12 @@ public class FriendsController {
      */
     @RequestMapping("/agreeAddFriend")
     public Result<Boolean> agreeAddFriend(@RequestParam("playerId") String playerId,
-                           @RequestParam("friendId") String friendId){
+                           @RequestParam("friendId") String friendId,@RequestParam("agree") String agree){
         logger.info("agreeAddFriend，playerId：{},friendId:{}",playerId,friendId);
         Friends friend = getFriendFromUsername(playerId,friendId);
+        if ("agreed".equalsIgnoreCase(agree)){
+            friend.setAgree(1);
+        }
         boolean agreeAddFriend = friendsService.agreeAddFriend(friend);
         return new Result<>(agreeAddFriend,"同意添加好友");
     }
