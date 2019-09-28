@@ -106,11 +106,9 @@ public class ConsumerPlayerController {
         }
         pageReq.setPageNo(pageNo);
 
-        Result<String> players = consumerPlayerService.getPlayers(pageReq);
-        Map<String, Object> t = new HashMap<>();
-        t.put("userList", players.getData());
+        Result<Map> players = consumerPlayerService.getPlayers(pageReq);
         MessageData messageData = new MessageData(msg.getData().getType(), msg.getData().getModel());
-        messageData.setData(t);
+        messageData.setData(players.getData());
         Message message = new Message(msg.getSource(), msg.getTarget(), messageData);
         message.setDesc(players.getMsg());
         return message;
@@ -185,10 +183,8 @@ public class ConsumerPlayerController {
 
         Result players = consumerPlayerService.getPlayers(pageReq);
 
-        Map<String, Object> t = new HashMap<>();
-        t.put("userList", players.getData());
         MessageData data = new MessageData(msg.getData().getType(), msg.getData().getModel());
-        data.setData(t);
+        data.setData(players.getData());
         Message message = new Message(msg.getSource(), msg.getTarget(), data);
         return message;
     }
