@@ -25,6 +25,10 @@ dreamcity:
     password:
       salt: DREAM_CITY_890@#$%
 
+  #平台账户id，多个，都号隔开来自player_account表
+  platform:
+    account:
+      accIds: 888888888,999999999
 
 eureka:
   client:

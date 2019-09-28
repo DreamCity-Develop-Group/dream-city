@@ -15,6 +15,7 @@ import java.util.*;
 public class DateUtils {
 
     public static final String DEFAULT_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    public static final String DEFAULT_FORMAT_NUMBER = "yyyyMMddHHmmss";
     public static final String DAY_PATTERN = "yyyy-MM-dd";
     public static final String YEAR_MONTH_DAY_EN_SECOND  = "yyyy/MM/dd HH:mm:ss";
     public static final String YEAR_MONTH_DAY_CN_SECOND = "yyyy年MM月dd日 HH时mm分ss秒";
@@ -135,7 +136,7 @@ public class DateUtils {
             return null;
         }
         try {
-            Date dateTemp = getDateFormat(DEFAULT_FORMAT).parse(dateStr);
+            Date dateTemp = getDateFormat(DEFAULT_FORMAT_NUMBER).parse(dateStr);
             return dateTemp;
         } catch (ParseException pe) {
             pe.printStackTrace();

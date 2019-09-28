@@ -7,6 +7,7 @@ import com.dream.city.base.model.Message;
 import com.dream.city.base.model.MessageData;
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.Player;
+import com.dream.city.base.model.entity.PlayerAccount;
 import com.dream.city.base.model.entity.PlayerExt;
 import com.dream.city.base.model.req.PageReq;
 import com.dream.city.base.model.req.UserReq;
@@ -21,6 +22,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -61,7 +63,8 @@ public class ConsumerPlayerController {
     ConsumerFriendsService friendsService;
     @Autowired
     ConsumerCommonsService commonsService;
-
+    @Value("${dreamcity.platform.account.accIds}")
+    String platformAccIds;
 
     /**
      * 修改玩家头像
@@ -245,10 +248,21 @@ public class ConsumerPlayerController {
     public Message expwshop(@RequestBody Message msg) {
         log.info("修改交易密码", JSONObject.toJSONString(msg));
         UserReq jsonReq = DataUtils.getUserReq(msg);
+        PlayerResp player = commonsService.getPlayerByUserName(msg);
+
         Result result = consumerPlayerService.resetTraderPwd(jsonReq.getPlayerId(), jsonReq.getOldpw(), jsonReq.getNewpw());
         log.info("##################### 修改交易密码 : {}", msg);
         Map<String, String> t = new HashMap<>();
         t.put("desc", result.getMsg());
+
+        if (result.getSuccess()){
+            if(StringUtils.isNotBlank(player.getPlayerTradePass())){
+                //修改交易密码，扣除1USDT
+                PlayerAccount playerAccount = playerAccountService.getPlayerAccount(player.getPlayerId());
+
+            }
+
+        }
 
         MessageData data = new MessageData(msg.getData().getType(), msg.getData().getModel());
         data.setData(t);

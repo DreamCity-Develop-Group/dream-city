@@ -64,10 +64,10 @@
         INNER JOIN player_grade g ON p.player_id=g.player_id
     <where>
       p.player_id=e.player_id and p.player_id=g.player_id
-      <if test="condition.nick != null">
+      <if test="condition.nick != null and condition.nick != ''">
         and p.player_nick = #{condition.nick}
       </if>
-      <if test="condition.nick != null">
+      <if test="condition.nick != null and condition.nick != ''">
         or p.player_name = #{condition.nick}
       </if>
     </where>
@@ -79,10 +79,10 @@
         INNER JOIN player_grade g ON p.player_id=g.player_id
     <where>
       p.player_id=e.player_id and p.player_id=g.player_id
-      <if test="condition.nick != null">
+      <if test="condition.nick != null and condition.nick != ''">
         and p.player_nick = #{condition.nick}
       </if>
-      <if test="condition.nick != null">
+      <if test="condition.nick != null and condition.nick != ''">
         or p.player_name = #{condition.nick}
       </if>
     </where>
