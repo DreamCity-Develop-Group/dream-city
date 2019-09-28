@@ -181,8 +181,10 @@ public class ConsumerPlayerController {
         if (StringUtils.isBlank(condition)){
             condition = jsonReq.getUsername();
         }
-        PageReq<String> pageReq = new PageReq<>((Map) msg.getData().getData());
-        pageReq.setCondition(condition);
+        Map<String,String> conditionMap = new HashMap<>();
+        conditionMap.put("username",condition);
+        PageReq<Map<String,String>> pageReq = new PageReq<>((Map) msg.getData().getData());
+        pageReq.setCondition(conditionMap);
 
         Result players = consumerPlayerService.getPlayers(pageReq);
 

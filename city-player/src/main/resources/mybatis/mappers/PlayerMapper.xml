@@ -64,11 +64,11 @@
         INNER JOIN player_grade g ON p.player_id=g.player_id
     <where>
       p.player_id=e.player_id and p.player_id=g.player_id
-      <if test="condition != null">
-        and p.player_nick = #{_parameter}
+      <if test="condition.username != null">
+        and p.player_nick = #{condition.username}
       </if>
-      <if test="condition != null">
-        or p.player_name = #{_parameter}
+      <if test="condition.username != null">
+        or p.player_name = #{condition.username}
       </if>
     </where>
     ORDER BY p.create_time DESC limit ${start},${pageSize}
@@ -79,11 +79,11 @@
         INNER JOIN player_grade g ON p.player_id=g.player_id
     <where>
       p.player_id=e.player_id and p.player_id=g.player_id
-      <if test="condition != null">
-        and p.player_nick = #{_parameter}
+      <if test="condition.username != null">
+        and p.player_nick = #{condition.username}
       </if>
-      <if test="condition != null">
-        or p.player_name = #{_parameter}
+      <if test="condition.username != null">
+        or p.player_name = #{condition.username}
       </if>
     </where>
   </select>
