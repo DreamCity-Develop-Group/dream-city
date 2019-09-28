@@ -54,10 +54,10 @@
       b.friend_name username,b.friend_nick nick,b.friendlink playerLink,b.imgurl,g.grade,g.integral
     FROM (select f.id, f.player_id, f.friend_id , f.agree,f.create_time FROM player_friends f,city_player p
       where f.player_id =p.player_id and f.agree =0 and p.player_name = #{condition.username,jdbcType=VARCHAR}
-      ) a,
+      ) a INNER JOIN
       (SELECT p.player_id friend_id,p.player_name friend_name,p.player_nick friend_nick,e.friendlink,e.imgurl
-      FROM city_player p,player_ext e WHERE p.player_id=e.player_id) b
-      ,player_grade g
+      FROM city_player p,player_ext e WHERE p.player_id=e.player_id) b ON a.friend_id = b.friend_id
+           INNER JOIN player_grade g ON b.friend_id=g.player_id
       WHERE a.friend_id = b.friend_id and b.friend_id=g.player_id
       <if test="condition.nick != null and condition.nick != ''">
         and b.friend_nick = #{condition.nick,jdbcType=VARCHAR}
