@@ -62,8 +62,8 @@ public class ConsumerFriendsController {
     }
 
     @ApiOperation(value = "通过好友", notes = "通过好友", response = Message.class)
-    @RequestMapping("/agreeAddFriend")
-    public Message agreeAddFriend(@RequestBody Message msg){
+    @RequestMapping("/agreeApply")
+    public Message agreeApply(@RequestBody Message msg){
         logger.info("通过好友", JSONObject.toJSONString(msg));
         Map map = getPlayerIdOrFriendId(msg);
         String playerId = map.containsKey("playerId")?(String)map.get("playerId"):null;
