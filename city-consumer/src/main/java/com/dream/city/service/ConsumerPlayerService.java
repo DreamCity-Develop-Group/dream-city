@@ -49,15 +49,15 @@ public interface ConsumerPlayerService {
     /**
      * 用户登录
      */
-    @RequestMapping("/player/pwlogoin")
-    Result pwLogoin(@RequestBody String jsonReq);
+    @RequestMapping("/player/login")
+    Result login(@RequestBody String jsonReq);
 
 
     /**
      * 用户登录
      */
-    @RequestMapping("/player/codelogoin")
-    Result codeLogoin(@RequestBody String jsonReq);
+    @RequestMapping("/player/codelogin")
+    Result codeLogin(@RequestBody String jsonReq);
 
 
     /**
@@ -104,4 +104,7 @@ public interface ConsumerPlayerService {
 
     @RequestMapping("/player/getPlayerByInvite")
     Result getPlayerByInvite(@RequestParam String invite);
+
+    @RequestMapping("/player/getPlayerByAccount")
+    Result getPlayerByAccount(@RequestParam String account);
 }

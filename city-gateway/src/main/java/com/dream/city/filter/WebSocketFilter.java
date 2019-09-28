@@ -12,6 +12,8 @@ import org.springframework.util.StringUtils;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashSet;
 
+import com.dream.city.base.utils.RedisKeys;
+
 /**
  * @author Wvv
  */
@@ -53,7 +55,7 @@ public class WebSocketFilter extends ZuulFilter {
         String authType = request.getAuthType();
         if (StringUtils.isEmpty(authType) ){
             HashSet<String> set = new HashSet<>();
-            set.add("login");set.add("reg");set.add("getCode");set.add("jobPush");
+            set.add("login");set.add("codeLogin");set.add("reg");set.add("getCode");set.add("jobPush");
             if (set.contains(accessMethod)){
                 log.info("Access method is Ok! ");
                 return null;
@@ -68,9 +70,13 @@ public class WebSocketFilter extends ZuulFilter {
             return null;
         }else{//"token_"+username
             String username = request.getHeader("username");
-            Object token =  redisUtils.getStr("token_"+username);
+            log.info("Username:"+username);
+            String key = "token_"+username;
+            log.error("auth Key:"+key);
+            String redisKey = RedisKeys.LOGIN_USER_TOKEN + username;
+            String token =  redisUtils.getStr(redisKey);
 
-            if (null != token && String.valueOf(token).equals(accessToken)){
+            if (org.apache.commons.lang.StringUtils.isNotBlank(token) && token.equals(accessToken)){
                 log.info("Access token is Ok! ");
                 return null;
             }

@@ -205,6 +205,12 @@ public class PlayerServiceImpl implements PlayerService {
     }
 
     @Override
+    public Player getPlayerByAccount(String account){
+        Player player = playerMapper.getPlayerByAccount(account);
+        return player;
+    }
+
+    @Override
     public PlayerGrade getPlayerGradeByPlayerId(String playerId) {
         PlayerGrade record = new PlayerGrade();
         record.setPlayerId(playerId);

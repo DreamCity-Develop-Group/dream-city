@@ -46,6 +46,17 @@
     limit 1
   </select>
 
+  <select id="getPlayerByAccount" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from city_player
+    where 1=1
+    <if test="player_name != null and player_name != ''">
+      and player_name = #{account,jdbcType=VARCHAR}
+    </if>
+    limit 1
+  </select>
+
   <select id="getPlayers" parameterType="com.dream.city.base.model.req.PageReq" resultMap="BaseResultMap">
     SELECT p.player_id playerId,p.player_name username,p.player_nick playerNick,p.create_time,
         e.friendlink playerLink,e.imgurl,g.grade,g.integral

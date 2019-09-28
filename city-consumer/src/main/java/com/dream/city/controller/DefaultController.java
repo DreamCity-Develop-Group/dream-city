@@ -1,10 +1,13 @@
 package com.dream.city.controller;
 
+import com.dream.city.base.model.Message;
+import com.dream.city.base.model.MessageData;
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.Notice;
 import com.dream.city.base.model.entity.Player;
 import com.dream.city.base.model.entity.PlayerAccount;
 import com.dream.city.base.model.entity.RelationTree;
+import com.dream.city.base.utils.JsonUtil;
 import com.dream.city.base.utils.RedisUtils;
 import com.dream.city.service.ConsumerGameSettingService;
 import com.dream.city.service.ConsumerPlayerAccountService;
@@ -50,7 +53,20 @@ public class DefaultController {
             @ApiResponse(code = 500, message = "服务器不能完成请求")}
     )
     @RequestMapping(value = "/default",method = RequestMethod.POST)
-    public Result enterMainPage(@RequestBody Player player){
+    public Message enterMainPage(@RequestBody Message message){
+        Object userData = message.getData().getData();
+        Player player;
+        Message ret = new Message();
+        ret.setSource(message.getTarget());
+        ret.setTarget(message.getSource());
+        ret.setCreatetime(String.valueOf(System.currentTimeMillis()));
+        MessageData msgData =  new MessageData(message.getData().getType(),message.getData().getModel());
+
+        Map user = JsonUtil.parseJsonToObj(JsonUtil.parseObjToJson(userData), Map.class);
+        String name =  user.get("username").toString();
+        Result result = playerService.getPlayerByAccount(name);
+        String json = JsonUtil.parseObjToJson(result.getData());
+        player = JsonUtil.parseJsonToObj(json,Player.class);
         //个人信息
         Map<String,Object> profile = new HashMap<>();
         profile.put("nick",player.getPlayerNick());
@@ -87,8 +103,9 @@ public class DefaultController {
         //商会准入
         data.put("commerce",commerce);
 
-        return new Result(true,"主页信息",200,data);
-
+        msgData.setData(data);
+        ret.setData(msgData);
+        return ret;
     }
 
 }

@@ -33,12 +33,12 @@ public class FallBackPlayer implements ConsumerPlayerService {
     }
 
     @Override
-    public Result pwLogoin(String jsonReq) {
+    public Result login(String jsonReq) {
         return null;
     }
 
     @Override
-    public Result codeLogoin(String jsonReq) {
+    public Result codeLogin(String jsonReq) {
         return null;
     }
 
@@ -70,6 +70,11 @@ public class FallBackPlayer implements ConsumerPlayerService {
 
     @Override
     public Result getPlayerByInvite(@RequestBody String invite){
+        return null;
+    }
+
+    @Override
+    public Result getPlayerByAccount(String account) {
         return null;
     }
 

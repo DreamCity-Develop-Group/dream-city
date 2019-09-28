@@ -141,8 +141,8 @@ public class PlayerController {
      * @param jsonReq
      * @return
      */
-    @RequestMapping("/pwlogoin")
-    public Result pwLogoin(@RequestBody String jsonReq){
+    @RequestMapping("/login")
+    public Result login(@RequestBody String jsonReq){
         log.info("用户密码登录，{}",jsonReq);
         Map map = JSON.parseObject(jsonReq,Map.class);
         Result result = new Result();
@@ -210,7 +210,7 @@ public class PlayerController {
             redisUtils.del(key);
         }
 
-        redisUtils.set(RedisKeys.CURRENT_USER + player.getPlayerName(),
+        redisUtils.set(key,
                 JSON.toJSONString(player));
 
         redisUtils.incr(RedisKeys.CURRENT_LOGIN_USER_COUNT);
@@ -221,8 +221,8 @@ public class PlayerController {
      * @param jsonReq
      * @return
      */
-    @RequestMapping("/codelogoin")
-    public Result codeLogoin(@RequestBody String jsonReq){
+    @RequestMapping("/codelogin")
+    public Result codeLogin(@RequestBody String jsonReq){
         log.info("验证码登录，{}",jsonReq);
         Map map = JSON.parseObject(jsonReq,Map.class);
         Result result = new Result();
@@ -423,6 +423,14 @@ public class PlayerController {
         Result<Player>result = new Result<>(true,"获取玩家",200,player);
         return result;
     }
+
+    @RequestMapping("/getPlayerByAccount")
+    public Result getPlayerByAccount(@RequestParam("account")String account){
+        Player player = playerService.getPlayerByAccount(account);
+        Result<Player>result = new Result<>(true,"获取玩家",200,player);
+        return result;
+    }
+
 
     /**
      * 修改玩家头像

@@ -55,6 +55,8 @@ public interface PlayerService {
 
     Player getPlayerByInvite(String invite);
 
+    Player getPlayerByAccount(String account);
+
     /**
      * 获取玩家等级
      * @param playerId

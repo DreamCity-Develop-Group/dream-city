@@ -130,6 +130,7 @@ public class ConsumerPlayerController {
         Result code = messageService.getCode(msg);
         if (code.getSuccess()) {
             map.put("code", code.getData());
+            map.put("desc","获取认证码成功");
             MessageData messageData = new MessageData(msg.getData().getType(), msg.getData().getModel());
             messageData.setData(map);
             Message message = new Message(msg.getSource(), msg.getTarget(), messageData);
@@ -387,14 +388,16 @@ public class ConsumerPlayerController {
                 // TODO [[登录或注册成功后保存token]]
                 /*todo************************************************************/
                 String token = saveToken(userReq.getUsername());
+                /*
                 MessageData messageData = message.getData();
-                dataInner.put("desc", "参数值不能为空");
-
                 dataInner.put("token", token);
                 dataInner.put("desc", CityGlobal.Constant.REG_SUCCESS);
+                */
+                dataInner.put("desc", "注册成功");
                 data.setData(dataInner);
                 msg.setData(data);
                 msg.setDesc(regSuccess);
+                return msg;
             } else {
                 msg.setDesc(reg.getMsg());
 
@@ -447,13 +450,13 @@ public class ConsumerPlayerController {
      * @return
      */
     @ApiOperation(value = "密码登录", notes = "密码登录", response = Message.class)
-    @RequestMapping("/pwlogoin")
-    public Message pwLogoin(@RequestBody Message msg) {
+    @RequestMapping("/login")
+    public Message login(@RequestBody Message msg) {
         log.info("密码登录", JSONObject.toJSONString(msg));
         UserReq userReq = DataUtils.getUserReq(msg);
         String jsonReq = JSON.toJSONString(userReq);
 
-        Result result = consumerPlayerService.pwLogoin(jsonReq);
+        Result result = consumerPlayerService.login(jsonReq);
         log.info("##################### 用户登录: {}", result);
 
         Map<String, String> t = new HashMap<>();
@@ -465,7 +468,7 @@ public class ConsumerPlayerController {
             t.put("token", token);
         }
 
-        MessageData data = new MessageData("pwlog", "consumer");
+        MessageData data = new MessageData("Login", "consumer");
         t.put("desc", descT);
         data.setData(t);
         Message message = new Message(msg.getSource(), msg.getTarget(), data);
@@ -499,35 +502,40 @@ public class ConsumerPlayerController {
      * @return
      */
     @ApiOperation(value = "验证码登录", notes = "验证码登录", response = Message.class)
-    @RequestMapping("/codelogoin")
-    public Message codeLogoin(@RequestBody Message msg) {
+    @RequestMapping("/codeLogin")
+    public Message codeLogin(@RequestBody Message msg) {
         log.info("验证码登录", JSONObject.toJSONString(msg));
         Message message = new Message();
         message.setSource(msg.getSource());
         message.setTarget(msg.getTarget());
-        MessageData data = new MessageData("idlog", "consumer");
-        Map<String, String> t = new HashMap<>();
+        MessageData data = new MessageData("codeLogin", "consumer");
+        Map<String, String> dataInner = new HashMap<>();
 
         UserReq userReq = DataUtils.getUserReq(msg);
         // 校验认证码
-        String descMsg = checkCode(userReq.getCode(), msg.getSource());
+        Result checkRet = messageService.checkCode(userReq.getCode(),userReq.getUsername());
+        //String descMsg = checkCode(userReq.getCode(), msg.getSource());
+        String descMsg = checkRet.getMsg();
         String descT = CityGlobal.Constant.LOGIN_FAIL;
 
-        if (StringUtils.isBlank(descMsg)) {
-            Result idlog = consumerPlayerService.codeLogoin(JSON.toJSONString(userReq));
+        if (checkRet.getSuccess()) {
+            Result idlog = consumerPlayerService.codeLogin(JSON.toJSONString(userReq));
             log.info("##################### 验证码登录: {}", idlog);
             descMsg = idlog.getMsg();
 
             if (idlog.getSuccess()) {
+                log.info("验证码登录成功");
                 descT = CityGlobal.Constant.LOGIN_SUCCESS;
 
                 String token = saveToken(userReq.getUsername());
-                t.put("token", token);
+                dataInner.put("token", token);
+            }else {
+                log.info("验证码登录失败");
             }
         }
 
-        t.put("desc", descT);
-        data.setData(t);
+        dataInner.put("desc", descT);
+        data.setData(dataInner);
         message.setData(data);
         message.setDesc(descMsg);
         return message;

@@ -47,7 +47,7 @@ public class WebSocketServer {
     private RedisUtils redisUtils = SpringUtils.getBean(RedisUtils.class);
 
     private HttpClientService httpClientService = SpringUtils.getBean(HttpClientService.class);
-
+    private PublishServer publishService = SpringUtils.getBean(PublishServer.class);
     //@Autowired
     //HttpClientService httpClientService;
 
@@ -104,6 +104,7 @@ public class WebSocketServer {
         //设置订阅topic
         redisMessageListenerContainer.addMessageListener(subscribeListener, new ChannelTopic(topic));
         redisMessageListenerContainer.setTaskExecutor(newFixedThreadPool(4));
+        //redisMessageListenerContainer.start();
 
         this.sid = sid;
         try {
@@ -151,15 +152,15 @@ public class WebSocketServer {
      */
     @OnMessage
     public void onMessage(String message, Session session, @PathParam("topic") String topic, @PathParam("name") String username) {
-        log.info("收到来自窗口" + sid + "的信息:" + message + "/" + username);
+        log.info("收到来自窗口client-" + sid + "的信息:" + topic + "/" + username);
+        log.info(message);
 
-        PublishServer publishService = SpringUtils.getBean(PublishServer.class);
         publishService.publish(topic, message);
 
         //根据sid 到服务上找对应的数据，=》校验 =》 推送数据到客户端
         try {
             //TODO 如果客户端发心跳包,回复success
-            if (message.equals("ping")) {
+            if ("ping".equals(message)) {
                 System.out.println("心跳消息接收...");
                 sendMessage("success");
                 return;

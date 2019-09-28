@@ -165,7 +165,7 @@ public class HttpClientServiceImpl implements HttpClientService {
             log.info("Request-Url:"+url);
 
             httpPost = new HttpPost(url);
-            if ("login".equals(serviceOpt) || "reg".equals(serviceOpt) || "getCode".equals(serviceOpt)) {
+            if ("login".equals(serviceOpt) || "reg".equals(serviceOpt) || "getCode".equals(serviceOpt)||"codeLogin".equals(serviceOpt)) {
                 //这里不处理，表示正常放行
                 httpPost.setHeader("method", serviceOpt);
                 httpPost.setHeader("authType", "");
@@ -233,31 +233,10 @@ public class HttpClientServiceImpl implements HttpClientService {
                 // TODO 推送消息到客户端
                 WebSocketServer.sendInfo(message);
             }else {
-                // TODO ===> 调用自方法，创建任务处理
-                Map<String,Object> job = new HashMap<>();
-                //要做的任务
-                job.put("todo","jobCreate");
-                //任务完成推送的对象
-                job.put("applyTo",msg.getSource());
-                //job任务的源数据
-                job.put("sourceData",msg);
-                Message jobMsg = new Message();
-                MessageData messageData = new MessageData();
+                /**TODO**********完成任务创建******************************/
+                createWork(msg);
+                /**TODO**********完成任务创建******************************/
 
-                messageData.setData(job);
-                messageData.setType("createWorker");
-                messageData.setModel("worker");
-
-                //设置任务数据
-                jobMsg.setData(messageData);
-                //来源于消息中心
-                jobMsg.setSource("commCenter");
-                //任务中心
-                jobMsg.setTarget("worker");
-                //描述
-                jobMsg.setDesc("递交任务，创建业务执行任务");
-                jobMsg.setCreatetime(String.valueOf(System.currentTimeMillis()));
-                send(jobMsg);
             }
         } catch (ParseException | IOException e) {
             e.printStackTrace();
@@ -274,5 +253,33 @@ public class HttpClientServiceImpl implements HttpClientService {
                 e.printStackTrace();
             }
         }
+    }
+
+    private void createWork(Message message){
+        // TODO ===> 调用自方法，创建任务处理
+        Map<String,Object> job = new HashMap<>();
+        //要做的任务
+        job.put("todo","jobCreate");
+        //任务完成推送的对象
+        job.put("applyTo",message.getSource());
+        //job任务的源数据
+        job.put("sourceData",message);
+        Message jobMsg = new Message();
+        MessageData messageData = new MessageData();
+
+        messageData.setData(job);
+        messageData.setType("createWorker");
+        messageData.setModel("worker");
+
+        //设置任务数据
+        jobMsg.setData(messageData);
+        //来源于消息中心
+        jobMsg.setSource("commCenter");
+        //任务中心
+        jobMsg.setTarget("worker");
+        //描述
+        jobMsg.setDesc("递交任务，创建业务执行任务");
+        jobMsg.setCreatetime(String.valueOf(System.currentTimeMillis()));
+        send(jobMsg);
     }
 }

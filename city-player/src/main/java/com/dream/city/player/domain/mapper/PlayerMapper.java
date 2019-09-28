@@ -28,4 +28,5 @@ public interface PlayerMapper {
 
     Player getPlayerByInvite(String invite);
 
+    Player getPlayerByAccount(String account);
 }
