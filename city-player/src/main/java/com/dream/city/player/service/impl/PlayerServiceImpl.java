@@ -8,6 +8,7 @@ import com.dream.city.base.model.entity.PlayerExt;
 import com.dream.city.base.model.entity.PlayerGrade;
 import com.dream.city.base.model.req.PageReq;
 import com.dream.city.base.model.resp.PlayerResp;
+import com.dream.city.base.utils.DateUtils;
 import com.dream.city.base.utils.KeyGenerator;
 import com.dream.city.base.model.entity.Player;
 import com.dream.city.player.domain.mapper.PlayerExtMapper;
@@ -155,13 +156,10 @@ public class PlayerServiceImpl implements PlayerService {
         List<Map> playersMap = new ArrayList<>();
         if (!CollectionUtils.isEmpty(players)){
             Map map = null;
-            PlayerGrade playerGrade = null;
             for (Map player:players){
                 map = JSON.parseObject(JSON.toJSONString(player),Map.class);
-
-                playerGrade = getPlayerGradeByPlayerId(String.valueOf(player.get("playerId")==null?"":player.get("playerId")));
-                //map.put("commerce_lv",playerGrade.getGrade());
-                //map.put("commerce_member",0); //商会成员数 todo
+                map.put("friendId","");
+                map.put("createTime",map.get("createTime")== null?"": DateUtils.str2Date(JSON.toJSONString(map.get("createTime"))));
                 playersMap.add(map);
             }
         }
