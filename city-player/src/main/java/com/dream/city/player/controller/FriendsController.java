@@ -36,16 +36,17 @@ public class FriendsController {
     public Result<Boolean> addFriend(@RequestParam("playerId") String playerId,
                                      @RequestParam("friendId") String friendId){
         logger.info("addFriend，playerId：{},friendId:{}",playerId,friendId);
-        Friends friend = getFriendFromUsername(playerId,friendId);
+        Friends friend = getFriendFromUsername(friendId,playerId);
         boolean addFriend = friendsService.addFriend(friend);
         return new Result<>(addFriend,"添加好友");
     }
 
 
     private Friends getFriendFromUsername(String playerId,String friendId){
-        Friends friend = new Friends();
-        friend.setPlayerId(playerId);
-        friend.setFriendId(friendId);
+        Friends friendReq = new Friends();
+        friendReq.setPlayerId(playerId);
+        friendReq.setFriendId(friendId);
+        Friends friend = friendsService.selectByPlayerIdFriendId(friendReq);
         return friend;
     }
 
@@ -57,9 +58,12 @@ public class FriendsController {
      */
     @RequestMapping("/agreeAddFriend")
     public Result<Boolean> agreeAddFriend(@RequestParam("playerId") String playerId,
-                           @RequestParam("friendId") String friendId){
+                           @RequestParam("friendId") String friendId,@RequestParam("agree") String agree){
         logger.info("agreeAddFriend，playerId：{},friendId:{}",playerId,friendId);
         Friends friend = getFriendFromUsername(playerId,friendId);
+        if ("agreed".equalsIgnoreCase(agree)){
+            friend.setAgree(1);
+        }
         boolean agreeAddFriend = friendsService.agreeAddFriend(friend);
         return new Result<>(agreeAddFriend,"同意添加好友");
     }

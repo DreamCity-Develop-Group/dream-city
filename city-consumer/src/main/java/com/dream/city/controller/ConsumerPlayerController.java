@@ -7,6 +7,7 @@ import com.dream.city.base.model.Message;
 import com.dream.city.base.model.MessageData;
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.Player;
+import com.dream.city.base.model.entity.PlayerAccount;
 import com.dream.city.base.model.entity.PlayerExt;
 import com.dream.city.base.model.req.PageReq;
 import com.dream.city.base.model.req.UserReq;
@@ -21,6 +22,8 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -60,7 +63,8 @@ public class ConsumerPlayerController {
     ConsumerFriendsService friendsService;
     @Autowired
     ConsumerCommonsService commonsService;
-
+    @Value("${dreamcity.platform.account.accIds}")
+    String platformAccIds;
 
     /**
      * 修改玩家头像
@@ -87,7 +91,7 @@ public class ConsumerPlayerController {
     }
 
 
-    @RequestMapping("/searchfriend")
+    @RequestMapping("/searchFriend")
     @ApiOperation(value = "换一批广场玩家列表", notes = "换一批广场玩家列表", response = Message.class)
     public Message searchfriend(@RequestBody Message msg) {
         log.info("广场玩家列表 换一批", JSONObject.toJSONString(msg));
@@ -105,11 +109,9 @@ public class ConsumerPlayerController {
         }
         pageReq.setPageNo(pageNo);
 
-        Result<String> players = consumerPlayerService.getPlayers(pageReq);
-        Map<String, Object> t = new HashMap<>();
-        t.put("userList", players.getData());
+        Result<Map> players = consumerPlayerService.getPlayers(pageReq);
         MessageData messageData = new MessageData(msg.getData().getType(), msg.getData().getModel());
-        messageData.setData(t);
+        messageData.setData(players.getData());
         Message message = new Message(msg.getSource(), msg.getTarget(), messageData);
         message.setDesc(players.getMsg());
         return message;
@@ -177,15 +179,15 @@ public class ConsumerPlayerController {
         log.info("广场玩家列表", JSONObject.toJSONString(msg));
         UserReq jsonReq = DataUtils.getUserReq(msg);
         String condition = jsonReq.getNick();
-        PageReq<String> pageReq = new PageReq<>((Map) msg.getData().getData());
-        pageReq.setCondition(condition);
+        Map<String,String> conditionMap = new HashMap<>();
+        conditionMap.put("nick",condition);
+        PageReq<Map<String,String>> pageReq = new PageReq<>((Map) msg.getData().getData());
+        pageReq.setCondition(conditionMap);
 
         Result players = consumerPlayerService.getPlayers(pageReq);
 
-        Map<String, Object> t = new HashMap<>();
-        t.put("userList", players.getData());
         MessageData data = new MessageData(msg.getData().getType(), msg.getData().getModel());
-        data.setData(t);
+        data.setData(players.getData());
         Message message = new Message(msg.getSource(), msg.getTarget(), data);
         return message;
     }
@@ -236,20 +238,31 @@ public class ConsumerPlayerController {
     }
 
     /**
-     * 修改交易密码
+     * 设置、修改交易密码
      *
      * @param msg
      * @return
      */
-    @ApiOperation(value = "修改交易密码", notes = "修改交易密码", response = Message.class)
+    @ApiOperation(value = "设置、修改交易密码", notes = "修改交易密码，没有交易密码的设置交易密码，有交易密码的修改交易密码", response = Message.class)
     @RequestMapping("/expwshop")
     public Message expwshop(@RequestBody Message msg) {
         log.info("修改交易密码", JSONObject.toJSONString(msg));
         UserReq jsonReq = DataUtils.getUserReq(msg);
+        PlayerResp player = commonsService.getPlayerByUserName(msg);
+
         Result result = consumerPlayerService.resetTraderPwd(jsonReq.getPlayerId(), jsonReq.getOldpw(), jsonReq.getNewpw());
         log.info("##################### 修改交易密码 : {}", msg);
         Map<String, String> t = new HashMap<>();
         t.put("desc", result.getMsg());
+
+        if (result.getSuccess()){
+            if(StringUtils.isNotBlank(player.getPlayerTradePass())){
+                //修改交易密码，扣除1USDT
+                PlayerAccount playerAccount = playerAccountService.getPlayerAccount(player.getPlayerId());
+
+            }
+
+        }
 
         MessageData data = new MessageData(msg.getData().getType(), msg.getData().getModel());
         data.setData(t);

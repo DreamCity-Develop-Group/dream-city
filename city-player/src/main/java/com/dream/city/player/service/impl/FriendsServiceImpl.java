@@ -26,7 +26,6 @@ public class FriendsServiceImpl implements FriendsService {
 
     @Override
     public boolean agreeAddFriend(Friends friend) {
-        friend.setAgree(1);
         return friendsMapper.agreeAddFriend(friend)>0?Boolean.TRUE:Boolean.FALSE;
     }
 
@@ -52,5 +51,15 @@ public class FriendsServiceImpl implements FriendsService {
         page.setResult(friendList);
         page.setTotalCount( count== null?0:count);
         return page;
+    }
+
+    @Override
+    public Friends selectByPlayerIdFriendId(Friends record) {
+        return friendsMapper.selectByPlayerIdFriendId(record);
+    }
+
+    @Override
+    public Integer getFriendAgree(Friends record) {
+        return friendsMapper.getFriendAgree(record);
     }
 }

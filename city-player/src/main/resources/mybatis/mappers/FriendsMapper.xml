@@ -20,6 +20,20 @@
     where id = #{id,jdbcType=BIGINT}
   </select>
 
+  <select id="selectByPlayerIdFriendId" parameterType="com.dream.city.base.model.entity.Friends" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from player_friends
+    where 1 = 1
+    <if test="playerId != null and playerId != ''">
+      and player_id = #{playerId,jdbcType=VARCHAR}
+    </if>
+    <if test="friendId != null and friendId != ''">
+      and friend_id = #{friendId,jdbcType=VARCHAR}
+    </if>
+    order by create_time desc limit 1
+  </select>
+
   <!-- 好友列表  -->
   <select id="friendList" parameterType="com.dream.city.base.model.req.PageReq" resultType="java.util.Map">
     select a.id, a.player_id playerId, a.friend_id friendId, a.agree,
@@ -51,15 +65,15 @@
   <!-- 申请列表  -->
   <select id="applyFriendList" parameterType="com.dream.city.base.model.req.PageReq" resultType="java.util.Map">
     select a.id, a.player_id playerId, a.friend_id friendId, a.agree,
-      b.friend_name friendName,b.friend_nick friendNick,b.friendlink,b.imgurl,g.grade,g.integral
+      b.friend_name username,b.friend_nick nick,b.friendlink playerLink,b.imgurl,g.grade,g.integral
     FROM (select f.id, f.player_id, f.friend_id , f.agree,f.create_time FROM player_friends f,city_player p
       where f.player_id =p.player_id and f.agree =0 and p.player_name = #{condition.username,jdbcType=VARCHAR}
-      ) a,
+      ) a INNER JOIN
       (SELECT p.player_id friend_id,p.player_name friend_name,p.player_nick friend_nick,e.friendlink,e.imgurl
-      FROM city_player p,player_ext e WHERE p.player_id=e.player_id) b
-      ,player_grade g
+      FROM city_player p,player_ext e WHERE p.player_id=e.player_id) b ON a.friend_id = b.friend_id
+           INNER JOIN player_grade g ON b.friend_id=g.player_id
       WHERE a.friend_id = b.friend_id and b.friend_id=g.player_id
-      <if test="condition.nick != null">
+      <if test="condition.nick != null and condition.nick != ''">
         and b.friend_nick = #{condition.nick,jdbcType=VARCHAR}
       </if>
     ORDER BY a.create_time DESC limit ${start},${pageSize}
@@ -68,12 +82,12 @@
     select COUNT(a.friend_id)
     FROM (select f.id, f.player_id, f.friend_id , f.agree,f.create_time FROM player_friends f,city_player p
       where f.player_id =p.player_id and f.agree =0 and p.player_name = #{condition.username,jdbcType=VARCHAR}
-      ) a,
-      (SELECT p.player_id friend_id,p.player_name friend_name,p.player_nick friend_nick,e.friendlink,e.imgurl
-      FROM city_player p,player_ext e WHERE p.player_id=e.player_id) b
-      ,player_grade g
+      ) a INNER JOIN
+    (SELECT p.player_id friend_id,p.player_name friend_name,p.player_nick friend_nick,e.friendlink,e.imgurl
+    FROM city_player p,player_ext e WHERE p.player_id=e.player_id) b ON a.friend_id = b.friend_id
+    INNER JOIN player_grade g ON b.friend_id=g.player_id
     WHERE a.friend_id = b.friend_id and b.friend_id=g.player_id
-    <if test="condition.nick != null">
+    <if test="condition.nick != null and condition.nick != ''">
       and b.friend_nick = #{condition.nick,jdbcType=VARCHAR}
     </if>
   </select>
@@ -156,5 +170,16 @@
     where player_id = #{playerId,jdbcType=VARCHAR} and friend_id = #{friendId,jdbcType=VARCHAR}
 
   </update>
+
+
+
+  <select id="getFriendAgree" parameterType="com.dream.city.base.model.entity.Friends" resultType="java.lang.Integer">
+    SELECT f.agree FROM player_friends f
+    WHERE f.agree = 1
+    AND f.player_id = #{playerId,jdbcType=VARCHAR}
+    AND f.friend_id = #{friendId,jdbcType=VARCHAR}
+    order by create_time desc limit 1
+  </select>
+
 
 </mapper>

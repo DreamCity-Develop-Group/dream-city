@@ -62,14 +62,15 @@ public class ConsumerFriendsController {
     }
 
     @ApiOperation(value = "通过好友", notes = "通过好友", response = Message.class)
-    @RequestMapping("/agreeAddFriend")
-    public Message agreeAddFriend(@RequestBody Message msg){
+    @RequestMapping("/agreeApply")
+    public Message agreeApply(@RequestBody Message msg){
         logger.info("通过好友", JSONObject.toJSONString(msg));
         Map map = getPlayerIdOrFriendId(msg);
         String playerId = map.containsKey("playerId")?(String)map.get("playerId"):null;
         String friendId = map.containsKey("friendId")?(String)map.get("friendId"):null;
+        String agree = map.containsKey("agree")?(String)map.get("agree"):"disagreed";
 
-        Result<Boolean> b = consumerFriendsService.agreeAddFriend(playerId, friendId);
+        Result<Boolean> b = consumerFriendsService.agreeAddFriend(playerId, friendId,agree);
         Message message = getResultMessage(b.getSuccess(),"通过好友",msg);
         return message;
     }
@@ -98,8 +99,8 @@ public class ConsumerFriendsController {
     }
 
     @ApiOperation(value = "获取好友申请列表", notes = "获取好友申请列表", response = Message.class)
-    @RequestMapping("/applyfriend")
-    public Message applyfriend(@RequestBody Message msg){
+    @RequestMapping("/applyFriend")
+    public Message applyFriend(@RequestBody Message msg){
         logger.info("获取好友申请列表", JSONObject.toJSONString(msg));
         Message message = new Message();
         MessageData data = new MessageData(msg.getData().getType(),msg.getData().getModel());
@@ -130,14 +131,17 @@ public class ConsumerFriendsController {
      */
     private Message getResultMessage(boolean b,String desc,Message msg){
         Message message = new Message();
-        MessageData<String> data = new MessageData(msg.getData().getType(),msg.getData().getModel());
-        String name = CityGlobal.ResultCode.fail.name();
-        desc = desc + "失败";
+        MessageData<Map> data = new MessageData(msg.getData().getType(),msg.getData().getModel());
+        String agree = "disagreed";
         if (b) {
-            name = CityGlobal.ResultCode.success.name();
             desc = desc + "成功";
+            agree = "agreed";
+        }else {
+            desc = desc + "失败";
         }
-        data.setData(name);
+        Map map = new HashMap();
+        map.put("agree",agree);
+        data.setData(map);
         message.setData(data);
         message.setDesc(desc);
         return message;
@@ -172,6 +176,7 @@ public class ConsumerFriendsController {
     private Map getPlayerIdOrFriendId(Message msg){
         Map map = (Map)msg.getData().getData();
 
+        String agree = map.containsKey("agree")?(String) map.get("agree"):null;
         String playerName = map.containsKey("playerName")?(String) map.get("playerName"):null;
         if (StringUtils.isBlank(playerName)){
             playerName = map.containsKey("username")?(String) map.get("username"):null;
@@ -197,6 +202,7 @@ public class ConsumerFriendsController {
         Map<String,String> resultMap = new HashMap<>();
         resultMap.put("playerId",playerId);
         resultMap.put("friendId",friendId);
+        resultMap.put("agree",agree);
         return resultMap;
     }
 

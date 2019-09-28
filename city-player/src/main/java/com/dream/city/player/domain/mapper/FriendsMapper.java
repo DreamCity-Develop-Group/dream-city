@@ -18,6 +18,8 @@ public interface FriendsMapper {
 
     Friends selectByPrimaryKey(Long id);
 
+    Friends selectByPlayerIdFriendId(Friends record);
+
     int updateByPrimaryKeySelective(Friends record);
 
     /**
@@ -43,4 +45,6 @@ public interface FriendsMapper {
      */
     List<Map> applyFriendList(PageReq page);
     Integer applyFriendCount(PageReq page);
+
+    Integer getFriendAgree(Friends record);
 }

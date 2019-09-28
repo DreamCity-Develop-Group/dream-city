@@ -6,6 +6,7 @@ import com.dream.city.base.model.req.PageReq;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface PlayerMapper {
@@ -21,7 +22,7 @@ public interface PlayerMapper {
      * @param pageReq
      * @return
      */
-    List<Player> getPlayers(PageReq pageReq);
+    List<Map> getPlayers(PageReq pageReq);
     Integer getPlayersCount(PageReq pageReq);
 
     Integer updateByPlayerId(Player record);

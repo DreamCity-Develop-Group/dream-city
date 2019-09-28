@@ -9,6 +9,7 @@ import com.dream.city.base.model.resp.PlayerResp;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Wvv
@@ -49,7 +50,7 @@ public interface PlayerService {
      * @param pageReq
      * @return
      */
-    Page getPlayers(PageReq pageReq);
+    Page getPlayers(PageReq<Map> pageReq);
 
     PlayerResp getPlayerByName(String username, String playerNick);
 

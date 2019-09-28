@@ -374,14 +374,14 @@ public class PlayerController {
      * @return
      */
     @RequestMapping("/getPlayers")
-    public Result<String> getPlayers(@RequestBody PageReq pageReq){
+    public Result<Map> getPlayers(@RequestBody PageReq pageReq){
         log.info("获取广场玩家列表，{}",pageReq);
         Result result = null;
         Page page = null;
 
         try {
             page = playerService.getPlayers(pageReq);
-            result = new Result(CityGlobal.ResultCode.success.getStatus(),JSON.toJSONString(page));
+            result = new Result(CityGlobal.ResultCode.success.getStatus(),JSON.parseObject(JSON.toJSONString(page),Map.class));
         }catch (Exception e){
             result = new Result(CityGlobal.ResultCode.fail.getStatus(),null);
         }
