@@ -98,8 +98,8 @@ public class ConsumerFriendsController {
     }
 
     @ApiOperation(value = "获取好友申请列表", notes = "获取好友申请列表", response = Message.class)
-    @RequestMapping("/applyfriend")
-    public Message applyfriend(@RequestBody Message msg){
+    @RequestMapping("/applyFriend")
+    public Message applyFriend(@RequestBody Message msg){
         logger.info("获取好友申请列表", JSONObject.toJSONString(msg));
         Message message = new Message();
         MessageData data = new MessageData(msg.getData().getType(),msg.getData().getModel());

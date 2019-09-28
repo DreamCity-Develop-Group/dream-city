@@ -36,7 +36,7 @@ public class FriendsController {
     public Result<Boolean> addFriend(@RequestParam("playerId") String playerId,
                                      @RequestParam("friendId") String friendId){
         logger.info("addFriend，playerId：{},friendId:{}",playerId,friendId);
-        Friends friend = getFriendFromUsername(playerId,friendId);
+        Friends friend = getFriendFromUsername(friendId,playerId);
         boolean addFriend = friendsService.addFriend(friend);
         return new Result<>(addFriend,"添加好友");
     }
