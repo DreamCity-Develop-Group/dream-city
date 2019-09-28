@@ -21,6 +21,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -177,6 +178,9 @@ public class ConsumerPlayerController {
         log.info("广场玩家列表", JSONObject.toJSONString(msg));
         UserReq jsonReq = DataUtils.getUserReq(msg);
         String condition = jsonReq.getNick();
+        if (StringUtils.isBlank(condition)){
+            condition = jsonReq.getUsername();
+        }
         PageReq<String> pageReq = new PageReq<>((Map) msg.getData().getData());
         pageReq.setCondition(condition);
 
