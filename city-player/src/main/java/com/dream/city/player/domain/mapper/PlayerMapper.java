@@ -17,13 +17,16 @@ public interface PlayerMapper {
 
     Player getPlayerById(Player record);
 
+    List<Map> getPlayers(PageReq pageReq);
+    Integer getPlayersCount(PageReq pageReq);
+
     /**
      * 广场玩家列表
      * @param pageReq
      * @return
      */
-    List<Map> getPlayers(PageReq pageReq);
-    Integer getPlayersCount(PageReq pageReq);
+    List<Map> getSquareFriends(PageReq pageReq);
+    Integer getSquareFriendsCount(PageReq pageReq);
 
     Integer updateByPlayerId(Player record);
 

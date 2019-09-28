@@ -88,6 +88,37 @@
     </where>
   </select>
 
+  <select id="getSquareFriends" parameterType="com.dream.city.base.model.req.PageReq" resultType="java.util.Map">
+    SELECT p.player_id playerId,p.player_name username,p.player_nick nick,p.create_time createTime,
+    e.friendlink playerLink,e.imgurl,g.grade,g.integral
+    from city_player p INNER JOIN player_ext e ON p.player_id=e.player_id
+    INNER JOIN player_grade g ON p.player_id=g.player_id
+    <where>
+      p.player_id=e.player_id and p.player_id=g.player_id
+      <if test="condition.nick != null and condition.nick != ''">
+        and p.player_nick = #{condition.nick}
+      </if>
+      <if test="condition.nick != null and condition.nick != ''">
+        or p.player_name = #{condition.nick}
+      </if>
+    </where>
+    ORDER BY p.create_time DESC limit ${start},${pageSize}
+  </select>
+  <select id="getSquareFriendsCount" parameterType="com.dream.city.base.model.req.PageReq" resultType="java.lang.Integer">
+    SELECT COUNT(p.player_id)
+    from city_player p INNER JOIN player_ext e ON p.player_id=e.player_id
+    INNER JOIN player_grade g ON p.player_id=g.player_id
+    <where>
+      p.player_id=e.player_id and p.player_id=g.player_id
+      <if test="condition.nick != null and condition.nick != ''">
+        and p.player_nick = #{condition.nick}
+      </if>
+      <if test="condition.nick != null and condition.nick != ''">
+        or p.player_name = #{condition.nick}
+      </if>
+    </where>
+  </select>
+
   <delete id="deleteByPlayerId" parameterType="java.lang.Long">
     delete from city_player
     where player_id = #{playerId,jdbcType=BIGINT}
