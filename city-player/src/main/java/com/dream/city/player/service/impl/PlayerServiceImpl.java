@@ -159,7 +159,7 @@ public class PlayerServiceImpl implements PlayerService {
             for (Map player:players){
                 map = JSON.parseObject(JSON.toJSONString(player),Map.class);
                 map.put("friendId","");
-                map.put("createTime",map.get("createTime")== null?"": DateUtils.str2Date(JSON.toJSONString(map.get("createTime"))));
+                map.put("createTime",DateUtils.str2Date(JSON.toJSONString(map.get("createTime"))));
                 playersMap.add(map);
             }
         }
