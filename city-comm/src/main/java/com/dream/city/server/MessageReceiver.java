@@ -1,8 +1,11 @@
 package com.dream.city.server;
 
+import org.springframework.stereotype.Component;
+
 /**
  * @author Wvv
  */
+//@Component
 public class MessageReceiver {
     /**
      * 接收消息的方法

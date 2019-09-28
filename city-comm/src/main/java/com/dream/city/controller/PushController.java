@@ -8,24 +8,32 @@ import com.dream.city.base.utils.RedisUtils;
 import com.dream.city.base.model.MessageData;
 import com.dream.city.config.GateWayConfig;
 import com.dream.city.domain.vo.ValiCode;
+import com.dream.city.server.PublishServer;
 import com.dream.city.server.WebSocketServer;
 import com.dream.city.domain.ApiReturnObject;
 import com.dream.city.base.model.Message;
 import com.dream.city.service.HttpClientService;
 import com.dream.city.util.ApiUtil;
 import com.dream.city.util.JsonUtil;
+import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.validation.constraints.NotNull;
 import java.io.IOException;
+import java.nio.channels.Channel;
 
 /**
  * @author Wvv
  */
 @RestController
 @RequestMapping("/comm")
+@Slf4j
 public class PushController {
     @Autowired
     HttpClientService httpClientService;
@@ -35,6 +43,9 @@ public class PushController {
     GateWayConfig gateWayConfig;
     @Autowired
     RedisTemplate redisTemplate;
+
+    @Autowired
+    PublishServer pusher;
 
     /**
      * 页面请求
@@ -134,23 +145,37 @@ public class PushController {
     }
 
     @RequestMapping("/notice")
-    public Result noticeAll() {
-        //redisUtils.c
+    public Result noticeAll(@NotNull @RequestParam("channel")String channel, @Nullable @RequestParam("client")String client) {
         Notice notice = new Notice();
+
+        if(StringUtils.isBlank(client)){
+            client = "@所有人";
+
         notice.setNoticeId(123);
-        notice.setNoticeContent("你好啊，这是广播！！！");
-        String channel = "notice";
+        notice.setNoticeContent(client+"你好啊，这是广播！！！");
+        //String channel = "notice";
         Message message = new Message(
                 "server",
                 "clients",
                 new MessageData("notice", "notice", notice),
-                "这是所有客户端的广播",
+                "这是所有"+channel+"客户端的广播",
                 String.valueOf(System.currentTimeMillis()));
 
+            pusher.publish(channel, com.dream.city.base.utils.JsonUtil.parseObjToJson(message));
+        }else{
+            channel = channel+":"+client;
+            notice.setNoticeId(123);
+            notice.setNoticeContent(client+"你好啊，这是你的广播！！！");
+            //String channel = "notice";
+            Message message = new Message(
+                    "server",
+                    "clients",
+                    new MessageData("notice", "notice", notice),
+                    "这是"+channel+":客户端【"+client+"】的广播",
+                    String.valueOf(System.currentTimeMillis()));
 
-        redisTemplate.convertAndSend(channel, com.dream.city.base.utils.JsonUtil.parseObjToJson(message));
-
-        //redisTemplate.convertAndSend(channel,message);
+            pusher.publish(channel, com.dream.city.base.utils.JsonUtil.parseObjToJson(message));
+        }
         return new Result(true, "成功！", 200, notice);
     }
 

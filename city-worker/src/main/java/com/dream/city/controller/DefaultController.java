@@ -1,19 +1,29 @@
 package com.dream.city.controller;
 
+import com.dream.city.config.WorkItemsConfig;
 import com.dream.city.job.TestJob1;
 import com.dream.city.job.TestJob2;
 import com.dream.city.service.impl.WorkerServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Wvv
  */
 @RestController
 @RequestMapping("/job")
+@ConfigurationProperties(prefix = "worker")
 public class DefaultController {
+
+    @Autowired
+    WorkItemsConfig workItemsConfig;
 
     @Autowired
     WorkerServiceImpl workerService;
@@ -56,6 +66,11 @@ public class DefaultController {
 
     @RequestMapping("/queryRunJob")
     public Object queryRunJob() {
+        List<String> topics = workItemsConfig.getTopics();
+        topics.forEach(System.out::println);
+        Map tasks = workItemsConfig.getTasks();
+        tasks.forEach((key,item)-> System.out.println(key+"=>"+item));
+
         return workerService.queryRunJobs();
     }
 }

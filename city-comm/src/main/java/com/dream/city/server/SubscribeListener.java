@@ -12,13 +12,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.util.Assert;
 
 /**
  * @author WVV 描述：订阅监听类
  */
 @Slf4j
-public class SubscribeListener implements MessageListener {
+public class SubscribeListener extends MessageListenerAdapter implements MessageListener{
 
     private StringRedisTemplate stringRedisTemplate;
 
@@ -29,6 +30,8 @@ public class SubscribeListener implements MessageListener {
      */
     @Override
     public void onMessage(Message message, byte[] pattern) {
+        String topic = new String(pattern);
+        log.info("当前监听收到channel["+topic+"]消息");
         String msg = new String(message.getBody()).trim();
 
         msg = msg.replace("\\","");

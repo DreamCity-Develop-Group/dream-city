@@ -1,0 +1,6 @@
+worker:
+  channel:
+    topics: topic1,topic2,topic3
+
+
+tasks: "{listenerAdapterLogin: 'listenerAdapterLogin', listenerAdapter: 'listenerAdapter', listenerAdapter2: 'listenerAdapter2'}"
