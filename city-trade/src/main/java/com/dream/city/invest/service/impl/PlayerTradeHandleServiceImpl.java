@@ -275,7 +275,7 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
         PlayerAccountReq createPlayerTradeReq = new PlayerAccountReq();
         createPlayerTradeReq.setAccId(platformAccount.getAccId());
         createPlayerTradeReq.setAccPlayerId(platformAccount.getAccPlayerId());
-        createPlayerTradeReq.setTradeAmountType(TradeAmountType.USDT_DTINVEST_TAX.name());
+        createPlayerTradeReq.setTradeAmountType(TradeAmountType.USDT_INVEST_TAX.name());
         createPlayerTradeReq.setTradeType(AmountDynType.in.name());
         Result<PlayerTrade> createPlatformATradeResult = null;
         PlayerTrade createPlayerTrade = null;
@@ -346,7 +346,7 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
         PlayerAccountReq createPlayerTradeReq = new PlayerAccountReq();
         createPlayerTradeReq.setAccId(playerAccount.getAccId());
         createPlayerTradeReq.setAccPlayerId(playerAccount.getAccPlayerId());
-        createPlayerTradeReq.setTradeAmountType(TradeAmountType.USDT_DTINVEST_TAX.name());
+        createPlayerTradeReq.setTradeAmountType(TradeAmountType.USDT_INVEST_TAX.name());
         createPlayerTradeReq.setTradeType(AmountDynType.out.name());
         PlayerTrade createPlayerTrade = null;
         try {
