@@ -171,4 +171,15 @@
 
   </update>
 
+
+
+  <select id="getFriendAgree" parameterType="com.dream.city.base.model.entity.Friends" resultType="java.lang.Integer">
+    SELECT f.agree FROM player_friends f
+    WHERE f.agree = 1
+    AND f.player_id = #{playerId,jdbcType=VARCHAR}
+    AND f.friend_id = #{friendId,jdbcType=VARCHAR}
+    order by create_time desc limit 1
+  </select>
+
+
 </mapper>

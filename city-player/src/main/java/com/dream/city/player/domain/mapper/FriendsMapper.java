@@ -45,4 +45,6 @@ public interface FriendsMapper {
      */
     List<Map> applyFriendList(PageReq page);
     Integer applyFriendCount(PageReq page);
+
+    Integer getFriendAgree(Friends record);
 }

@@ -57,4 +57,9 @@ public class FriendsServiceImpl implements FriendsService {
     public Friends selectByPlayerIdFriendId(Friends record) {
         return friendsMapper.selectByPlayerIdFriendId(record);
     }
+
+    @Override
+    public Integer getFriendAgree(Friends record) {
+        return friendsMapper.getFriendAgree(record);
+    }
 }

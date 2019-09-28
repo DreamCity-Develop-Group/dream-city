@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.dream.city.base.model.CityGlobal;
 import com.dream.city.base.model.Page;
 import com.dream.city.base.model.Result;
+import com.dream.city.base.model.entity.Friends;
 import com.dream.city.base.model.entity.PlayerGrade;
 import com.dream.city.base.model.req.PageReq;
 import com.dream.city.base.model.resp.PlayerResp;
@@ -12,6 +13,7 @@ import com.dream.city.base.model.entity.Player;
 import com.dream.city.player.domain.mapper.PlayerExtMapper;
 import com.dream.city.player.domain.mapper.PlayerGradeMapper;
 import com.dream.city.player.domain.mapper.PlayerMapper;
+import com.dream.city.player.service.FriendsService;
 import com.dream.city.player.service.PlayerService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,9 +33,9 @@ public class PlayerServiceImpl implements PlayerService {
     @Autowired
     private PlayerMapper playerMapper;
     @Autowired
-    private PlayerExtMapper playerExtMapper;
-    @Autowired
     private PlayerGradeMapper gradeMapper;
+    @Autowired
+    private FriendsService friendsService;
 
     @Value("${spring.application.name}")
     private String appName;
@@ -152,7 +154,7 @@ public class PlayerServiceImpl implements PlayerService {
 
 
     @Override
-    public Page getPlayers(PageReq pageReq) {
+    public Page getPlayers(PageReq<Map> pageReq) {
         Page page = new Page();
         page.setCondition(pageReq.getCondition());
 
@@ -161,19 +163,41 @@ public class PlayerServiceImpl implements PlayerService {
 
         List<Map> playersMap = new ArrayList<>();
         if (!CollectionUtils.isEmpty(players)){
-            Map map = null;
+            String getFriendAgree = "添加";
             for (Map player:players){
-                map = JSON.parseObject(JSON.toJSONString(player),Map.class);
-                map.put("friendId","");
-                map.put("addfriend",Boolean.TRUE);//todo
-                map.put("createTime",DateUtils.str2Date(String.valueOf(map.get("createTime"))));
-                playersMap.add(map);
+                if (pageReq.getCondition().containsKey("username")){
+                    getFriendAgree = this.getFriendAgree(String.valueOf(pageReq.getCondition().get("username")),player);
+                }
+                player.put("addfriend",getFriendAgree);
+                player.put("friendId","");
+                player.put("createTime",DateUtils.str2Date(String.valueOf(player.get("createTime"))));
+                playersMap.add(player);
             }
         }
         page.setResult(playersMap);
         page.setTotalCount( count== null?0:count);
 
         return page;
+    }
+
+    private String getFriendAgree(String playerId,Map player){
+        String friendId = player.containsKey("player")?String.valueOf(player.get("player")): null;
+        Friends record = new Friends();
+        record.setPlayerId(playerId);
+        record.setFriendId(friendId);
+        Integer getFriendAgree = friendsService.getFriendAgree(record);
+
+        String result = "添加";
+        if (getFriendAgree == null){
+            result = "添加";
+        }else {
+            if (getFriendAgree == 0){
+                result = "已申请";
+            } else if (getFriendAgree == 1){
+                result = "已添加";
+            }
+        }
+        return result;
     }
 
     @Override
