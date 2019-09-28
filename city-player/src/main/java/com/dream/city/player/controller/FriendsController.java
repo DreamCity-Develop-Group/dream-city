@@ -43,9 +43,10 @@ public class FriendsController {
 
 
     private Friends getFriendFromUsername(String playerId,String friendId){
-        Friends friend = new Friends();
-        friend.setPlayerId(playerId);
-        friend.setFriendId(friendId);
+        Friends friendReq = new Friends();
+        friendReq.setPlayerId(playerId);
+        friendReq.setFriendId(friendId);
+        Friends friend = friendsService.selectByPlayerIdFriendId(friendReq);
         return friend;
     }
 

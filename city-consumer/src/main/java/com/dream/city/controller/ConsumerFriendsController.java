@@ -130,15 +130,17 @@ public class ConsumerFriendsController {
      */
     private Message getResultMessage(boolean b,String desc,Message msg){
         Message message = new Message();
-        MessageData<String> data = new MessageData(msg.getData().getType(),msg.getData().getModel());
-        String name = CityGlobal.ResultCode.fail.name();
+        MessageData<Map> data = new MessageData(msg.getData().getType(),msg.getData().getModel());
+        String agree = "disagreed";
         if (b) {
-            name = CityGlobal.ResultCode.success.name();
             desc = desc + "成功";
+            agree = "agreed";
         }else {
             desc = desc + "失败";
         }
-        data.setData(name);
+        Map map = new HashMap();
+        map.put("agree",agree);
+        data.setData(map);
         message.setData(data);
         message.setDesc(desc);
         return message;

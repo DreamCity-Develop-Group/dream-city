@@ -18,6 +18,8 @@ public interface FriendsMapper {
 
     Friends selectByPrimaryKey(Long id);
 
+    Friends selectByPlayerIdFriendId(Friends record);
+
     int updateByPrimaryKeySelective(Friends record);
 
     /**

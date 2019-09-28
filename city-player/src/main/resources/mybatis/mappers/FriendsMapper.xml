@@ -20,6 +20,20 @@
     where id = #{id,jdbcType=BIGINT}
   </select>
 
+  <select id="selectByPlayerIdFriendId" parameterType="com.dream.city.base.model.entity.Friends" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from player_friends
+    where 1 = 1
+    <if test="playerId != null and playerId != ''">
+      and player_id = #{playerId,jdbcType=VARCHAR}
+    </if>
+    <if test="friendId != null and friendId != ''">
+      and friend_id = #{friendId,jdbcType=VARCHAR}
+    </if>
+    order by create_time desc limit 1
+  </select>
+
   <!-- 好友列表  -->
   <select id="friendList" parameterType="com.dream.city.base.model.req.PageReq" resultType="java.util.Map">
     select a.id, a.player_id playerId, a.friend_id friendId, a.agree,

@@ -37,4 +37,5 @@ public interface FriendsService {
      */
     Page applyFriendList(PageReq pageReq);
 
+    Friends selectByPlayerIdFriendId(Friends record);
 }

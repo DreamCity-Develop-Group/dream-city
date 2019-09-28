@@ -53,4 +53,9 @@ public class FriendsServiceImpl implements FriendsService {
         page.setTotalCount( count== null?0:count);
         return page;
     }
+
+    @Override
+    public Friends selectByPlayerIdFriendId(Friends record) {
+        return friendsMapper.selectByPlayerIdFriendId(record);
+    }
 }
