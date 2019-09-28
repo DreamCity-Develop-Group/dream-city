@@ -150,18 +150,18 @@ public class PlayerServiceImpl implements PlayerService {
         page.setCondition(pageReq.getCondition());
 
         Integer count = playerMapper.getPlayersCount(pageReq);
-        List<Player> players = playerMapper.getPlayers(pageReq);
+        List<Map> players = playerMapper.getPlayers(pageReq);
 
         List<Map> playersMap = new ArrayList<>();
         if (!CollectionUtils.isEmpty(players)){
             Map map = null;
             PlayerGrade playerGrade = null;
-            for (Player player:players){
+            for (Map player:players){
                 map = JSON.parseObject(JSON.toJSONString(player),Map.class);
 
-                playerGrade = getPlayerGradeByPlayerId(player.getPlayerId());
-                map.put("commerce_lv",playerGrade.getGrade());
-                map.put("commerce_member",0); //商会成员数 todo
+                playerGrade = getPlayerGradeByPlayerId(String.valueOf(player.get("playerId")==null?"":player.get("playerId")));
+                //map.put("commerce_lv",playerGrade.getGrade());
+                //map.put("commerce_member",0); //商会成员数 todo
                 playersMap.add(map);
             }
         }

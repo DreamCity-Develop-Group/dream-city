@@ -57,8 +57,8 @@
     limit 1
   </select>
 
-  <select id="getPlayers" parameterType="com.dream.city.base.model.req.PageReq" resultMap="BaseResultMap">
-    SELECT p.player_id playerId,p.player_name username,p.player_nick playerNick,p.create_time,
+  <select id="getPlayers" parameterType="com.dream.city.base.model.req.PageReq" resultType="java.util.Map">
+    SELECT p.player_id playerId,p.player_name username,p.player_nick playerNick,p.create_time createTime,
         e.friendlink playerLink,e.imgurl,g.grade,g.integral
     from city_player p INNER JOIN player_ext e ON p.player_id=e.player_id
         INNER JOIN player_grade g ON p.player_id=g.player_id
