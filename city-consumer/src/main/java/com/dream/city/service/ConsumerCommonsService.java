@@ -17,4 +17,6 @@ public interface ConsumerCommonsService {
 
     PlayerResp getFriendByNick(Message msg);
     String getFriendIdByNick(Message msg);
+
+    boolean sendMessage(String playerId,String friendId,String content);
 }

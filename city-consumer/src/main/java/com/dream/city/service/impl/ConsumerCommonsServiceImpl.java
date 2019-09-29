@@ -3,11 +3,12 @@ package com.dream.city.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.dream.city.base.model.Message;
 import com.dream.city.base.model.Result;
-import com.dream.city.base.model.entity.Player;
+import com.dream.city.base.model.entity.CityMessage;
 import com.dream.city.base.model.req.PlayerAccountReq;
 import com.dream.city.base.model.resp.PlayerResp;
 import com.dream.city.base.utils.DataUtils;
 import com.dream.city.service.ConsumerCommonsService;
+import com.dream.city.service.ConsumerMassegeService;
 import com.dream.city.service.ConsumerPlayerService;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -25,6 +26,8 @@ public class ConsumerCommonsServiceImpl implements ConsumerCommonsService {
 
     @Autowired
     private ConsumerPlayerService playerService;
+    @Autowired
+    private ConsumerMassegeService massegeService;
 
     @Override
     public Map<String,PlayerResp> getPlayerByNameOrNicke(Message msg) {
@@ -105,4 +108,16 @@ public class ConsumerCommonsServiceImpl implements ConsumerCommonsService {
         }
         return null;
     }
+
+    @Override
+    public boolean sendMessage(String playerId, String friendId, String content) {
+        CityMessage record = new  CityMessage();
+        record.setPlayerId(playerId);
+        record.setFriendId(friendId);
+        record.setContent(content);
+        massegeService.insertMessage(record);
+        return false;
+    }
+
+
 }

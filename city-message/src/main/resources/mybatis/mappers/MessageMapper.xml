@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dream.city.domain.mapper.MessageMapper" >
+  <resultMap id="BaseResultMap" type="com.dream.city.base.model.entity.CityMessage" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="player_id" property="playerId" jdbcType="VARCHAR" />
+    <result column="friend_id" property="friendId" jdbcType="VARCHAR" />
+    <result column="content" property="content" jdbcType="VARCHAR" />
+    <result column="have_read" property="haveRead" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, player_id, friend_id, content, have_read, create_time, update_time
+  </sql>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from city_message
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+
+  <select id="getCityMessageList" resultMap="BaseResultMap" parameterType="com.dream.city.base.model.entity.CityMessage" >
+    select
+    <include refid="Base_Column_List" />
+    from city_message
+    where 1=1
+      <if test="id != null" >
+          and id = #{id,jdbcType=BIGINT}
+      </if>
+      <if test="playerId != null and playerId != ''" >
+          and player_id = #{playerId,jdbcType=VARCHAR}
+      </if>
+      <if test="friendId != null and friendId != ''" >
+          and friend_id = #{friendId,jdbcType=VARCHAR}
+      </if>
+      <if test="haveRead != null" >
+          and have_read = #{haveRead,jdbcType=INTEGER}
+      </if>
+      <if test="content != null and content != ''" >
+          and content like CONCAT(CONCAT('%',#{content,jdbcType=VARCHAR}),'%')
+      </if>
+
+  </select>
+
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from city_message
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+
+  <insert id="insertSelective" parameterType="com.dream.city.base.model.entity.CityMessage" >
+    insert into city_message
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="player_id != null" >
+        player_id,
+      </if>
+      <if test="friend_id != null" >
+        friend_id,
+      </if>
+      <if test="content != null" >
+        content,
+      </if>
+      <if test="have_read != null" >
+        have_read,
+      </if>
+      <if test="create_time != null" >
+        create_time,
+      </if>
+      <if test="update_time != null" >
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="playerId != null" >
+        #{playerId,jdbcType=VARCHAR},
+      </if>
+      <if test="friendId != null" >
+        #{friendId,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="haveRead != null" >
+        #{haveRead,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.dream.city.base.model.entity.CityMessage" >
+    update city_message
+    <set >
+      <if test="playerId != null" >
+        player_id = #{playerId,jdbcType=VARCHAR},
+      </if>
+      <if test="friendId != null" >
+        friend_id = #{friendId,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="haveRead != null" >
+        have_read = #{haveRead,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

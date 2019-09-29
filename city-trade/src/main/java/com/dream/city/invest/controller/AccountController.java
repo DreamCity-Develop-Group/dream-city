@@ -2,10 +2,12 @@ package com.dream.city.invest.controller;
 
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.PlayerAccount;
+import com.dream.city.base.model.req.PlayerAccountReq;
 import com.dream.city.invest.service.AccountService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -116,5 +118,28 @@ public class AccountController {
     }
 
 
-
+    /**
+     * 获取平台账户
+     * @param record
+     * @return
+     */
+    @RequestMapping("/getPlayerAccount")
+    public Result<PlayerAccount> getPlayerAccount(@RequestBody PlayerAccountReq record){
+        logger.info("获取平台账户，{}", record);
+        String desc = "获取平台账户成功";
+        PlayerAccount account = null;
+        boolean b = Boolean.TRUE;
+        try {
+            List<PlayerAccount> accountList = accountService.getPlatformAccounts(record);
+            if (!CollectionUtils.isEmpty(accountList)){
+                account = accountList.get(0);
+            }
+        }catch (Exception e){
+            desc = "获取玩平台户失败";
+            b = Boolean.FALSE;
+            logger.error("获取平台账户异常",e);
+        }
+        Result<PlayerAccount> result = new Result<>(b,desc,account);
+        return result;
+    }
 }
