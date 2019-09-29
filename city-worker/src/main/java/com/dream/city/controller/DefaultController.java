@@ -3,6 +3,7 @@ package com.dream.city.controller;
 import com.dream.city.config.WorkItemsConfig;
 import com.dream.city.job.TestJob1;
 import com.dream.city.job.TestJob2;
+import com.dream.city.service.WorkerService;
 import com.dream.city.service.impl.WorkerServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,7 +27,7 @@ public class DefaultController {
     WorkItemsConfig workItemsConfig;
 
     @Autowired
-    WorkerServiceImpl workerService;
+    WorkerService workerService;
 
     @RequestMapping("/addJob")
     public void startJob(String type, String name){

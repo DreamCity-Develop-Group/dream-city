@@ -13,7 +13,6 @@ import org.springframework.context.annotation.Import;
 @SpringBootApplication
 @EnableCaching
 @EnableEurekaClient
-@Import({RedisConfig.class})
 public class CityWorkerApplication {
     public static void main(String[] args) {
         SpringApplication.run(CityWorkerApplication.class,args);

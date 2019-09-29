@@ -57,6 +57,13 @@ public class HttpClientServiceImpl implements HttpClientService {
     @Autowired
     PublishServer publishServer;
 
+    //登陆，注册，验证码，心跳，退出等
+    private static final String CHANNEL_LISTENER_LOGIN = "CHANNEL_LISTENER_LOGIN";
+    //平台业务逻辑
+    private static final String CHANNEL_LISTENER_PLATRANS = "CHANNEL_LISTENER_PLATRANS";
+    //后台推送
+    private static final String CHANNEL_LISTENER_SEREVERPUSH = "CHANNEL_LISTENER_SEREVERPUSH";
+
 
     @Override
     public void send(Message message) {
@@ -73,9 +80,7 @@ public class HttpClientServiceImpl implements HttpClientService {
         log.info("GateWay-Url:" + url1);
 
         CloseableHttpClient httpClient = HttpClientBuilder.create().build();
-
-
-        String gateWayPath = message.getTarget();
+        String gateWayPath = "consumer";
         String serviceModel = message.getTarget();
         String serviceOpt = message.getData().getType();
 
@@ -84,13 +89,23 @@ public class HttpClientServiceImpl implements HttpClientService {
         // 创建Post请求
         HttpPost httpPost = new HttpPost(url);
 
-        String jsonString = JSON.toJSONString(message);
+        String jsonString = JSON.toJSONString(message.getData().getData());
+        String channel = "";
+        Object messageSource ="";
+        String obj = JsonUtil.parseObjToJson(message.getData().getData());
+        Map map = JSON.parseObject(jsonString);
+        channel = map.get("channel").toString();
+        messageSource = map.get("sourceData");
 
-        StringEntity entity = new StringEntity(jsonString, "UTF-8");
+        String json = JsonUtil.parseObjToJson(messageSource);
+
+        StringEntity entity = new StringEntity(json, "UTF-8");
 
         // post请求是将参数放在请求体里面传过去的;这里将entity放入post请求体中
         httpPost.setEntity(entity);
         httpPost.setHeader("Content-Type", "application/json;charset=utf8");
+        httpPost.setHeader("method", serviceOpt);
+        httpPost.setHeader("authType", "");
 
         //响应模型
         CloseableHttpResponse response = null;
@@ -117,7 +132,7 @@ public class HttpClientServiceImpl implements HttpClientService {
                 // 由客户端执行(发送)Post请求
                 /**TODO**********将不成功的任务放入到redis，由任务中心自己调度处理******************************/
                 JSONObject jsonObject = JSON.parseObject(JsonUtil.parseObjToJson(message.getData().getData()));
-                String channel = jsonObject.getString("channel");
+                //String channel = jsonObject.getString("channel");
                 publishServer.publishMessage(channel,message);
                 /**TODO**********不成功的任务放入到redis******************************/
                 log.info("加入任务失败!");
@@ -277,6 +292,10 @@ public class HttpClientServiceImpl implements HttpClientService {
         }
     }
 
+    /**
+     * 需要后台
+     * @param message
+     */
     private void createWork(Message message) {
         // TODO ===> 调用自方法，创建任务处理
         Map<String, Object> job = new HashMap<>();
@@ -286,6 +305,10 @@ public class HttpClientServiceImpl implements HttpClientService {
         job.put("applyTo", message.getSource());
         //job任务的源数据
         job.put("sourceData", message);
+        //对应的处理Channel
+        job.put("channel",CHANNEL_LISTENER_PLATRANS);
+
+
         Message jobMsg = new Message();
         MessageData messageData = new MessageData();
 

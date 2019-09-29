@@ -20,6 +20,9 @@ import java.util.Map;
 @Configuration
 @Slf4j
 public class RedisSubListenerConfig {
+    @Autowired
+    WorkItemsConfig workItemsConfig;
+
     //不同的频道名
     //登录
     private static final String CHANNEL_LISTENER_LOGIN = "CHANNEL_LISTENER_LOGIN";
@@ -27,9 +30,6 @@ public class RedisSubListenerConfig {
     private static final String CHANNEL_LISTENER_PLATRANS = "CHANNEL_LISTENER_PLATRANS";
     //任务失败
     private static final String CHANNEL_LISTENER_SEREVERPUSH = "CHANNEL_LISTENER_SEREVERPUSH";
-
-    @Autowired
-    WorkItemsConfig workItemsConfig;
 
 
     /**
@@ -74,12 +74,13 @@ public class RedisSubListenerConfig {
             );
         });*/
 
-        container.addMessageListener(listenerAdapterLogin, new PatternTopic(RedisSubListenerConfig.CHANNEL_POST_LOGIN));
+        //订阅了一个叫listenerAdapterLogin的通道
+        container.addMessageListener(listenerAdapterLogin, new PatternTopic(RedisSubListenerConfig.CHANNEL_LISTENER_LOGIN));
 
-        //订阅了一个叫testchannel 的通道
-        container.addMessageListener(listenerAdapterPlatTrans, new PatternTopic(RedisSubListenerConfig.CHANNEL_POST_SUCCESS));
-        //订阅了一个叫chat的频道
-        container.addMessageListener(listenerAdapterServerPush, new PatternTopic(RedisSubListenerConfig.CHANNEL_POST_FAILED));
+        //订阅了一个叫listenerAdapterPlatTrans的通道
+        container.addMessageListener(listenerAdapterPlatTrans, new PatternTopic(RedisSubListenerConfig.CHANNEL_LISTENER_PLATRANS));
+        //订阅了一个叫listenerAdapterServerPush的频道
+        container.addMessageListener(listenerAdapterServerPush, new PatternTopic(RedisSubListenerConfig.CHANNEL_LISTENER_SEREVERPUSH));
 
         return container;
     }

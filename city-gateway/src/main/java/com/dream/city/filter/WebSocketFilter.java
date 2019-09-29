@@ -55,7 +55,12 @@ public class WebSocketFilter extends ZuulFilter {
         String authType = request.getAuthType();
         if (StringUtils.isEmpty(authType) ){
             HashSet<String> set = new HashSet<>();
-            set.add("login");set.add("codeLogin");set.add("reg");set.add("getCode");set.add("jobPush");
+            set.add("login");
+            set.add("codeLogin");
+            set.add("reg");
+            set.add("getCode");
+            set.add("jobPush");
+            set.add("createWorker");
             if (set.contains(accessMethod)){
                 log.info("Access method is Ok! ");
                 return null;
