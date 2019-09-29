@@ -141,7 +141,6 @@ CREATE TABLE `city_setting` (
   `update_date` datetime DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `index_player_id`(`player_id`) USING BTREE
-  KEY `index_type` (`type`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='游戏设置';
 
 -- ----------------------------

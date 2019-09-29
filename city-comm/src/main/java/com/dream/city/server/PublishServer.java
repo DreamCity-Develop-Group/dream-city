@@ -32,7 +32,7 @@ public class PublishServer {
      * @param channel
      * @param message
      */
-    public void publishMessage(String channel, Message message){
+    public void publishMessage(String channel, String message){
         // 该方法封装的 connection.publish(rawChannel, rawMessage);
 
         redisTemplate.convertAndSend(channel,message);

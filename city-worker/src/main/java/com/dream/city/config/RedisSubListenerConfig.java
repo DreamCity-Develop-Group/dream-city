@@ -9,8 +9,10 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.listener.PatternTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
+import org.springframework.data.redis.listener.Topic;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -27,7 +29,7 @@ public class RedisSubListenerConfig {
     //登录
     private static final String CHANNEL_LISTENER_LOGIN = "CHANNEL_LISTENER_LOGIN";
     //任务成功
-    private static final String CHANNEL_LISTENER_PLATRANS = "CHANNEL_LISTENER_PLATRANS";
+    private static final String CHANNEL_LISTENER_PLATRANS = "CHANNEL_LISTENER_PLATTRANS";
     //任务失败
     private static final String CHANNEL_LISTENER_SEREVERPUSH = "CHANNEL_LISTENER_SEREVERPUSH";
 
@@ -48,7 +50,8 @@ public class RedisSubListenerConfig {
     RedisMessageListenerContainer container(RedisConnectionFactory connectionFactory,
                                             MessageListenerAdapter listenerAdapterLogin,
                                             MessageListenerAdapter listenerAdapterPlatTrans,
-                                            MessageListenerAdapter listenerAdapterServerPush) {
+                                            MessageListenerAdapter listenerAdapterServerPush,
+                                            MessageReceiver receiver) {
 
         //list.forEach(System.out::println);
         //maps.forEach((key,value)->System.out.println(key+"=>"+value));
@@ -74,6 +77,12 @@ public class RedisSubListenerConfig {
             );
         });*/
 
+
+        //List<Topic> topics = new ArrayList<>();
+        //topics.add(new PatternTopic(RedisSubListenerConfig.CHANNEL_LISTENER_LOGIN));
+        //topics.add(new PatternTopic(RedisSubListenerConfig.CHANNEL_LISTENER_PLATRANS));
+        //topics.add(new PatternTopic(RedisSubListenerConfig.CHANNEL_LISTENER_SEREVERPUSH));
+
         //订阅了一个叫listenerAdapterLogin的通道
         container.addMessageListener(listenerAdapterLogin, new PatternTopic(RedisSubListenerConfig.CHANNEL_LISTENER_LOGIN));
 
@@ -82,6 +91,16 @@ public class RedisSubListenerConfig {
         //订阅了一个叫listenerAdapterServerPush的频道
         container.addMessageListener(listenerAdapterServerPush, new PatternTopic(RedisSubListenerConfig.CHANNEL_LISTENER_SEREVERPUSH));
 
+        /*workItemsConfig.getTasks().forEach((key,value)->{
+            container.addMessageListener(
+                    new MessageListenerAdapter(receiver,key),
+                    new PatternTopic(workItemsConfig.getTasks().get(value))
+            );
+        });
+        container.addMessageListener(
+                new MessageListenerAdapter(receiver,"listenerAdapterLogin"),
+                new PatternTopic(workItemsConfig.getTasks().get(""))
+                );*/
         return container;
     }
 
@@ -118,12 +137,5 @@ public class RedisSubListenerConfig {
         return new MessageListenerAdapter(receiver, "listenerAdapterServerPush");
     }
 
-    /**
-     * redis 读取内容的template
-     */
-    @Bean
-    StringRedisTemplate template(RedisConnectionFactory connectionFactory) {
-        return new StringRedisTemplate(connectionFactory);
-    }
 
 }

@@ -57,11 +57,17 @@ public class HttpClientServiceImpl implements HttpClientService {
     @Autowired
     PublishServer publishServer;
 
-    //登陆，注册，验证码，心跳，退出等
+    /**
+     * 登陆，注册，验证码，心跳，退出等
+     */
     private static final String CHANNEL_LISTENER_LOGIN = "CHANNEL_LISTENER_LOGIN";
-    //平台业务逻辑
-    private static final String CHANNEL_LISTENER_PLATRANS = "CHANNEL_LISTENER_PLATRANS";
-    //后台推送
+    /**
+     * 平台业务逻辑
+     */
+    private static final String CHANNEL_LISTENER_PLATRANS = "CHANNEL_LISTENER_PLATTRANS";
+    /**
+     * 后台推送
+     */
     private static final String CHANNEL_LISTENER_SEREVERPUSH = "CHANNEL_LISTENER_SEREVERPUSH";
 
 
@@ -131,9 +137,11 @@ public class HttpClientServiceImpl implements HttpClientService {
             } else {
                 // 由客户端执行(发送)Post请求
                 /**TODO**********将不成功的任务放入到redis，由任务中心自己调度处理******************************/
-                JSONObject jsonObject = JSON.parseObject(JsonUtil.parseObjToJson(message.getData().getData()));
+                //JSONObject jsonObject = JSON.parseObject(JsonUtil.parseObjToJson(message.getData().getData()));
+
                 //String channel = jsonObject.getString("channel");
-                publishServer.publishMessage(channel,message);
+                String messageJson = JSON.toJSONString(message);
+                publishServer.publishMessage(channel,messageJson);
                 /**TODO**********不成功的任务放入到redis******************************/
                 log.info("加入任务失败!");
             }

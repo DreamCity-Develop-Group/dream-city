@@ -3,4 +3,4 @@ worker:
     topics: topic1,topic2,topic3
 
 
-tasks: "{listenerAdapterLogin: 'listenerAdapterLogin', listenerAdapter: 'listenerAdapter', listenerAdapter2: 'listenerAdapter2'}"
+tasks: "{listenerAdapterLogin: 'listenerAdapterLogin', listenerAdapterPlatTrans: 'listenerAdapterPlatTrans', listenerAdapterServerPush: 'listenerAdapterServerPush'}"
