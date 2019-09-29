@@ -139,8 +139,8 @@ CREATE TABLE `city_setting` (
   `status` varchar(50) DEFAULT NULL COMMENT '状态',
   `create_date` datetime DEFAULT NULL,
   `update_date` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `index_player_id` (`player_id`),
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `index_player_id`(`player_id`) USING BTREE
   KEY `index_type` (`type`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='游戏设置';
 
@@ -165,6 +165,14 @@ CREATE TABLE `city_tree` (
 -- ----------------------------
 -- Records of city_tree
 -- ----------------------------
+DROP TABLE IF EXISTS `game_notice`;
+CREATE TABLE `game_notice`  (
+  `notice_id` int(11) NOT NULL AUTO_INCREMENT,
+  `notice_content` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '内容',
+  `notice_state` tinyint(255) DEFAULT NULL COMMENT '状态：1可用0不可用',
+  `createtime` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP(0),
+  PRIMARY KEY (`notice_id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for invest_order
@@ -177,8 +185,8 @@ CREATE TABLE `invest_order` (
   `order_amount` decimal(9,4) unsigned DEFAULT NULL COMMENT '投资金额',
   `order_state` varchar(20) DEFAULT NULL COMMENT '状态(PAID待支付,PAY已支付,WAIT待审核，TOBESHIPPED待发货，SHIPPED已发货，CLOSE关闭，INVALID作废)',
   `order_repeat` tinyint(4) unsigned DEFAULT '0' COMMENT '是否复投（0否，1是）',
-  `create_time` datetime DEFAULT NULL,
-  `update_time` datetime DEFAULT NULL,
+  `create_time` timestamp(0) DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP(0),
+  `update_time` timestamp(0) DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP(0),
   PRIMARY KEY (`order_id`) USING BTREE,
   KEY `index_order_invest_id` (`order_invest_id`),
   KEY `index_order_payer_id` (`order_payer_id`)
@@ -199,8 +207,8 @@ CREATE TABLE `invest_rule` (
   `rule_item` int(11) unsigned DEFAULT NULL COMMENT '规则项目',
   `rule_rate` double unsigned DEFAULT NULL,
   `rale_level` tinyint(4) unsigned DEFAULT NULL COMMENT '规则优先级别',
-  `create_time` datetime DEFAULT NULL,
-  `update_time` datetime DEFAULT NULL,
+  `create_time` timestamp(0) DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP(0),
+  `update_time` timestamp(0) DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP(0),
   PRIMARY KEY (`rule_id`) USING BTREE,
   KEY `index_rule_item` (`rule_item`),
   KEY `index_rule_name` (`rule_name`)
@@ -235,17 +243,19 @@ DROP TABLE IF EXISTS `player_account`;
 CREATE TABLE `player_account` (
   `acc_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `acc_player_id` varchar(64) NOT NULL COMMENT '账户玩家',
-  `acc_usdt` decimal(9,4) NOT NULL DEFAULT '0.0000' COMMENT '账户usdt额度',
-  `acc_usdt_available` decimal(9,4) unsigned NOT NULL DEFAULT '0.0000' COMMENT 'usdt可用金额',
-  `acc_usdt_freeze` decimal(9,4) unsigned NOT NULL DEFAULT '0.0000' COMMENT 'usdt冻结金额',
-  `acc_mt` decimal(9,4) NOT NULL DEFAULT '0.0000' COMMENT '账户mt额度',
-  `acc_mt_available` decimal(9,4) unsigned NOT NULL DEFAULT '0.0000' COMMENT 'mt可用金额',
-  `acc_mt_freeze` decimal(9,4) unsigned NOT NULL DEFAULT '0.0000' COMMENT 'mt冻结金额',
+  `acc_addr` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '账户地址',
+  `acc_pass` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '账户密码',
+  `acc_usdt` decimal(9,4) NOT NULL DEFAULT 0.0000 COMMENT '账户usdt额度',
+  `acc_usdt_available` decimal(9,4) unsigned NOT NULL DEFAULT 0.0000 COMMENT 'usdt可用金额',
+  `acc_usdt_freeze` decimal(9, 4) UNSIGNED NOT NULL DEFAULT 0.0000 COMMENT 'usdt冻结金额',
+  `acc_mt` decimal(9, 4) NOT NULL DEFAULT 0.0000 COMMENT '账户mt额度',
+  `acc_mt_available` decimal(9, 4) UNSIGNED NOT NULL DEFAULT 0.0000 COMMENT 'mt可用金额',
+  `acc_mt_freeze` decimal(9, 4) UNSIGNED NOT NULL DEFAULT 0.0000 COMMENT 'mt冻结金额',
   `acc_income` decimal(9,4) unsigned NOT NULL DEFAULT '0.0000' COMMENT '积累总收入',
   `create_time` datetime DEFAULT NULL,
   `update_time` datetime DEFAULT NULL,
-  PRIMARY KEY (`acc_id`),
-  KEY `index_acc_player_id` (`acc_player_id`)
+  PRIMARY KEY (`acc_id`) USING BTREE,
+  INDEX `index_acc_player_id`(`acc_player_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='玩家账户表';
 
 -- ----------------------------
@@ -281,8 +291,8 @@ CREATE TABLE `player_ext` (
   `imgurl` varchar(255) CHARACTER SET utf8 DEFAULT NULL COMMENT '头像地址',
   `create_date` datetime DEFAULT NULL,
   `update_date` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `index_player_id` (`player_id`)
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `index_player_id`(`player_id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COMMENT='用户扩展表（玩家）';
 
 -- ----------------------------
@@ -292,20 +302,20 @@ CREATE TABLE `player_ext` (
 -- Table structure for player_friends
 -- ----------------------------
 DROP TABLE IF EXISTS `player_friends`;
-CREATE TABLE `player_friends` (
-  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `player_id` varchar(64) CHARACTER SET utf8 NOT NULL COMMENT '用户id',
-  `friend_id` varchar(64) CHARACTER SET utf8 NOT NULL COMMENT '好友id',
-  `agree` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '同意添加',
-  `invite` varchar(255) CHARACTER SET utf8 DEFAULT NULL COMMENT '邀请码（来自friend_id）',
-  `is_valid` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '是否可用的',
-  `create_time` datetime DEFAULT NULL,
-  `update_time` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `index_player_id` (`player_id`),
-  KEY `index_friend_id` (`friend_id`),
-  KEY `index_invite` (`invite`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COMMENT='好友';
+CREATE TABLE `player_friends`  (
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `player_id` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '用户id',
+  `friend_id` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '好友id',
+  `agree` tinyint(1) UNSIGNED NOT NULL DEFAULT 0 COMMENT '同意添加',
+  `invite` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '邀请码（来自friend_id）',
+  `is_valid` tinyint(1) UNSIGNED NOT NULL DEFAULT 1 COMMENT '是否可用的',
+  `create_time` datetime(0) DEFAULT NULL,
+  `update_time` datetime(0) DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `index_player_id`(`player_id`) USING BTREE,
+  INDEX `index_friend_id`(`friend_id`) USING BTREE,
+  INDEX `index_invite`(`invite`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 10 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '好友' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of player_friends
@@ -323,8 +333,8 @@ CREATE TABLE `player_grade` (
   `create_date` datetime DEFAULT NULL,
   `update_date` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `index_player_id` (`player_id`),
-  KEY `index_grade` (`grade`)
+  INDEX `index_player_id`(`player_id`) USING BTREE,
+  INDEX `index_grade`(`grade`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='玩家等级(会员/商会等级)';
 
 -- ----------------------------
@@ -340,8 +350,8 @@ CREATE TABLE `player_likes` (
   `liked_player_id` varchar(64) CHARACTER SET utf8 DEFAULT NULL COMMENT '收获玩家',
   `liked_invest_id` int(10) unsigned DEFAULT NULL COMMENT '点赞项目ID',
   `liked_invest_total` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '项目点赞数量',
-  `create_time` datetime DEFAULT NULL,
-  `update_time` datetime DEFAULT NULL,
+  `create_time` timestamp(0) DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP(0),
+  `update_time` timestamp(0) DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP(0)
   PRIMARY KEY (`liked_id`),
   KEY `index_liked_player_id` (`liked_player_id`),
   KEY `index_liked_invest_id` (`liked_invest_id`)
@@ -350,6 +360,16 @@ CREATE TABLE `player_likes` (
 -- ----------------------------
 -- Records of player_likes
 -- ----------------------------
+DROP TABLE IF EXISTS `player_likes_log`;
+CREATE TABLE `player_likes_log`  (
+  `like_id` int(11) NOT NULL AUTO_INCREMENT,
+  `like_player_id` varchar(0) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '点赞玩家ID',
+  `like_liked_id` varchar(0) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '收获点赞玩家ID',
+  `like_invest_id` int(11) DEFAULT NULL COMMENT '点赞投资ID',
+  `create_time` timestamp(0) DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP(0),
+  `update_time` timestamp(0) NOT NULL ON UPDATE CURRENT_TIMESTAMP(0),
+  PRIMARY KEY (`like_id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for player_login_log
@@ -364,8 +384,8 @@ CREATE TABLE `player_login_log` (
   `descr` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
   `create_time` datetime DEFAULT NULL COMMENT '登录时间',
   PRIMARY KEY (`id`),
-  KEY `index_player_id` (`player_id`),
-  KEY `index_imei` (`imei`)
+  INDEX `index_player_id`(`player_id`) USING BTREE,
+  INDEX `index_imei`(`imei`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=60 DEFAULT CHARSET=utf8mb4 COMMENT='登录日志';
 
 -- ----------------------------
@@ -406,8 +426,8 @@ CREATE TABLE `rule_item` (
   `item_name` varchar(255) NOT NULL COMMENT '规则项目名称',
   `item_desc` varchar(0) DEFAULT NULL COMMENT '规则项目描述',
   `item_state` tinyint(4) DEFAULT NULL COMMENT '可用状态',
-  `create_time` datetime DEFAULT NULL,
-  `update_time` datetime DEFAULT NULL,
+  `create_time` timestamp(0) DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP(0),
+  `update_time` timestamp(0) DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP(0)
   PRIMARY KEY (`item_id`),
   KEY `index_item_name` (`item_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='规则表';
@@ -434,4 +454,26 @@ CREATE TABLE `trade_verify` (
 
 -- ----------------------------
 -- Records of trade_verify
+-- ----------------------------
+
+-- Table structure for sales_order
+-- ----------------------------
+DROP TABLE IF EXISTS `sales_order`;
+CREATE TABLE `sales_order`  (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `order_id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '订单ID',
+  `order_amount` double(255, 0) DEFAULT NULL COMMENT '订单额度',
+  `order_buy_type` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '订单购买类型',
+  `order_pay_type` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '订单支付类型',
+  `order_pay_amount` double(255, 0) DEFAULT NULL COMMENT '支付额度',
+  `order_player_buyer` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '订单玩家',
+  `order_player_seller` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '订单卖家',
+  `order_state` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '订单状态：0创建1完成2拒绝3超时',
+  `createtime` datetime(0) DEFAULT NULL,
+  `updatetime` datetime(0) DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for user
 -- ----------------------------
