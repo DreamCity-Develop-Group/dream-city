@@ -14,6 +14,8 @@ public interface AuthCodeMapper {
 
     String selectByPhone(String phone);
 
+    AuthCode getCodeByPhone(String phone);
+
     int updateByPrimaryKeySelective(AuthCode record);
 
 }

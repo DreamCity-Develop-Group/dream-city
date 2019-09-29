@@ -3,6 +3,7 @@ package com.dream.city.controller;
 import com.dream.city.base.model.Message;
 import com.dream.city.base.model.MessageData;
 import com.dream.city.base.model.Result;
+import com.dream.city.base.model.entity.AuthCode;
 import com.dream.city.base.utils.RedisKeys;
 import com.dream.city.base.utils.RedisUtils;
 import com.dream.city.service.CodeService;
@@ -99,13 +100,27 @@ public class ValiCodeController {
             if (!StringUtils.isEmpty(code) && !StringUtils.isEmpty(redisCode) &&
                     redisCode.equalsIgnoreCase(code)) {
                 ret = Boolean.TRUE;
+
             }
         } else {
             ret = coderService.valid(account, code);
         }
 
+
         if (ret) {
-            return Result.result(true, "验证成功！", 200);
+            AuthCode code1 = coderService.getAuthCodeByPhone(account);
+            if (code1 != null){
+                //更改验证码状态，使其不再可用
+                code1.setValid("false");
+                Result result = coderService.updateCodeState(code1);
+                redisUtils.delete(redisKey);
+
+                if(result.getSuccess()){
+                    return Result.result(true, "验证成功！", 200);
+                }
+            }
+
+            return Result.result(true, "验证失败！", 200);
         } else {
             return Result.result(true, "验证失败！", 200);
         }

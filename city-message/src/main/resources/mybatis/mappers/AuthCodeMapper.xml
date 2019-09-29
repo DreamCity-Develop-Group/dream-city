@@ -83,5 +83,12 @@
     where phone = #{phone,jdbcType=VARCHAR} order by createtime desc limit 1
   </select>
 
+  <select id="getCodeByPhone" parameterType="java.lang.String" resultType="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from city_auth_code
+    where phone = #{phone,jdbcType=VARCHAR} order by createtime desc limit 1
+  </select>
+
 
 </mapper>
