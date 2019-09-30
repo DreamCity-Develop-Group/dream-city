@@ -72,12 +72,12 @@ public class ConsumerFriendsController {
         String agree = map.containsKey("agree")?(String)map.get("agree"):"disagreed";
 
         Result<Boolean> b = consumerFriendsService.agreeAddFriend(playerId, friendId,agree);
-        if (b.getData() && "agree".equalsIgnoreCase(agree)){
+        /*if (b.getData() && "agree".equalsIgnoreCase(agree)){
             commonsService.sendMessage(playerId,friendId,"[" + playerNick + "]已经通过了你的好友申请。");
         }
         if (b.getData() && "disagreed".equalsIgnoreCase(agree)){
             commonsService.sendMessage(playerId,friendId,"[" + playerNick + "]已经拒绝了你的好友申请。");
-        }
+        }*/
         Message message = getResultMessage(b.getSuccess(),"通过好友",msg);
         return message;
     }
