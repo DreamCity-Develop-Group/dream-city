@@ -257,15 +257,15 @@ public class ConsumerPlayerController {
 
         if (result.getSuccess()){
             if(StringUtils.isNotBlank(player.getPlayerTradePass())){
-                //修改交易密码，扣除1USDT
+                //修改交易密码，扣除1MT
                 //玩家账户
                 PlayerAccount playerAccount = playerAccountService.getPlayerAccount(player.getPlayerId());
-                //扣除玩家1USDT TODO
+                //扣除玩家1MT TODO
 
                 //平台账户
                 String[] idsArr = platformAccIds.split(",");
                 PlayerAccount playerAccount1 = playerAccountService.getPlayerAccount(idsArr[0]);
-                //平台账户增加1USDT TODO
+                //平台账户增加1MT TODO
 
             }
         }
