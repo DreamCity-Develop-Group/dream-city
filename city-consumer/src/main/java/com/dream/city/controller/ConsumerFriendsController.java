@@ -4,9 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.dream.city.base.model.*;
 import com.dream.city.base.model.req.PageReq;
-import com.dream.city.service.ConsumerFriendsService;
-import com.dream.city.service.ConsumerOrderHandleService;
-import com.dream.city.service.ConsumerPlayerService;
+import com.dream.city.service.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang.StringUtils;
@@ -33,6 +31,8 @@ public class ConsumerFriendsController {
     ConsumerPlayerService consumerPlayerService;
     @Autowired
     ConsumerOrderHandleService orderHandleService;
+    @Autowired
+    ConsumerCommonsService commonsService;
 
     /**
      * 好友主页
@@ -68,9 +68,16 @@ public class ConsumerFriendsController {
         Map map = getPlayerIdOrFriendId(msg);
         String playerId = map.containsKey("playerId")?(String)map.get("playerId"):null;
         String friendId = map.containsKey("friendId")?(String)map.get("friendId"):null;
+        String playerNick = map.containsKey("playerNick")?(String)map.get("playerNick"):null;
         String agree = map.containsKey("agree")?(String)map.get("agree"):"disagreed";
 
         Result<Boolean> b = consumerFriendsService.agreeAddFriend(playerId, friendId,agree);
+        if (b.getData() && "agree".equalsIgnoreCase(agree)){
+            commonsService.sendMessage(playerId,friendId,"[" + playerNick + "]已经通过了你的好友申请。");
+        }
+        if (b.getData() && "disagreed".equalsIgnoreCase(agree)){
+            commonsService.sendMessage(playerId,friendId,"[" + playerNick + "]已经拒绝了你的好友申请。");
+        }
         Message message = getResultMessage(b.getSuccess(),"通过好友",msg);
         return message;
     }
@@ -178,6 +185,7 @@ public class ConsumerFriendsController {
 
         String agree = map.containsKey("agree")?(String) map.get("agree"):null;
         String playerName = map.containsKey("playerName")?(String) map.get("playerName"):null;
+        String playerNick = map.containsKey("playerNick")?(String) map.get("playerNick"):null;
         if (StringUtils.isBlank(playerName)){
             playerName = map.containsKey("username")?(String) map.get("username"):null;
         }
@@ -188,6 +196,7 @@ public class ConsumerFriendsController {
             Result<String> player = consumerPlayerService.getPlayerByName(playerNamejsonObject.toJSONString());
             Map<String,Object> playerMap = JSON.parseObject(player.getData(),Map.class);
             playerId = playerMap.containsKey("playerId")?(String)playerMap.get("playerId"):null;
+            playerNick = playerMap.containsKey("playerNick")?(String)playerMap.get("playerNick"):null;
         }
 
         String nick = map.containsKey("nick")?(String) map.get("nick"):null;
@@ -201,7 +210,10 @@ public class ConsumerFriendsController {
         }
         Map<String,String> resultMap = new HashMap<>();
         resultMap.put("playerId",playerId);
+        resultMap.put("username",playerName);
+        resultMap.put("playerNick",playerNick);
         resultMap.put("friendId",friendId);
+        resultMap.put("nick",nick);
         resultMap.put("agree",agree);
         return resultMap;
     }
