@@ -192,7 +192,7 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
             if (record.getVerifyStatus().equalsIgnoreCase(VerifyStatus.pass.name())){
                 //审核通过
                 //玩家账户扣除金额 扣冻结金额
-                Result<Integer> updatePlayerAccountResult = this.updatePlayerAccount(earning, playerAccount, msg);
+                Result<Integer> updatePlayerAccountResult = this.subtractPlayerAccount(earning, playerAccount, msg);
                 int updatePlayerAccount = updatePlayerAccountResult.getData();
                 msg = updatePlayerAccountResult.getMsg();
                 success = updatePlayerAccountResult.getSuccess();
@@ -218,7 +218,7 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
 
                 if(updateEarning > 0){
                     //玩家账户扣除税金 扣冻结mt税金
-                    Result<Integer> updatePlayerAccountMt = this.updatePlayerAccountMt(earning, playerAccount, msg);
+                    Result<Integer> updatePlayerAccountMt = this.subtractPlayerAccountMt(earning, playerAccount, msg);
                     success = updatePlayerAccountMt.getSuccess();
                     msg = updatePlayerAccountMt.getMsg();
                     updatePlayerAccount = updatePlayerAccountMt.getData();
@@ -254,6 +254,12 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
                 //审核不通过
                 success = Boolean.TRUE;
                 msg = "审核成功！";
+
+                //返回冻结金额
+                Result<Integer> unfreezePlayerAccount = this.unfreezePlayerAccount(earning, playerAccount, msg);
+                if (unfreezePlayerAccount.getData() != null && unfreezePlayerAccount.getData() < 1){
+                    msg = "审核不通过解冻资金失败！";
+                }
             }
         }else {
             msg = "修改审核状态失败！";
@@ -370,7 +376,7 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
      * @param msg
      * @return
      */
-    private Result<Integer> updatePlayerAccountMt(PlayerEarning earning,PlayerAccount playerAccount,String msg){
+    private Result<Integer> subtractPlayerAccountMt(PlayerEarning earning,PlayerAccount playerAccount,String msg){
         //玩家账户扣除税金 扣冻结mt税金
         PlayerAccount updateAccountReq = new PlayerAccount();
         updateAccountReq.setAccId(playerAccount.getAccId());
@@ -426,7 +432,7 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
      * @param msg
      * @return
      */
-    private Result<Integer> updatePlayerAccount(PlayerEarning earning,PlayerAccount playerAccount,String msg){
+    private Result<Integer> subtractPlayerAccount(PlayerEarning earning,PlayerAccount playerAccount,String msg){
         //玩家账户扣除金额 扣冻结金额
         PlayerAccount updateAccountReq = new PlayerAccount();
         updateAccountReq.setAccId(playerAccount.getAccId());
@@ -440,6 +446,36 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
             msg = "审核更新usdt账户异常";
             logger.error(msg,e);
             throw new BusinessException("审核更新usdt账户异常");
+        }
+        return new Result<Integer>(Boolean.TRUE,msg,updatePlayerAccount);
+    }
+
+    /**
+     * 审核不通过解冻金额
+     * @param earning
+     * @param playerAccount
+     * @param msg
+     * @return
+     */
+    private Result<Integer> unfreezePlayerAccount(PlayerEarning earning,PlayerAccount playerAccount,String msg){
+        //玩家账户扣除金额 扣冻结金额
+        PlayerAccount updateAccountReq = new PlayerAccount();
+        updateAccountReq.setAccId(playerAccount.getAccId());
+        updateAccountReq.setAccPlayerId(playerAccount.getAccPlayerId());
+        updateAccountReq.setAccUsdtFreeze(playerAccount.getAccUsdtFreeze().subtract(earning.getEarnMax()));
+        updateAccountReq.setAccUsdtAvailable(playerAccount.getAccUsdtAvailable().add(earning.getEarnMax()));
+        updateAccountReq.setAccUsdt(playerAccount.getAccUsdt().add(earning.getEarnMax()));
+        updateAccountReq.setAccMtFreeze(playerAccount.getAccMtFreeze().subtract(earning.getEarnTax()));
+        updateAccountReq.setAccMtFreeze(playerAccount.getAccMtFreeze().add(earning.getEarnTax()));
+        updateAccountReq.setAccMt(playerAccount.getAccMt().add(earning.getEarnTax()));
+        int updatePlayerAccount = 0;
+        try {
+            //更新玩家账户
+            updatePlayerAccount = accountService.updatePlayerAccount(updateAccountReq);
+        }catch (Exception e){
+            msg = "审核不通过解冻金额异常";
+            logger.error(msg,e);
+            throw new BusinessException("审核不通过解冻金额异常");
         }
         return new Result<Integer>(Boolean.TRUE,msg,updatePlayerAccount);
     }
