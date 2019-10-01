@@ -24,7 +24,7 @@ CREATE TABLE `city_auth_code` (
   `code` varchar(12) CHARACTER SET utf8 NOT NULL COMMENT '认证码',
   `phone` varchar(12) CHARACTER SET utf8 DEFAULT NULL,
   `user_id` varchar(64) CHARACTER SET utf8 DEFAULT NULL COMMENT '用户id',
-  `createtime` datetime DEFAULT NULL,
+  `create_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `index_code` (`code`),
   KEY `index_phone` (`phone`),

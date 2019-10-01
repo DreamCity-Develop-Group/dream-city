@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.dream.city.base.model.Message;
 import com.dream.city.base.model.MessageData;
 import com.dream.city.base.utils.JsonUtil;
+import com.dream.city.base.utils.RedisKeys;
 import com.dream.city.base.utils.RedisUtils;
 import com.dream.city.base.utils.SpringUtils;
 import com.dream.city.config.RedisSubListenerConfig;
@@ -35,6 +36,9 @@ import static java.util.concurrent.Executors.*;
 
 /**
  * @author Wvv
+ *
+ * topic :
+ *
  */
 
 @ServerEndpoint("/dream/city/{topic}/{name}")
@@ -161,21 +165,46 @@ public class WebSocketServer {
     @OnMessage
     public void onMessage(String message, Session session, @PathParam("topic") String topic, @PathParam("name") String username) {
         log.info("收到来自窗口client-" + sid + "的信息:" + topic + "/" + username);
-        log.info(message);
+        log.info("Message:"+message);
 
         publishService.publish(topic, message);
 
         //根据sid 到服务上找对应的数据，=》校验 =》 推送数据到客户端
         try {
-            //TODO 如果客户端发心跳包,回复success
-            if ("ping".equals(message)) {
+            //TODO 1、如果客户端发心跳包[ping_XXXX],回复success：包括登录期间的ping和登录之前的连接检测
+            String[] msgArray = message.split("_");
+            String ping = msgArray[0];
+            String account = msgArray[1];
+            String heartBeat = "ping";
+
+            if (heartBeat.equals(ping)) {
                 System.out.println("心跳消息接收...");
+                //TODO 保持连接状态，更新TOKEN：当用户Token即将过期，但此时用户实际在线，需要续期
+                String redisKey = RedisKeys.LOGIN_USER_TOKEN + account;
+                long expire = redisUtils.getExpire(redisKey);
+                long expired = 60;
+                if (expire<expired && expire != 0){
+                    //取出token
+                    String token =  redisUtils.getStr(redisKey);
+                    //延期token
+                    redisUtils.set(redisKey,token,30*60);
+
+                }
                 sendMessage("success");
                 return;
             }
 
             //解析出客户端发来的消息
             Message msg = JSONObject.parseObject(message, Message.class);
+
+            //TODO 2、客户端断线重连，客户端已经有相应的逻辑处理
+            boolean offline = false;
+            if (offline) {
+                System.out.println("客户端断线重连消息接收...");
+                sendMessage("success");
+                return;
+            }
+
 
             if (null != msg.getData().getData()) {
                 Map data = JsonUtil.parseJsonToObj(msg.getData().getData().toString(),Map.class);

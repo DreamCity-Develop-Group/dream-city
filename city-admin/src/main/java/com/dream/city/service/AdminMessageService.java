@@ -13,13 +13,5 @@ import org.springframework.web.bind.annotation.RequestParam;
 @FeignClient(value = "city-message")
 public interface AdminMessageService {
 
-    /**
-     * 获取验证码
-     * @return
-     */
-    @RequestMapping("/message/getCode")
-    Result getCode(@RequestBody Message message);
 
-    @RequestMapping("/message/checkCode")
-    Result checkCode(@RequestParam("code") String code, @RequestParam("account") String account);
 }
