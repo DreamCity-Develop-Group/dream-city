@@ -49,6 +49,8 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
         //获取项目数据
         CityInvest invest = getInvestByIdOrinName(orderReq.getInvestId(),orderReq.getInName());
         BigDecimal inTax = BigDecimal.valueOf(invest.getInTax());
+        orderReq.setOrderAmount(invest.getInLimit());
+        orderReq.setInTax(Double.parseDouble(String.valueOf(invest.getInTax())));
         //获取当前时间  后改为数据库时间 TODO
         Date investTime = new Date();
 
@@ -74,15 +76,15 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
             desc = "项目投资已结束";
         }
         //4限额
-        if (orderReq.getOrderAmount().compareTo(invest.getInLimit())>0){
+        /*if (orderReq.getOrderAmount().compareTo(invest.getInLimit())>0){
             desc = "超过项目投资限额，投资限额为：" + invest.getInLimit();
-        }
+        }*/
         PlayerAccount getPlayerAccount = new PlayerAccount();
         getPlayerAccount.setAccPlayerId(orderReq.getPayerId());
         Result<PlayerAccount> playerAccountResult = accountService.getPlayerAccount(getPlayerAccount);
         PlayerAccount playerAccount = playerAccountResult.getData();
         //5USDT不足
-        if (orderReq.getOrderAmount().compareTo(playerAccount.getAccUsdtAvailable()) > 0){
+        if (invest.getInLimit().compareTo(playerAccount.getAccUsdtAvailable()) > 0){
             desc = "USDT不足";
         }
         //6MT不足
@@ -100,7 +102,7 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
         int updatePlayerAccountDate = 0;
         String updatePlayerAccountMsg = "";
         String amountType = "";
-        String tradeAmountType = TradeAmountType.MT_INVEST.getCode();
+        String tradeAmountType = TradeAmountType.USDT_INVEST.getCode();
         if (order != null && order.getOrderId() != null){
             success = Boolean.TRUE;
             updatePlayerAccountResult = this.deductPlayerAccountAmount(orderReq,playerAccount,tradeAmountType,inTax);
@@ -118,7 +120,7 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
         if (updatePlayerAccountResult != null && updatePlayerAccountSuccess && updatePlayerAccountDate > 0){
             success = Boolean.TRUE;
             playerTradeResult = this.createPlayerTrade(orderReq.getPayerId(), order.getOrderId(),
-                    orderReq.getOrderAmount(), amountType, tradeAmountType);
+                    invest.getInLimit(), amountType, tradeAmountType);
             trade = playerTradeResult.getData();
         }else {
             desc = updatePlayerAccountMsg;
@@ -153,7 +155,7 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
         updatePlayerAccountSuccess = Boolean.parseBoolean(deductTaxMap.get("success"));
         if (deductTaxMap != null && updatePlayerAccountSuccess && updatePlayerAccountDate > 0){
             Result<PlayerTrade> playerTradeTaxResult = this.createPlayerTrade(orderReq.getPayerId(), order.getOrderId(),
-                    orderReq.getOrderAmount(), amountType, tradeAmountType);
+                    BigDecimal.valueOf(Double.parseDouble(String.valueOf(invest.getInTax()))), amountType, tradeAmountType);
             if (playerTradeTaxResult != null && playerTradeTaxResult.getSuccess() && playerTradeTaxResult.getData() != null) {
                 success = Boolean.TRUE;
             }else {
@@ -229,29 +231,23 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
         if (StringUtils.isBlank(msg)){
             playerAccount.setAccId(playerAccount.getAccId());
             playerAccount.setAccPlayerId(playerAccount.getAccPlayerId());
-            /*if (orderReq.getAmountType().equalsIgnoreCase(AmountType.mt.name())){
-                amountType = AmountType.mt.name();
-                tradeAmountType = TradeAmountType.MTINVEST.getCode();
-                playerAccount.setAccMt(playerAccount.getAccMt().subtract(orderReq.getOrderAmount()));
-            }*/
 
             if (StringUtils.isBlank(tradeAmountType)){
-                tradeAmountType = TradeAmountType.MT_INVEST.getCode();
+                tradeAmountType = TradeAmountType.USDT_INVEST.getCode();
             }
-            if (tradeAmountType.equalsIgnoreCase(TradeAmountType.MT_INVEST.getCode())
+            if (tradeAmountType.equalsIgnoreCase(TradeAmountType.USDT_INVEST.getCode())
                     && orderReq.getAmountType().equalsIgnoreCase(AmountType.usdt.name())){
                 amountType = AmountType.usdt.name();
+                //投资冻结USDT
                 playerAccount.setAccUsdt(playerAccount.getAccUsdt().subtract(orderReq.getOrderAmount()));
                 playerAccount.setAccUsdtAvailable(playerAccount.getAccUsdtAvailable().subtract(orderReq.getOrderAmount()));
                 playerAccount.setAccUsdtFreeze(playerAccount.getAccUsdtFreeze().add(orderReq.getOrderAmount()));
-            }
-
-            if (tradeAmountType.equalsIgnoreCase(TradeAmountType.USDT_INVEST_TAX.getCode())
-                    && orderReq.getAmountType().equalsIgnoreCase(AmountType.usdt.name())){
+                //投资冻结税金MT
                 playerAccount.setAccMt(playerAccount.getAccUsdt().subtract(inTax));
                 playerAccount.setAccMtAvailable(playerAccount.getAccMtAvailable().subtract(inTax));
                 playerAccount.setAccMtFreeze(playerAccount.getAccMtFreeze().add(inTax));
             }
+
             //updatePlayerAccount TODO
             Result<Integer> updatePlayerAccountResult = accountService.updatePlayerAccount(playerAccount);
             success = String.valueOf(updatePlayerAccountResult.getSuccess());
@@ -263,14 +259,6 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
                 success = String.valueOf(Boolean.TRUE);
             }else {
                 msg = "投资失败！";
-                success = String.valueOf(Boolean.FALSE);
-            }
-            if (tradeAmountType.equalsIgnoreCase(TradeAmountType.USDT_INVEST_TAX.getCode()) && Boolean.parseBoolean(success)
-                    && Integer.parseInt(data) > 0){
-                msg = "扣除税金成功！";
-                success = String.valueOf(Boolean.TRUE);
-            }else {
-                msg = "扣除税金失败！";
                 success = String.valueOf(Boolean.FALSE);
             }
         }
@@ -382,9 +370,10 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
                 map.put("inName",invest.getInName());
                 map.put("inId",invest.getInId());
                 map.put("profit",invest.getInTax());
-                map.put("orderAmount",order.getOrderAmount());
+                map.put("orderAmount",invest.getInLimit());
                 map.put("personalInTax",0); //TODO
                 map.put("enterpriseIntax",0); //TODO
+                map.put("status",0); //TODO
                 list.add(map);
             }
         }

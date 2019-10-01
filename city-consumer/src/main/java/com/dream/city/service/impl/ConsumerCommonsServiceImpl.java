@@ -8,7 +8,7 @@ import com.dream.city.base.model.req.PlayerAccountReq;
 import com.dream.city.base.model.resp.PlayerResp;
 import com.dream.city.base.utils.DataUtils;
 import com.dream.city.service.ConsumerCommonsService;
-import com.dream.city.service.ConsumerMassegeService;
+import com.dream.city.service.ConsumerMessageService;
 import com.dream.city.service.ConsumerPlayerService;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -27,7 +27,7 @@ public class ConsumerCommonsServiceImpl implements ConsumerCommonsService {
     @Autowired
     private ConsumerPlayerService playerService;
     @Autowired
-    private ConsumerMassegeService massegeService;
+    private ConsumerMessageService massegeService;
 
     @Override
     public Map<String,PlayerResp> getPlayerByNameOrNicke(Message msg) {
@@ -71,6 +71,33 @@ public class ConsumerCommonsServiceImpl implements ConsumerCommonsService {
             }
         }
         return null;
+    }
+
+    @Override
+    public PlayerResp getPlayerByStrUserName(String username) {
+        return this.getPlayerByUserNameOrNick(username,null);
+    }
+
+    @Override
+    public PlayerResp getPlayerByStrNick(String nick) {
+        return this.getPlayerByUserNameOrNick(null,nick);
+    }
+
+    private PlayerResp getPlayerByUserNameOrNick(String username,String nick) {
+        Map<String,String> map = new HashMap();
+        if (StringUtils.isNotBlank(username)){
+            map.put("playerName",username);
+        }
+        if (StringUtils.isNotBlank(nick)){
+            map.put("playerNick",nick);
+        }
+        String jsonReq = JSON.toJSONString(map);
+        Result<String> playerResult = playerService.getPlayerByName(jsonReq);
+        PlayerResp player = null;
+        if (playerResult.getSuccess()){
+            player = JSON.toJavaObject(JSON.parseObject(playerResult.getData()),PlayerResp.class);
+        }
+        return player;
     }
 
     @Override

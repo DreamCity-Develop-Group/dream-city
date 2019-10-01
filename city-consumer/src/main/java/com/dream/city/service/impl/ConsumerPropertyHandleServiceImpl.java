@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.CityInvest;
 import com.dream.city.base.model.entity.InvestOrder;
+import com.dream.city.base.model.enu.InvestStatus;
 import com.dream.city.base.model.req.CityInvestReq;
 import com.dream.city.service.ConsumerOrderService;
 import com.dream.city.service.ConsumerPropertyHandleService;
@@ -53,19 +54,23 @@ public class ConsumerPropertyHandleServiceImpl implements ConsumerPropertyHandle
                 order = new InvestOrder();
                 order.setOrderInvestId(invest.getInId());
                 order.setOrderPayerId(record.getPayerId());
-                String couldInvest = "可投资";
                 ordersCountResult = orderService.countOrdersByPayerIdInvestId(order);
+                //物业投资按钮 TODO
+                String status = InvestStatus.SUBSCRIBE.getDesc();
                 if(ordersCountResult.getData() > 0){
-                    couldInvest = "已投资";
-                }
-                if (invest.getInStart().after(currentTime) || invest.getInEnd().after(currentTime)){
-                    couldInvest = "不可投";
+                    //经营中
+                    status = InvestStatus.MANAGEMENT.getDesc();
                 }
 
                 resultMap.put("username",record.getUsername());
-                resultMap.put("couldInvest",couldInvest);
-                resultMap.put("personalInTax",0); // TODO
-                resultMap.put("enterpriseIntax",0); // TODO
+                resultMap.put("inImg",invest.getInImg());
+                resultMap.put("inName",invest.getInName());
+                resultMap.put("inId",invest.getInId());
+                resultMap.put("profit",invest.getInTax());
+                resultMap.put("orderAmount",invest.getInLimit());
+                resultMap.put("personalInTax",0); //TODO
+                resultMap.put("enterpriseIntax",0); //TODO
+                resultMap.put("status",status); //TODO
                 resultList.add(resultMap);
             }
         }

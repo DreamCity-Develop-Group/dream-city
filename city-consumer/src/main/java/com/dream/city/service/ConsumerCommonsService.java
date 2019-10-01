@@ -18,5 +18,8 @@ public interface ConsumerCommonsService {
     PlayerResp getFriendByNick(Message msg);
     String getFriendIdByNick(Message msg);
 
+    PlayerResp getPlayerByStrUserName(String username);
+    PlayerResp getPlayerByStrNick(String nick);
+
     boolean sendMessage(String playerId,String friendId,String content);
 }
