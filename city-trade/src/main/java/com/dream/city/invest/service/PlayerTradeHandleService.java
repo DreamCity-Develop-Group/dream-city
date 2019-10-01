@@ -2,7 +2,6 @@ package com.dream.city.invest.service;
 
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.req.PlayerAccountReq;
-import com.dream.city.base.model.req.TradeVerifReq;
 
 /**
  *  玩家交易
@@ -30,12 +29,6 @@ public interface PlayerTradeHandleService {
     Result<Boolean> playerTransfer(PlayerAccountReq record);
 
 
-    /**
-     * 提现、转账审核
-     * @param record
-     * @return
-     */
-    Result<Boolean> withdrawVerify(TradeVerifReq record);
 
 
 }
