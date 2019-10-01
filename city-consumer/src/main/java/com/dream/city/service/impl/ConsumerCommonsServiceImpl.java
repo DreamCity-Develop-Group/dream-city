@@ -74,6 +74,33 @@ public class ConsumerCommonsServiceImpl implements ConsumerCommonsService {
     }
 
     @Override
+    public PlayerResp getPlayerByStrUserName(String username) {
+        return this.getPlayerByUserNameOrNick(username,null);
+    }
+
+    @Override
+    public PlayerResp getPlayerByStrNick(String nick) {
+        return this.getPlayerByUserNameOrNick(null,nick);
+    }
+
+    private PlayerResp getPlayerByUserNameOrNick(String username,String nick) {
+        Map<String,String> map = new HashMap();
+        if (StringUtils.isNotBlank(username)){
+            map.put("playerName",username);
+        }
+        if (StringUtils.isNotBlank(nick)){
+            map.put("playerNick",nick);
+        }
+        String jsonReq = JSON.toJSONString(map);
+        Result<String> playerResult = playerService.getPlayerByName(jsonReq);
+        PlayerResp player = null;
+        if (playerResult.getSuccess()){
+            player = JSON.toJavaObject(JSON.parseObject(playerResult.getData()),PlayerResp.class);
+        }
+        return player;
+    }
+
+    @Override
     public String getPlayerIdByUserName(Message msg) {
         Map<String,PlayerResp> playerOrFriend = getPlayerByNameOrNicke(msg);
         if (playerOrFriend != null && playerOrFriend.containsKey("player")){

@@ -178,9 +178,25 @@ public class ConsumerPlayerController {
     public Message squareFriends(@RequestBody Message msg) {
         log.info("广场玩家列表", JSONObject.toJSONString(msg));
         UserReq jsonReq = DataUtils.getUserReq(msg);
-        String condition = jsonReq.getNick();
+        //当前用户id
+        String playerId = jsonReq.getPlayerId();
+        //查询用户
+        String username = jsonReq.getUsername();
+        String nick = null;
+
+        PlayerResp playerByStrUserName = commonsService.getPlayerByStrUserName(username);
+        PlayerResp playerByStrNick = commonsService.getPlayerByStrNick(username);
+        if (playerByStrUserName != null){
+            nick = playerByStrUserName.getPlayerNick();
+        }
+        if (playerByStrNick != null){
+            username = playerByStrNick.getPlayerName();
+            nick = playerByStrNick.getPlayerNick();
+        }
         Map<String,String> conditionMap = new HashMap<>();
-        conditionMap.put("nick",condition);
+        conditionMap.put("playerId",playerId);
+        conditionMap.put("nick",nick);
+        conditionMap.put("username",username);
         PageReq<Map<String,String>> pageReq = new PageReq<>((Map) msg.getData().getData());
         pageReq.setCondition(conditionMap);
 

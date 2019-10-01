@@ -391,17 +391,17 @@ public class PlayerController {
 
 
     @RequestMapping(value = "/getPlayerByName",method = RequestMethod.POST,produces="application/json; utf-8")
-    public Result getPlayerByName(@RequestBody String jsonReq){
+    public Result<String> getPlayerByName(@RequestBody String jsonReq){
         log.info("根据用户名或昵称获取玩家，{}",jsonReq);
         JSONObject jsonObject = JSON.parseObject(jsonReq);
         String playerName = jsonObject.getString("playerName");
         String playerNick = jsonObject.getString("playerNick");
         PlayerResp player = playerService.getPlayerByName(playerName,playerNick);
-        Result result = null;
+        Result<String> result = null;
         if (player != null){
-            result = new Result(CityGlobal.ResultCode.success.getStatus(),JSONObject.toJSONString(player));
+            result = new Result<>(CityGlobal.ResultCode.success.getStatus(),JSONObject.toJSONString(player));
         }else {
-            result = new Result(CityGlobal.ResultCode.fail.getStatus(),JSONObject.toJSONString(player));
+            result = new Result<>(CityGlobal.ResultCode.fail.getStatus(),JSONObject.toJSONString(player));
         }
         return result;
     }

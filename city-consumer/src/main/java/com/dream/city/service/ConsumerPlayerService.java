@@ -100,7 +100,7 @@ public interface ConsumerPlayerService {
      * @return
      */
     @RequestMapping("/player/getPlayerByName")
-    Result getPlayerByName(@RequestBody String jsonReq);
+    Result<String> getPlayerByName(@RequestBody String jsonReq);
 
     @RequestMapping("/player/getPlayerByInvite")
     Result getPlayerByInvite(@RequestParam String invite);
