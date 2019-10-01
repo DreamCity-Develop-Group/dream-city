@@ -20,7 +20,7 @@ public class InvestOrderJob extends QuartzJobBean {
     private UserServiceImpl userService;
 
     /**
-     * 
+     *
      *
      * @param jobExecutionContext
      * @throws JobExecutionException
