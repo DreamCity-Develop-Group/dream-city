@@ -37,6 +37,18 @@ public class Message implements Serializable{
         this.source = source;
         this.target = target;
         this.data = data;
+        this.desc = "";
+        this.createtime = String.valueOf(System.currentTimeMillis());
+    }
+
+    public Message(String source, String target,
+                   MessageData data,String desc) {
+        super();
+        this.source = source;
+        this.target = target;
+        this.data = data;
+        this.desc = desc;
+        this.createtime = String.valueOf(System.currentTimeMillis());
     }
 
     public Message(String source, String target,

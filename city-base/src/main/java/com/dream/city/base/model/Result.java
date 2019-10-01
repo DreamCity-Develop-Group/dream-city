@@ -132,6 +132,10 @@ public class Result<T> {
         return new Result(success, code);
     }
 
+    public static Result result(boolean success, Object data) {
+        return new Result(success, data);
+    }
+
     public static Result result(String msg, int code, Object data) {
         return new Result(msg, code, data);
     }

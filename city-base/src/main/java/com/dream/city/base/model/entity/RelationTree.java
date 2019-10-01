@@ -11,4 +11,9 @@ public class RelationTree {
     String parentId;
     String playerId;
     String relation;
+    /**
+     * 是否自动发货
+     * @return
+     */
+    String sendAuto;
 }

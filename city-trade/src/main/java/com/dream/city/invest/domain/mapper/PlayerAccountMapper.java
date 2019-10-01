@@ -16,6 +16,8 @@ public interface PlayerAccountMapper {
 
     PlayerAccount getPlayerAccount(PlayerAccountReq record);
 
+    PlayerAccount getPlayerAccountByPlayerId(String playerId);
+
     /**
      * 获取平台账户
      * @param record

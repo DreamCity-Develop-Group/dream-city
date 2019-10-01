@@ -70,6 +70,12 @@ public class RelationTreeServiceImpl implements RelationTreeService {
         return treeMapper.getByPlayer(playerId);
     }
 
+    @Override
+    public Result updateTree(RelationTree tree){
+         treeMapper.updateTree(tree);
+         return Result.result(true);
+    }
+
     /**
      * 找出对应级别所有子对象
      *

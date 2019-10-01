@@ -19,6 +19,8 @@ public interface RelationTreeService {
      */
     Result save(String parent, String child,String relation);
 
+    Result updateTree(RelationTree tree);
+
     RelationTree get(String parent, String child);
 
     RelationTree getByPlayer(String playerId);

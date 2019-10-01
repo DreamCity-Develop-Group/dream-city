@@ -31,8 +31,9 @@ public interface TreeMapper {
     @ResultMap("TreeBaseResultMap")
     List<RelationTree> getTrees();
 
-    @Update(" update city_tree set name=#{name} where id = #{id}")
-    void updateTree(String name,Integer id);
+    @Update(" update city_tree set tree_parent_id=#{parentId},tree_player_id=#{playerId},tree_relation=#{relation},send_auto=#{sendAuto} where id = #{id}")
+    void updateTree(RelationTree tree);
+
     @Delete("delete from city_tree where 1=1 and id = #{id}")
     void deleteTree(Integer id);
 

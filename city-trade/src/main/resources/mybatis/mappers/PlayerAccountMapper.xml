@@ -38,6 +38,19 @@
     </where>
     limit 1
   </select>
+  <select id="getPlayerAccountByPlayerId" resultMap="BaseResultMap"
+          parameterType="java.lang.String" >
+    select
+    <include refid="Base_Column_List" />
+    from player_account
+    <where>
+      1=1
+      <if test="accPlayerId != null and accPlayerId != '' ">
+        and player_id = #{playerId,jdbcType=VARCHAR}
+      </if>
+    </where>
+    limit 1
+  </select>
 
   <select id="getPlatformAccounts" resultMap="BaseResultMap"
           parameterType="com.dream.city.base.model.req.PlayerAccountReq" >

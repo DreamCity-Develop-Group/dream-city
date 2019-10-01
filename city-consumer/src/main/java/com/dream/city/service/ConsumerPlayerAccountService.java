@@ -30,4 +30,6 @@ public interface ConsumerPlayerAccountService {
      */
     @RequestMapping("/tree/get/account")
     PlayerAccount getPlayerAccount(@RequestParam("playerId")String playerId);
+
+
 }

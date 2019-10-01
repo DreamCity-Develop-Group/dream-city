@@ -1,7 +1,10 @@
 package com.dream.city.base.model.entity;
 
+import lombok.Data;
+
 import java.io.Serializable;
 
+@Data
 public class CityTree implements Serializable {
     /**  */
     private Integer treeId;
@@ -14,6 +17,12 @@ public class CityTree implements Serializable {
 
     /** 关系网络 */
     private String treeRelation;
+
+    /**
+     * 是否自动发货
+     * @return
+     */
+    private String sendAuto;
 
     public Integer getTreeId() {
         return treeId;

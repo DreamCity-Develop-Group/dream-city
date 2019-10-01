@@ -61,4 +61,11 @@ public class AccountServiceImpl implements AccountService {
         }
         return accountMapper.getPlatformAccounts(record);
     }
+
+    @Override
+    public PlayerAccount getPlayerAccountByPlayerId(String playerId){
+        return accountMapper.getPlayerAccountByPlayerId(playerId);
+    }
+
+
 }

@@ -31,4 +31,5 @@ public interface ConsumerGameSettingService {
     @RequestMapping("/set/getGameNotices")
     List<Notice> getGameNoties();
 
+
 }

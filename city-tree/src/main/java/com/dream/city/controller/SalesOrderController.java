@@ -26,9 +26,15 @@ public class SalesOrderController {
     private PlayerAccountService accountService;
 
 
+    /**
+     * 获取订单
+     *
+     * @param playerId
+     * @return
+     */
     @RequestMapping("/get/salesOrder")
     public Result getSalesOrder(@RequestParam("playerId")String playerId){
-        SalesOrder order = salesOrderService.getSalesOrder(1L);
+        //SalesOrder order = salesOrderService.getSalesOrder(1L);
         List<SalesOrder> orders = salesOrderService.selectSalesOrder(playerId);
         return new Result("success",200,orders);
     }
@@ -80,7 +86,7 @@ public class SalesOrderController {
     @RequestMapping("/player/seller/send")
     public Result playerSellerSend(@RequestParam("playerId")String playerId,@RequestParam("orders")List<String> orders){
         if (StringUtils.isBlank(playerId) || null == orders || orders.size()==0){
-            return new Result("参数错误",500);
+            return new Result(false,"参数错误",500);
         }
         List<SalesOrder> salesOrders = new ArrayList<>();
         BigDecimal amountMt = new BigDecimal(0.00);
@@ -93,7 +99,7 @@ public class SalesOrderController {
 
         //额度检测
         if (availbleMt.compareTo(amountMt) < 1){
-            return new Result("可用MT额度不足，请及时备货",500);
+            return new Result(false,"可用MT额度不足，请及时备货",500);
         }
         //修改订单状态和修改玩家账户额度
         return salesOrderService.sendOrderMt(salesOrders);

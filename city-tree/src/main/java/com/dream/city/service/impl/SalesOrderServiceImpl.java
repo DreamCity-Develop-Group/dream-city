@@ -83,6 +83,10 @@ public class SalesOrderServiceImpl implements SalesOrderService {
         order.setOrderAmount(buyAmount);
         salesOrderMapper.createSalesOrder(order);
 
+        //todo 如果上家设置了自动发货并且有足够额度，直接购买成功
+        //todo 由任务管理去完成相应的业务逻辑
+
+
 
         return new Result(true,"下单成功", 200,order);
     }

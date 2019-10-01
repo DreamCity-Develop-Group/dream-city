@@ -5,6 +5,7 @@ import com.dream.city.base.model.entity.PlayerAccount;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -23,7 +24,13 @@ public interface ConsumerAccountService {
      */
     @RequestMapping("/getPlayerAccount")
     Result getPlayerAccount(@RequestBody PlayerAccount record);
-
+    /**
+     * 获取玩家账户
+     * @param playerId
+     * @return
+     */
+    @RequestMapping("/getByPlayerId")
+    PlayerAccount getPlayerAccountByPlayerId(@RequestParam("playerId")String playerId);
     /**
      * 玩家账户列表
      * @param record

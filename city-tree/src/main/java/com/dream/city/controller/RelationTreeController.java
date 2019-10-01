@@ -68,7 +68,7 @@ public class RelationTreeController {
 
         treeMap = relationTreeService.getLevelChildTreesMap(playerId,level);
 
-        return new Result("success",200,treeMap);
+        return Result.result(true,treeMap);
     }
 
     /**
@@ -136,6 +136,19 @@ public class RelationTreeController {
 
         return Result.result(false,"玩家账户开设失败",200,null);
     }
+
+    @RequestMapping("/set/autoSend")
+    public Result setAutoSend(@RequestParam("playerId")String playerId){
+        RelationTree tree = relationTreeService.getByPlayer(playerId);
+
+        tree.setSendAuto("auto");
+
+        relationTreeService.updateTree(tree);
+
+        return Result.result(true);
+    }
+
+
 
 
 }
