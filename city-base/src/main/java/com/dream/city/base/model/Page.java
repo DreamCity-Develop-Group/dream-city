@@ -3,6 +3,7 @@ package com.dream.city.base.model;
 import lombok.Data;
 import org.springframework.util.CollectionUtils;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 
@@ -10,7 +11,9 @@ import java.util.List;
  * 分页类
  */
 @Data
-public class Page<T>{
+public class Page<T> implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     public static int DEFAULT_START = 1;//默认开始行
     
