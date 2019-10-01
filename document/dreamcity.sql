@@ -741,3 +741,17 @@ INSERT INTO `user_role` VALUES ('3', '1');
 INSERT INTO `user_role` VALUES ('3', '2');
 INSERT INTO `user_role` VALUES ('4', '1');
 INSERT INTO `user_role` VALUES ('4', '7');
+
+
+-- ----------------------------
+-- Table structure for invest_allow
+-- ----------------------------
+DROP TABLE IF EXISTS `invest_allow`;不知git
+CREATE TABLE `invest_allow`  (
+  `id` int(11) NOT NULL,
+  `player_id` int(11) DEFAULT NULL,
+  `allowed` int(255) DEFAULT NULL,
+  `amount` double(255, 0) DEFAULT NULL,
+  `create_time` datetime(0) DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
