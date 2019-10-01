@@ -34,33 +34,7 @@ CREATE TABLE `city_auth_code` (
 -- ----------------------------
 -- Records of city_auth_code
 -- ----------------------------
-INSERT INTO `city_auth_code` VALUES ('1', '337219', '17895648524', null, '2019-09-24 03:50:48');
-INSERT INTO `city_auth_code` VALUES ('2', '468360', '13956489561', null, '2019-09-24 03:57:07');
-INSERT INTO `city_auth_code` VALUES ('3', '663288', '13956489561', null, '2019-09-24 04:07:33');
-INSERT INTO `city_auth_code` VALUES ('4', '817277', '13956489561', null, '2019-09-24 04:07:33');
-INSERT INTO `city_auth_code` VALUES ('5', '788875', '13956489561', null, '2019-09-24 04:07:34');
-INSERT INTO `city_auth_code` VALUES ('6', '772209', '15478951564', null, '2019-09-24 04:12:13');
-INSERT INTO `city_auth_code` VALUES ('7', '112666', '15478951564', null, '2019-09-24 04:13:45');
-INSERT INTO `city_auth_code` VALUES ('8', '354758', '1', null, '2019-09-24 04:21:31');
-INSERT INTO `city_auth_code` VALUES ('9', '376427', '12', null, '2019-09-24 04:24:22');
-INSERT INTO `city_auth_code` VALUES ('10', '921368', '123', null, '2019-09-24 04:27:08');
-INSERT INTO `city_auth_code` VALUES ('11', '322331', '1234', null, '2019-09-24 04:32:49');
-INSERT INTO `city_auth_code` VALUES ('12', '728758', '1234', null, '2019-09-24 04:51:17');
-INSERT INTO `city_auth_code` VALUES ('13', '29943', '1234', null, '2019-09-24 04:53:11');
-INSERT INTO `city_auth_code` VALUES ('14', '175238', '17879502056', null, '2019-09-28 02:37:34');
-INSERT INTO `city_auth_code` VALUES ('15', '101749', '17879502056', null, '2019-09-28 02:54:04');
-INSERT INTO `city_auth_code` VALUES ('16', '372459', '17879502050', null, '2019-09-28 02:54:21');
-INSERT INTO `city_auth_code` VALUES ('17', '130462', '17879502051', null, '2019-09-28 02:55:27');
-INSERT INTO `city_auth_code` VALUES ('18', '640204', '17879502052', null, '2019-09-28 03:10:51');
-INSERT INTO `city_auth_code` VALUES ('19', '826418', '17879502053', null, '2019-09-28 03:16:45');
-INSERT INTO `city_auth_code` VALUES ('20', '356660', '17879502054', null, '2019-09-28 03:18:51');
-INSERT INTO `city_auth_code` VALUES ('21', '569908', '17879502055', null, '2019-09-28 03:20:43');
-INSERT INTO `city_auth_code` VALUES ('22', '229865', '17879502058', null, '2019-09-28 03:25:14');
-INSERT INTO `city_auth_code` VALUES ('23', '599859', '17879502059', null, '2019-09-28 03:27:21');
-INSERT INTO `city_auth_code` VALUES ('24', '852887', '17879502040', null, '2019-09-28 03:31:23');
-INSERT INTO `city_auth_code` VALUES ('25', '793917', '17879502041', null, '2019-09-28 03:32:01');
-INSERT INTO `city_auth_code` VALUES ('26', '839266', '17879502040', null, '2019-09-28 12:51:45');
-INSERT INTO `city_auth_code` VALUES ('27', '796877', '17879502040', null, '2019-09-28 12:51:56');
+
 
 -- ----------------------------
 -- Table structure for city_file
@@ -154,9 +128,6 @@ CREATE TABLE `city_player` (
 -- ----------------------------
 -- Records of city_player
 -- ----------------------------
-INSERT INTO `city_player` VALUES ('100', 'FD826FE2E378445594D23CA84C0C485D', '123', '123', '123', null, '', '1', '2019-09-12 02:37:37', null);
-INSERT INTO `city_player` VALUES ('111', '99B1D351FD5242CD8F73E86A2BBC89A0', '17879502040', 'zp00', '11111111', null, 'fcf7dd', 'Y', '2019-09-28 11:31:28', null);
-INSERT INTO `city_player` VALUES ('112', 'E13D6322D389411C959CD7AC7A2B230F', '17879502041', 'zp01', '11111111', null, 'eb47d7', 'Y', '2019-09-28 11:32:11', null);
 
 -- ----------------------------
 -- Table structure for city_setting
@@ -274,10 +245,6 @@ CREATE TABLE `likes_log` (
 -- ----------------------------
 -- Records of likes_log
 -- ----------------------------
-INSERT INTO `likes_log` VALUES ('1', 'FD826FE2E378445594D23CA84C0C485D', 'FD826FE2E378445594D23CA84C0C485D', '1', '2019-09-18 11:59:08', null);
-INSERT INTO `likes_log` VALUES ('2', 'FD826FE2E378445594D23CA84C0C485D', 'FD826FE2E378445594D23CA84C0C485D', '1', '2019-09-18 11:59:20', null);
-INSERT INTO `likes_log` VALUES ('3', 'FD826FE2E378445594D23CA84C0C485D', 'FD826FE2E378445594D23CA84C0C485D', '1', '2019-09-18 12:02:44', null);
-INSERT INTO `likes_log` VALUES ('4', 'FD826FE2E378445594D23CA84C0C485D', 'FD826FE2E378445594D23CA84C0C485D', '1', '2019-09-19 12:02:54', null);
 
 -- ----------------------------
 -- Table structure for menu
@@ -346,10 +313,6 @@ CREATE TABLE `player_account` (
 -- ----------------------------
 -- Records of player_account
 -- ----------------------------
-INSERT INTO `player_account` VALUES ('888888888', '88888888888888888888888888888888', '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', null, '2018-08-08 08:08:08', null);
-INSERT INTO `player_account` VALUES ('999999999', '99999999999999999999999999999999', '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', null, '2019-09-09 09:09:09', null);
-INSERT INTO `player_account` VALUES ('1000000006', '99B1D351FD5242CD8F73E86A2BBC89A0', '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', 'F3936147126A459497BC6328E25E614C', null, null);
-INSERT INTO `player_account` VALUES ('1000000007', 'E13D6322D389411C959CD7AC7A2B230F', '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', '78D3FAAD3A1944888774DD9E3DF341EB', null, null);
 
 -- ----------------------------
 -- Table structure for player_earning
@@ -389,8 +352,6 @@ CREATE TABLE `player_ext` (
 -- ----------------------------
 -- Records of player_ext
 -- ----------------------------
-INSERT INTO `player_ext` VALUES ('15', '99B1D351FD5242CD8F73E86A2BBC89A0', 'aaaa', 'aaaa', null, null);
-INSERT INTO `player_ext` VALUES ('16', 'E13D6322D389411C959CD7AC7A2B230F', 'aaaa', 'aaaaa', null, null);
 
 -- ----------------------------
 -- Table structure for player_friends
@@ -414,11 +375,6 @@ CREATE TABLE `player_friends` (
 -- ----------------------------
 -- Records of player_friends
 -- ----------------------------
-INSERT INTO `player_friends` VALUES ('1', 'FD826FE2E378445594D23CA84C0C485D', '99B1D351FD5242CD8F73E86A2BBC89A0', '1', null, '0', '2019-09-11 17:04:40', '2019-09-12 09:44:19');
-INSERT INTO `player_friends` VALUES ('2', 'FD826FE2E378445594D23CA84C0C485D', 'A1351FDFF0E344908A6EBBDDAC7D506D', '0', '123', '0', '2019-09-12 17:21:09', null);
-INSERT INTO `player_friends` VALUES ('3', 'FD826FE2E378445594D23CA84C0C485D', 'E13D6322D389411C959CD7AC7A2B230F', '0', null, '0', '2019-09-12 09:57:41', null);
-INSERT INTO `player_friends` VALUES ('6', '99B1D351FD5242CD8F73E86A2BBC89A0', 'E13D6322D389411C959CD7AC7A2B230F', '1', null, '1', '2019-09-28 17:36:01', '2019-09-28 19:39:33');
-INSERT INTO `player_friends` VALUES ('7', 'E13D6322D389411C959CD7AC7A2B230F', '99B1D351FD5242CD8F73E86A2BBC89A0', '0', null, '1', '2019-09-28 18:01:24', null);
 
 -- ----------------------------
 -- Table structure for player_grade
@@ -439,8 +395,6 @@ CREATE TABLE `player_grade` (
 -- ----------------------------
 -- Records of player_grade
 -- ----------------------------
-INSERT INTO `player_grade` VALUES ('1', 'E13D6322D389411C959CD7AC7A2B230F', '1', '0', null, null);
-INSERT INTO `player_grade` VALUES ('2', '99B1D351FD5242CD8F73E86A2BBC89A0', '1', '0', null, null);
 
 -- ----------------------------
 -- Table structure for player_likes
@@ -461,12 +415,6 @@ CREATE TABLE `player_likes` (
 -- ----------------------------
 -- Records of player_likes
 -- ----------------------------
-INSERT INTO `player_likes` VALUES ('1', 'FD826FE2E378445594D23CA84C0C485D', '1', '2', '2019-09-08 15:58:07', null);
-INSERT INTO `player_likes` VALUES ('2', 'FD826FE2E378445594D23CA84C0C485D', '2', '1', '2019-09-09 15:58:23', null);
-INSERT INTO `player_likes` VALUES ('3', 'FD826FE2E378445594D23CA84C0C485D', null, '1', '2019-09-18 11:59:08', null);
-INSERT INTO `player_likes` VALUES ('4', 'FD826FE2E378445594D23CA84C0C485D', null, '1', '2019-09-18 11:59:13', null);
-INSERT INTO `player_likes` VALUES ('5', 'FD826FE2E378445594D23CA84C0C485D', null, '1', '2019-09-18 12:02:44', null);
-INSERT INTO `player_likes` VALUES ('6', 'FD826FE2E378445594D23CA84C0C485D', null, '1', '2019-09-18 12:02:44', null);
 
 -- ----------------------------
 -- Table structure for player_login_log
@@ -488,75 +436,6 @@ CREATE TABLE `player_login_log` (
 -- ----------------------------
 -- Records of player_login_log
 -- ----------------------------
-INSERT INTO `player_login_log` VALUES ('58', 'FD826FE2E378445594D23CA84C0C485D', null, null, 'login', null, '2019-09-20 15:29:30');
-INSERT INTO `player_login_log` VALUES ('59', 'FD826FE2E378445594D23CA84C0C485D', null, null, 'login', null, '2019-09-20 15:52:34');
-INSERT INTO `player_login_log` VALUES ('60', null, null, null, 'login', null, '2019-09-28 10:36:19');
-INSERT INTO `player_login_log` VALUES ('61', null, null, null, 'login', null, '2019-09-28 10:36:59');
-INSERT INTO `player_login_log` VALUES ('62', 'FF27EE74B552460C96905EDE9EE58F61', null, null, 'login', null, '2019-09-28 11:33:10');
-INSERT INTO `player_login_log` VALUES ('63', 'FF27EE74B552460C96905EDE9EE58F61', null, null, 'login', null, '2019-09-28 11:34:31');
-INSERT INTO `player_login_log` VALUES ('64', 'FF27EE74B552460C96905EDE9EE58F61', null, null, 'login', null, '2019-09-28 11:36:01');
-INSERT INTO `player_login_log` VALUES ('65', '99B1D351FD5242CD8F73E86A2BBC89A0', null, null, 'login', null, '2019-09-28 11:38:38');
-INSERT INTO `player_login_log` VALUES ('66', '99B1D351FD5242CD8F73E86A2BBC89A0', null, null, 'login', null, '2019-09-28 11:45:33');
-INSERT INTO `player_login_log` VALUES ('67', null, null, null, 'login', null, '2019-09-28 11:52:39');
-INSERT INTO `player_login_log` VALUES ('68', null, null, null, 'login', null, '2019-09-28 11:52:48');
-INSERT INTO `player_login_log` VALUES ('69', 'E13D6322D389411C959CD7AC7A2B230F', null, null, 'login', null, '2019-09-28 11:53:07');
-INSERT INTO `player_login_log` VALUES ('70', '99B1D351FD5242CD8F73E86A2BBC89A0', null, null, 'login', null, '2019-09-28 11:56:22');
-INSERT INTO `player_login_log` VALUES ('71', 'E13D6322D389411C959CD7AC7A2B230F', null, null, 'login', null, '2019-09-28 11:58:53');
-INSERT INTO `player_login_log` VALUES ('72', 'E13D6322D389411C959CD7AC7A2B230F', null, null, 'login', null, '2019-09-28 11:59:03');
-INSERT INTO `player_login_log` VALUES ('73', 'E13D6322D389411C959CD7AC7A2B230F', null, null, 'login', null, '2019-09-28 12:04:04');
-INSERT INTO `player_login_log` VALUES ('74', '99B1D351FD5242CD8F73E86A2BBC89A0', null, null, 'login', null, '2019-09-28 12:14:39');
-INSERT INTO `player_login_log` VALUES ('75', 'E13D6322D389411C959CD7AC7A2B230F', null, null, 'login', null, '2019-09-28 12:35:11');
-INSERT INTO `player_login_log` VALUES ('76', 'E13D6322D389411C959CD7AC7A2B230F', null, null, 'login', null, '2019-09-28 12:35:18');
-INSERT INTO `player_login_log` VALUES ('77', '99B1D351FD5242CD8F73E86A2BBC89A0', null, null, 'login', null, '2019-09-28 14:01:08');
-INSERT INTO `player_login_log` VALUES ('78', '99B1D351FD5242CD8F73E86A2BBC89A0', null, null, 'login', null, '2019-09-28 14:26:28');
-INSERT INTO `player_login_log` VALUES ('79', '99B1D351FD5242CD8F73E86A2BBC89A0', null, null, 'login', null, '2019-09-28 15:15:08');
-INSERT INTO `player_login_log` VALUES ('80', null, null, null, 'login', null, '2019-09-28 15:38:45');
-INSERT INTO `player_login_log` VALUES ('81', '99B1D351FD5242CD8F73E86A2BBC89A0', null, null, 'login', null, '2019-09-28 15:38:55');
-INSERT INTO `player_login_log` VALUES ('82', '99B1D351FD5242CD8F73E86A2BBC89A0', null, null, 'login', null, '2019-09-28 15:45:50');
-INSERT INTO `player_login_log` VALUES ('83', 'E13D6322D389411C959CD7AC7A2B230F', null, null, 'login', null, '2019-09-28 15:57:54');
-INSERT INTO `player_login_log` VALUES ('84', 'E13D6322D389411C959CD7AC7A2B230F', null, null, 'login', null, '2019-09-28 16:02:15');
-INSERT INTO `player_login_log` VALUES ('85', 'E13D6322D389411C959CD7AC7A2B230F', null, null, 'login', null, '2019-09-28 16:07:09');
-INSERT INTO `player_login_log` VALUES ('86', '99B1D351FD5242CD8F73E86A2BBC89A0', null, null, 'login', null, '2019-09-28 16:17:44');
-INSERT INTO `player_login_log` VALUES ('87', '99B1D351FD5242CD8F73E86A2BBC89A0', null, null, 'login', null, '2019-09-28 16:23:52');
-INSERT INTO `player_login_log` VALUES ('88', 'E13D6322D389411C959CD7AC7A2B230F', null, null, 'login', null, '2019-09-28 16:27:32');
-INSERT INTO `player_login_log` VALUES ('89', 'E13D6322D389411C959CD7AC7A2B230F', null, null, 'login', null, '2019-09-28 16:27:36');
-INSERT INTO `player_login_log` VALUES ('90', '99B1D351FD5242CD8F73E86A2BBC89A0', null, null, 'login', null, '2019-09-28 16:32:35');
-INSERT INTO `player_login_log` VALUES ('91', 'E13D6322D389411C959CD7AC7A2B230F', null, null, 'login', null, '2019-09-28 16:37:16');
-INSERT INTO `player_login_log` VALUES ('92', 'E13D6322D389411C959CD7AC7A2B230F', null, null, 'login', null, '2019-09-28 16:44:42');
-INSERT INTO `player_login_log` VALUES ('93', null, null, null, 'login', null, '2019-09-28 16:48:29');
-INSERT INTO `player_login_log` VALUES ('94', null, null, null, 'login', null, '2019-09-28 16:48:34');
-INSERT INTO `player_login_log` VALUES ('95', 'E13D6322D389411C959CD7AC7A2B230F', null, null, 'login', null, '2019-09-28 16:48:40');
-INSERT INTO `player_login_log` VALUES ('96', 'E13D6322D389411C959CD7AC7A2B230F', null, null, 'login', null, '2019-09-28 16:56:29');
-INSERT INTO `player_login_log` VALUES ('97', 'E13D6322D389411C959CD7AC7A2B230F', null, null, 'login', null, '2019-09-28 16:57:35');
-INSERT INTO `player_login_log` VALUES ('98', 'E13D6322D389411C959CD7AC7A2B230F', null, null, 'login', null, '2019-09-28 17:05:44');
-INSERT INTO `player_login_log` VALUES ('99', 'E13D6322D389411C959CD7AC7A2B230F', null, null, 'login', null, '2019-09-28 17:17:51');
-INSERT INTO `player_login_log` VALUES ('100', 'E13D6322D389411C959CD7AC7A2B230F', null, null, 'login', null, '2019-09-28 17:29:52');
-INSERT INTO `player_login_log` VALUES ('101', 'E13D6322D389411C959CD7AC7A2B230F', null, null, 'login', null, '2019-09-28 17:32:33');
-INSERT INTO `player_login_log` VALUES ('102', 'E13D6322D389411C959CD7AC7A2B230F', null, null, 'login', null, '2019-09-28 17:35:48');
-INSERT INTO `player_login_log` VALUES ('103', 'E13D6322D389411C959CD7AC7A2B230F', null, null, 'login', null, '2019-09-28 17:35:56');
-INSERT INTO `player_login_log` VALUES ('104', 'E13D6322D389411C959CD7AC7A2B230F', null, null, 'login', null, '2019-09-28 18:01:04');
-INSERT INTO `player_login_log` VALUES ('105', '99B1D351FD5242CD8F73E86A2BBC89A0', null, null, 'login', null, '2019-09-28 18:01:46');
-INSERT INTO `player_login_log` VALUES ('106', '99B1D351FD5242CD8F73E86A2BBC89A0', null, null, 'login', null, '2019-09-28 18:27:03');
-INSERT INTO `player_login_log` VALUES ('107', '99B1D351FD5242CD8F73E86A2BBC89A0', null, null, 'login', null, '2019-09-28 18:27:28');
-INSERT INTO `player_login_log` VALUES ('108', 'E13D6322D389411C959CD7AC7A2B230F', null, null, 'login', null, '2019-09-28 18:30:11');
-INSERT INTO `player_login_log` VALUES ('109', '99B1D351FD5242CD8F73E86A2BBC89A0', null, null, 'login', null, '2019-09-28 18:34:08');
-INSERT INTO `player_login_log` VALUES ('110', '99B1D351FD5242CD8F73E86A2BBC89A0', null, null, 'login', null, '2019-09-28 19:07:40');
-INSERT INTO `player_login_log` VALUES ('111', '99B1D351FD5242CD8F73E86A2BBC89A0', null, null, 'login', null, '2019-09-28 19:07:58');
-INSERT INTO `player_login_log` VALUES ('112', '99B1D351FD5242CD8F73E86A2BBC89A0', null, null, 'login', null, '2019-09-28 19:20:44');
-INSERT INTO `player_login_log` VALUES ('113', '99B1D351FD5242CD8F73E86A2BBC89A0', null, null, 'login', null, '2019-09-28 19:28:41');
-INSERT INTO `player_login_log` VALUES ('114', '99B1D351FD5242CD8F73E86A2BBC89A0', null, null, 'login', null, '2019-09-28 19:36:35');
-INSERT INTO `player_login_log` VALUES ('115', '99B1D351FD5242CD8F73E86A2BBC89A0', null, null, 'login', null, '2019-09-28 19:36:42');
-INSERT INTO `player_login_log` VALUES ('116', '99B1D351FD5242CD8F73E86A2BBC89A0', null, null, 'login', null, '2019-09-28 19:39:17');
-INSERT INTO `player_login_log` VALUES ('117', '99B1D351FD5242CD8F73E86A2BBC89A0', null, null, 'login', null, '2019-09-28 19:58:01');
-INSERT INTO `player_login_log` VALUES ('118', '99B1D351FD5242CD8F73E86A2BBC89A0', null, null, 'login', null, '2019-09-28 20:18:42');
-INSERT INTO `player_login_log` VALUES ('119', '99B1D351FD5242CD8F73E86A2BBC89A0', null, null, 'login', null, '2019-09-28 20:21:19');
-INSERT INTO `player_login_log` VALUES ('120', '99B1D351FD5242CD8F73E86A2BBC89A0', null, null, 'login', null, '2019-09-28 20:27:56');
-INSERT INTO `player_login_log` VALUES ('121', '99B1D351FD5242CD8F73E86A2BBC89A0', null, null, 'login', null, '2019-09-28 20:32:16');
-INSERT INTO `player_login_log` VALUES ('122', '99B1D351FD5242CD8F73E86A2BBC89A0', null, null, 'login', null, '2019-09-28 20:33:37');
-INSERT INTO `player_login_log` VALUES ('123', '99B1D351FD5242CD8F73E86A2BBC89A0', null, null, 'login', null, '2019-09-28 20:37:29');
-INSERT INTO `player_login_log` VALUES ('124', '99B1D351FD5242CD8F73E86A2BBC89A0', null, null, 'login', null, '2019-09-28 20:40:40');
-INSERT INTO `player_login_log` VALUES ('125', '99B1D351FD5242CD8F73E86A2BBC89A0', null, null, 'login', null, '2019-09-28 20:51:36');
-INSERT INTO `player_login_log` VALUES ('126', '99B1D351FD5242CD8F73E86A2BBC89A0', null, null, 'login', null, '2019-09-28 20:51:39');
 
 -- ----------------------------
 -- Table structure for player_trade
@@ -718,9 +597,6 @@ CREATE TABLE `user` (
 -- ----------------------------
 INSERT INTO `user` VALUES ('1', 'admin', 'e10adc3949ba59abbe56e057f20f883e', '1', null, '管理员', null, null, null, null, null, null, null, '2017-09-21 10:08:53', null, '2017-09-21 10:08:53', null, '0');
 INSERT INTO `user` VALUES ('2', 'superadmin', 'e10adc3949ba59abbe56e057f20f883e', '1', null, '超级管理员', null, null, null, null, null, null, null, '2017-09-21 10:08:53', null, '2017-09-21 10:08:53', null, '0');
-INSERT INTO `user` VALUES ('3', 'test2', 'e10adc3949ba59abbe56e057f20f883e', '1', null, '测试2', 'test@mail.cn', '13100131000', null, null, null, null, null, '2017-11-05 23:14:22', null, '2017-11-05 23:14:22', null, '0');
-INSERT INTO `user` VALUES ('4', 'test1', 'f4cc399f0effd13c888e310ea2cf5399', '1', null, 'test1', 'tw@mail.com', '13800138000', null, null, null, null, null, '2018-05-26 00:00:45', null, '2018-05-16 23:27:53', '123eee', '0');
-INSERT INTO `user` VALUES ('5', 'test1', 'e358efa489f58062f10dd7316b65649e', '1', null, 'test', '123@main.com', '123', null, null, null, null, null, '2018-05-19 20:13:03', null, '2018-05-19 20:13:19', '123', '0');
 
 -- ----------------------------
 -- Table structure for user_role
@@ -746,7 +622,7 @@ INSERT INTO `user_role` VALUES ('4', '7');
 -- ----------------------------
 -- Table structure for invest_allow
 -- ----------------------------
-DROP TABLE IF EXISTS `invest_allow`;不知git
+DROP TABLE IF EXISTS `invest_allow`;
 CREATE TABLE `invest_allow`  (
   `id` int(11) NOT NULL,
   `player_id` int(11) DEFAULT NULL,
