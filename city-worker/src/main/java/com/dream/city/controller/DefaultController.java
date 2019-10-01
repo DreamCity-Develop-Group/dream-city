@@ -1,12 +1,10 @@
 package com.dream.city.controller;
 
 import com.dream.city.config.WorkItemsConfig;
-import com.dream.city.job.TestJob1;
-import com.dream.city.job.TestJob2;
+import com.dream.city.job.CalculationJob;
+import com.dream.city.job.InvestOrderJob;
 import com.dream.city.service.WorkerService;
-import com.dream.city.service.impl.WorkerServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -30,11 +28,11 @@ public class DefaultController {
     WorkerService workerService;
 
     @RequestMapping("/addJob")
-    public void startJob(String type, String name){
+    public void startSystemJob(String type, String name){
         if ("TestJob1".equals(type)){
-            workerService.addJob(TestJob1.class,"job1"+name,"test","0/5 * * * * ?");
+            workerService.addJob(CalculationJob.class,"job1"+name,"test","0/5 * * * * ?");
         }else {
-            workerService.addJob(TestJob2.class,"job2-"+name,"test","0/5 * * * * ?");
+            workerService.addJob(InvestOrderJob.class,"job2-"+name,"test","0/5 * * * * ?");
         }
     }
 

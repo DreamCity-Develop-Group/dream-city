@@ -46,6 +46,16 @@ public interface TreeMapper {
     @ResultMap("TreeBaseResultMap")
     RelationTree getByPlayer(String playerId);
 
+    /**
+     * 根据关系取玩家
+     *
+     * @param relation
+     * @return
+     */
+    @Select("select * from city_tree where 1=1 and tree_relation=#{relation} limit 1 ")
+    @ResultMap("TreeBaseResultMap")
+    RelationTree getTreeByRef(String relation);
+
     @Select("select * from city_tree where 1=1 and tree_relation like  #{relation}")
     @ResultMap("TreeBaseResultMap")
     List<RelationTree> selectByRelation(String relation);

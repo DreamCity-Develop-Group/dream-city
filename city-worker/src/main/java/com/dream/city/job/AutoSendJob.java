@@ -6,7 +6,12 @@ import org.springframework.scheduling.quartz.QuartzJobBean;
 
 import java.util.Date;
 
-public class TestJob1 extends QuartzJobBean {
+/**
+ * TODO 自动发货
+ *
+ * @author WVv
+ */
+public class AutoSendJob extends QuartzJobBean {
     @Override
     protected void executeInternal(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         System.out.println(new Date() +"   job1 执行");
