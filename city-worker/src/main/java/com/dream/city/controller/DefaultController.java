@@ -1,7 +1,7 @@
 package com.dream.city.controller;
 
 import com.dream.city.config.WorkItemsConfig;
-import com.dream.city.job.CalculationJob;
+import com.dream.city.job.ProfitCalculationJob;
 import com.dream.city.job.InvestOrderJob;
 import com.dream.city.service.WorkerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +30,7 @@ public class DefaultController {
     @RequestMapping("/addJob")
     public void startSystemJob(String type, String name){
         if ("TestJob1".equals(type)){
-            workerService.addJob(CalculationJob.class,"job1"+name,"test","0/5 * * * * ?");
+            workerService.addJob(ProfitCalculationJob.class,"job1"+name,"test","0/5 * * * * ?");
         }else {
             workerService.addJob(InvestOrderJob.class,"job2-"+name,"test","0/5 * * * * ?");
         }
