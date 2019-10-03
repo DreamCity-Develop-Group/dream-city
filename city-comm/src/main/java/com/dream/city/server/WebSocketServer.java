@@ -303,7 +303,7 @@ public class WebSocketServer {
                 if (clientId == null) {
                     item.sendAsyncObject(message);
                 } else if (item.clientId.equals(clientId)) {
-                    //item.sendAsyncObject(message);
+                    item.sendAsyncObject(message);
                     item.sendMessage(JSONObject.toJSONString(message));
                     log.info(">>>>>>"+ JSONObject.toJSONString(message));
                 }
