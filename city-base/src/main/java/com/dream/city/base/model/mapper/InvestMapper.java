@@ -8,8 +8,10 @@ import java.util.List;
 
 /**
  * @author Wvv
+ *
+ *
  */
-@Repository
+@Mapper
 public interface InvestMapper {
 
 

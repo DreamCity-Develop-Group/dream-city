@@ -12,12 +12,15 @@ import java.util.List;
 
 /**
  * @author Wvv
+ *
  */
 @RestController
 @RequestMapping("/message")
 public class MassegeController {
 
     private static final Logger logger = LoggerFactory.getLogger(MassegeController.class);
+
+
     @Autowired
     MessageService messageService;
 

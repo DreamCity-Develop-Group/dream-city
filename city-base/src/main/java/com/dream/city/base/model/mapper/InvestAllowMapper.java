@@ -2,16 +2,14 @@ package com.dream.city.base.model.mapper;
 
 import com.dream.city.base.model.entity.InvestAllow;
 import com.dream.city.base.model.entity.Player;
-import com.dream.city.base.model.entity.PlayerAccount;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
-
-import java.math.BigDecimal;
 
 /**
  * @author wvv
  */
 @Repository
+@Mapper
 public interface InvestAllowMapper {
 
     @Results(id = "BasePlayerResultMap", value = {

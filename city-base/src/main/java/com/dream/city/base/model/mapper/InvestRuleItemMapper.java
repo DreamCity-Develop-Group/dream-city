@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
  * @author wvv
  */
 @Repository
+@Mapper
 public interface InvestRuleItemMapper {
 
     @Results(id = "BasePlayerResultMap", value = {

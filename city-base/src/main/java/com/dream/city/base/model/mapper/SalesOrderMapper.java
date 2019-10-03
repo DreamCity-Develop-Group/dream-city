@@ -12,6 +12,7 @@ import java.util.List;
  * @author wvv
  */
 @Repository
+@Mapper
 public interface SalesOrderMapper {
 
     @Results(id = "BaseSalesOrderResultMap", value = {

@@ -11,6 +11,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author Wvv
+ */
 @Service
 public class FriendsServiceImpl implements FriendsService {
 

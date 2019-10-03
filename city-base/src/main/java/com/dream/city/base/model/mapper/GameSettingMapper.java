@@ -2,9 +2,11 @@ package com.dream.city.base.model.mapper;
 
 
 import com.dream.city.base.model.entity.GameSetting;
+import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
 @Repository
+@Mapper
 public interface GameSettingMapper {
     int deleteByPrimaryKey(Long id);
 

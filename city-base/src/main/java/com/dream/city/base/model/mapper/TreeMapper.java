@@ -10,6 +10,7 @@ import java.util.List;
  * @author wvv
  */
 @Repository
+@Mapper
 public interface TreeMapper {
 
     @ResultMap("TreeBaseResultMap")
