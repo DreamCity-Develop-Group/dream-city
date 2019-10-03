@@ -18,5 +18,9 @@ public class RelationTree {
      * @return
      */
     String sendAuto;
+    /**
+     *   商会等级
+     */
+    Integer treeLevel;
     Timestamp createTime;
 }

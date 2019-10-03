@@ -1,12 +1,14 @@
 package com.dream.city.service.impl;
 
-import com.dream.city.domain.mapper.PlayerLikesMapper;
+import com.dream.city.base.model.mapper.PlayerLikesMapper;
 import com.dream.city.service.PlayerLikesService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * @author Wvv
  */
+@Service
 public class PlayerLikesServiceImpl  implements PlayerLikesService {
     @Autowired
     PlayerLikesMapper playerLikesMapper;

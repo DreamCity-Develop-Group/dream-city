@@ -2,6 +2,7 @@ package com.dream.city.controller;
 
 
 import com.dream.city.base.model.Result;
+import com.dream.city.base.model.entity.CityTree;
 import com.dream.city.base.model.entity.Notice;
 import com.dream.city.service.NoticeService;
 import org.slf4j.Logger;
@@ -25,7 +26,12 @@ public class NoticeController {
     @Autowired
     NoticeService noticeService;
 
+    @RequestMapping("/getMapper")
+    public List<CityTree> testMapper(){
 
+        List<CityTree> trees = noticeService.testMapper();
+        return trees;
+    }
 
     @RequestMapping("/deleteNoticeById/{noticeId}")
     public Result<Integer> deleteNoticeById(@PathVariable("noticeId") Integer noticeId){

@@ -2,19 +2,16 @@ package com.dream.city.service.impl;
 
 import com.dream.city.base.model.CityGlobal;
 import com.dream.city.base.model.Result;
-import com.dream.city.base.model.entity.GameSetting;
-import com.dream.city.base.model.entity.RelationTree;
-import com.dream.city.base.model.entity.User;
-import com.dream.city.domain.mapper.TreeMapper;
-import com.dream.city.domain.mapper.UserMapper;
+import com.dream.city.base.model.entity.*;
+import com.dream.city.base.model.mapper.TreeMapper;
+import com.dream.city.service.InvestRuleService;
+import com.dream.city.service.PlayerAccountService;
 import com.dream.city.service.RelationTreeService;
-import com.dream.city.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -26,8 +23,16 @@ import java.util.Map;
 @Slf4j
 public class RelationTreeServiceImpl implements RelationTreeService {
 
+    private final String PlAYER_FLAG = "PlAYER_LEVEL";
+
     @Autowired
     private TreeMapper treeMapper;
+
+    @Autowired
+    InvestRuleService investRuleService;
+
+    @Autowired
+    PlayerAccountService playerAccountService;
 
     @Override
     public Result save(String parent, String child, String invite) {
@@ -46,8 +51,39 @@ public class RelationTreeServiceImpl implements RelationTreeService {
             tree.setParentId(parent);
             tree.setPlayerId(child);
             tree.setRelation(parentTree.getRelation() + "/" + invite);
+            tree.setTreeLevel(0);
             treeMapper.saveTree(tree);
             log.info("保存树成功");
+
+            /**
+             *TODO
+             * 保存商会成员时根据成员数量变更商会等级
+             *
+             */
+            List<RelationTree> childs = treeMapper.getChilds(parent);
+            int childsSize = childs.size();
+            int stars = 0;
+            RuleItem ruleItem = investRuleService.getRuleItemByFlag(PlAYER_FLAG);
+            List<InvestRule> rules = investRuleService.getRulesByItem(ruleItem.getItemId());
+            for (InvestRule rule : rules){
+                if (rule.getRuleOpt() == "OPT_NUM" && rule.getRuleRate() == childsSize){
+                    stars = rule.getRuleLevel();
+                    break;
+                }
+            }
+            if (stars>0){
+                parentTree.setTreeLevel(stars);
+                Result result = updateTree(parentTree);
+                playerAccountService.updatePlayerLevel(parent,stars);
+
+                if (result.getSuccess()){
+                    log.info("改变商会等级成功!");
+                }else {
+                    updateTree(parentTree);
+                }
+            }
+
+
             return Result.result(true, "成功", 200);
         }
         return Result.result(false, CityGlobal.Constant.TREE_RELATION_EXISTS, 201);

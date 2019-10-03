@@ -2,7 +2,7 @@ package com.dream.city.invest.service.impl;
 
 import com.dream.city.base.model.entity.InvestOrder;
 import com.dream.city.base.model.enu.OrderState;
-import com.dream.city.invest.domain.mapper.InvestOrderMapper;
+import com.dream.city.base.model.mapper.InvestOrderMapper;
 import com.dream.city.invest.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

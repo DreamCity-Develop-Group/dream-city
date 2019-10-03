@@ -3,6 +3,7 @@ package com.dream.city.service.impl;
 import com.dream.city.base.model.entity.RelationTree;
 import com.dream.city.service.RelationTreeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.text.ParseException;
@@ -13,7 +14,7 @@ import java.util.*;
  * @author Wvv
  */
 
-
+@Service
 public class RelationTreeServiceImpl implements RelationTreeService {
 
     @Override

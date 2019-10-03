@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dream.city.base.model.mapper.PlayerEarningMapper" >
+  <resultMap id="BaseResultMap" type="com.dream.city.base.model.entity.PlayerEarning" >
+    <id column="earn_id" property="earnId" jdbcType="INTEGER" />
+    <result column="earn_player_id" property="earnPlayerId" jdbcType="VARCHAR" />
+    <result column="earn_max" property="earnMax" jdbcType="DECIMAL" />
+    <result column="earn_tax" property="earnTax" jdbcType="DECIMAL" />
+    <result column="is_withdrew" property="isWithdrew" jdbcType="CHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    earn_id, earn_player_id, earn_max, earn_tax, is_withdrew,create_time,update_time
+  </sql>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from player_earning
+    where earn_id = #{earnId,jdbcType=INTEGER}
+  </select>
+
+  <select id="getPlayerEarningByPlayerId" resultMap="BaseResultMap" parameterType="com.dream.city.base.model.entity.PlayerEarning" >
+    select
+    <include refid="Base_Column_List" />
+    from player_earning
+    where earn_player_id = #{earnPlayerId,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectPlayerEarningList" resultMap="BaseResultMap" parameterType="com.dream.city.base.model.entity.PlayerEarning" >
+    select
+    <include refid="Base_Column_List" />
+    from player_earning
+    <where>
+        1=1
+        <if test="earnId != null">
+          and earn_id = #{earnId,jdbcType=INTEGER}
+        </if>
+        <if test="earnPlayerId != null">
+          and earn_player_id = #{earnPlayerId,jdbcType=VARCHAR}
+        </if>
+        <if test="earnMax != null">
+          and earn_max = #{earnMax,jdbcType=DECIMAL}
+        </if>
+        <if test="earnTax != null">
+          and earn_tax = #{earnTax,jdbcType=DECIMAL}
+        </if>
+        <if test="isWithdrew != null">
+          and is_withdrew = #{isWithdrew,jdbcType=CHAR}
+        </if>
+
+    </where>
+    order by create_time desc
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from player_earning
+    where earn_id = #{earnId,jdbcType=INTEGER}
+  </delete>
+
+  <insert id="insertSelective" parameterType="com.dream.city.base.model.entity.PlayerEarning" >
+    insert into player_earning
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="earnId != null" >
+        earn_id,
+      </if>
+      <if test="earnPlayerId != null" >
+        earn_player_id,
+      </if>
+      <if test="earnMax != null" >
+        earn_max,
+      </if>
+      <if test="earnTax != null" >
+        earn_tax,
+      </if>
+      <if test="isWithdrew != null" >
+        is_withdrew,
+      </if>
+      create_time
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="earnId != null" >
+        #{earnId,jdbcType=INTEGER},
+      </if>
+      <if test="earnPlayerId != null" >
+        #{earnPlayerId,jdbcType=VARCHAR},
+      </if>
+      <if test="earnMax != null" >
+        #{earnMax,jdbcType=DOUBLE},
+      </if>
+      <if test="earnTax != null" >
+        #{earnTax,jdbcType=DOUBLE},
+      </if>
+      <if test="isWithdrew != null" >
+        #{isWithdrew,jdbcType=CHAR},
+      </if>
+      now()
+    </trim>
+  </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.dream.city.base.model.entity.PlayerEarning" >
+    update player_earning
+    <set >
+      <if test="earnPlayerId != null" >
+        earn_player_id = #{earnPlayerId,jdbcType=VARCHAR},
+      </if>
+      <if test="earnMax != null" >
+        earn_max = #{earnMax,jdbcType=DOUBLE},
+      </if>
+      <if test="earnTax != null" >
+        earn_tax = #{earnTax,jdbcType=DOUBLE},
+      </if>
+      <if test="isWithdrew != null" >
+        is_withdrew = #{isWithdrew,jdbcType=CHAR},
+      </if>
+      update_time = now(),
+    </set>
+    where earn_id = #{earnId,jdbcType=INTEGER}
+  </update>
+
+
+</mapper>

@@ -2,14 +2,14 @@ package com.dream.city.service.impl;
 
 import com.dream.city.base.model.entity.InvestOrder;
 import com.dream.city.base.model.entity.InvestRule;
-import com.dream.city.base.model.entity.RelationTree;
 import com.dream.city.base.model.enu.InvestStatus;
-import com.dream.city.domain.mapper.InvestOrderMapper;
+import com.dream.city.base.model.mapper.InvestOrderMapper;
 import com.dream.city.service.InvestOrderService;
 import com.dream.city.service.InvestService;
 import com.dream.city.service.PlayerLikesService;
 import com.dream.city.service.RelationTreeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
@@ -17,6 +17,7 @@ import java.util.concurrent.atomic.AtomicLong;
 /**
  * @author Wvv
  */
+@Service
 public class InvestOrderServiceImpl implements InvestOrderService {
     @Autowired
     InvestOrderMapper investOrderMapper;
@@ -38,8 +39,7 @@ public class InvestOrderServiceImpl implements InvestOrderService {
      * @return
      */
     @Override
-    public Map<String, List<InvestOrder>> getInvestOrdersByCurrentDay(Integer investId, List<InvestRule> rules) {
-        int[] states = new int[]{1, 2, 3};
+    public Map<String, List<InvestOrder>> getInvestOrdersByCurrentDay(Integer investId, List<InvestRule> rules,int[] states) {
         List<InvestOrder> investOrders = investOrderMapper.getInvestOrdersByCurrentDay(investId, InvestStatus.SUBSCRIBED.getStatus());
         //final List<InvestOrder>[] investOrdersSucess = new List[]{new ArrayList<>()};
         final Map<String, List<InvestOrder>> investOrdersSucess = new Hashtable<>();
@@ -70,13 +70,13 @@ public class InvestOrderServiceImpl implements InvestOrderService {
                             investOrdersSucess.put(rule.getRuleFlag(), likesOrders);
                             investOrders.removeAll(likesOrders);
                             break;
-                        case "INVEST_LONG"://投资时间最长
+                        case "INVEST_LONG"://投资时间最长10%
                             long longs = Long.parseLong(total * rule.getRuleRate() + "");
                             List<InvestOrder> longsOrders = getInvestLongOrders(investOrders, longs);
                             investOrdersSucess.put(rule.getRuleFlag(), longsOrders);
                             investOrders.removeAll(longsOrders);
                             break;
-                        case "ORDER_OTHERS"://其他
+                        case "ORDER_OTHERS"://其他 100%
                             long other = Long.parseLong(total * rule.getRuleRate() + "");
                             List<InvestOrder> othersOrders = getOtherOrders(investOrders, other);
                             if (othersOrders != null) {
@@ -89,7 +89,7 @@ public class InvestOrderServiceImpl implements InvestOrderService {
 
                     }
                     break;
-                case "OPT_TOP":
+                case "OPT_TOP"://新增玩家 前20
                     switch (rule.getRuleFlag()) {
                         case "TOP_MEMBERS":
                             long top = Long.parseLong(total * rule.getRuleRate() + "");
@@ -200,6 +200,7 @@ public class InvestOrderServiceImpl implements InvestOrderService {
         investOrderMapper.updateOrder(order);
     }
 
+
     /**
      * 获取随机
      *
@@ -237,5 +238,35 @@ public class InvestOrderServiceImpl implements InvestOrderService {
         }));
 
         return orders.subList(0, (int) top);
+    }
+
+
+
+    /**
+     * 找出对应时间对应状态的订单数据
+     *
+     * @param inId
+     * @param start
+     * @param end
+     * @return
+     */
+    @Override
+    public List<InvestOrder> getInvestOrdersAmountByDayInterval(Integer inId, String start, String end) {
+        int state = 2;
+        List<InvestOrder> orders = investOrderMapper.getInvestOrdersAmountByDayInterval(inId, state,start, end);
+        return orders;
+    }
+
+    @Override
+    public List<InvestOrder> getInvestOrdersByCurrent(Integer inId, int[] states,int start,int end) {
+        List<InvestOrder> orders = investOrderMapper.getInvestOrdersByCurrent(inId,states,start,end);
+
+        return null;
+    }
+
+    @Override
+    public int getInvestOrdersSum(Integer investId, int[] states) {
+
+        return investOrderMapper.getInvestOrdersSum(investId,states);
     }
 }

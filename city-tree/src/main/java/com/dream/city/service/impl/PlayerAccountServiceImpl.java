@@ -3,8 +3,8 @@ package com.dream.city.service.impl;
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.Player;
 import com.dream.city.base.model.entity.PlayerAccount;
-import com.dream.city.domain.mapper.PlayerAccountMapper;
-import com.dream.city.domain.mapper.PlayerMapper;
+import com.dream.city.base.model.mapper.PlayerAccountMapper;
+import com.dream.city.base.model.mapper.PlayerMapper;
 import com.dream.city.service.PlayerAccountService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,6 +56,11 @@ public class PlayerAccountServiceImpl implements PlayerAccountService {
     @Override
     public void createAccount(String playerId,String address){
          playerAccountMapper.createAccount(playerId,address);
+    }
+
+    @Override
+    public void updatePlayerLevel(String playerId,Integer level){
+        playerMapper.updatePlayerLevel(playerId,level);
     }
 
 

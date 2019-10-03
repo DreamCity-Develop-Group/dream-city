@@ -2,7 +2,7 @@ package com.dream.city.property.service.impl;
 
 
 import com.dream.city.base.model.entity.CityInvest;
-import com.dream.city.property.domain.mapper.CityInvestMapper;
+import com.dream.city.base.model.mapper.CityInvestMapper;
 import com.dream.city.property.service.InvestService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;

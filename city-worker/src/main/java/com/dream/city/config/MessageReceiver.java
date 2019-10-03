@@ -80,7 +80,7 @@ public class MessageReceiver {
          * 2、一旦任务完成相应的业务逻辑，检测客户端连接，发送即时通知到客户端
          * 3、生成相应的数据表通知，等待用户查收
          */
-        workerService.addJob();
+        //workerService.addJob();
 
 
 

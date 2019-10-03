@@ -2,14 +2,13 @@ package com.dream.city.service.impl;
 
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.AuthCode;
-import com.dream.city.domain.mapper.AuthCodeMapper;
+import com.dream.city.base.model.mapper.AuthCodeMapper;
 import com.dream.city.service.CodeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.sql.Timestamp;
-import java.util.Date;
 
 /**
  * @author Wvv

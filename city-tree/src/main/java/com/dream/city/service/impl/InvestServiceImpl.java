@@ -2,7 +2,7 @@ package com.dream.city.service.impl;
 
 import com.dream.city.base.model.entity.InvestAllow;
 import com.dream.city.base.model.entity.RelationTree;
-import com.dream.city.domain.mapper.InvestAllowMapper;
+import com.dream.city.base.model.mapper.InvestAllowMapper;
 import com.dream.city.service.InvestAllowService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

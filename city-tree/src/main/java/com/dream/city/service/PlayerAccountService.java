@@ -19,4 +19,6 @@ public interface PlayerAccountService {
     PlayerAccount getPlayerAccount(String playerId);
 
     void createAccount(String playerId,String address);
+
+    void updatePlayerLevel(String playerId,Integer level);
 }

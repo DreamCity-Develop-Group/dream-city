@@ -64,7 +64,8 @@ public class InvestOrderJob extends QuartzJobBean {
 
         invests.forEach(invest->{
             //直接找出合格的投资订单，修改相应的状态
-            Map<String, List<InvestOrder>> orders = orderService.getInvestOrdersByCurrentDay(invest.getInId(),rules);
+            int[] states = new int[]{InvestStatus.MANAGEMENT.getStatus(),InvestStatus.EXTRACT.getStatus(),InvestStatus.FINISHED.getStatus()};
+            Map<String, List<InvestOrder>> orders = orderService.getInvestOrdersByCurrentDay(invest.getInId(),rules,states);
             List<InvestOrder> orderList = new ArrayList<>();
             orders.forEach((flag,order)->{
                 orderList.addAll(order);

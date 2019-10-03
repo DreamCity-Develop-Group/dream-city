@@ -3,8 +3,8 @@ package com.dream.city.player.service.impl;
 import com.dream.city.base.model.entity.PlayerLikes;
 import com.dream.city.base.model.entity.PlayerLikesLog;
 import com.dream.city.base.model.req.PlayerLikesReq;
-import com.dream.city.player.domain.mapper.PlayerLikesLogMapper;
-import com.dream.city.player.domain.mapper.PlayerLikesMapper;
+import com.dream.city.base.model.mapper.PlayerLikesLogMapper;
+import com.dream.city.base.model.mapper.PlayerLikesMapper;
 import com.dream.city.player.service.LikesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -84,7 +84,7 @@ public class LikesServiceImpl implements LikesService {
 
     private int getLikeCount(Integer likedId){
         PlayerLikes likes = playerLikesMapper.selectByPrimaryKey(likedId);
-        Integer count =likes.getLikedInvestTotal();
+        Integer count =likes.getLikedGetTotal();
         return count == null?0:count;
     }
 

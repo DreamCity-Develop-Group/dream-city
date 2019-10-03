@@ -55,7 +55,10 @@ public class InvestController {
             Map<Integer,RelationTree> parents = relationTreeService.getParents(playerId);
             BigDecimal rateDirection = investService.getRateDirection();
             BigDecimal rateInterpolation =investService.getRateInterpolation();
-            //分配USDT印记收益
+            /**
+             *TODO
+             * 分配USDT印记收益
+             */
 
             parents.forEach((key,value)->{
                 if (key>1){

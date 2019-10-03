@@ -1,9 +1,6 @@
 package com.dream.city.service;
 
 import com.dream.city.base.model.entity.User;
-import com.dream.city.domain.mapper.UserMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 

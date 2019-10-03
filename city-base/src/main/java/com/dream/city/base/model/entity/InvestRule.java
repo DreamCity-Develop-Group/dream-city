@@ -14,6 +14,7 @@ public class InvestRule implements Serializable {
     /**
      *
      */
+    private String ruleOptPre;
     private String ruleOpt;
 
     /** 规则名称 */
@@ -26,6 +27,7 @@ public class InvestRule implements Serializable {
     private Integer ruleItem;
 
     /**  */
+    private Double ruleRatePre;
     private Double ruleRate;
 
     /** 规则优先级别 */

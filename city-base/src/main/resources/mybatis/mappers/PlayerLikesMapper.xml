@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dream.city.base.model.mapper.PlayerLikesMapper" >
+  <resultMap id="BaseResultMap" type="com.dream.city.base.model.entity.PlayerLikes" >
+    <id column="liked_id" property="likedId" jdbcType="INTEGER" />
+    <result column="liked_player_id" property="likedPlayerId" jdbcType="VARCHAR" />
+    <result column="liked_invest_id" property="likedInvestId" jdbcType="INTEGER" />
+    <result column="liked_invest_total" property="likedInvestTotal" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    liked_id, liked_player_id, liked_invest_id, liked_invest_total, create_time, update_time
+  </sql>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from player_likes
+    where liked_id = #{likedId,jdbcType=INTEGER}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from player_likes
+    where liked_id = #{likedId,jdbcType=INTEGER}
+  </delete>
+
+  <insert id="insertSelective" parameterType="com.dream.city.base.model.req.PlayerLikesReq" >
+    insert into player_likes
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="likedId != null" >
+        liked_id,
+      </if>
+      <if test="likedPlayerId != null" >
+        liked_player_id,
+      </if>
+      <if test="likedInvestId != null" >
+        liked_invest_id,
+      </if>
+      <if test="likedInvestTotal != null" >
+        liked_invest_total,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="likedId != null" >
+        #{likedId,jdbcType=INTEGER},
+      </if>
+      <if test="likedPlayerId != null" >
+        #{likedPlayerId,jdbcType=VARCHAR},
+      </if>
+      <if test="likedInvestId != null" >
+        #{likedInvestId,jdbcType=INTEGER},
+      </if>
+      <if test="likedInvestTotal != null" >
+        #{likedInvestTotal,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.dream.city.base.model.req.PlayerLikesReq" >
+    update player_likes
+    <set >
+      <if test="likedPlayerId != null" >
+        liked_player_id = #{likedPlayerId,jdbcType=VARCHAR},
+      </if>
+      <if test="likedInvestId != null" >
+        liked_invest_id = #{likedInvestId,jdbcType=INTEGER},
+      </if>
+      <if test="likedInvestTotal != null" >
+        liked_invest_total = #{likedInvestTotal,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where liked_id = #{likedId,jdbcType=INTEGER}
+  </update>
+
+  <select id="playerLikesCount" resultType="INTEGER" parameterType="com.dream.city.base.model.req.PlayerLikesReq" >
+    select sum(liked_invest_total)
+    from player_likes
+    where liked_player_id = #{likedPlayerId,jdbcType=VARCHAR}
+  </select>
+
+
+  <select id="playerLikesList" resultMap="BaseResultMap" parameterType="com.dream.city.base.model.req.PlayerLikesReq" >
+    select <include refid="Base_Column_List" />
+    from player_likes
+    where liked_player_id = #{likedPlayerId,jdbcType=VARCHAR}
+  </select>
+
+</mapper>
