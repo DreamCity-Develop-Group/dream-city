@@ -5,6 +5,7 @@ import com.dream.city.base.model.req.PageReq;
 import com.dream.city.base.model.entity.Friends;
 
 /**
+ * @author Wvv
  * 好友
  */
 public interface FriendsService {

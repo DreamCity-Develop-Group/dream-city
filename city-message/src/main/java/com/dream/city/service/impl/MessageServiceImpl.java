@@ -1,13 +1,16 @@
 package com.dream.city.service.impl;
 
 import com.dream.city.base.model.entity.CityMessage;
-import com.dream.city.domain.mapper.MessageMapper;
+import com.dream.city.base.model.mapper.MessageMapper;
 import com.dream.city.service.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * @author Wvv
+ */
 @Service
 public class MessageServiceImpl implements MessageService {
 

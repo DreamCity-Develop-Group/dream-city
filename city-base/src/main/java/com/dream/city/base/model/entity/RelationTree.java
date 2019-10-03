@@ -2,6 +2,8 @@ package com.dream.city.base.model.entity;
 
 import lombok.Data;
 
+import java.sql.Timestamp;
+
 /**
  * @author Wvv
  */
@@ -16,4 +18,9 @@ public class RelationTree {
      * @return
      */
     String sendAuto;
+    /**
+     *   商会等级
+     */
+    Integer treeLevel;
+    Timestamp createTime;
 }

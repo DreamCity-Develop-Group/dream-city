@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dream.city.base.model.mapper.LikesMapper">
+  <resultMap id="LikeBaseResultMap" type="com.dream.city.base.model.entity.Likes">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="player_id" jdbcType="VARCHAR" property="playerId" />
+    <result column="likes" jdbcType="INTEGER" property="likes" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+  </resultMap>
+  <sql id="Like_Base_Column_List">
+    id, player_id, likes, create_date
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="LikeBaseResultMap">
+    select 
+    <include refid="Like_Base_Column_List" />
+    from player_likes
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from player_likes
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.dream.city.base.model.entity.Likes">
+    insert into player_likes (id, player_id, likes,
+      create_date)
+    values (#{id,jdbcType=BIGINT}, #{playerId,jdbcType=VARCHAR}, #{likes,jdbcType=INTEGER}, 
+      #{createDate,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.dream.city.base.model.entity.Likes">
+    insert into player_likes
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="playerId != null">
+        player_id,
+      </if>
+      <if test="likes != null">
+        likes,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="playerId != null">
+        #{playerId,jdbcType=VARCHAR},
+      </if>
+      <if test="likes != null">
+        #{likes,jdbcType=INTEGER},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.dream.city.base.model.entity.Likes">
+    update player_likes
+    <set>
+      <if test="playerId != null">
+        player_id = #{playerId,jdbcType=VARCHAR},
+      </if>
+      <if test="likes != null">
+        likes = #{likes,jdbcType=INTEGER},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.dream.city.base.model.entity.Likes">
+    update player_likes
+    set player_id = #{playerId,jdbcType=VARCHAR},
+      likes = #{likes,jdbcType=INTEGER},
+      create_date = #{createDate,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+</mapper>

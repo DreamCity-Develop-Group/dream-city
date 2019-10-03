@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dream.city.base.model.mapper.PlayerMapper">
+  <resultMap id="BaseResultMap" type="com.dream.city.base.model.entity.Player">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="player_id" jdbcType="VARCHAR" property="playerId" />
+    <result column="player_name" jdbcType="VARCHAR" property="playerName" />
+    <result column="player_nick" jdbcType="VARCHAR" property="playerNick" />
+    <result column="player_pass" jdbcType="VARCHAR" property="playerPass" />
+    <result column="player_trade_pass" jdbcType="VARCHAR" property="playerTradePass" />
+    <result column="player_invite" jdbcType="VARCHAR" property="playerInvite" />
+    <result column="is_valid" jdbcType="CHAR" property="isValid" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, player_id, player_name, player_nick, player_pass, player_trade_pass, player_invite,
+    create_time, update_time,is_valid
+  </sql>
+
+  <select id="getPlayerById" parameterType="com.dream.city.base.model.entity.Player" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from city_player p
+    where 1=1
+    <if test="playerId != null and playerId != ''">
+      and p.player_id = #{playerId,jdbcType=VARCHAR} 
+    </if>
+    <if test="playerName != null" >
+      and p.player_name = #{playerName,jdbcType=VARCHAR}
+    </if>
+    <if test="playerNick != null" >
+      and p.player_nick = #{playerNick,jdbcType=VARCHAR}
+    </if>
+    limit 1
+  </select>
+
+  <select id="getPlayerByInvite" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from city_player
+    where 1=1
+    <if test="invite != null and invite != ''">
+      and player_invite = #{invite,jdbcType=VARCHAR}
+    </if>
+    limit 1
+  </select>
+
+  <select id="getPlayerByAccount" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from city_player
+    where 1=1
+    <if test="account != null and account != ''">
+      and player_name = #{account,jdbcType=VARCHAR}
+    </if>
+    limit 1
+  </select>
+
+  <select id="getPlayers" parameterType="com.dream.city.base.model.req.PageReq" resultType="java.util.Map">
+    SELECT p.player_id playerId,p.player_name username,p.player_nick nick,p.create_time createTime,
+        (SELECT e1.friendlink FROM player_ext e1 WHERE e1.player_id = p.player_id) playerLink,
+        (SELECT e2.imgurl FROM player_ext e2 WHERE e2.player_id = p.player_id) imgurl,
+        (SELECT g1.grade FROM player_grade g1 WHERE g1.player_id = p.player_id) grade,
+        (SELECT g2.integral FROM player_grade g2 WHERE g2.player_id = p.player_id) integral ,f.agree
+    from city_player p LEFT JOIN player_friends f ON p.player_id=f.friend_id
+    <where> (f.agree IS NULL OR f.agree = 0)
+      <if test="condition.playerId != null and condition.playerId != ''">
+        AND p.player_id != #{condition.playerId}
+      </if>
+      <if test="condition.username != null and condition.username != ''">
+        AND p.player_name = #{condition.username}
+      </if>
+      <if test="condition.nick != null and condition.nick != ''">
+        AND p.player_nick = #{condition.nick}
+      </if>
+    </where>
+    GROUP BY p.player_id ORDER BY p.create_time DESC limit ${start},${pageSize}
+  </select>
+  <select id="getPlayersCount" parameterType="com.dream.city.base.model.req.PageReq" resultType="java.lang.Integer">
+    SELECT COUNT(a.player_id) FROM (SELECT p.player_id
+        from city_player p LEFT JOIN player_friends f ON p.player_id=f.friend_id
+        <where> (f.agree IS NULL OR f.agree = 0)
+          <if test="condition.playerId != null and condition.playerId != ''">
+            AND p.player_id != #{condition.playerId}
+          </if>
+          <if test="condition.username != null and condition.username != ''">
+            AND p.player_name = #{condition.username}
+          </if>
+          <if test="condition.nick != null and condition.nick != ''">
+            AND p.player_nick = #{condition.nick}
+          </if>
+        </where>
+        GROUP BY p.player_id
+    ) a
+  </select>
+
+  <select id="getSquareFriends" parameterType="com.dream.city.base.model.req.PageReq" resultType="java.util.Map">
+    SELECT p.player_id playerId,p.player_name username,p.player_nick nick,p.create_time createTime,
+    e.friendlink playerLink,e.imgurl,g.grade,g.integral
+    from city_player p INNER JOIN player_ext e ON p.player_id=e.player_id
+    INNER JOIN player_grade g ON p.player_id=g.player_id
+    <where>
+      p.player_id=e.player_id and p.player_id=g.player_id
+      <if test="condition.nick != null and condition.nick != ''">
+        and p.player_nick = #{condition.nick}
+      </if>
+      <if test="condition.nick != null and condition.nick != ''">
+        or p.player_name = #{condition.nick}
+      </if>
+    </where>
+    ORDER BY p.create_time DESC limit ${start},${pageSize}
+  </select>
+  <select id="getSquareFriendsCount" parameterType="com.dream.city.base.model.req.PageReq" resultType="java.lang.Integer">
+    SELECT COUNT(p.player_id)
+    from city_player p INNER JOIN player_ext e ON p.player_id=e.player_id
+    INNER JOIN player_grade g ON p.player_id=g.player_id
+    <where>
+      p.player_id=e.player_id and p.player_id=g.player_id
+      <if test="condition.nick != null and condition.nick != ''">
+        and p.player_nick = #{condition.nick}
+      </if>
+      <if test="condition.nick != null and condition.nick != ''">
+        or p.player_name = #{condition.nick}
+      </if>
+    </where>
+  </select>
+
+  <delete id="deleteByPlayerId" parameterType="java.lang.Long">
+    delete from city_player
+    where player_id = #{playerId,jdbcType=BIGINT}
+  </delete>
+
+  <insert id="insertSelective" parameterType="com.dream.city.base.model.entity.Player" >
+    insert into city_player
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="playerId != null" >
+        player_id,
+      </if>
+      <if test="playerName != null" >
+        player_name,
+      </if>
+      <if test="playerNick != null" >
+        player_nick,
+      </if>
+      <if test="playerPass != null" >
+        player_pass,
+      </if>
+      <if test="playerTradePass != null" >
+        player_trade_pass,
+      </if>
+      <if test="playerInvite != null" >
+        player_invite,
+      </if>
+      create_time,
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="playerId != null" >
+        #{playerId,jdbcType=VARCHAR},
+      </if>
+      <if test="playerName != null" >
+        #{playerName,jdbcType=VARCHAR},
+      </if>
+      <if test="playerNick != null" >
+        #{playerNick,jdbcType=VARCHAR},
+      </if>
+      <if test="playerPass != null" >
+        #{playerPass,jdbcType=VARCHAR},
+      </if>
+      <if test="playerTradePass != null" >
+        #{playerTradePass,jdbcType=VARCHAR},
+      </if>
+      <if test="playerInvite != null" >
+        #{playerInvite,jdbcType=VARCHAR},
+      </if>
+       now(),
+    </trim>
+  </insert>
+
+  <update id="updateByPlayerId" parameterType="com.dream.city.base.model.entity.Player">
+    update city_player
+    <set >
+      <if test="playerName != null" >
+        player_name = #{playerName,jdbcType=VARCHAR},
+      </if>
+      <if test="playerNick != null" >
+        player_nick = #{playerNick,jdbcType=VARCHAR},
+      </if>
+      <if test="playerPass != null" >
+        player_pass = #{playerPass,jdbcType=VARCHAR},
+      </if>
+      <if test="playerTradePass != null" >
+        player_trade_pass = #{playerTradePass,jdbcType=VARCHAR},
+      </if>
+      <if test="isValid != null" >
+        is_valid = #{isValid,jdbcType=CHAR},
+      </if>
+      update_time = now(),
+    </set>
+    where player_id = #{playerId,jdbcType=VARCHAR}
+  </update>
+
+</mapper>

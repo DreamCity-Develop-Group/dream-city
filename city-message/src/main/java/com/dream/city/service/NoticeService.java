@@ -1,10 +1,14 @@
 package com.dream.city.service;
 
 
+import com.dream.city.base.model.entity.CityTree;
 import com.dream.city.base.model.entity.Notice;
 
 import java.util.List;
 
+/**
+ * @author Wvv
+ */
 public interface NoticeService {
 
     int deleteNoticeById(Integer noticeId);
@@ -16,5 +20,7 @@ public interface NoticeService {
     List<Notice> getNoticeList(Notice record);
 
     int updateNoticeById(Notice record);
+
+    List<CityTree> testMapper();
 
 }

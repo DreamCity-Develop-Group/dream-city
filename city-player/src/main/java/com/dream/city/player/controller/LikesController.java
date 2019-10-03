@@ -6,7 +6,7 @@ import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.PlayerLikes;
 import com.dream.city.base.model.req.PlayerLikesReq;
 import com.dream.city.base.utils.DataUtils;
-import com.dream.city.player.domain.mapper.PlayerLikesLogMapper;
+import com.dream.city.base.model.mapper.PlayerLikesLogMapper;
 import com.dream.city.player.service.LikesService;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;

@@ -24,7 +24,7 @@ CREATE TABLE `city_auth_code` (
   `code` varchar(12) CHARACTER SET utf8 NOT NULL COMMENT '认证码',
   `phone` varchar(12) CHARACTER SET utf8 DEFAULT NULL,
   `user_id` varchar(64) CHARACTER SET utf8 DEFAULT NULL COMMENT '用户id',
-  `createtime` datetime DEFAULT NULL,
+  `create_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `index_code` (`code`),
   KEY `index_phone` (`phone`),
@@ -128,9 +128,6 @@ CREATE TABLE `city_player` (
 -- ----------------------------
 -- Records of city_player
 -- ----------------------------
-INSERT INTO `city_player` VALUES ('100', 'FD826FE2E378445594D23CA84C0C485D', '123', '123', '123', null, '', '1', '2019-09-12 02:37:37', null);
-INSERT INTO `city_player` VALUES ('111', '99B1D351FD5242CD8F73E86A2BBC89A0', '17879502040', 'zp00', '11111111', null, 'fcf7dd', 'Y', '2019-09-28 11:31:28', null);
-INSERT INTO `city_player` VALUES ('112', 'E13D6322D389411C959CD7AC7A2B230F', '17879502041', 'zp01', '11111111', null, 'eb47d7', 'Y', '2019-09-28 11:32:11', null);
 
 -- ----------------------------
 -- Table structure for city_setting
@@ -316,10 +313,6 @@ CREATE TABLE `player_account` (
 -- ----------------------------
 -- Records of player_account
 -- ----------------------------
-INSERT INTO `player_account` VALUES ('888888888', '88888888888888888888888888888888', '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', null, '2018-08-08 08:08:08', null);
-INSERT INTO `player_account` VALUES ('999999999', '99999999999999999999999999999999', '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', null, '2019-09-09 09:09:09', null);
-INSERT INTO `player_account` VALUES ('1000000006', '99B1D351FD5242CD8F73E86A2BBC89A0', '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', 'F3936147126A459497BC6328E25E614C', null, null);
-INSERT INTO `player_account` VALUES ('1000000007', 'E13D6322D389411C959CD7AC7A2B230F', '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', '78D3FAAD3A1944888774DD9E3DF341EB', null, null);
 
 -- ----------------------------
 -- Table structure for player_earning
@@ -359,8 +352,6 @@ CREATE TABLE `player_ext` (
 -- ----------------------------
 -- Records of player_ext
 -- ----------------------------
-INSERT INTO `player_ext` VALUES ('15', '99B1D351FD5242CD8F73E86A2BBC89A0', 'aaaa', 'aaaa', null, null);
-INSERT INTO `player_ext` VALUES ('16', 'E13D6322D389411C959CD7AC7A2B230F', 'aaaa', 'aaaaa', null, null);
 
 -- ----------------------------
 -- Table structure for player_friends
@@ -404,8 +395,6 @@ CREATE TABLE `player_grade` (
 -- ----------------------------
 -- Records of player_grade
 -- ----------------------------
-INSERT INTO `player_grade` VALUES ('1', 'E13D6322D389411C959CD7AC7A2B230F', '1', '0', null, null);
-INSERT INTO `player_grade` VALUES ('2', '99B1D351FD5242CD8F73E86A2BBC89A0', '1', '0', null, null);
 
 -- ----------------------------
 -- Table structure for player_likes
@@ -608,9 +597,6 @@ CREATE TABLE `user` (
 -- ----------------------------
 INSERT INTO `user` VALUES ('1', 'admin', 'e10adc3949ba59abbe56e057f20f883e', '1', null, '管理员', null, null, null, null, null, null, null, '2017-09-21 10:08:53', null, '2017-09-21 10:08:53', null, '0');
 INSERT INTO `user` VALUES ('2', 'superadmin', 'e10adc3949ba59abbe56e057f20f883e', '1', null, '超级管理员', null, null, null, null, null, null, null, '2017-09-21 10:08:53', null, '2017-09-21 10:08:53', null, '0');
-INSERT INTO `user` VALUES ('3', 'test2', 'e10adc3949ba59abbe56e057f20f883e', '1', null, '测试2', 'test@mail.cn', '13100131000', null, null, null, null, null, '2017-11-05 23:14:22', null, '2017-11-05 23:14:22', null, '0');
-INSERT INTO `user` VALUES ('4', 'test1', 'f4cc399f0effd13c888e310ea2cf5399', '1', null, 'test1', 'tw@mail.com', '13800138000', null, null, null, null, null, '2018-05-26 00:00:45', null, '2018-05-16 23:27:53', '123eee', '0');
-INSERT INTO `user` VALUES ('5', 'test1', 'e358efa489f58062f10dd7316b65649e', '1', null, 'test', '123@main.com', '123', null, null, null, null, null, '2018-05-19 20:13:03', null, '2018-05-19 20:13:19', '123', '0');
 
 -- ----------------------------
 -- Table structure for user_role
@@ -636,7 +622,7 @@ INSERT INTO `user_role` VALUES ('4', '7');
 -- ----------------------------
 -- Table structure for invest_allow
 -- ----------------------------
-DROP TABLE IF EXISTS `invest_allow`;不知git
+DROP TABLE IF EXISTS `invest_allow`;
 CREATE TABLE `invest_allow`  (
   `id` int(11) NOT NULL,
   `player_id` int(11) DEFAULT NULL,

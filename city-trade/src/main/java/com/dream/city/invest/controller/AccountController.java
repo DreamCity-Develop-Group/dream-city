@@ -74,6 +74,31 @@ public class AccountController {
     }
 
     /**
+     * 获取平台账户
+     * @param record
+     * @return
+     */
+    /*@RequestMapping("/getPlatformAccounts")
+    public Result<PlayerAccount> getPlayerAccount(@RequestBody PlayerAccountReq record){
+        logger.info("获取平台账户，{}", record);
+        String desc = "获取平台账户成功";
+        PlayerAccount account = null;
+        boolean b = Boolean.TRUE;
+        try {
+            List<PlayerAccount> accountList = accountService.getPlatformAccounts(record);
+            if (!CollectionUtils.isEmpty(accountList)){
+                account = accountList.get(0);
+            }
+        }catch (Exception e){
+            desc = "获取玩平台户失败";
+            b = Boolean.FALSE;
+            logger.error("获取平台账户异常",e);
+        }
+        Result<PlayerAccount> result = new Result<>(b,desc,account);
+        return result;
+    }*/
+
+    /**
      * 玩家账户列表
      * @param record
      * @return
@@ -119,30 +144,7 @@ public class AccountController {
     }
 
 
-    /**
-     * 获取平台账户
-     * @param record
-     * @return
-     */
-    @RequestMapping("/getPlayerAccount")
-    public Result<PlayerAccount> getPlayerAccount(@RequestBody PlayerAccountReq record){
-        logger.info("获取平台账户，{}", record);
-        String desc = "获取平台账户成功";
-        PlayerAccount account = null;
-        boolean b = Boolean.TRUE;
-        try {
-            List<PlayerAccount> accountList = accountService.getPlatformAccounts(record);
-            if (!CollectionUtils.isEmpty(accountList)){
-                account = accountList.get(0);
-            }
-        }catch (Exception e){
-            desc = "获取玩平台户失败";
-            b = Boolean.FALSE;
-            logger.error("获取平台账户异常",e);
-        }
-        Result<PlayerAccount> result = new Result<>(b,desc,account);
-        return result;
-    }
+
 
     @RequestMapping("/getByPlayerId")
     public PlayerAccount getByPlayerId(@RequestParam("playerId")String playerId){

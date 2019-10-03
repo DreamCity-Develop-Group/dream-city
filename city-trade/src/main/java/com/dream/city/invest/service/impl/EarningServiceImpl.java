@@ -1,7 +1,7 @@
 package com.dream.city.invest.service.impl;
 
 import com.dream.city.base.model.entity.PlayerEarning;
-import com.dream.city.invest.domain.mapper.PlayerEarningMapper;
+import com.dream.city.base.model.mapper.PlayerEarningMapper;
 import com.dream.city.invest.service.EarningService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

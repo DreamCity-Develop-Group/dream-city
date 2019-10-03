@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dream.city.base.model.mapper.CityTreeMapper" >
+  <resultMap id="BaseResultMap" type="com.dream.city.base.model.entity.CityTree" >
+    <id column="tree_id" property="treeId" jdbcType="INTEGER" />
+    <result column="tree_parent_id" property="treeParentId" jdbcType="INTEGER" />
+    <result column="tree_player_id" property="treePlayerId" jdbcType="INTEGER" />
+    <result column="tree_relation" property="treeRelation" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    tree_id, tree_parent_id, tree_player_id, tree_relation
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from city_tree
+    where tree_id = #{treeId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from city_tree
+    where tree_id = #{treeId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.dream.city.base.model.entity.CityTree" >
+    insert into city_tree (tree_id, tree_parent_id, tree_player_id, 
+      tree_relation)
+    values (#{treeId,jdbcType=INTEGER}, #{treeParentId,jdbcType=INTEGER}, #{treePlayerId,jdbcType=INTEGER}, 
+      #{treeRelation,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.dream.city.base.model.entity.CityTree" >
+    insert into city_tree
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="treeId != null" >
+        tree_id,
+      </if>
+      <if test="treeParentId != null" >
+        tree_parent_id,
+      </if>
+      <if test="treePlayerId != null" >
+        tree_player_id,
+      </if>
+      <if test="treeRelation != null" >
+        tree_relation,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="treeId != null" >
+        #{treeId,jdbcType=INTEGER},
+      </if>
+      <if test="treeParentId != null" >
+        #{treeParentId,jdbcType=INTEGER},
+      </if>
+      <if test="treePlayerId != null" >
+        #{treePlayerId,jdbcType=INTEGER},
+      </if>
+      <if test="treeRelation != null" >
+        #{treeRelation,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.dream.city.base.model.entity.CityTree" >
+    update city_tree
+    <set >
+      <if test="treeParentId != null" >
+        tree_parent_id = #{treeParentId,jdbcType=INTEGER},
+      </if>
+      <if test="treePlayerId != null" >
+        tree_player_id = #{treePlayerId,jdbcType=INTEGER},
+      </if>
+      <if test="treeRelation != null" >
+        tree_relation = #{treeRelation,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where tree_id = #{treeId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.dream.city.base.model.entity.CityTree" >
+    update city_tree
+    set tree_parent_id = #{treeParentId,jdbcType=INTEGER},
+      tree_player_id = #{treePlayerId,jdbcType=INTEGER},
+      tree_relation = #{treeRelation,jdbcType=VARCHAR}
+    where tree_id = #{treeId,jdbcType=INTEGER}
+  </update>
+</mapper>

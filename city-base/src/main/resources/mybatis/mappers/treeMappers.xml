@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dream.city.base.model.mapper.TreeMapper">
+    <resultMap id="TreeBaseResultMap" type="com.dream.city.base.model.entity.RelationTree">
+        <result column="tree_id" jdbcType="INTEGER" property="id" />
+        <result column="tree_parent_id" jdbcType="INTEGER" property="parentId"/>
+        <result column="tree_player_id" jdbcType="INTEGER" property="playerId"/>
+        <result column="tree_relation" jdbcType="VARCHAR" property="relation"/>
+    </resultMap>
+    <!--id对应接口中的方法，名字要一样，parameterType是方法的参数类型，
+    resultType是查询返回的类型，需要注意的是，这里的SQL语句后面不能加分号，变量不能加引号-->
+</mapper>

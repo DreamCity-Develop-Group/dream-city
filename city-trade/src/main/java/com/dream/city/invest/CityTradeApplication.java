@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Import;
 
 @SpringBootApplication
 @EnableEurekaClient
-@MapperScan("com.dream.city.invest.domain.mapper")
+
 @EnableCaching
 @Import({RedisConfig.class})
 public class CityTradeApplication {

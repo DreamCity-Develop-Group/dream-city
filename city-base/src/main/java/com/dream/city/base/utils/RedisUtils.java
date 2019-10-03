@@ -382,6 +382,40 @@ public class RedisUtils {
         }
     }
 
+    public boolean lpush(String key, String value) {
+        try {
+            //jedis.lpush(key, value.toString());
+            redisTemplate.opsForList().leftPush(key,value);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
+    public Object lpop(String key){
+        try {
+            Object object = redisTemplate.opsForList().leftPop(key);
+            return object;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
+    public Object rpop(String key){
+        try {
+            Object object = redisTemplate.opsForList().rightPop(key);
+            return object;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return  null;
+    }
+
+
     /**
      * 将list放入缓存
      *

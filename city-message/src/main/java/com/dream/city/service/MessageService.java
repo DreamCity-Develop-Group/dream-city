@@ -5,6 +5,9 @@ import com.dream.city.base.model.entity.CityMessage;
 
 import java.util.List;
 
+/**
+ * @author Wvv
+ */
 public interface MessageService {
 
     int insertMessage(CityMessage record);

@@ -5,7 +5,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.dream.city.base.model.Message;
 import com.dream.city.base.model.MessageData;
 import com.dream.city.base.utils.JsonUtil;
+import com.dream.city.service.WorkerService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
@@ -16,6 +18,9 @@ import java.util.Map;
 @Component
 @Slf4j
 public class MessageReceiver {
+
+    @Autowired
+    WorkerService workerService;
 
 
     /**
@@ -75,7 +80,7 @@ public class MessageReceiver {
          * 2、一旦任务完成相应的业务逻辑，检测客户端连接，发送即时通知到客户端
          * 3、生成相应的数据表通知，等待用户查收
          */
-
+        //workerService.addJob();
 
 
 

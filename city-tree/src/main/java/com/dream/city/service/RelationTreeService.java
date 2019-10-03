@@ -25,6 +25,8 @@ public interface RelationTreeService {
 
     RelationTree getByPlayer(String playerId);
 
+    RelationTree getPlayerByRef(String relation);
+
     List<RelationTree> findLevel(String playerId,Integer level);
 
     Map<Integer,List<RelationTree>> getLevelChildTreesMap(String playerId, int level);
@@ -32,4 +34,8 @@ public interface RelationTreeService {
     RelationTree getParent(String playerId);
 
     List<RelationTree> getTrees();
+
+    Map<Integer,RelationTree> getParents(String playerId);
+
+    boolean hasParent(String playerId);
 }

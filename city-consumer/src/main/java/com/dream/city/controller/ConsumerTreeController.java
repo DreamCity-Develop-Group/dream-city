@@ -102,6 +102,7 @@ public class ConsumerTreeController {
 
         Result ret = treeService.joinInvestAllow(playerId,amount);
         if (ret.getSuccess()){
+
             message.setDesc("加入成功，可以投资运营");
             return message;
         }else {

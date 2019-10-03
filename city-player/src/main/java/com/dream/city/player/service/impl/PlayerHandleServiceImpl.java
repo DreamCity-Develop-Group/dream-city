@@ -4,7 +4,7 @@ import com.dream.city.base.model.entity.Player;
 import com.dream.city.base.model.entity.PlayerExt;
 import com.dream.city.base.model.entity.PlayerGrade;
 import com.dream.city.base.utils.KeyGenerator;
-import com.dream.city.player.domain.mapper.PlayerGradeMapper;
+import com.dream.city.base.model.mapper.PlayerGradeMapper;
 import com.dream.city.player.service.PlayerExtService;
 import com.dream.city.player.service.PlayerHandleService;
 import com.dream.city.player.service.PlayerService;

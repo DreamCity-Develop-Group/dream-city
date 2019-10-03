@@ -3,7 +3,7 @@ package com.dream.city.player.service.impl;
 import com.dream.city.base.model.Page;
 import com.dream.city.base.model.req.PageReq;
 import com.dream.city.base.model.entity.Friends;
-import com.dream.city.player.domain.mapper.FriendsMapper;
+import com.dream.city.base.model.mapper.FriendsMapper;
 import com.dream.city.player.service.FriendsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,6 +11,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author Wvv
+ */
 @Service
 public class FriendsServiceImpl implements FriendsService {
 

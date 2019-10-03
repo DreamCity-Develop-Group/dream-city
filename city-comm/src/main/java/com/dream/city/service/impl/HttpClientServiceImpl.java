@@ -281,7 +281,6 @@ public class HttpClientServiceImpl implements HttpClientService {
                 /**TODO**********完成任务创建***********未完成相应请求，创建任务*******************/
                 createWork(msg);
                 /**TODO**********完成任务创建******************************/
-
             }
         } catch (ParseException | IOException e) {
             e.printStackTrace();
