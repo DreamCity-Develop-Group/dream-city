@@ -1,8 +1,11 @@
 package com.dream.city.base.model.entity;
 
+import lombok.Data;
+
 import java.io.Serializable;
 import java.util.Date;
 
+@Data
 public class PlayerLikesLog implements Serializable {
 
     private Integer likeId;

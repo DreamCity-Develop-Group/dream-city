@@ -15,6 +15,10 @@ import org.springframework.context.annotation.Import;
 @EnableCaching
 @EnableEurekaClient
 @MapperScan("com.dream.city.base.model.mapper")
+<<<<<<< HEAD
+=======
+
+>>>>>>> fb85861d58937477bef24f17c2179121aab709e9
 @Import({RedisConfig.class})
 public class CityRelationTreeApplication {
 

@@ -1,5 +1,7 @@
 package com.dream.city.base.model.req;
 
+import lombok.Data;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -7,6 +9,7 @@ import java.util.Date;
 /**
  * @author wvv
  */
+@Data
 public class PlayerAccountReq implements Serializable {
 
     /** 玩家账号id */

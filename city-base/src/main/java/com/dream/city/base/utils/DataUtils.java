@@ -75,7 +75,8 @@ public class DataUtils {
         earning.setEarnId(earnId);
         earning.setEarnMax(earnMax);
         earning.setEarnPlayerId(earnPlayerId);
-        earning.setEarnTax(earnTax);
+        //earning.setEarnTax(earnTax);
+        earning.setEarnPersonalTax(earnTax);
         return earning;
     }
 

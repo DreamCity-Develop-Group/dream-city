@@ -22,7 +22,7 @@
     where earn_id = #{earnId,jdbcType=INTEGER}
   </select>
 
-  <select id="getPlayerEarningByPlayerId" resultMap="BaseResultMap" parameterType="com.dream.city.base.model.entity.PlayerEarning" >
+  <select id="getPlayerEarningByPlayerId" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select
     <include refid="Base_Column_List" />
     from player_earning
@@ -66,14 +66,23 @@
       <if test="earnId != null" >
         earn_id,
       </if>
+      <if test="earnInvestId != null" >
+        earn_invest_id,
+      </if>
       <if test="earnPlayerId != null" >
         earn_player_id,
       </if>
       <if test="earnMax != null" >
         earn_max,
       </if>
-      <if test="earnTax != null" >
-        earn_tax,
+      <if test="earnCurrent != null" >
+        earn_current,
+      </if>
+      <if test="earnPersonalTax != null" >
+        earn_personal_tax,
+      </if>
+      <if test="earnEnterpriseTax != null" >
+        earn_enterprise_tax,
       </if>
       <if test="isWithdrew != null" >
         is_withdrew,
@@ -84,14 +93,23 @@
       <if test="earnId != null" >
         #{earnId,jdbcType=INTEGER},
       </if>
+      <if test="earnInvestId != null" >
+        #{earnInvestId,jdbcType=VARCHAR},
+      </if>
       <if test="earnPlayerId != null" >
         #{earnPlayerId,jdbcType=VARCHAR},
       </if>
       <if test="earnMax != null" >
         #{earnMax,jdbcType=DOUBLE},
       </if>
-      <if test="earnTax != null" >
-        #{earnTax,jdbcType=DOUBLE},
+      <if test="earnCurrent != null" >
+        #{earnCurrent,jdbcType=DOUBLE},
+      </if>
+      <if test="earnPersonalTax != null" >
+        #{earnPersonalTax,jdbcType=DOUBLE},
+      </if>
+      <if test="earnEnterpriseTax != null" >
+        #{earnEnterpriseTax,jdbcType=DOUBLE},
       </if>
       <if test="isWithdrew != null" >
         #{isWithdrew,jdbcType=CHAR},
