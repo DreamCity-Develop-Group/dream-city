@@ -219,7 +219,7 @@ public class ConsumerPlayerController {
     public Message pwforget(@RequestBody Message msg) {
         log.info("忘记密码", JSONObject.toJSONString(msg));
         UserReq jsonReq = DataUtils.getUserReq(msg);
-        Result result = consumerPlayerService.forgetPwd(jsonReq.getUsername(), jsonReq.getOldpw());
+        Result result = consumerPlayerService.forgetPwd(jsonReq.getUsername(), jsonReq.getNewpw());
 
         Map<String, String> t = new HashMap<>();
         t.put("desc", result.getMsg());

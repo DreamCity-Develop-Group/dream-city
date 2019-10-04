@@ -53,19 +53,20 @@ public class PlayerServiceImpl implements PlayerService {
     @Override
     public Result resetLoginPwd(String username, String oldPwd, String newPwd) {
         String pwdType = "resetLoginPwd";
+        PlayerResp player = getPlayerByName(username,null);
         Result result = changePwdVelid(username, oldPwd,pwdType);
         if (!result.getSuccess()){
             return result;
         }
 
-        return changePwd(username, newPwd);
+        return changePwd(player.getPlayerId(), newPwd);
     }
 
-    private Result changePwd(String username, String newPwd){
+    private Result changePwd(String playerId, String newPwd){
         Player player = new Player();
-        player.setPlayerName(username);
+        player.setPlayerId(playerId);
         player.setPlayerPass(newPwd);
-        int i = playerMapper.updatePassByName(player);
+        int i = playerMapper.updateByPlayerId(player);
         if (i>0){
             // 修改密码成功
             return new Result(Boolean.TRUE, CityGlobal.Constant.USER_CHANGE_PWD_SUCCESS);
@@ -104,17 +105,17 @@ public class PlayerServiceImpl implements PlayerService {
         }
 
         // 旧密码不正确
-        if ("resetLoginPwd".equalsIgnoreCase(pwdType) && playerExit.getPlayerPass().equals(oldpwshop)){
+        if ("resetLoginPwd".equalsIgnoreCase(pwdType) && !playerExit.getPlayerPass().equals(oldpwshop)){
             return new Result(Boolean.FALSE, CityGlobal.Constant.USER_OLD_PWD_ERROR);
         }
         // 交易密码 没有交易密码的设置交易密码，有交易密码的修改交易密码
         if ("resetTraderPwd".equalsIgnoreCase(pwdType)
                 && StringUtils.isNotBlank(playerExit.getPlayerTradePass())
-                && playerExit.getPlayerTradePass().equals(oldpwshop)){
+                && !playerExit.getPlayerTradePass().equals(oldpwshop)){
             return new Result(Boolean.FALSE, CityGlobal.Constant.USER_OLD_PWD_ERROR);
         }
 
-        return new Result(Boolean.TRUE, CityGlobal.Constant.USER_OLD_PWD_ERROR);
+        return new Result(Boolean.TRUE, CityGlobal.Constant.USER_CHANGE_PWD_SUCCESS);
     }
 
     @Override
