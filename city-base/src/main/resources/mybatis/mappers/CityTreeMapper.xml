@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.dream.city.base.model.mapper.CityTreeMapper" >
-  <resultMap id="BaseResultMap" type="com.dream.city.base.model.entity.CityTree" >
+  <resultMap id="TreeBaseResultMap" type="com.dream.city.base.model.entity.CityTree" >
     <id column="tree_id" property="treeId" jdbcType="INTEGER" />
     <result column="tree_parent_id" property="treeParentId" jdbcType="INTEGER" />
     <result column="tree_player_id" property="treePlayerId" jdbcType="INTEGER" />
@@ -10,7 +10,7 @@
   <sql id="Base_Column_List" >
     tree_id, tree_parent_id, tree_player_id, tree_relation
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+  <select id="selectByPrimaryKey" resultMap="TreeBaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
     from city_tree

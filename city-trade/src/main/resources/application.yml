@@ -22,7 +22,7 @@ eureka:
 #datasource
 mybatis:
   type-aliases-package: com.dream.city.domain.mapper
-  mapper-locations: classpath:/mybatis/mappers/*.xml
+  mapper-locations: classpath:/mappers/*.xml
 
 
 

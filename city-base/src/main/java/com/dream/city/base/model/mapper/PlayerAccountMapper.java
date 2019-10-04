@@ -15,9 +15,11 @@ public interface PlayerAccountMapper {
 
     Integer insertSelective(PlayerAccount record);
 
-    PlayerAccount getPlayerAccount(PlayerAccountReq record);
+    PlayerAccount updateByPrimaryKey(Integer accId);
+    void updateByPrimaryKeySelective(PlayerAccount account);
+    void insert(PlayerAccount account);
+    PlayerAccount selectByPrimaryKey(Integer accId);
 
-    PlayerAccount getPlayerAccountByPlayerId(String playerId);
 
     /**
      * 获取平台账户
@@ -26,37 +28,14 @@ public interface PlayerAccountMapper {
      */
     List<PlayerAccount> getPlatformAccounts(PlayerAccountReq record);
 
-    Integer updateByPlayerId(PlayerAccount record);
 
     List<PlayerAccount> getPlayerAccountList(PlayerAccount record);
-
-
-    @Results(id = "BasePlayerAccountResultMap", value = {
-            @Result(property = "accId", column = "acc_id", id = true),
-            @Result(property = "accPlayerId", column = "acc_player_id"),
-            @Result(property = "accAddr", column = "acc_addr"),
-            @Result(property = "accPass", column = "acc_pass"),
-            @Result(property = "accUsdt", column = "acc_usdt"),
-            @Result(property = "accUsdtAvailable", column = "acc_usdt_available"),
-            @Result(property = "accUsdtFreeze", column = "acc_usdt_freeze"),
-            @Result(property = "accMt", column = "acc_mt"),
-            @Result(property = "accMtAvailable", column = "acc_mt_available"),
-            @Result(property = "accMtFreeze", column = "acc_mt_freeze"),
-            @Result(property = "accIncome", column = "acc_income"),
-            @Result(property = "createTime", column = "createtime"),
-            @Result(property = "updateTime", column = "updatetime")
-    })
-    @Select({"select * from `sales_order` where 1=1 and id = #{id}"})
-    PlayerAccount selectPlayerAccountByPrimaryKey(Long key);
-
-
 
     /**
      *  玩家的资金账户
      * @param playerId
      * @return
      */
-    @ResultMap("BasePlayerAccountResultMap")
     @Select("select * from player_account where 1=1 and  acc_player_id = #{playerId}")
     PlayerAccount getPlayerAccount(String playerId);
 
@@ -64,8 +43,7 @@ public interface PlayerAccountMapper {
     void subtractAmount(BigDecimal payAmount, String playerId);
 
     @Insert("insert into `player_account`(acc_id,acc_player_id,acc_addr)value(0,#{playerId},#{address})")
-        //@Options(useGeneratedKeys = true, keyProperty = "acc_id")
-    void createAccount(String playerId,String address);
+    void createAccount(@Param("playerId")String playerId,@Param("address")String address);
 
     @Update({"<script>" +
             "<foreach collection=\"accounts\" item=\"item\" separator=\";\">" +

@@ -28,7 +28,6 @@ public interface NoticeMapper {
 
     List<Notice> getNoticeList(Notice record);
 
-    @ResultMap("NoticeBaseResultMap")
     @Select("select * from game_notice where 1=1 and notice_state=#{isValid}")
     List<Notice> getGameNotices(int state);
 }

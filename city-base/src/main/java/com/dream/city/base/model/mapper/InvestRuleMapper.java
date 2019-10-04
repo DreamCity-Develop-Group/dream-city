@@ -51,28 +51,10 @@ public interface InvestRuleMapper {
     @Select("select * from `invest_rule` where 1=1 and  player_id = #{playerId}")
     InvestAllow getInvestAllowByPlayerId(String playerId);
 
-    @Insert("insert into `invest_rule`(id,player_id,allowed,amount,create_time)values(#{id},#{playerId},#{allowed},#{amount},#{createTime}) ")
-    @Options(useGeneratedKeys = true, keyProperty = "id")
-    void insertInvestAllow(InvestAllow allow);
-
 
     @Select("select * from `invest_rule` where 1=1 and  rule_item = #{itemId}")
     List<InvestRule> getRulesByItem(Integer itemId);
 
-
-    @Results(id = "BaseCityInvestnResultMap", value = {
-            @Result(property = "inId", column = "in_id", id = true),
-            @Result(property = "inName", column = "in_name"),
-            @Result(property = "inLimit", column = "in_limit"),
-            @Result(property = "inStart", column = "in_start"),
-            @Result(property = "inTax", column = "in_tax"),
-            @Result(property = "inEarning", column = "in_earning"),
-            @Result(property = "inEnd", column = "in_end"),
-            @Result(property = "inImg", column = "in_img"),
-            @Result(property = "isValid", column = "is_valid"),
-            @Result(property = "createTime", column = "create_time"),
-            @Result(property = "updateTime", column = "update_time"),
-    })
 
 
     /**

@@ -176,100 +176,103 @@ public class WebSocketServer {
         try {
             //TODO 1、如果客户端发心跳包[ping_XXXX],回复success：包括登录期间的ping和登录之前的连接检测
             String[] msgArray = message.split("_");
-            String ping = msgArray[0];
-            String account = msgArray[1];
-            String heartBeat = "ping";
+            if (msgArray.length>1) {
+                String ping = msgArray[0];
+                String account = msgArray[1];
+                String heartBeat = "ping";
 
-            if (heartBeat.equals(ping)) {
-                System.out.println("心跳消息接收...");
-                //TODO 保持连接状态，更新TOKEN：当用户Token即将过期，但此时用户实际在线，需要续期
-                String redisKey = RedisKeys.LOGIN_USER_TOKEN + account;
-                long expire = redisUtils.getExpire(redisKey);
-                long expired = 60;
-                if (expire < expired && expire != 0) {
-                    //取出token
-                    String token = redisUtils.getStr(redisKey);
-                    //延期token
-                    redisUtils.set(redisKey, token, 30 * 60);
+                if (heartBeat.equals(ping)) {
+                    System.out.println("心跳消息接收...");
+                    //TODO 保持连接状态，更新TOKEN：当用户Token即将过期，但此时用户实际在线，需要续期
+                    String redisKey = RedisKeys.LOGIN_USER_TOKEN + account;
+                    long expire = redisUtils.getExpire(redisKey);
+                    long expired = 60;
+                    if (expire < expired && expire != 0) {
+                        //取出token
+                        String token = redisUtils.getStr(redisKey);
+                        //延期token
+                        redisUtils.set(redisKey, token, 30 * 60);
 
-                }
-                sendMessage("success");
-                return;
-            }
-
-            //解析出客户端发来的消息
-            Message msg = JSONObject.parseObject(message, Message.class);
-
-            Message replay = new Message();
-            replay.setSource("server");
-            replay.setTarget(WebSocketServer.this.clientId);
-            replay.setDesc("服务端消息中心同步通知");
-            replay.setCreatetime(String.valueOf(System.currentTimeMillis()));
-            replay.setData(new MessageData("replay", "messageCenter", null));
-
-            //TODO 2、客户端断线重连，客户端已经有相应的逻辑处理
-            boolean offline = false;
-            if (offline) {
-                System.out.println("客户端断线重连消息接收...");
-                sendMessage("success");
-                return;
-            }
-
-
-            if (null != msg.getData().getData()) {
-                Map data = JsonUtil.parseJsonToObj(msg.getData().getData().toString(), Map.class);
-                String tokenStr = "token_" + data.get("username");
-                String token = redisUtils.get(tokenStr).toString();
-
-                if (!StringUtils.isEmpty(token)) {
-                    redisUtils.set("clientID-" + data.get("username").toString(), this.clientId, 60);
-                    for (WebSocketServer webSocketServer : webSocketSet) {
-                        if (webSocketServer.clientId.equals(this.clientId)) {
-                            webSocketServer.username = data.get("username").toString();
-                            break;
-                        }
                     }
-                } else {
-                    //TODO TOKEN 无效通知
-                    replay.setDesc("当前token已经失效，不能操作");
-                    WebSocketServer.sendInfo(replay);
+                    sendMessage("success");
                     return;
                 }
-                String strT = "";
-                if (msg.getData().getData() instanceof String) {
-                    strT = (String) msg.getData().getData();
-                } else if (msg.getData().getData() instanceof Integer) {
-                    Integer intT = (Integer) msg.getData().getData();
-                    if (null != intT) {
-                        strT = String.valueOf(intT);
-                    }
+            }else {
 
-                } else if (msg.getData().getData() instanceof JSONObject) {
-                    JSONObject jsonObjectT = (JSONObject) msg.getData().getData();
-                    if (null != jsonObjectT) {
-                        strT = String.valueOf(jsonObjectT);
-                    }
-                    if ("{}".equals(strT)) {
-                        strT = null;
-                    }
+                //解析出客户端发来的消息
+                Message msg = JSONObject.parseObject(message, Message.class);
+
+                Message replay = new Message();
+                replay.setSource("server");
+                replay.setTarget(WebSocketServer.this.clientId);
+                replay.setDesc("服务端消息中心同步通知");
+                replay.setCreatetime(String.valueOf(System.currentTimeMillis()));
+                replay.setData(new MessageData("replay", "messageCenter", null));
+
+                //TODO 2、客户端断线重连，客户端已经有相应的逻辑处理
+                boolean offline = false;
+                if (offline) {
+                    System.out.println("客户端断线重连消息接收...");
+                    sendMessage("success");
+                    return;
                 }
 
-                //请求网关的restful接口，将数据发送给客户端
-                //HttpClientUtil.post((Message) msg);
-                //new HttpClientUtil().postService(msg);
 
-                //TODO 第一步: 同步回复消息，通知客户端接收消息成功
-                WebSocketServer.sendInfo(replay);
+                if (null != msg.getData().getData()) {
+                    Map data = JsonUtil.parseJsonToObj(msg.getData().getData().toString(), Map.class);
+                    String tokenStr = "token_" + data.get("username");
+                    String token = redisUtils.get(tokenStr).toString();
 
-                //TODO 第二步: 将异步处理消息逻辑
-                httpClientService.post(msg);
+                    if (!StringUtils.isEmpty(token)) {
+                        redisUtils.set("clientID-" + data.get("username").toString(), this.clientId, 60);
+                        for (WebSocketServer webSocketServer : webSocketSet) {
+                            if (webSocketServer.clientId.equals(this.clientId)) {
+                                webSocketServer.username = data.get("username").toString();
+                                break;
+                            }
+                        }
+                    } else {
+                        //TODO TOKEN 无效通知
+                        replay.setDesc("当前token已经失效，不能操作");
+                        WebSocketServer.sendInfo(replay);
+                        return;
+                    }
+                    String strT = "";
+                    if (msg.getData().getData() instanceof String) {
+                        strT = (String) msg.getData().getData();
+                    } else if (msg.getData().getData() instanceof Integer) {
+                        Integer intT = (Integer) msg.getData().getData();
+                        if (null != intT) {
+                            strT = String.valueOf(intT);
+                        }
 
-                //TODO 第三步: 由任务调度完成对客户端消息的推送
+                    } else if (msg.getData().getData() instanceof JSONObject) {
+                        JSONObject jsonObjectT = (JSONObject) msg.getData().getData();
+                        if (null != jsonObjectT) {
+                            strT = String.valueOf(jsonObjectT);
+                        }
+                        if ("{}".equals(strT)) {
+                            strT = null;
+                        }
+                    }
 
-            } else {
-                log.info("没有收到相应的消息数据，无法完成相应的业务逻辑！");
-                replay.setDesc("消息数据不可用");
-                WebSocketServer.sendInfo(replay);
+                    //请求网关的restful接口，将数据发送给客户端
+                    //HttpClientUtil.post((Message) msg);
+                    //new HttpClientUtil().postService(msg);
+
+                    //TODO 第一步: 同步回复消息，通知客户端接收消息成功
+                    WebSocketServer.sendInfo(replay);
+
+                    //TODO 第二步: 将异步处理消息逻辑
+                    httpClientService.post(msg);
+
+                    //TODO 第三步: 由任务调度完成对客户端消息的推送
+
+                } else {
+                    log.info("没有收到相应的消息数据，无法完成相应的业务逻辑！");
+                    replay.setDesc("消息数据不可用");
+                    WebSocketServer.sendInfo(replay);
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();

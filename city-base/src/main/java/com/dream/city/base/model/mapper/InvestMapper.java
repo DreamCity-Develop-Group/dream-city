@@ -14,7 +14,6 @@ import java.util.List;
 @Mapper
 public interface InvestMapper {
 
-
     @Results(id = "BaseCityInvestnResultMap", value = {
             @Result(property = "inId", column = "in_id", id = true),
             @Result(property = "inName", column = "in_name"),

@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.dream.city.base.model.mapper.PlayerAccountMapper">
-    <resultMap id="BaseResultMap" type="com.dream.city.base.model.entity.PlayerAccount">
+    <resultMap id="BasePlayerAccountResultMap" type="com.dream.city.base.model.entity.PlayerAccount">
         <result column="acc_id" jdbcType="INTEGER" property="accId"/>
-        <result column="acc_player_id" jdbcType="INTEGER" property="accPlayId"/>
+        <result column="acc_player_id" jdbcType="INTEGER" property="accPlayerId"/>
         <result column="acc_addr" jdbcType="VARCHAR" property="accAddr"/>
         <result column="acc_pass" jdbcType="VARCHAR" property="accPass"/>
         <result column="acc_usdt" jdbcType="DOUBLE" property="accUsdt"/>
         <result column="acc_usdt_available" jdbcType="VARCHAR" property="accUsdtAvailable"/>
         <result column="acc_usdt_freeze" jdbcType="VARCHAR" property="accUsdtFreeze"/>
         <result column="acc_mt" jdbcType="VARCHAR" property="accMt"/>
-        <result column="acc_mt_available" jdbcType="VARCHAR" property="accMtAvailale"/>
+        <result column="acc_mt_available" jdbcType="VARCHAR" property="accMtAvailable"/>
         <result column="acc_mt_freeze" jdbcType="INTEGER" property="accMtFreeze"/>
         <result column="acc_income" jdbcType="DOUBLE" property="accIncome"/>
         <result column="createtime" jdbcType="TIMESTAMP" property="createTime"/>
@@ -21,7 +21,7 @@
     acc_id, acc_player_id, acc_usdt, acc_usdt_available, acc_usdt_freeze, acc_mt, acc_mt_available, 
     acc_mt_freeze, create_time, update_time
   </sql>
-    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+    <select id="selectByPrimaryKey" resultMap="BasePlayerAccountResultMap" parameterType="java.lang.Integer">
         select
         <include refid="Base_Column_List"/>
         from player_account
@@ -156,7 +156,7 @@
   </update>
 
 
-    <select id="getPlatformAccounts" resultMap="BaseResultMap"
+    <select id="getPlatformAccounts" resultMap="BasePlayerAccountResultMap"
             parameterType="com.dream.city.base.model.req.PlayerAccountReq">
         select
         <include refid="Base_Column_List"/>
@@ -170,7 +170,7 @@
         order by create_time desc
     </select>
 
-    <select id="getPlayerAccountList" resultMap="BaseResultMap"
+    <select id="getPlayerAccountList" resultMap="BasePlayerAccountResultMap"
             parameterType="com.dream.city.base.model.entity.PlayerAccount">
         select
         <include refid="Base_Column_List"/>

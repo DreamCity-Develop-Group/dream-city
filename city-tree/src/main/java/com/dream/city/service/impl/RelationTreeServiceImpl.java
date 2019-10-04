@@ -2,8 +2,10 @@ package com.dream.city.service.impl;
 
 import com.dream.city.base.model.CityGlobal;
 import com.dream.city.base.model.Result;
-import com.dream.city.base.model.entity.*;
-import com.dream.city.base.model.mapper.TreeMapper;
+import com.dream.city.base.model.entity.InvestRule;
+import com.dream.city.base.model.entity.RelationTree;
+import com.dream.city.base.model.entity.RuleItem;
+import com.dream.city.base.model.mapper.CityTreeMapper;
 import com.dream.city.service.InvestRuleService;
 import com.dream.city.service.PlayerAccountService;
 import com.dream.city.service.RelationTreeService;
@@ -26,7 +28,7 @@ public class RelationTreeServiceImpl implements RelationTreeService {
     private final String PlAYER_FLAG = "PlAYER_LEVEL";
 
     @Autowired
-    private TreeMapper treeMapper;
+    private CityTreeMapper treeMapper;
 
     @Autowired
     InvestRuleService investRuleService;
