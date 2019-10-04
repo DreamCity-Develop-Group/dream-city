@@ -58,10 +58,10 @@ public class OrderController {
         InvestOrder order = new InvestOrder();
 
         InvestOrder investOrder = orderService.getInvestOrderById(order);
-        String desc = "新建投资失败";
+        String desc = "查询投资失败";
         boolean success = Boolean.FALSE;
         if (investOrder != null){
-            desc = "新建投资成功";
+            desc = "查询投资成功";
             success = Boolean.TRUE;
         }
         Result<InvestOrder> result = new Result<>(success,desc,investOrder);
