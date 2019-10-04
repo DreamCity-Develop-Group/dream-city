@@ -22,7 +22,7 @@
     where earn_id = #{earnId,jdbcType=INTEGER}
   </select>
 
-  <select id="getPlayerEarningByPlayerId" resultMap="BaseResultMap" parameterType="com.dream.city.base.model.entity.PlayerEarning" >
+  <select id="getPlayerEarningByPlayerId" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select
     <include refid="Base_Column_List" />
     from player_earning

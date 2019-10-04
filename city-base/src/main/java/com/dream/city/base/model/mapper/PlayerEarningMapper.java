@@ -8,6 +8,7 @@ import java.util.List;
 
 /**
  * 玩家提现收入
+ * @author Wvv
  */
 @Mapper
 public interface PlayerEarningMapper {
@@ -18,7 +19,7 @@ public interface PlayerEarningMapper {
 
     PlayerEarning selectByPrimaryKey(Integer earnId);
 
-    PlayerEarning getPlayerEarningByPlayerId(PlayerEarning record);
+    PlayerEarning getPlayerEarningByPlayerId(String playerId);
 
     List<PlayerEarning> selectPlayerEarningList(PlayerEarning record);
 

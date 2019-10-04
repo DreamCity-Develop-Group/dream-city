@@ -1,83 +1,50 @@
 package com.dream.city.base.model.entity;
 
+import lombok.Data;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
 /**
- * 玩家提现规则
+ * @author wvv
+ * 玩家项目收益
  */
+@Data
 public class PlayerEarning implements Serializable {
     /**  */
     private Integer earnId;
+    /**
+     * 投资项目ID
+     */
+    private Integer earnInvestId;
 
-    /** 用户id */
+    /** 玩家ID */
     private String earnPlayerId;
 
-    /** 最大提取额度 */
+    /** 预计最大收益，达到就可以出局 */
     private BigDecimal earnMax;
 
-    /** 税金 */
-    private BigDecimal earnTax;
+    /**
+     * 当前获利
+     */
+    private BigDecimal earn_current;
 
+    /** 个税税金 */
+    private BigDecimal earnPersonalTax;
+
+
+    /**
+     * 企业税金
+     */
+    private BigDecimal earnEnterpriseTax;
+
+    /**
+     * 是否已经可以提取
+     */
     private String isWithdrew;
 
     private Date createTime;
     private Date updateTime;
 
-    public Integer getEarnId() {
-        return earnId;
-    }
-
-    public void setEarnId(Integer earnId) {
-        this.earnId = earnId;
-    }
-
-    public String getEarnPlayerId() {
-        return earnPlayerId;
-    }
-
-    public void setEarnPlayerId(String earnPlayerId) {
-        this.earnPlayerId = earnPlayerId == null ? null : earnPlayerId.trim();
-    }
-
-    public BigDecimal getEarnMax() {
-        return earnMax;
-    }
-
-    public void setEarnMax(BigDecimal earnMax) {
-        this.earnMax = earnMax;
-    }
-
-    public BigDecimal getEarnTax() {
-        return earnTax;
-    }
-
-    public void setEarnTax(BigDecimal earnTax) {
-        this.earnTax = earnTax;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public String getIsWithdrew() {
-        return isWithdrew;
-    }
-
-    public void setIsWithdrew(String isWithdrew) {
-        this.isWithdrew = isWithdrew;
-    }
-
-    public Date getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
-    }
 }

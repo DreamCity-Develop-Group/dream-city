@@ -1,14 +1,12 @@
 package com.dream.city.job;
 
-import com.dream.city.base.model.entity.CityInvest;
-import com.dream.city.base.model.entity.InvestOrder;
-import com.dream.city.base.model.entity.InvestRule;
-import com.dream.city.base.model.entity.RuleItem;
+import com.dream.city.base.model.entity.*;
 import com.dream.city.base.model.enu.InvestStatus;
 import com.dream.city.base.utils.RedisUtils;
 import com.dream.city.service.InvestOrderService;
 import com.dream.city.service.InvestRuleService;
 import com.dream.city.service.InvestService;
+import com.dream.city.service.PlayerEarningService;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -36,6 +34,9 @@ public class ProfitGrantJob extends QuartzJobBean {
 
     @Autowired
     private InvestRuleService ruleService;
+
+    @Autowired
+    private PlayerEarningService playerEarningService;
 
     private final String RULE_CURRENT = "PROFIT_GRANT";
     private final String PROFIT_QUEUE = "PROFIT_QUEUE";
@@ -87,6 +88,18 @@ public class ProfitGrantJob extends QuartzJobBean {
                                     List<InvestOrder> orders = orderService.getInvestOrdersByCurrent(invest.getInId(), states, start, end);
                                     orders.forEach((order) -> {
                                         //设置玩家获利
+                                        PlayerEarning playerEarning = playerEarningService.getPlayerEarnByPlayerId(order.getOrderPayerId());
+                                        if (null == playerEarning){
+                                            PlayerEarning earning = new PlayerEarning();
+                                            earning.setEarnId(0);
+                                            earning.setEarnPlayerId(order.getOrderPayerId());
+                                            earning.setCreateTime(new Date());
+                                            earning.setEarnMax();
+                                            earning.setEarnTax(new BigDecimal(0));
+                                            earning.setIsWithdrew("0");
+                                            earning.setUpdateTime(new Date());
+                                            playerEarningService.add();
+                                        }
                                         //
                                     });
                                     sum -= 100;
