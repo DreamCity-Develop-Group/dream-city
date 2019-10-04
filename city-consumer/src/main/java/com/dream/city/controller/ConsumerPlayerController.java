@@ -265,7 +265,7 @@ public class ConsumerPlayerController {
         UserReq jsonReq = DataUtils.getUserReq(msg);
         PlayerResp player = commonsService.getPlayerByUserName(msg);
 
-        Result result = consumerPlayerService.resetTraderPwd(jsonReq.getUsername(), jsonReq.getOldpw(), jsonReq.getNewpw());
+        Result result = consumerPlayerService.resetTraderPwd(jsonReq.getUsername(), jsonReq.getOldpwshop(), jsonReq.getNewpwshop());
         log.info("##################### 修改交易密码 : {}", msg);
         Map<String, String> t = new HashMap<>();
         t.put("desc", result.getMsg());

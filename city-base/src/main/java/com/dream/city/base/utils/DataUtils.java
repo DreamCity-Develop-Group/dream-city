@@ -52,7 +52,8 @@ public class DataUtils {
             userReq.setInvite(map.containsKey("invite") ? (String) map.get("invite") : null);
             userReq.setNick(map.containsKey("nick") ? (String) map.get("nick") : null);
             userReq.setPlayerId(map.containsKey("playerId") ? (String) map.get("playerId") : null);
-            userReq.setPwshop(map.containsKey("pwshop") ? (String) map.get("pwshop") : null);
+            userReq.setOldpwshop(map.containsKey("oldpwshop") ? (String) map.get("oldpwshop") : null);
+            userReq.setNewpwshop(map.containsKey("newpwshop") ? (String) map.get("newpwshop") : null);
             userReq.setUsername(map.containsKey("username") ? (String) map.get("username") : null);
             userReq.setUserpass(map.containsKey("userpass") ? (String) map.get("userpass") : null);
             userReq.setCode(map.containsKey("code") ? (String) map.get("code") : null);

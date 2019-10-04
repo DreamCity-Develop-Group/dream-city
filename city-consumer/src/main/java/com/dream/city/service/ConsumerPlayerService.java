@@ -86,13 +86,13 @@ public interface ConsumerPlayerService {
     /**
      * 重置交易密码
      * @param username
-     * @param oldPwd
+     * @param oldpwshop
      * @return
      */
     @RequestMapping("/player/resetTraderPwd")
     Result resetTraderPwd(@RequestParam("username") String username,
-                          @RequestParam("oldPwd") String oldPwd,
-                          @RequestParam("newPwd")  String newPwd);
+                          @RequestParam("oldpwshop") String oldpwshop,
+                          @RequestParam("newpwshop")  String newpwshop);
 
 
     /**

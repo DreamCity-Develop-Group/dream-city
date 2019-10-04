@@ -75,16 +75,16 @@ public class PlayerServiceImpl implements PlayerService {
 
 
     @Override
-    public Result resetTraderPwd(String username, String oldPwd, String newPwd) {
+    public Result resetTraderPwd(String username, String oldpwshop, String newpwshop) {
         String pwdType = "resetTraderPwd";
-        Result result = changePwdVelid(username, oldPwd,pwdType);
+        Result result = changePwdVelid(username, oldpwshop,pwdType);
         if (!result.getSuccess()){
             return result;
         }
 
         Player player = new Player();
         player.setPlayerName(username);
-        player.setPlayerTradePass(newPwd);
+        player.setPlayerTradePass(newpwshop);
         int i = playerMapper.updatePassByName(player);
         if (i>0){
             // 修改密码成功
@@ -93,7 +93,7 @@ public class PlayerServiceImpl implements PlayerService {
         return new Result(Boolean.FALSE, CityGlobal.Constant.USER_CHANGE_TRADERPWD_FAIL);
     }
 
-    private Result changePwdVelid(String username, String oldPwd,String pwdType){
+    private Result changePwdVelid(String username, String oldpwshop,String pwdType){
         Player player = new Player();
         player.setPlayerName(username);
         Player playerExit = playerMapper.getPlayerById(player);
@@ -104,13 +104,13 @@ public class PlayerServiceImpl implements PlayerService {
         }
 
         // 旧密码不正确
-        if ("resetLoginPwd".equalsIgnoreCase(pwdType) && playerExit.getPlayerPass().equals(oldPwd)){
+        if ("resetLoginPwd".equalsIgnoreCase(pwdType) && playerExit.getPlayerPass().equals(oldpwshop)){
             return new Result(Boolean.FALSE, CityGlobal.Constant.USER_OLD_PWD_ERROR);
         }
         // 交易密码 没有交易密码的设置交易密码，有交易密码的修改交易密码
         if ("resetTraderPwd".equalsIgnoreCase(pwdType)
                 && StringUtils.isNotBlank(playerExit.getPlayerTradePass())
-                && playerExit.getPlayerTradePass().equals(oldPwd)){
+                && playerExit.getPlayerTradePass().equals(oldpwshop)){
             return new Result(Boolean.FALSE, CityGlobal.Constant.USER_OLD_PWD_ERROR);
         }
 

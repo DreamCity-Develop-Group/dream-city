@@ -33,7 +33,7 @@ public interface PlayerService {
      *交易密码
      * @return
      */
-    Result resetTraderPwd(String username, String oldPwd, String newPwd);
+    Result resetTraderPwd(String username, String oldpwshop, String newpwshop);
 
     boolean save(Player player);
 

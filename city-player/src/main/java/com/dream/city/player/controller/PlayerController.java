@@ -337,16 +337,16 @@ public class PlayerController {
     /**
      * 重置交易密码
      * @param username
-     * @param oldPwd
-     * @param newPwd
+     * @param oldpwshop
+     * @param newpwshop
      * @return
      */
     @RequestMapping("/resetTraderPwd")
     public Result resetTraderPwd(@RequestParam("username")String username,
-                                 @RequestParam("oldPwd") String oldPwd,
-                                 @RequestParam("newPwd")  String newPwd){
-        log.info("重置交易密码，username:{},oldPwd:{},newPwd:{}",username,oldPwd,newPwd);
-        return playerService.resetTraderPwd(username, oldPwd,newPwd);
+                                 @RequestParam("oldpwshop") String oldpwshop,
+                                 @RequestParam("newpwshop")  String newpwshop){
+        log.info("重置交易密码，username:{},oldpwshop:{},newpwshop:{}",username,oldpwshop,newpwshop);
+        return playerService.resetTraderPwd(username, oldpwshop,newpwshop);
     }
 
     /**
