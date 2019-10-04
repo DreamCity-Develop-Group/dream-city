@@ -6,6 +6,9 @@ import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
+/**
+ * @author Wvv
+ */
 @Mapper
 public interface InvestOrderMapper {
 
@@ -55,6 +58,12 @@ public interface InvestOrderMapper {
 
     @Select("select * from `invest_order` where 1=1 and order_invest_id = #{investId} and order_state=#{state}")
     List<InvestOrder> getInvestOrdersByCurrentDay(Integer investId,int state);
+
+    @Select("select * from `invest_order` where 1=1 and order_invest_id = #{investId} and order_state=#{state} and order_repeat = 0 ")
+    List<InvestOrder> getInvestOrdersNoRepeat(Integer investId,int state);
+
+    @Select("select * from `invest_order` where 1=1 and order_invest_id = #{investId} and order_state=#{state} and order_repeat = 1 ")
+    List<InvestOrder> getInvestOrdersRepeat(Integer investId,int state);
 
     /**
      * 更新订单

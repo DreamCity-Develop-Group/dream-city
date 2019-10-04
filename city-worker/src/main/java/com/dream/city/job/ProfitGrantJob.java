@@ -3,10 +3,8 @@ package com.dream.city.job;
 import com.dream.city.base.model.entity.*;
 import com.dream.city.base.model.enu.InvestStatus;
 import com.dream.city.base.utils.RedisUtils;
-import com.dream.city.service.InvestOrderService;
-import com.dream.city.service.InvestRuleService;
-import com.dream.city.service.InvestService;
-import com.dream.city.service.PlayerEarningService;
+import com.dream.city.service.*;
+import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -14,10 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
 import java.math.BigDecimal;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.sql.Timestamp;
+import java.util.*;
 
 /**
  * TODO 核算 玩家每日收益结果
@@ -31,6 +27,9 @@ public class ProfitGrantJob extends QuartzJobBean {
     InvestService investService;
 
     @Autowired
+    PlayerAccountService accountService;
+
+    @Autowired
     private InvestOrderService orderService;
 
     @Autowired
@@ -39,8 +38,12 @@ public class ProfitGrantJob extends QuartzJobBean {
     @Autowired
     private PlayerEarningService playerEarningService;
 
+    @Autowired
+    RelationTreeService relationTreeService;
+
     private final String RULE_CURRENT = "PROFIT_GRANT";
     private final String PROFIT_QUEUE = "PROFIT_QUEUE";
+    private final String SYSTEM_ACCOUNT = "SYSTEM_DC_ACCOUNT";
 
     @Autowired
     RedisUtils redisUtils;
@@ -69,7 +72,7 @@ public class ProfitGrantJob extends QuartzJobBean {
         RuleItem ruleItem = ruleService.getInvestRuleItemByKey(RULE_CURRENT);
         List<InvestRule> rules = ruleService.getInvestRuleByKey(ruleItem.getItemId());
 
-        int[] states = new int[]{InvestStatus.MANAGEMENT.getStatus()};
+        int state = InvestStatus.MANAGEMENT.getStatus();
         invests.forEach(invest -> {
             rules.forEach(rule -> {
                 BigDecimal profitSum = new BigDecimal(redisUtils.lpop(PROFIT_QUEUE + "_" + invest.getInId()).toString());
@@ -82,40 +85,14 @@ public class ProfitGrantJob extends QuartzJobBean {
 
                                 int start = 0, end = 100;
                                 //查出一共多少条数据
-                                int sum = orderService.getInvestOrdersSum(invest.getInId(), states);
+                                int[] statesSum = new int[]{InvestStatus.MANAGEMENT.getStatus()};
+                                int sum = orderService.getInvestOrdersSum(invest.getInId(), statesSum);
                                 //每个玩家的获得利益数
                                 BigDecimal everyOneProfit = allOrdersProfit.divide(new BigDecimal(sum));
                                 while (sum > 0) {
-                                    List<InvestOrder> orders = orderService.getInvestOrdersByCurrent(invest.getInId(), states, start, end);
+                                    List<InvestOrder> orders = orderService.getInvestOrdersByCurrent(invest.getInId(), statesSum, start, end);
                                     for (InvestOrder order : orders) {//设置玩家获利
-                                        PlayerEarning playerEarning = playerEarningService.getPlayerEarnByPlayerId(order.getOrderPayerId(), order.getOrderInvestId());
-                                        if (null == playerEarning) {
-                                            PlayerEarning earning = new PlayerEarning();
-                                            CityInvest cityInvest = investService.getCityInvest(order.getOrderInvestId());
-                                            earning.setEarnId(0);
-                                            earning.setEarnInvestId(order.getOrderInvestId());
-                                            earning.setEarnPlayerId(order.getOrderPayerId());
-                                            earning.setEarnMax(cityInvest.getInEarning().multiply(cityInvest.getInLimit()));
-                                            earning.setEarnCurrent(everyOneProfit);
-                                            earning.setEarnPersonalTax(cityInvest.getInPersonalTax());
-                                            earning.setEarnEnterpriseTax(cityInvest.getInEnterpriseTax());
-                                            earning.setIsWithdrew("0");
-                                            earning.setCreateTime(new Date());
-                                            earning.setUpdateTime(new Date());
-                                            playerEarningService.add(earning);
-                                        } else {
-                                            //收益增加,更新时间
-                                            playerEarning.setEarnCurrent(playerEarning.getEarnCurrent().add(everyOneProfit));
-                                            playerEarning.setUpdateTime(new Date());
-                                            playerEarningService.update(playerEarning);
-                                        }
-                                        //插入记录
-                                        EarnIncomeLog earnIncomeLog = new EarnIncomeLog();
-                                        earnIncomeLog.setInLogId(0);
-                                        earnIncomeLog.setInInvestId(order.getOrderInvestId());
-                                        earnIncomeLog.setInPlayerId(order.getOrderPayerId());
-                                        earnIncomeLog.setInAmount(everyOneProfit);
-                                        playerEarningService.addEarnLog(earnIncomeLog);
+                                        setProfit(order,everyOneProfit);
                                         //
                                     }
                                     sum -= 100;
@@ -131,18 +108,25 @@ public class ProfitGrantJob extends QuartzJobBean {
                             case "FIRST_TIME":
                                 //3、第一次投资前20% 20%
                                 BigDecimal firstTimeOrdersProfit = profitSum.multiply(new BigDecimal(rule.getRuleRate()));
-                                int top = rule.getRuleOptPre();
+                                BigDecimal top = new BigDecimal(rule.getRuleRatePre());
                                 Map<String,String> calTime = investService.getProfitCalculateTime(invest.getCreateTime());
                                 String startTime = calTime.get("start");
                                 String endTime = calTime.get("end");
                                 //取出，预约辊的所有订单
-                                int state = InvestStatus.SUBSCRIBED.getStatus();
                                 //第一次的投资订单
                                 List<InvestOrder> orders = orderService.getInvestOrdersFirstTime(invest.getInId());
+                                //总人数
+                                BigDecimal firstSum = new BigDecimal(orders.size());
+                                int topSum = firstSum.multiply(top).intValue();
+                                //每份收益
+                                BigDecimal firstTimeOrdersProfitPer = firstTimeOrdersProfit.divide(firstSum);
                                 orders.sort((o1,o2)->{
                                     return (int)(o2.getCreateTime().getTime() - o1.getCreateTime().getTime());
                                 });
-                                orders.subList(0,top);
+                                orders = orders.subList(0,topSum);
+                                orders.forEach(order->{
+                                    setProfit(order,firstTimeOrdersProfitPer);
+                                });
                                 break;
                             default:
 
@@ -151,10 +135,64 @@ public class ProfitGrantJob extends QuartzJobBean {
                     case "OPT_TOP":
                         switch (rule.getRuleFlag()) {
                             case "TOP_MEMBERS":
+                                int start = 0, end = 100;
+                                long top = rule.getRuleRatePre().longValue();
+                                BigDecimal topMembersProfit = profitSum.multiply(new BigDecimal(rule.getRuleRate()));
+                                BigDecimal everyTopMembersProfit = topMembersProfit.divide(new BigDecimal(top));
+                                //查出一共多少条数据
+                                int[] statesSum = new int[]{InvestStatus.MANAGEMENT.getStatus()};
+                                int sum = orderService.getInvestOrdersSum(invest.getInId(), statesSum);
+                                List<InvestOrder> topOrders = new ArrayList<>();
+                                while (sum > 0) {
+                                    List<InvestOrder> orders = orderService.getInvestOrdersByCurrent(invest.getInId(), statesSum, start, end);
+                                    List<InvestOrder> topOrders1 = orderService.getTopMembersOrders(orders, top);
+                                    topOrders = filterTops(topOrders,topOrders1,top);
+                                    sum -= 100;
+                                    start += 100;
+                                    end += 100;
+                                }
+                                topOrders.forEach(order->{
+                                    setProfit(order,everyTopMembersProfit);
+                                });
+
                                 break;
                             case "LIKES_GATHER":
+                                long topLike = rule.getRuleRatePre().longValue();
+                                BigDecimal topLikesProfit = profitSum.multiply(new BigDecimal(rule.getRuleRate()));
+                                BigDecimal everyTopLikesProfit = topLikesProfit.divide(new BigDecimal(topLike));
+                                //查出一共多少条数据
+                                List<InvestOrder> topLikesOrders = new ArrayList<>();
+                                while (sum > 0) {
+                                    List<InvestOrder> orders = orderService.getInvestOrdersByCurrent(invest.getInId(), statesSum, start, end);
+                                    List<InvestOrder> topOrders1 = orderService.getLiksGatherOrders(orders, topLike);
+                                    topLikesOrders = filterTops(topLikesOrders,topOrders1,topLike);
+                                    sum -= 100;
+                                    start += 100;
+                                    end += 100;
+                                }
+                                topLikesOrders.forEach(order->{
+                                    setProfit(order,everyTopLikesProfit);
+                                });
                                 break;
                             case "INVEST_LONG":
+                                long topLong = rule.getRuleRatePre().longValue();
+                                BigDecimal topLongProfit = profitSum.multiply(new BigDecimal(rule.getRuleRate()));
+                                BigDecimal everyTopLongProfit = topLongProfit.divide(new BigDecimal(topLong));
+                                //查出一共多少条数据
+                                //int[] statesSum = new int[]{InvestStatus.MANAGEMENT.getStatus()};
+                                //int sum = orderService.getInvestOrdersSum(invest.getInId(), statesSum);
+                                List<InvestOrder> topLongOrders = new ArrayList<>();
+                                while (sum > 0) {
+                                    List<InvestOrder> orders = orderService.getInvestOrdersByCurrent(invest.getInId(), statesSum, start, end);
+                                    List<InvestOrder> topOrders1 = orderService.getInvestLongTimeOrders(orders, topLike);
+                                    topLongOrders = filterTops(topLongOrders,topOrders1,topLike);
+                                    sum -= 100;
+                                    start += 100;
+                                    end += 100;
+                                }
+                                topLongOrders.forEach(order->{
+                                    setProfit(order,everyTopLongProfit);
+                                });
                                 break;
                             default:
                         }
@@ -165,5 +203,84 @@ public class ProfitGrantJob extends QuartzJobBean {
                 }
             });
         });
+    }
+    private List<InvestOrder> filterTops(List<InvestOrder>source,List<InvestOrder>target,long sum){
+        if (source.size()==0){
+            return target;
+        }
+        source.addAll(target);
+        source.sort((o1,o2)->{
+            return relationTreeService.getMembersIncrement(
+                    o2.getOrderPayerId(), investService.getEndTimeAt(o2.getOrderInvestId())
+            ) - relationTreeService.getMembersIncrement(
+                    o1.getOrderPayerId(), investService.getEndTimeAt(o1.getOrderInvestId())
+            );
+        });
+        List<InvestOrder> orders = source.subList(0, (int) sum);
+        return orders;
+    }
+    public void setProfit(InvestOrder order,BigDecimal everyOneProfit){
+        PlayerEarning playerEarning = playerEarningService.getPlayerEarnByPlayerId(order.getOrderPayerId(), order.getOrderInvestId());
+        if (null == playerEarning) {
+            PlayerEarning earning = new PlayerEarning();
+            CityInvest cityInvest = investService.getCityInvest(order.getOrderInvestId());
+            earning.setEarnId(0);
+            earning.setEarnInvestId(order.getOrderInvestId());
+            earning.setEarnPlayerId(order.getOrderPayerId());
+            earning.setEarnMax(cityInvest.getInEarning().multiply(cityInvest.getInLimit()));
+            earning.setEarnCurrent(everyOneProfit);
+            earning.setEarnPersonalTax(cityInvest.getInPersonalTax());
+            earning.setEarnEnterpriseTax(cityInvest.getInEnterpriseTax());
+            earning.setIsWithdrew("0");
+            earning.setCreateTime(new Date());
+            earning.setUpdateTime(new Date());
+            playerEarningService.add(earning);
+        } else {
+            //如果收益满了，不再增加，并设置为可提取状态,将多余的加入到系统平台账户
+            CityInvest invest = investService.getInvestById(order.getOrderInvestId());
+            //满收益额度
+            BigDecimal fullProfit = invest.getInEarning().multiply(invest.getInLimit());
+            BigDecimal current = playerEarning.getEarnCurrent();
+            BigDecimal subProfit = new BigDecimal(0);
+            boolean isNotCanWithdraw = true;
+            //相加之后超过
+            if(current.add(everyOneProfit).compareTo(fullProfit)>0){
+                isNotCanWithdraw = false;
+                subProfit = fullProfit.subtract(current);
+                playerEarning.setEarnCurrent(current.add(subProfit));
+                playerEarning.setIsWithdrew("true");//设置为可提取状态
+            }else{
+                playerEarning.setEarnCurrent(current.add(everyOneProfit));
+            }
+            if (isNotCanWithdraw){
+                //插入日志记录
+                EarnIncomeLog earnIncomeLog = new EarnIncomeLog();
+                earnIncomeLog.setInLogId(0);
+                earnIncomeLog.setInInvestId(order.getOrderInvestId());
+                earnIncomeLog.setInPlayerId(order.getOrderPayerId());
+                earnIncomeLog.setInAmount(everyOneProfit);
+                playerEarningService.addEarnLog(earnIncomeLog);
+            }else {
+                //将剩余的收益加到平台
+                BigDecimal remainProfit = everyOneProfit.subtract(subProfit);
+                PlayerAccount account = accountService.getPlayerAccount(SYSTEM_ACCOUNT);
+                account.setAccUsdt(account.getAccUsdt().add(remainProfit));
+                account.setAccMtAvailable(account.getAccUsdtAvailable().add(remainProfit));
+                accountService.updateProfitToAccount(account);
+
+                PlayerAccountLog accountLog = new PlayerAccountLog();
+                accountLog.setId(0L);
+                accountLog.setAddress(account.getAccAddr());
+                accountLog.setAmountMt(new BigDecimal(0));
+                accountLog.setAmountUsdt(remainProfit);
+                accountLog.setPlayerId(SYSTEM_ACCOUNT);
+                accountLog.setType(1);
+                accountLog.setDesc("收入账户多余的额度");
+                accountLog.setCreateTime(new Date());
+
+                accountService.addAccountLog(accountLog);
+            }
+        }
+
     }
 }

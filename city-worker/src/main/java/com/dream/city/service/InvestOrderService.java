@@ -48,7 +48,7 @@ public interface InvestOrderService {
      */
     List<InvestOrder> getInvestOrdersAmountByDayInterval(Integer inId, String start, String end);
 
-    List<InvestOrder> getInvestOrdersByCurrent(Integer inId, int state,String start,String end);
+    List<InvestOrder> getInvestOrdersByCurrent(Integer inId, int[] states,int start,int end);
 
     /**
      * 查出符合条件的记录总数
@@ -66,4 +66,13 @@ public interface InvestOrderService {
      * @return
      */
     List<InvestOrder> getInvestOrdersFirstTime(Integer inId);
+
+    List<InvestOrder> getInvestLongOrders(Integer investId,long longs);
+    List<InvestOrder> getInvestLongTimeOrders(List<InvestOrder> orders,long longs);
+    List<InvestOrder> getOtherOrders(List<InvestOrder> investOrders, long other);
+    List<InvestOrder> getRandomOrders(List<InvestOrder> orders, long required);
+    List<InvestOrder> getTopMembersOrders(List<InvestOrder> orders, long top);
+    List<InvestOrder> getLiksGatherOrders(List<InvestOrder> investOrders, long likes);
+    boolean isFirstTime(String orderPayerId);
+    List<InvestOrder> getFirstTimeOrders(List<InvestOrder> investOrders, long first);
 }

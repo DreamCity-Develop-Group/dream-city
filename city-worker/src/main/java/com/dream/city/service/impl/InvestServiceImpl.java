@@ -65,4 +65,9 @@ public class InvestServiceImpl implements InvestService {
         times.put("end",end);
         return times;
     }
+
+    @Override
+    public CityInvest getInvestById(Integer orderInvestId) {
+        return investMapper.getCityInvest(orderInvestId);
+    }
 }

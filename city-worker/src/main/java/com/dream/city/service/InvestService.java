@@ -16,4 +16,6 @@ public interface InvestService {
     List<CityInvest> getInvests();
 
     Map<String,String> getProfitCalculateTime(Date date);
+
+    CityInvest getInvestById(Integer orderInvestId);
 }

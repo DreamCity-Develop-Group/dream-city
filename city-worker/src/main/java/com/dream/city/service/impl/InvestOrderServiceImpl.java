@@ -72,7 +72,7 @@ public class InvestOrderServiceImpl implements InvestOrderService {
                             break;
                         case "INVEST_LONG"://投资时间最长10%
                             long longs = Long.parseLong(total * rule.getRuleRate() + "");
-                            List<InvestOrder> longsOrders = getInvestLongOrders(investOrders, longs);
+                            List<InvestOrder> longsOrders = getInvestLongTimeOrders(investOrders, longs);
                             investOrdersSucess.put(rule.getRuleFlag(), longsOrders);
                             if (longsOrders!=null){
                                 investOrders.removeAll(longsOrders);
@@ -121,7 +121,8 @@ public class InvestOrderServiceImpl implements InvestOrderService {
      * @param first
      * @return
      */
-    private List<InvestOrder> getFirstTimeOrders(List<InvestOrder> investOrders, long first) {
+    @Override
+    public List<InvestOrder> getFirstTimeOrders(List<InvestOrder> investOrders, long first) {
         List<InvestOrder> firstOders = new ArrayList<>();
         //根据在投资记录中成功的订单是否唯一
         investOrders.forEach(order -> {
@@ -142,7 +143,8 @@ public class InvestOrderServiceImpl implements InvestOrderService {
      * @param orderPayerId
      * @return
      */
-    private boolean isFirstTime(String orderPayerId) {
+    @Override
+    public boolean isFirstTime(String orderPayerId) {
         int[] states = new int[]{1, 2, 3};
         List<InvestOrder> orders = investOrderMapper.getSuccessInvestOrdersByPlayerId(orderPayerId, states);
         return orders.size() > 1;
@@ -155,7 +157,8 @@ public class InvestOrderServiceImpl implements InvestOrderService {
      * @param likes
      * @return
      */
-    private List<InvestOrder> getLiksGatherOrders(List<InvestOrder> investOrders, long likes) {
+    @Override
+    public List<InvestOrder> getLiksGatherOrders(List<InvestOrder> investOrders, long likes) {
         List<InvestOrder> success = new ArrayList<>();
         //点赞数比结果数多
         investOrders.sort((o1, o2) -> {
@@ -166,20 +169,40 @@ public class InvestOrderServiceImpl implements InvestOrderService {
     }
 
     /**
-     * 投资时间最长
+     * 取投资时间最长数量 [longs]
      *
-     * @param investOrders
+     * @param investId
      * @param longs
      * @return
      */
-    private List<InvestOrder> getInvestLongOrders(List<InvestOrder> investOrders, long longs) {
+    @Override
+    public List<InvestOrder> getInvestLongOrders(Integer investId,long longs) {
         if(longs == 0){
             return new ArrayList<>();
         }
-        investOrders.sort((o1,o2)->{
-            return investService.getEndTimeAt(o1.getOrderInvestId())-investService.getEndTimeAt(o2.getOrderInvestId());
+        List<InvestOrder> orders =  getInvestOrdersFirstTime(investId);
+        orders.sort((o1,o2)->{
+            return (int) (o2.getCreateTime().getTime()-o1.getCreateTime().getTime());
         });
-        return investOrders.subList(0, (int) longs);
+        return orders.subList(0, (int) longs);
+    }
+
+    /**
+     * 取投资时间最长数量 [longs]
+     *
+     * @param orders
+     * @param longs
+     * @return
+     */
+    @Override
+    public List<InvestOrder> getInvestLongTimeOrders(List<InvestOrder> orders,long longs) {
+        if(longs == 0){
+            return new ArrayList<>();
+        }
+        orders.sort((o1,o2)->{
+            return (int) (o2.getCreateTime().getTime()-o1.getCreateTime().getTime());
+        });
+        return orders.subList(0, (int) longs);
     }
 
     /**
@@ -188,7 +211,8 @@ public class InvestOrderServiceImpl implements InvestOrderService {
      * @param other
      * @return
      */
-    private List<InvestOrder> getOtherOrders(List<InvestOrder> investOrders, long other) {
+    @Override
+    public List<InvestOrder> getOtherOrders(List<InvestOrder> investOrders, long other) {
         if (other == 0) {
             return new ArrayList<>();
         }
@@ -231,7 +255,8 @@ public class InvestOrderServiceImpl implements InvestOrderService {
      * @param required
      * @return
      */
-    private List<InvestOrder> getRandomOrders(List<InvestOrder> orders, long required) {
+    @Override
+    public List<InvestOrder> getRandomOrders(List<InvestOrder> orders, long required) {
         List<InvestOrder> investOrdersSucess = new ArrayList<>();
         AtomicLong success = new AtomicLong();
 
@@ -251,7 +276,8 @@ public class InvestOrderServiceImpl implements InvestOrderService {
         return investOrdersSucess;
     }
 
-    private List<InvestOrder> getTopMembersOrders(List<InvestOrder> orders, long top) {
+    @Override
+    public List<InvestOrder> getTopMembersOrders(List<InvestOrder> orders, long top) {
         orders.sort(((o2, o1) -> {
             return relationTreeService.getMembersIncrement(
                     o2.getOrderPayerId(), investService.getEndTimeAt(o2.getOrderInvestId())
@@ -281,10 +307,9 @@ public class InvestOrderServiceImpl implements InvestOrderService {
     }
 
     @Override
-    public List<InvestOrder> getInvestOrdersByCurrent(Integer inId, int state,String start,String end) {
-        List<InvestOrder> orders = investOrderMapper.getInvestOrdersAmountByDayInterval(inId,state,start,end);
-
-        return null;
+    public List<InvestOrder> getInvestOrdersByCurrent(Integer inId, int[] state,int start,int end) {
+        List<InvestOrder> orders = investOrderMapper.getInvestOrdersByCurrent(inId,state,start,end);
+        return orders;
     }
 
     @Override
@@ -296,10 +321,9 @@ public class InvestOrderServiceImpl implements InvestOrderService {
     @Override
     public List<InvestOrder> getInvestOrdersFirstTime(Integer inId) {
         //有包含预约成功的
-        int[]states = new int[]{InvestStatus.EXTRACT.getStatus(),InvestStatus.MANAGEMENT.getStatus(),InvestStatus.FINISHED.getStatus()};
-        
         //预约中的
-        int state = InvestStatus.SUBSCRIBED.getStatus();
-        return null;
+        int state = InvestStatus.MANAGEMENT.getStatus();
+        List<InvestOrder> orders = investOrderMapper.getInvestOrdersNoRepeat(inId,state);
+        return orders;
     }
 }
