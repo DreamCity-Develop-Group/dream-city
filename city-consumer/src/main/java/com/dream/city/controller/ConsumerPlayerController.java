@@ -240,7 +240,7 @@ public class ConsumerPlayerController {
     public Message resetLoginPwd(@RequestBody Message msg) {
         log.info("修改密码", JSONObject.toJSONString(msg));
         UserReq jsonReq = DataUtils.getUserReq(msg);
-        Result result = consumerPlayerService.resetLoginPwd(jsonReq.getPlayerId(), jsonReq.getOldpw(), jsonReq.getNewpw());
+        Result result = consumerPlayerService.resetLoginPwd(jsonReq.getUsername(), jsonReq.getOldpw(), jsonReq.getNewpw());
 
         log.info("##################### 修改密码 : {}", msg);
         Map<String, String> t = new HashMap<>();
@@ -265,7 +265,7 @@ public class ConsumerPlayerController {
         UserReq jsonReq = DataUtils.getUserReq(msg);
         PlayerResp player = commonsService.getPlayerByUserName(msg);
 
-        Result result = consumerPlayerService.resetTraderPwd(jsonReq.getPlayerId(), jsonReq.getOldpw(), jsonReq.getNewpw());
+        Result result = consumerPlayerService.resetTraderPwd(jsonReq.getUsername(), jsonReq.getOldpw(), jsonReq.getNewpw());
         log.info("##################### 修改交易密码 : {}", msg);
         Map<String, String> t = new HashMap<>();
         t.put("desc", result.getMsg());

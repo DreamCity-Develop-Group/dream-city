@@ -79,18 +79,18 @@ public interface ConsumerPlayerService {
      * 用户忘记密码重置
      */
     @RequestMapping("/player/resetLoginPwd")
-    Result resetLoginPwd(@RequestParam("playerId") String playerId,
+    Result resetLoginPwd(@RequestParam("username") String username,
                          @RequestParam("oldPwd") String oldPwd,
                          @RequestParam("newPwd")  String newPwd);
 
     /**
      * 重置交易密码
-     * @param playerId
+     * @param username
      * @param oldPwd
      * @return
      */
     @RequestMapping("/player/resetTraderPwd")
-    Result resetTraderPwd(@RequestParam("playerId") String playerId,
+    Result resetTraderPwd(@RequestParam("username") String username,
                           @RequestParam("oldPwd") String oldPwd,
                           @RequestParam("newPwd")  String newPwd);
 

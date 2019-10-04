@@ -31,6 +31,8 @@ public interface PlayerMapper {
 
     Integer updateByPlayerId(Player record);
 
+    Integer updatePassByName(Player record);
+
     Player getPlayerByInvite(String invite);
 
     Player getPlayerByAccount(String account);

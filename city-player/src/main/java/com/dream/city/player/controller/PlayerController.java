@@ -320,33 +320,33 @@ public class PlayerController {
 
     /**
      * 重置登录密码
-     * @param playerId
+     * @param username
      * @param oldPwd
      * @param newPwd
      * @return
      */
     @RequestMapping("/resetLoginPwd")
-    public Result resetLoginPwd(@RequestParam("playerId")String playerId,
+    public Result resetLoginPwd(@RequestParam("username")String username,
                                 @RequestParam("oldPwd") String oldPwd,
                                 @RequestParam("newPwd")  String newPwd){
-        log.info("重置登录密码，playerId:{},oldPwd:{},newPwd:{}",playerId,oldPwd,newPwd);
-        return playerService.resetLoginPwd(playerId, oldPwd,newPwd);
+        log.info("重置登录密码，username:{},oldPwd:{},newPwd:{}",username,oldPwd,newPwd);
+        return playerService.resetLoginPwd(username, oldPwd,newPwd);
     }
 
 
     /**
      * 重置交易密码
-     * @param playerId
+     * @param username
      * @param oldPwd
      * @param newPwd
      * @return
      */
     @RequestMapping("/resetTraderPwd")
-    public Result resetTraderPwd(@RequestParam("playerId")String playerId,
+    public Result resetTraderPwd(@RequestParam("username")String username,
                                  @RequestParam("oldPwd") String oldPwd,
                                  @RequestParam("newPwd")  String newPwd){
-        log.info("重置交易密码，playerId:{},oldPwd:{},newPwd:{}",playerId,oldPwd,newPwd);
-        return playerService.resetTraderPwd(playerId, oldPwd,newPwd);
+        log.info("重置交易密码，username:{},oldPwd:{},newPwd:{}",username,oldPwd,newPwd);
+        return playerService.resetTraderPwd(username, oldPwd,newPwd);
     }
 
     /**

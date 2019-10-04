@@ -51,21 +51,21 @@ public class PlayerServiceImpl implements PlayerService {
     }
 
     @Override
-    public Result resetLoginPwd(String playerId, String oldPwd, String newPwd) {
+    public Result resetLoginPwd(String username, String oldPwd, String newPwd) {
         String pwdType = "resetLoginPwd";
-        Result result = changePwdVelid(playerId, oldPwd,pwdType);
+        Result result = changePwdVelid(username, oldPwd,pwdType);
         if (!result.getSuccess()){
             return result;
         }
 
-        return changePwd(playerId, newPwd);
+        return changePwd(username, newPwd);
     }
 
-    private Result changePwd(String playerId, String newPwd){
+    private Result changePwd(String username, String newPwd){
         Player player = new Player();
-        player.setPlayerId(playerId);
+        player.setPlayerName(username);
         player.setPlayerPass(newPwd);
-        int i = playerMapper.updateByPlayerId(player);
+        int i = playerMapper.updatePassByName(player);
         if (i>0){
             // 修改密码成功
             return new Result(Boolean.TRUE, CityGlobal.Constant.USER_CHANGE_PWD_SUCCESS);
@@ -75,17 +75,17 @@ public class PlayerServiceImpl implements PlayerService {
 
 
     @Override
-    public Result resetTraderPwd(String playerId, String oldPwd, String newPwd) {
+    public Result resetTraderPwd(String username, String oldPwd, String newPwd) {
         String pwdType = "resetTraderPwd";
-        Result result = changePwdVelid(playerId, oldPwd,pwdType);
+        Result result = changePwdVelid(username, oldPwd,pwdType);
         if (!result.getSuccess()){
             return result;
         }
 
         Player player = new Player();
-        player.setPlayerId(playerId);
+        player.setPlayerName(username);
         player.setPlayerTradePass(newPwd);
-        int i = playerMapper.updateByPlayerId(player);
+        int i = playerMapper.updatePassByName(player);
         if (i>0){
             // 修改密码成功
             return new Result(Boolean.TRUE, CityGlobal.Constant.USER_CHANGE_TRADERPWD_SUCCESS);
@@ -93,9 +93,9 @@ public class PlayerServiceImpl implements PlayerService {
         return new Result(Boolean.FALSE, CityGlobal.Constant.USER_CHANGE_TRADERPWD_FAIL);
     }
 
-    private Result changePwdVelid(String playerId, String oldPwd,String pwdType){
+    private Result changePwdVelid(String username, String oldPwd,String pwdType){
         Player player = new Player();
-        player.setPlayerId(playerId);
+        player.setPlayerName(username);
         Player playerExit = playerMapper.getPlayerById(player);
 
         // 用户不存在
