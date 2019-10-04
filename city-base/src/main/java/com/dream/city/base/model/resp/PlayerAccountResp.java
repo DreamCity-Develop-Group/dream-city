@@ -1,5 +1,6 @@
 package com.dream.city.base.model.resp;
 
+import lombok.Data;
 import lombok.ToString;
 
 import java.io.Serializable;
@@ -10,6 +11,7 @@ import java.util.Date;
  * @author wvv
  */
 @ToString
+@Data
 public class PlayerAccountResp implements Serializable {
     /**  */
     private Integer accId;

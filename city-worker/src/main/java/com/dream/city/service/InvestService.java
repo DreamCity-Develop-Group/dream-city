@@ -9,6 +9,8 @@ import java.util.Map;
 public interface InvestService {
     List<CityInvest> getAllCityInvests();
 
+    CityInvest getCityInvest(Integer investId);
+
     Date getEndTimeAt(Integer orderInvestId);
 
     List<CityInvest> getInvests();

@@ -27,6 +27,11 @@ public class InvestServiceImpl implements InvestService {
     }
 
     @Override
+    public CityInvest getCityInvest(Integer investId) {
+        return investMapper.getCityInvest(investId);
+    }
+
+    @Override
     public Date getEndTimeAt(Integer orderInvestId) {
         CityInvest invest = investMapper.getCityInvest(orderInvestId);
 

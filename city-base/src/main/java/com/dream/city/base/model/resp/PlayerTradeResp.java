@@ -1,9 +1,12 @@
 package com.dream.city.base.model.resp;
 
+import lombok.Data;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
+@Data
 public class PlayerTradeResp implements Serializable {
 
     private Integer tradeId;

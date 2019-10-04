@@ -41,14 +41,14 @@ public interface InvestOrderService {
     void updateOrderState(InvestOrder order,InvestStatus status);
 
     /**
-     * 找出所有成功的订单，所得到的资金总额度
+     * 找出所有成功的订单，计算所得到的资金总额度
      *
      * @param inId
      * @return
      */
     List<InvestOrder> getInvestOrdersAmountByDayInterval(Integer inId, String start, String end);
 
-    List<InvestOrder> getInvestOrdersByCurrent(Integer inId, int[] states,int start,int end);
+    List<InvestOrder> getInvestOrdersByCurrent(Integer inId, int state,String start,String end);
 
     /**
      * 查出符合条件的记录总数
@@ -58,4 +58,12 @@ public interface InvestOrderService {
      * @return
      */
     int getInvestOrdersSum(Integer investId, int[] states);
+
+    /**
+     * 第一次投资的订单
+     *
+     * @param inId
+     * @return
+     */
+    List<InvestOrder> getInvestOrdersFirstTime(Integer inId);
 }

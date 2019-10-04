@@ -66,7 +66,7 @@ public class ConsumerPropertyHandleServiceImpl implements ConsumerPropertyHandle
                 resultMap.put("inImg",invest.getInImg());
                 resultMap.put("inName",invest.getInName());
                 resultMap.put("inId",invest.getInId());
-                resultMap.put("profit",invest.getInTax());
+                resultMap.put("profit",invest.getInPersonalTax());
                 resultMap.put("orderAmount",invest.getInLimit());
                 resultMap.put("personalInTax",0); //TODO
                 resultMap.put("enterpriseIntax",0); //TODO

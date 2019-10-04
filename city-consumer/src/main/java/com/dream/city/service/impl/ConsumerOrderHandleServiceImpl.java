@@ -48,9 +48,9 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
 
         //获取项目数据
         CityInvest invest = getInvestByIdOrinName(orderReq.getInvestId(),orderReq.getInName());
-        BigDecimal inTax = BigDecimal.valueOf(invest.getInTax());
+        BigDecimal inTax = invest.getInPersonalTax();
         orderReq.setOrderAmount(invest.getInLimit());
-        orderReq.setInTax(Double.parseDouble(String.valueOf(invest.getInTax())));
+        orderReq.setInTax(Double.parseDouble(String.valueOf(invest.getInPersonalTax())));
         //获取当前时间  后改为数据库时间 TODO
         Date investTime = new Date();
 
@@ -88,7 +88,7 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
             desc = "USDT不足";
         }
         //6MT不足
-        if (BigDecimal.valueOf(Double.parseDouble(String .valueOf(invest.getInTax()))).compareTo(playerAccount.getAccMtAvailable()) > 0){
+        if (BigDecimal.valueOf(Double.parseDouble(String .valueOf(invest.getInPersonalTax()))).compareTo(playerAccount.getAccMtAvailable()) > 0){
             desc = "MT不足";
         }
 
@@ -155,7 +155,7 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
         updatePlayerAccountSuccess = Boolean.parseBoolean(deductTaxMap.get("success"));
         if (deductTaxMap != null && updatePlayerAccountSuccess && updatePlayerAccountDate > 0){
             Result<PlayerTrade> playerTradeTaxResult = this.createPlayerTrade(orderReq.getPayerId(), order.getOrderId(),
-                    BigDecimal.valueOf(Double.parseDouble(String.valueOf(invest.getInTax()))), amountType, tradeAmountType);
+                    BigDecimal.valueOf(Double.parseDouble(String.valueOf(invest.getInPersonalTax()))), amountType, tradeAmountType);
             if (playerTradeTaxResult != null && playerTradeTaxResult.getSuccess() && playerTradeTaxResult.getData() != null) {
                 success = Boolean.TRUE;
             }else {
@@ -369,7 +369,7 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
                 map.put("inImg",invest.getInImg());
                 map.put("inName",invest.getInName());
                 map.put("inId",invest.getInId());
-                map.put("profit",invest.getInTax());
+                map.put("profit",invest.getInPersonalTax());
                 map.put("orderAmount",invest.getInLimit());
                 map.put("personalInTax",0); //TODO
                 map.put("enterpriseIntax",0); //TODO

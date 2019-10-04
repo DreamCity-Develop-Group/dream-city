@@ -28,7 +28,7 @@ public class PlayerEarning implements Serializable {
     /**
      * 当前获利
      */
-    private BigDecimal earn_current;
+    private BigDecimal earnCurrent;
 
     /** 个税税金 */
     private BigDecimal earnPersonalTax;

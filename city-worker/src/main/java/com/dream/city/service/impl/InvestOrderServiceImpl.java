@@ -74,7 +74,9 @@ public class InvestOrderServiceImpl implements InvestOrderService {
                             long longs = Long.parseLong(total * rule.getRuleRate() + "");
                             List<InvestOrder> longsOrders = getInvestLongOrders(investOrders, longs);
                             investOrdersSucess.put(rule.getRuleFlag(), longsOrders);
-                            investOrders.removeAll(longsOrders);
+                            if (longsOrders!=null){
+                                investOrders.removeAll(longsOrders);
+                            }
                             break;
                         case "ORDER_OTHERS"://其他 100%
                             long other = Long.parseLong(total * rule.getRuleRate() + "");
@@ -163,15 +165,36 @@ public class InvestOrderServiceImpl implements InvestOrderService {
         return investOrders.subList(0, (int) likes);
     }
 
+    /**
+     * 投资时间最长
+     *
+     * @param investOrders
+     * @param longs
+     * @return
+     */
     private List<InvestOrder> getInvestLongOrders(List<InvestOrder> investOrders, long longs) {
-
-        return null;
+        if(longs == 0){
+            return new ArrayList<>();
+        }
+        investOrders.sort((o1,o2)->{
+            return investService.getEndTimeAt(o1.getOrderInvestId())-investService.getEndTimeAt(o2.getOrderInvestId());
+        });
+        return investOrders.subList(0, (int) longs);
     }
 
+    /**
+     * 其他的玩家
+     * @param investOrders
+     * @param other
+     * @return
+     */
     private List<InvestOrder> getOtherOrders(List<InvestOrder> investOrders, long other) {
         if (other == 0) {
-            return null;
+            return new ArrayList<>();
         }
+        investOrders.sort((o1,o2)->{
+            return 0;
+        });
 
         return investOrders.subList(0, (int) other);
     }
@@ -258,8 +281,8 @@ public class InvestOrderServiceImpl implements InvestOrderService {
     }
 
     @Override
-    public List<InvestOrder> getInvestOrdersByCurrent(Integer inId, int[] states,int start,int end) {
-        List<InvestOrder> orders = investOrderMapper.getInvestOrdersByCurrent(inId,states,start,end);
+    public List<InvestOrder> getInvestOrdersByCurrent(Integer inId, int state,String start,String end) {
+        List<InvestOrder> orders = investOrderMapper.getInvestOrdersAmountByDayInterval(inId,state,start,end);
 
         return null;
     }
@@ -268,5 +291,15 @@ public class InvestOrderServiceImpl implements InvestOrderService {
     public int getInvestOrdersSum(Integer investId, int[] states) {
 
         return investOrderMapper.getInvestOrdersSum(investId,states);
+    }
+
+    @Override
+    public List<InvestOrder> getInvestOrdersFirstTime(Integer inId) {
+        //有包含预约成功的
+        int[]states = new int[]{InvestStatus.EXTRACT.getStatus(),InvestStatus.MANAGEMENT.getStatus(),InvestStatus.FINISHED.getStatus()};
+        
+        //预约中的
+        int state = InvestStatus.SUBSCRIBED.getStatus();
+        return null;
     }
 }
