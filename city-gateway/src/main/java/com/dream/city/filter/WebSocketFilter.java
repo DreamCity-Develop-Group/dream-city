@@ -61,6 +61,7 @@ public class WebSocketFilter extends ZuulFilter {
             set.add("getCode");
             set.add("jobPush");
             set.add("createWorker");
+            set.add("pwforget");
             if (set.contains(accessMethod)){
                 log.info("Access method is Ok! ");
                 return null;

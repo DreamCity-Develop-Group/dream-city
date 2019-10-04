@@ -185,14 +185,16 @@ public class WebSocketServer {
                     System.out.println("心跳消息接收...");
                     //TODO 保持连接状态，更新TOKEN：当用户Token即将过期，但此时用户实际在线，需要续期
                     String redisKey = RedisKeys.LOGIN_USER_TOKEN + account;
-                    long expire = redisUtils.getExpire(redisKey);
-                    long expired = 60;
-                    if (expire < expired && expire != 0) {
-                        //取出token
-                        String token = redisUtils.getStr(redisKey);
-                        //延期token
-                        redisUtils.set(redisKey, token, 30 * 60);
+                    if (redisUtils.hasKey(redisKey)){
+                        long expire = redisUtils.getExpire(redisKey);
+                        long expired = 60;
+                        if (expire < expired && expire != 0) {
+                            //取出token
+                            String token = redisUtils.getStr(redisKey);
+                            //延期token
+                            redisUtils.set(redisKey, token, 30 * 60);
 
+                        }
                     }
                     sendMessage("success");
                     return;

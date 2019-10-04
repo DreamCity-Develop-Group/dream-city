@@ -67,7 +67,7 @@ public class HttpClientUtil {
             String url = gateWayUrl + "/" + gateRoutePath + "/" + serviceModel + "/" + serviceOpt;
 
             httpPost = new HttpPost(url);
-            if (serviceOpt.equals("login") || serviceOpt.equals("reg") || serviceOpt.equals("getValiCode")) {
+            if (serviceOpt.equals("login") || serviceOpt.equals("reg") || serviceOpt.equals("getValiCode") || serviceOpt.equals("pwforget")) {
                 //这里不处理，表示正常放行
                 httpPost.setHeader("method", serviceOpt);
                 httpPost.setHeader("authType", "");

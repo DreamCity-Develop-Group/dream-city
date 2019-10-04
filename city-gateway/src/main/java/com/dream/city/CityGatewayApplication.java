@@ -12,7 +12,7 @@ import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBr
  */
 @SpringBootApplication
 @EnableEurekaClient
-@MapperScan("com.dream.city.base.model.mapper")
+//@MapperScan("com.dream.city.base.model.mapper")
 //@EnableZuulServer
 @EnableZuulProxy
 public class CityGatewayApplication {
