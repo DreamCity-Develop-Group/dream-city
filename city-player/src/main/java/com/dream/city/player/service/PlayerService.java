@@ -27,13 +27,13 @@ public interface PlayerService {
      *修改密码
      * @return
      */
-    Result resetLoginPwd(String playerId, String oldPwd, String newPwd);
+    Result resetLoginPwd(String username, String oldPwd, String newPwd);
 
     /**
      *交易密码
      * @return
      */
-    Result resetTraderPwd(String playerId, String oldPwd, String newPwd);
+    Result resetTraderPwd(String username, String oldpwshop, String newpwshop);
 
     boolean save(Player player);
 

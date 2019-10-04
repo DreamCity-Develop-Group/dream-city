@@ -51,21 +51,21 @@ public class PlayerServiceImpl implements PlayerService {
     }
 
     @Override
-    public Result resetLoginPwd(String playerId, String oldPwd, String newPwd) {
+    public Result resetLoginPwd(String username, String oldPwd, String newPwd) {
         String pwdType = "resetLoginPwd";
-        Result result = changePwdVelid(playerId, oldPwd,pwdType);
+        Result result = changePwdVelid(username, oldPwd,pwdType);
         if (!result.getSuccess()){
             return result;
         }
 
-        return changePwd(playerId, newPwd);
+        return changePwd(username, newPwd);
     }
 
-    private Result changePwd(String playerId, String newPwd){
+    private Result changePwd(String username, String newPwd){
         Player player = new Player();
-        player.setPlayerId(playerId);
+        player.setPlayerName(username);
         player.setPlayerPass(newPwd);
-        int i = playerMapper.updateByPlayerId(player);
+        int i = playerMapper.updatePassByName(player);
         if (i>0){
             // 修改密码成功
             return new Result(Boolean.TRUE, CityGlobal.Constant.USER_CHANGE_PWD_SUCCESS);
@@ -75,17 +75,17 @@ public class PlayerServiceImpl implements PlayerService {
 
 
     @Override
-    public Result resetTraderPwd(String playerId, String oldPwd, String newPwd) {
+    public Result resetTraderPwd(String username, String oldpwshop, String newpwshop) {
         String pwdType = "resetTraderPwd";
-        Result result = changePwdVelid(playerId, oldPwd,pwdType);
+        Result result = changePwdVelid(username, oldpwshop,pwdType);
         if (!result.getSuccess()){
             return result;
         }
 
         Player player = new Player();
-        player.setPlayerId(playerId);
-        player.setPlayerTradePass(newPwd);
-        int i = playerMapper.updateByPlayerId(player);
+        player.setPlayerName(username);
+        player.setPlayerTradePass(newpwshop);
+        int i = playerMapper.updatePassByName(player);
         if (i>0){
             // 修改密码成功
             return new Result(Boolean.TRUE, CityGlobal.Constant.USER_CHANGE_TRADERPWD_SUCCESS);
@@ -93,9 +93,9 @@ public class PlayerServiceImpl implements PlayerService {
         return new Result(Boolean.FALSE, CityGlobal.Constant.USER_CHANGE_TRADERPWD_FAIL);
     }
 
-    private Result changePwdVelid(String playerId, String oldPwd,String pwdType){
+    private Result changePwdVelid(String username, String oldpwshop,String pwdType){
         Player player = new Player();
-        player.setPlayerId(playerId);
+        player.setPlayerName(username);
         Player playerExit = playerMapper.getPlayerById(player);
 
         // 用户不存在
@@ -104,13 +104,13 @@ public class PlayerServiceImpl implements PlayerService {
         }
 
         // 旧密码不正确
-        if ("resetLoginPwd".equalsIgnoreCase(pwdType) && playerExit.getPlayerPass().equals(oldPwd)){
+        if ("resetLoginPwd".equalsIgnoreCase(pwdType) && playerExit.getPlayerPass().equals(oldpwshop)){
             return new Result(Boolean.FALSE, CityGlobal.Constant.USER_OLD_PWD_ERROR);
         }
         // 交易密码 没有交易密码的设置交易密码，有交易密码的修改交易密码
         if ("resetTraderPwd".equalsIgnoreCase(pwdType)
                 && StringUtils.isNotBlank(playerExit.getPlayerTradePass())
-                && playerExit.getPlayerTradePass().equals(oldPwd)){
+                && playerExit.getPlayerTradePass().equals(oldpwshop)){
             return new Result(Boolean.FALSE, CityGlobal.Constant.USER_OLD_PWD_ERROR);
         }
 

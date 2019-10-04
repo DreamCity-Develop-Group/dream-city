@@ -26,10 +26,10 @@
     <if test="playerId != null and playerId != ''">
       and p.player_id = #{playerId,jdbcType=VARCHAR} 
     </if>
-    <if test="playerName != null" >
+    <if test="playerName != null and playerName != ''" >
       and p.player_name = #{playerName,jdbcType=VARCHAR}
     </if>
-    <if test="playerNick != null" >
+    <if test="playerNick != null and playerNick != ''" >
       and p.player_nick = #{playerNick,jdbcType=VARCHAR}
     </if>
     limit 1
@@ -204,6 +204,20 @@
       update_time = now(),
     </set>
     where player_id = #{playerId,jdbcType=VARCHAR}
+  </update>
+
+  <update id="updatePassByName" parameterType="com.dream.city.base.model.entity.Player">
+    update city_player
+    <set >
+      <if test="playerPass != null" >
+        player_pass = #{playerPass,jdbcType=VARCHAR},
+      </if>
+      <if test="playerTradePass != null" >
+        player_trade_pass = #{playerTradePass,jdbcType=VARCHAR},
+      </if>
+      update_time = now(),
+    </set>
+    where player_name = #{playerName,jdbcType=VARCHAR}
   </update>
 
 </mapper>
