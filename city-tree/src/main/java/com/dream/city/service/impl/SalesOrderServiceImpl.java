@@ -4,6 +4,7 @@ import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.PlayerAccount;
 import com.dream.city.base.model.entity.RelationTree;
 import com.dream.city.base.model.entity.SalesOrder;
+import com.dream.city.base.model.enu.InvestStatus;
 import com.dream.city.base.model.enu.OrderState;
 import com.dream.city.base.model.mapper.CityTreeMapper;
 import com.dream.city.base.model.mapper.PlayerAccountMapper;
@@ -78,7 +79,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
         order.setOrderPayAmount(usdtPay);
         order.setOrderPlayerBuyer(playerId);
         order.setOrderPlayerSeller(parentId);
-        order.setOrderState(OrderState.PAID);
+        order.setOrderState(InvestStatus.INVEST);
         order.setOrderAmount(buyAmount);
         salesOrderMapper.createSalesOrder(order);
 
@@ -98,7 +99,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
             //扣除相应的USDT总额和可用额度
             playerAccountMapper.subtractAmount(order.getOrderPayAmount(), playerId);
             //改变订单状态
-            order.setOrderState(OrderState.PAY);
+            order.setOrderState(InvestStatus.INVEST);
             order.setUpdateTime(Timestamp.valueOf(new SimpleDateFormat("yMd Hms").format(new Date())));
             salesOrderMapper.updateSalesOrder(order);
             return new Result(true, "订单已支付成功", 200);
