@@ -20,29 +20,31 @@
         <module>city-server</module>
         <!--服务管理监控-->
         <module>city-admin</module>
-        <!--服务提供者-->
-        <!--<module>city-user</module>-->
+        <!-- 认证 -->
+        <module>city-auth</module>
+        <!--通用模块-->
+        <module>city-base</module>
+        <!--通信模块-->
+        <module>city-comm</module>
         <!-- 消息 -->
         <module>city-message</module>
+        <!--服务消费-->
         <module>city-consumer</module>
-        <module>city-base</module>
-        <module>city-comm</module>
+        <!--通用网关-->
         <module>city-gateway</module>
         <!-- 玩家 -->
         <module>city-player</module>
         <!-- 设置 -->
         <module>city-set</module>
-        <!-- 认证 -->
-        <module>city-auth</module>
+        <!--商会印记关系树-->
         <module>city-tree</module>
-        <module>city-user</module>
+        <!--任务中心-->
         <module>city-worker</module>
         <!-- 物业 -->
         <module>city-property</module>
         <!-- 玩家投资交易 -->
         <module>city-trade</module>
     </modules>
-
 
     <properties>
         <java.version>1.8</java.version>
