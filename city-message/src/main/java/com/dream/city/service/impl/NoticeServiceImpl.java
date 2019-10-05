@@ -27,7 +27,7 @@ public class NoticeServiceImpl implements NoticeService {
 
     @Override
     public List<CityTree> testMapper(){
-       List<CityTree> trees =  cityTreeMapper.getCity();
+       List<CityTree> trees =  cityTreeMapper.getTrees();
 
         return trees;
     }

@@ -114,7 +114,6 @@ public class RelationTreeController {
      */
     @RequestMapping("/get/account")
     public PlayerAccount getPlayerAccount(@RequestParam("playerId")String playerId){
-
         PlayerAccount account = accountService.getPlayerAccount(playerId);
 
         return  account;

@@ -3,7 +3,6 @@ package com.dream.city.base.model.enu;
 /**
  * 改用 InvestStatus
  */
-@Deprecated
 public enum OrderState {
 
     CANCEL(0,"取消"),
