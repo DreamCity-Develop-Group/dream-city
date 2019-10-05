@@ -8,6 +8,6 @@
         <setting name="logImpl" value="STDOUT_LOGGING" />
     </settings>
     <typeAliases>
-        <package name="com.yukong.chapter4.entity"/>
+        <package name="com.dream.city.base.model.entity"/>
     </typeAliases>
 </configuration>

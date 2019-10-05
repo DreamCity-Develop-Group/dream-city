@@ -16,7 +16,6 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @EnableFeignClients
 @EnableAsync
 public class CityCommApplication {
-
     public static void main(String[] args) {
         SpringApplication.run(CityCommApplication.class, args);
     }

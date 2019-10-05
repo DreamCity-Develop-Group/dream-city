@@ -40,7 +40,6 @@ public interface PlayerEarningMapper {
      * @return
      */
     @Select("select * from player_earning where 1=1 and earn_player_id=#{playerId} and earn_invest_id=#{investId}")
-    @ResultMap("BaseResultMap")
     PlayerEarning getPlayerEarning(@Param("playerId") String playerId, @Param("investId")Integer investId);
 
 }

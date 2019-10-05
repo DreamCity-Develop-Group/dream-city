@@ -38,7 +38,4 @@ public class InvestRule implements Serializable {
 
     /**  */
     private Date updateTime;
-
-
-
 }

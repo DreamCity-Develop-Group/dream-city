@@ -1,17 +1,16 @@
 package com.dream.city.base.model.mapper;
 
 
-import com.dream.city.base.model.entity.CityInvest;
-import com.dream.city.base.model.entity.InvestAllow;
 import com.dream.city.base.model.entity.InvestRule;
-import com.dream.city.base.model.entity.Player;
 import org.apache.ibatis.annotations.*;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 /**
  * @author Wvv
  */
+@Repository
 @Mapper
 public interface InvestRuleMapper {
     int deleteByPrimaryKey(Integer ruleId);
@@ -26,20 +25,24 @@ public interface InvestRuleMapper {
 
     int updateByPrimaryKey(InvestRule record);
 
-    @Results(id = "BasePlayerResultMap", value = {
-            @Result(property = "id", column = "rule_id", id = true),
+    @Results(id = "BasePlayerResultMap1", value = {
+            @Result(property = "ruleId", column = "rule_id", id = true),
             @Result(property = "ruleFlag", column = "rule_flag"),
             @Result(property = "ruleOpt", column = "rule_opt"),
             @Result(property = "ruleName", column = "rule_name"),
             @Result(property = "ruleDesc", column = "rule_desc"),
             @Result(property = "ruleItem", column = "rule_item"),
             @Result(property = "ruleRate", column = "rule_rate"),
+            @Result(property = "ruleRatePre", column = "rule_rate_pre"),
             @Result(property = "ruleLevel", column = "rule_level"),
             @Result(property = "createTime", column = "create_time"),
             @Result(property = "updateTime", column = "update_time"),
     })
+
+
+
     @Select({"select * from `invest_rule` where 1=1 and rule_id = #{ruleId}"})
-    Player getPlayer(String ruleId);
+    InvestRule getPlayer(String ruleId);
 
 
 
@@ -49,7 +52,7 @@ public interface InvestRuleMapper {
      * @return
      */
     @Select("select * from `invest_rule` where 1=1 and  player_id = #{playerId}")
-    InvestAllow getInvestAllowByPlayerId(String playerId);
+    InvestRule getInvestAllowByPlayerId(String playerId);
 
 
     @Select("select * from `invest_rule` where 1=1 and  rule_item = #{itemId}")
@@ -61,8 +64,8 @@ public interface InvestRuleMapper {
      * 获取单个投资
      *
      */
-    @Select({"select * from `city_invest` where 1=1 and in_id = #{investId}"})
-    CityInvest getCityInvest(Integer investId);
+    @Select({"select * from `invest_rule` where 1=1 and in_id = #{investId}"})
+    InvestRule getCityInvest(Integer investId);
 
 
     /**
@@ -71,8 +74,8 @@ public interface InvestRuleMapper {
      *
      * @return
      */
-    @Select("select * from `city_invest` where 1=1 ")
-    List<CityInvest> getAllCityInvests();
+    @Select("select * from `invest_rule` where 1=1 ")
+    List<InvestRule> getAllCityInvests();
 
 
 
@@ -80,25 +83,25 @@ public interface InvestRuleMapper {
             "<script>",
             "select",
             "*",
-            "from `city_invest`",
+            "from `invest_rule`",
             "where 1=1 and and player_id = #{playerId} and order_state in ",
             "<foreach collection='states' item='state' open='(' separator=',' close=')'>",
             "#{state}",
             "</foreach>",
             "</script>"
     })
-    List<CityInvest> getSuccessCityInvestnsByPlayerId(@Param("playerId") String playerId, @Param("states") int[] states);
+    List<InvestRule> getSuccessCityInvestnsByPlayerId(@Param("playerId") String playerId, @Param("states") int[] states);
 
-    @Select("select * from `city_invest` where 1=1 and order_invest_id = #{investId} and order_state=#{state}")
-    List<CityInvest> getCityInvestsByCurrentDay(Integer investId, int state);
+    @Select("select * from `invest_rule` where 1=1 and order_invest_id = #{investId} and order_state=#{state}")
+    List<InvestRule> getCityInvestsByCurrentDay(Integer investId, int state);
 
     /**
      * 更新订单
      *
      * @param order
      */
-    @Select("update `city_invest` set order_state = #{orderState} where 1=1 and order_invest_id = #{investId} and order_id=#{orderId}")
-    void updateOrder(CityInvest order);
+    @Select("update `invest_rule` set order_state = #{orderState} where 1=1 and order_invest_id = #{investId} and order_id=#{orderId}")
+    void updateOrder(InvestRule order);
 
     /**
      * 指更新订单状态
@@ -109,14 +112,18 @@ public interface InvestRuleMapper {
     @Update({"<script>" +
             "<foreach collection=\"orderList\" item=\"item\" separator=\";\">" +
             " UPDATE" +
-            " `city_invest`" +
+            " `invest_rule`" +
             " SET order_state = #{item.orderState, jdbcType=TINYINT}, " +
             "  WHERE " +
             "  AND order_id = #{item.orderId, jdbcType=VARCHAR} " +
             "</foreach>" +
             "</script>"})
-    void setOrdersState(@Param("orderList") List<CityInvest> orderList);
+    void setOrdersState(@Param("orderList") List<InvestRule> orderList);
 
     @Select("select * from `invest_rule` where 1=1 and order_invest_id = #{investId} and order_state=#{state}")
     List<InvestRule> getInvestRuleByKey(Integer key);
+
+    @Select("select * from `invest_rule` where 1=1 ")
+    @ResultMap("BasePlayerResultMap1")
+    List<InvestRule> selectRules();
 }

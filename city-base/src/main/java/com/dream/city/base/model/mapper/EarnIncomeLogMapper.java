@@ -14,6 +14,14 @@ import java.util.List;
 @Mapper
 public interface EarnIncomeLogMapper {
 
+    @Results(id = "BaseEarningResultMap", value = {
+            @Result(property = "inLogId", column = "in_log_id", id = true),
+            @Result(property = "inInvestId", column = "in_invest_id"),
+            @Result(property = "inPlayerId", column = "in_player_id"),
+            @Result(property = "inAmount", column = "in_amount"),
+            @Result(property = "createTime", column = "create_time"),
+    })
+
     @Insert("insert into earn_income_log values(#{earnId},#{inInvestId},#{inPlayerId},#{inAmount})")
     void add(EarnIncomeLog earnIncomeLog);
     /**
@@ -24,7 +32,7 @@ public interface EarnIncomeLogMapper {
      * @return
      */
     @Select("select * from player_earning where 1=1 and earn_player_id=#{playerId} and earn_invest_id=#{investId}")
-    @ResultMap("BaseResultMap")
+    //@ResultMap("BaseEarningResultMap1")
     PlayerEarning getPlayerEarning(@Param("playerId") String playerId, @Param("investId") Integer investId);
 
 }
