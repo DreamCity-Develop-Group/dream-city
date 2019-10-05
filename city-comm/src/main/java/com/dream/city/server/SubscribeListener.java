@@ -33,6 +33,10 @@ public class SubscribeListener extends MessageListenerAdapter implements Message
         String topic = new String(pattern);
         log.info("当前监听收到channel["+topic+"]消息");
         String msg = new String(message.getBody()).trim();
+        if (msg.contains("_")){
+            log.info("====此为心跳消息====");
+            return;
+        }
 
         msg = msg.replace("\\","");
         msg = msg.substring(1,msg.length()-1);
@@ -62,6 +66,7 @@ public class SubscribeListener extends MessageListenerAdapter implements Message
                 }
 
             } catch (IOException e) {
+                this.handleListenerException(e);
                 e.printStackTrace();
             }
         }

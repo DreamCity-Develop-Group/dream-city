@@ -71,7 +71,7 @@ public interface ConsumerPlayerService {
      * 用户忘记密码重置
      */
     @RequestMapping("/player/forgetPwd")
-    Result forgetPwd(@RequestParam("username") String username,@RequestParam("oldPwd") String oldPwd);
+    Result forgetPwd(@RequestParam("username") String username,@RequestParam("newpw") String newpw);
 
 
 

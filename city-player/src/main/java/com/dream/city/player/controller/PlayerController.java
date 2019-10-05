@@ -308,14 +308,14 @@ public class PlayerController {
     /**
      * 忘记密码
      * @param username
-     * @param oldPwd
+     * @param newpw
      * @return
      */
     @RequestMapping("/forgetPwd")
     public Result forgetPwd(@RequestParam("username")String username,
-                                @RequestParam("oldPwd") String oldPwd){
-        log.info("忘记密码，userName:{},oldPwd:{}",username,oldPwd);
-        return playerService.forgetPwd(username, oldPwd);
+                                @RequestParam("newpw") String newpw){
+        log.info("忘记密码，userName:{},newpw:{}",username,newpw);
+        return playerService.forgetPwd(username, newpw);
     }
 
     /**

@@ -21,7 +21,8 @@ public class AuthController {
     @RequestMapping("/get/{username}")
     public String getAuth(@PathVariable("username") String username){
         String token = authService.generiteToken(username);
-
+        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>token username: " + username);
+        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>username token: " + token);
         return token;
     }
 
