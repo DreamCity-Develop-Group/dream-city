@@ -12,7 +12,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
  */
 @SpringBootApplication
 @EnableEurekaClient
-//@MapperScan("com.dream.city.base.model.mapper")
+@MapperScan("com.dream.city.base.model.mapper")
 @EnableFeignClients
 @EnableAsync
 public class CityCommApplication {

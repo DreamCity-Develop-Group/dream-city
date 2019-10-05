@@ -169,6 +169,9 @@ public class HttpClientServiceImpl implements HttpClientService {
     @Async
     @Override
     public void post(Message msg) {
+        log.info(">>>>>执行[httpClientService]=>Post");
+        log.info("{}",msg);
+
         CloseableHttpClient client = HttpClientBuilder.create().build();
         //网关地址
         String gateWayUrl = gateWayConfig.getUrl();

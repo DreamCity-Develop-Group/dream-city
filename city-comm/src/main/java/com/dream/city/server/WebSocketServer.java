@@ -175,7 +175,7 @@ public class WebSocketServer {
         //根据sid 到服务上找对应的数据，=》校验 =》 推送数据到客户端
         try {
             //TODO 1、如果客户端发心跳包[ping_XXXX],回复success：包括登录期间的ping和登录之前的连接检测
-            String[] msgArray = message.split("_");
+            String[] msgArray = message.split("&&");
             if (msgArray.length>1) {
                 String ping = msgArray[0];
                 String account = msgArray[1];
