@@ -50,7 +50,9 @@ public class PlayerAccountServiceImpl implements PlayerAccountService {
 
     @Override
     public PlayerAccount getPlayerAccount(String playerId){
-        return  playerAccountMapper.getPlayerAccount(playerId);
+        PlayerAccount account = playerAccountMapper.getPlayerAccount(playerId);
+        //return playerAccountMapper.findPlayerAccount(1);
+        return account;
     }
 
     @Override

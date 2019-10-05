@@ -10,6 +10,24 @@ import java.util.List;
 
 @Mapper
 public interface PlayerAccountMapper {
+    @Results(id = "BaseCityAccountResultMap", value = {
+            @Result(property = "accId", column = "acc_id", id = true),
+            @Result(property = "accPlayerId", column = "acc_player_id", id = true),
+            @Result(property = "accAddr", column = "acc_addr", id = true),
+            @Result(property = "accPass", column = "acc_pass", id = true),
+            @Result(property = "accUsdt", column = "acc_usdt", id = true),
+            @Result(property = "accUsdtAvailable", column = "acc_usdt_available", id = true),
+            @Result(property = "accUsdtFreeze", column = "acc_usdt_freeze", id = true),
+            @Result(property = "accMt", column = "acc_mt", id = true),
+            @Result(property = "accMtAvailable", column = "acc_mt_available", id = true),
+            @Result(property = "accMtFreeze", column = "acc_mt_freeze", id = true),
+            @Result(property = "accIncome", column = "acc_income", id = true),
+            @Result(property = "createTime", column = "create_time", id = true),
+            @Result(property = "updateTime", column = "update_time", id = true),
+
+    })
+    @Select("select * from player_account where 1=1 and acc_id=#{accId}")
+    PlayerAccount findPlayerAccount(int accid);
 
     Integer deleteByPrimaryKey(Integer accId);
 
@@ -36,8 +54,8 @@ public interface PlayerAccountMapper {
      * @param playerId
      * @return
      */
-    @Select("select * from player_account where 1=1 and  acc_player_id = #{playerId}")
-    @ResultMap("BasePlayerAccountResultMap")
+    @ResultMap("BaseCityAccountResultMap")
+    @Select("select * from player_account where 1=1 and  acc_player_id = #{playerId} limit 1 ")
     PlayerAccount getPlayerAccount(String playerId);
 
     @Update("update player_account set acc_usdt = acc_usdt-#{payAmount} ,acc_usdt_availble=acc_usdt_availble-#{payAmount} where 1=1 adnd acc_player_id=#{playerId}")

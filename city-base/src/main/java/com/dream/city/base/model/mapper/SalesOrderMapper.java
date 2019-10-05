@@ -71,4 +71,7 @@ public interface SalesOrderMapper {
             "</foreach>" +
             "</script>"})
     void sendOrderMt(@Param("orderList") List<SalesOrder> orderList);
+
+    @Select("select * from `sales_order` where 1=1 and order_player_buyer = #{playerId} limit 1 ")
+    List<SalesOrder> getSalesOrderByBuyerPlayerId(String playerId);
 }
