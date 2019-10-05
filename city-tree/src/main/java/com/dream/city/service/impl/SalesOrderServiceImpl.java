@@ -95,7 +95,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
     public Result buyMtFinish(String playerId, String orderId) {
         SalesOrder order = salesOrderMapper.getSalesOrderByOrderId(orderId);
         //处于待支付状态
-        if (OrderState.TOBESHIPPED.equals(order.getOrderState())) {
+        if (OrderState.PAY.equals(order.getOrderState())) {
             //扣除相应的USDT总额和可用额度
             playerAccountMapper.subtractAmount(order.getOrderPayAmount(), playerId);
             //改变订单状态

@@ -17,7 +17,6 @@
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
     </resultMap>
 
-<<<<<<< HEAD
     <sql id="Base_Column_List">
     acc_id, acc_player_id, acc_usdt, acc_usdt_available, acc_usdt_freeze, acc_mt, acc_mt_available, 
     acc_mt_freeze, acc_income, create_time, update_time
@@ -210,6 +209,4 @@
         </where>
         order by create_time desc
     </select>
-=======
->>>>>>> db5c5451a7fa6cc570942c5aae14293b74180dd3
 </mapper>
