@@ -12,12 +12,16 @@ public interface ConsumerOrderHandleService {
 
 
     /**
-     * 玩家投资
+     * 预约投资
      * @param msg
      * @return
      */
     @RequestMapping("/insertOrder")
     Message playerInvest(Message msg);
+
+
+    @RequestMapping("/playerInvesting")
+    Message playerInvesting(Message msg);
 
     /**
      * 投资作废

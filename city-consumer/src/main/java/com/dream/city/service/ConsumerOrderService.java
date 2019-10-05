@@ -6,6 +6,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -19,12 +20,20 @@ public interface ConsumerOrderService {
 
 
     /**
-     * 创建订单
+     * 预约投资
      * @param record
      * @return
      */
     @RequestMapping("/insertOrder")
     Result<InvestOrder> insertOrder(@RequestBody InvestOrder record);
+
+    /**
+     * 投资
+     * @param orderId
+     * @return
+     */
+    @RequestMapping("/playerInvesting")
+    Result<Integer> playerInvesting(@RequestParam("orderId") Integer orderId);
 
     /**
      * 订单作废

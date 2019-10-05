@@ -32,24 +32,31 @@ public class ConsumerInvestController {
 
 
 
-
-    //预约投资 TODO
-
-
-
-
-
     /**
-     * 玩家投资
+     * 预约投资
      * @param msg
      * @return
      */
-    @ApiOperation(value = "玩家投资",notes = "t可选参数:investId,orderAmount,username,amountType", response = Message.class)
+    @ApiOperation(value = "预约投资",notes = "t可选参数:investId,orderAmount,username,amountType", response = Message.class)
     @RequestMapping("/playerInvest")
     public Message playerInvest(@RequestBody Message msg){
-        logger.info("玩家投资", JSONObject.toJSONString(msg));
+        logger.info("预约投资", JSONObject.toJSONString(msg));
         return orderHandleService.playerInvest(msg);
     }
+
+
+    /**
+     * 投资
+     * @param msg
+     * @return
+     */
+    @ApiOperation(value = "投资",notes = "t可选参数:investId,orderAmount,username,amountType", response = Message.class)
+    @RequestMapping("/playerInvesting")
+    public Message playerInvesting(@RequestBody Message msg){
+        logger.info("投资", JSONObject.toJSONString(msg));
+        return orderHandleService.playerInvest(msg);
+    }
+
 
     /**
      * 根据投资id查询订单

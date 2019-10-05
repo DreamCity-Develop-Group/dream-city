@@ -1,12 +1,11 @@
 package com.dream.city.invest.service.impl;
 
 import com.dream.city.base.model.entity.InvestOrder;
-import com.dream.city.base.model.enu.OrderState;
+import com.dream.city.base.model.enu.InvestStatus;
 import com.dream.city.base.model.mapper.InvestOrderMapper;
 import com.dream.city.invest.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -20,23 +19,29 @@ public class OrderServiceImpl implements OrderService {
 
 
     @Override
-    @Transactional
     public InvestOrder insertInvestOrder(InvestOrder record) {
         return orderMapper.insertSelective(record);
     }
 
     @Override
-    @Transactional
-    public int investOrderInvalid(InvestOrder record) {
-        record.setOrderState(OrderState.INVALID.name());
+    public int playerInvesting(Integer orderId) {
+        InvestOrder record = new InvestOrder();
+        record.setOrderId(orderId);
+        record.setOrderState(InvestStatus.MANAGEMENT.name());
         Integer integer = orderMapper.updateByPrimaryKeySelective(record);
         return integer ==null?0:integer;
     }
 
     @Override
-    @Transactional
+    public int investOrderInvalid(InvestOrder record) {
+        record.setOrderState(InvestStatus.INVALID.name());
+        Integer integer = orderMapper.updateByPrimaryKeySelective(record);
+        return integer ==null?0:integer;
+    }
+
+    @Override
     public int investOrderCancel(InvestOrder record) {
-        record.setOrderState(OrderState.CANCEL.name());
+        record.setOrderState(InvestStatus.CANCEL.name());
         Integer integer = orderMapper.updateByPrimaryKeySelective(record);
         return integer ==null?0:integer;
     }

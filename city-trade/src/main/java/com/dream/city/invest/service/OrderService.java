@@ -12,11 +12,19 @@ public interface OrderService {
 
 
     /**
-     * 投资物业
+     * 预约投资
      * @param record
      * @return
      */
     InvestOrder insertInvestOrder(InvestOrder record);
+
+    /**
+     * 投资
+     * 投资状态改成经营中
+     * @param orderId
+     * @return
+     */
+    int playerInvesting(Integer orderId);
 
     /**
      * 投资订单作废
