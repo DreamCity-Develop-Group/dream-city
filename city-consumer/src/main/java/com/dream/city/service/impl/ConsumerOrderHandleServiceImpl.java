@@ -43,7 +43,7 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
 
     @Override
     public Message playerInvest(Message msg) {
-        logger.info("玩家投资:{}",msg);
+        logger.info("预约投资:{}",msg);
         InvestOrderReq orderReq = DataUtils.getInvestOrderReqFromMessage(msg);
 
         //获取项目数据
@@ -168,6 +168,40 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
         return msg;
     }
 
+    /**
+     * 投资
+     * @param msg
+     * @return
+     */
+    @Override
+    public Message playerInvesting(Message msg) {
+        logger.info("投资:{}",msg);
+        String desc = "";
+        boolean success = Boolean.FALSE;
+        MessageData messageData = new MessageData(msg.getData().getType(),msg.getData().getModel());
+        msg.setDesc("投资失败");
+        InvestOrderReq orderReq = DataUtils.getInvestOrderReqFromMessage(msg);
+        //修改订单状态
+        Result<Integer> playerInvestingResult = orderService.playerInvesting(orderReq.getOrderId());
+        if (playerInvestingResult.getSuccess() && playerInvestingResult.getData() > 0){
+            //TODO
+            //扣减冻结金额
+
+            //扣减冻结金额流水
+
+            //生产扣减冻结金额流水
+
+
+            //平台账户进账
+
+            //平台账户进账流水
+
+            msg.setDesc("投资成功");
+        }
+        msg.setData(messageData);
+        return msg;
+    }
+
 
     /**
      * 获取当前投资项目数据
@@ -197,7 +231,8 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
             InvestOrder recordReq =new InvestOrder();
             recordReq.setOrderInvestId(investId);
             recordReq.setOrderPayerId(orderPayerId);
-            recordReq.setOrderState(OrderState.WAITVERIFY.name());
+            //预约
+            recordReq.setOrderState(InvestStatus.SUBSCRIBE.name());
             recordReq.setOrderRepeat(orderRepeat);
             orderResult = orderService.insertOrder(recordReq);
         }
@@ -255,10 +290,10 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
 
             if (tradeAmountType.equalsIgnoreCase(TradeAmountType.MT_INVEST.getCode()) && Boolean.parseBoolean(success)
                     && Integer.parseInt(data) > 0){
-                msg = "投资成功！";
+                msg = "投资预约成功！";
                 success = String.valueOf(Boolean.TRUE);
             }else {
-                msg = "投资失败！";
+                msg = "投资预约失败！";
                 success = String.valueOf(Boolean.FALSE);
             }
         }

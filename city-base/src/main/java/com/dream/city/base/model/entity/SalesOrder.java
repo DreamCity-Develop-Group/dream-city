@@ -1,6 +1,5 @@
 package com.dream.city.base.model.entity;
 
-import com.dream.city.base.model.enu.OrderState;
 import lombok.Data;
 
 import java.math.BigDecimal;

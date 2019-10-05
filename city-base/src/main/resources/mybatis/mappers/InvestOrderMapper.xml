@@ -50,7 +50,7 @@
         and  order_state = #{order_repeat,jdbcType=TINYINT}
       </if>
     </where>
-    order by create_time
+    order by update_time
   </select>
 
 
@@ -97,6 +97,7 @@
         order_repeat,
       </if>
       create_time,
+      update_time,
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="orderId != null" >
@@ -117,7 +118,8 @@
       <if test="orderRepeat != null" >
         #{orderRepeat,jdbcType=TINYINT},
       </if>
-      now()
+      now(),
+      now(),
     </trim>
   </insert>
 
@@ -139,7 +141,7 @@
       <if test="orderRepeat != null" >
         order_repeat = #{orderRepeat,jdbcType=TINYINT},
       </if>
-      update_time = now()
+      update_time = now(),
     </set>
     where order_id = #{orderId,jdbcType=INTEGER}
   </update>

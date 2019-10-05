@@ -6,10 +6,7 @@ import com.dream.city.invest.service.OrderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -28,23 +25,41 @@ public class OrderController {
 
 
     /**
-     * 新建投资
+     * 预约投资
      * @param order
      * @return
      */
     @RequestMapping("/insertOrder")
     public Result<InvestOrder> insertInvestOrder(@RequestBody InvestOrder order) {
-        logger.info("新建投资，{}", order);
+        logger.info("预约投资，{}", order);
 
         InvestOrder investOrder = orderService.insertInvestOrder(order);
-        String desc = "新建投资失败";
+        String desc = "预约投资失败";
         boolean success = Boolean.FALSE;
         if (investOrder != null){
-            desc = "新建投资成功";
+            desc = "预约投资成功";
             success = Boolean.TRUE;
         }
-        Result<InvestOrder> result = new Result<>(success,desc,investOrder);
-        return result;
+        return new Result<>(success,desc,investOrder);
+    }
+
+    /**
+     * 投资
+     * 投资状态改成经营中
+     * @param orderId
+     * @return
+     */
+    @RequestMapping("/playerInvesting")
+    public Result<Integer> playerInvesting(@RequestParam("orderId") Integer orderId) {
+        logger.info("投资，{}", orderId);
+        String desc = "投资";
+        boolean success = Boolean.FALSE;
+        int i = orderService.playerInvesting(orderId);
+        if (i > 0){
+            desc = "投资成功";
+            success = Boolean.TRUE;
+        }
+        return new Result<>(success,desc,i);
     }
 
     /**
@@ -64,8 +79,7 @@ public class OrderController {
             desc = "查询投资成功";
             success = Boolean.TRUE;
         }
-        Result<InvestOrder> result = new Result<>(success,desc,investOrder);
-        return result;
+        return new Result<>(success,desc,investOrder);
     }
 
     /**
@@ -84,8 +98,7 @@ public class OrderController {
             desc = "投资订单作废成功";
             success = Boolean.TRUE;
         }
-        Result<Integer> result = new Result<>(success,desc,i);
-        return result;
+        return  new Result<>(success,desc,i);
     }
 
 
@@ -105,8 +118,7 @@ public class OrderController {
             desc = "投资订单取消成功";
             success = Boolean.TRUE;
         }
-        Result<Integer> result = new Result<>(success,desc,i);
-        return result;
+        return new Result<>(success,desc,i);
     }
 
 
@@ -129,8 +141,7 @@ public class OrderController {
         } catch (Exception e) {
             logger.error("投资订单列表异常", e);
         }
-        Result<List<InvestOrder>> result = new Result<>(success, desc, data);
-        return result;
+        return new Result<>(success, desc, data);
     }
 
 
@@ -154,8 +165,7 @@ public class OrderController {
         } catch (Exception e) {
             logger.error("获取投资数量异常", e);
         }
-        Result<Integer> result = new Result<>(success, desc, data);
-        return result;
+        return new Result<>(success, desc, data);
     }
 
 
