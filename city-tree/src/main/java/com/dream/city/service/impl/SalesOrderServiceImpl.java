@@ -79,11 +79,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
         order.setOrderPayAmount(usdtPay);
         order.setOrderPlayerBuyer(playerId);
         order.setOrderPlayerSeller(parentId);
-<<<<<<< HEAD
         order.setOrderState(OrderState.CREATE);
-=======
-        order.setOrderState(InvestStatus.INVEST);
->>>>>>> db5c5451a7fa6cc570942c5aae14293b74180dd3
         order.setOrderAmount(buyAmount);
         salesOrderMapper.createSalesOrder(order);
 
@@ -99,15 +95,11 @@ public class SalesOrderServiceImpl implements SalesOrderService {
     public Result buyMtFinish(String playerId, String orderId) {
         SalesOrder order = salesOrderMapper.getSalesOrderByOrderId(orderId);
         //处于待支付状态
-        if (OrderState.WAITEPAID.equals(order.getOrderState())) {
+        if (OrderState.TOBESHIPPED.equals(order.getOrderState())) {
             //扣除相应的USDT总额和可用额度
             playerAccountMapper.subtractAmount(order.getOrderPayAmount(), playerId);
             //改变订单状态
-<<<<<<< HEAD
             order.setOrderState(OrderState.PAID);
-=======
-            order.setOrderState(InvestStatus.INVEST);
->>>>>>> db5c5451a7fa6cc570942c5aae14293b74180dd3
             order.setUpdateTime(Timestamp.valueOf(new SimpleDateFormat("yMd Hms").format(new Date())));
             salesOrderMapper.updateSalesOrder(order);
             return new Result(true, "订单已支付成功", 200);

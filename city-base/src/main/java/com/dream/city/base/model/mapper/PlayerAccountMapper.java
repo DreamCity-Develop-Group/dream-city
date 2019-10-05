@@ -15,10 +15,7 @@ import java.util.List;
 @Mapper
 @Repository
 public interface PlayerAccountMapper {
-<<<<<<< HEAD
-    /*
-=======
->>>>>>> db5c5451a7fa6cc570942c5aae14293b74180dd3
+
     @Results(id = "BaseCityAccountResultMap", value = {
             @Result(property = "accId", column = "acc_id", id = true),
             @Result(property = "accPlayerId", column = "acc_player_id", id = true),
@@ -34,14 +31,11 @@ public interface PlayerAccountMapper {
             @Result(property = "createTime", column = "create_time", id = true),
             @Result(property = "updateTime", column = "update_time", id = true),
 
-<<<<<<< HEAD
-    })*/
-    PlayerAccount getAccountByPlayerId(String playerId);
-=======
     })
+    PlayerAccount getAccountByPlayerId(String playerId);
+
     @Select("select * from player_account where 1=1 and acc_id=#{accId}")
     PlayerAccount findPlayerAccount(int accid);
->>>>>>> db5c5451a7fa6cc570942c5aae14293b74180dd3
 
     Integer deleteByPrimaryKey(Integer accId);
     Integer insertSelective(PlayerAccount record);
@@ -61,12 +55,8 @@ public interface PlayerAccountMapper {
      * @param playerId
      * @return
      */
-<<<<<<< HEAD
-    @Select("select * from player_account where 1=1 and  acc_player_id = #{playerId}")
-=======
     @ResultMap("BaseCityAccountResultMap")
     @Select("select * from player_account where 1=1 and  acc_player_id = #{playerId} limit 1 ")
->>>>>>> db5c5451a7fa6cc570942c5aae14293b74180dd3
     PlayerAccount getPlayerAccount(String playerId);
     @Update("update player_account set acc_usdt = acc_usdt-#{payAmount} ,acc_usdt_availble=acc_usdt_availble-#{payAmount} where 1=1 adnd acc_player_id=#{playerId}")
     void subtractAmount(BigDecimal payAmount, String playerId);
