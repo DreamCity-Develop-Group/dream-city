@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: city-invest
+    name: city-trade
   profiles:
     active: dev
   main:

@@ -25,8 +25,6 @@ public interface PlayerEarningMapper {
 
     List<PlayerEarning> getPlayerEarningByPlayerId(String playerId);
 
-
-
     List<PlayerEarning> selectPlayerEarningList(PlayerEarning record);
 
     Integer updateByPrimaryKeySelective(PlayerEarning record);

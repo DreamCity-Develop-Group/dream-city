@@ -233,9 +233,8 @@ public class RedisConfig extends CachingConfigurerSupport {
         return new Jedis(host,port);
     }
 
-    /*@Bean
+    @Bean
     public RedisUtils redisUtils(){
         return new RedisUtils();
-    }*/
-
+    }
 }

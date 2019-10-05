@@ -34,11 +34,11 @@ public class AccountServiceImpl implements AccountService {
         if (record.getAccId() == null && StringUtils.isBlank(record.getAccPlayerId())){
             return null;
         }
-        PlayerAccountReq accountReq = new PlayerAccountReq();
+/*        PlayerAccountReq accountReq = new PlayerAccountReq();
         accountReq.setAccId(record.getAccId());
         accountReq.setAccPlayerId(record.getAccPlayerId());
-        accountReq.setPlatformAccIds(platformAccIds);
-        return accountMapper.getPlayerAccount(accountReq);
+        accountReq.setPlatformAccIds(platformAccIds);*/
+        return accountMapper.getPlayerAccount(record.getAccPlayerId());
     }
 
     @Override
@@ -49,8 +49,8 @@ public class AccountServiceImpl implements AccountService {
     @Override
     @Transactional
     public int updatePlayerAccount(PlayerAccount record) {
-        Integer integer = accountMapper.updateByPlayerId(record);
-        return integer ==null?0:integer;
+        accountMapper.updatePlayerAccount(record);
+        return 1;
     }
 
 

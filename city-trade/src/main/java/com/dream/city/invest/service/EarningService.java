@@ -30,7 +30,7 @@ public interface EarningService {
      */
     PlayerEarning getEarning(Integer earnId);
 
-    PlayerEarning getPlayerEarningByPlayerId(String playerId);
+    PlayerEarning getPlayerEarningByPlayerId(String playerId,Integer investId);
 
     /**
      * 查询玩家提现收入列表

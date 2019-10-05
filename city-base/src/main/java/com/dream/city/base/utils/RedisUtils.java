@@ -3,6 +3,8 @@ package com.dream.city.base.utils;
 import com.alibaba.fastjson.JSONObject;
 import com.dream.city.base.model.entity.Notice;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.*;
@@ -18,23 +20,14 @@ import java.util.concurrent.TimeUnit;
  * @author wvv
  * Redis客户端
  */
-@Component
 public class RedisUtils {
-
     private static final Charset CODE = Charset.forName("UTF-8");
 
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
 
-//    @Autowired
-//    private RedisTemplate<String, String> stringRedisTemplate;
-
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
-    //private StringRedisTemplate strRedisTemplate;
-
-    //@Autowired
-    //private Jedis jedis;
 
 
 

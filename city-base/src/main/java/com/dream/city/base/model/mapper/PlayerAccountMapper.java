@@ -58,4 +58,19 @@ public interface PlayerAccountMapper {
             "</script>"})
     void updateBuyerAccount(@Param("accounts") List<PlayerAccount> accounts);
 
+    @Select("select * from player_account where 1=1 and  acc_player_id = #{playerId}")
+    PlayerAccount getPlayerAccountByPlayerId(String playerId);
+
+    @Update({"<script>" +
+            "<foreach collection=\"accounts\" item=\"item\" separator=\";\">" +
+            " UPDATE" +
+            " `player_account`" +
+            " SET acc_usdt = #{item.accUsdt, jdbcType=VARCHAR}, " +
+            "  acc_usdt_available = #{item.accUsdtAvailable, jdbcType=VARCHAR}, " +
+            "  WHERE 1=1 " +
+            "  AND message_player_id = #{item.accPlayerId, jdbcType=VARCHAR} " +
+            "</foreach>" +
+            "</script>"})
+
+    void updatePlayerAccount(PlayerAccount record);
 }

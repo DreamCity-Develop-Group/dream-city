@@ -8,7 +8,6 @@ import com.dream.city.base.model.enu.InvestStatus;
 import com.dream.city.service.InvestOrderService;
 import com.dream.city.service.InvestRuleService;
 import com.dream.city.service.InvestService;
-import com.dream.city.service.impl.UserServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;

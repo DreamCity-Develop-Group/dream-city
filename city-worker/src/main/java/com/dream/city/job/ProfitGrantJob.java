@@ -161,7 +161,11 @@ public class ProfitGrantJob extends QuartzJobBean {
                                 BigDecimal topLikesProfit = profitSum.multiply(new BigDecimal(rule.getRuleRate()));
                                 BigDecimal everyTopLikesProfit = topLikesProfit.divide(new BigDecimal(topLike));
                                 //查出一共多少条数据
+                                start = 0;
+                                end = 100;
                                 List<InvestOrder> topLikesOrders = new ArrayList<>();
+                                statesSum = new int[]{InvestStatus.MANAGEMENT.getStatus()};
+                                sum = orderService.getInvestOrdersSum(invest.getInId(), statesSum);
                                 while (sum > 0) {
                                     List<InvestOrder> orders = orderService.getInvestOrdersByCurrent(invest.getInId(), statesSum, start, end);
                                     List<InvestOrder> topOrders1 = orderService.getLiksGatherOrders(orders, topLike);
@@ -179,13 +183,15 @@ public class ProfitGrantJob extends QuartzJobBean {
                                 BigDecimal topLongProfit = profitSum.multiply(new BigDecimal(rule.getRuleRate()));
                                 BigDecimal everyTopLongProfit = topLongProfit.divide(new BigDecimal(topLong));
                                 //查出一共多少条数据
-                                //int[] statesSum = new int[]{InvestStatus.MANAGEMENT.getStatus()};
-                                //int sum = orderService.getInvestOrdersSum(invest.getInId(), statesSum);
+                                start = 0;
+                                end = 100;
+                                statesSum = new int[]{InvestStatus.MANAGEMENT.getStatus()};
+                                sum = orderService.getInvestOrdersSum(invest.getInId(), statesSum);
                                 List<InvestOrder> topLongOrders = new ArrayList<>();
                                 while (sum > 0) {
                                     List<InvestOrder> orders = orderService.getInvestOrdersByCurrent(invest.getInId(), statesSum, start, end);
-                                    List<InvestOrder> topOrders1 = orderService.getInvestLongTimeOrders(orders, topLike);
-                                    topLongOrders = filterTops(topLongOrders,topOrders1,topLike);
+                                    List<InvestOrder> topOrders1 = orderService.getInvestLongTimeOrders(orders, topLong);
+                                    topLongOrders = filterTops(topLongOrders,topOrders1,topLong);
                                     sum -= 100;
                                     start += 100;
                                     end += 100;
