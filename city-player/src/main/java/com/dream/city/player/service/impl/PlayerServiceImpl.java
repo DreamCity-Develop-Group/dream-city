@@ -6,7 +6,6 @@ import com.dream.city.base.model.Page;
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.Friends;
 import com.dream.city.base.model.entity.PlayerGrade;
-import com.dream.city.base.model.req.PageReq;
 import com.dream.city.base.model.resp.PlayerResp;
 import com.dream.city.base.utils.DateUtils;
 import com.dream.city.base.model.entity.Player;
@@ -154,7 +153,7 @@ public class PlayerServiceImpl implements PlayerService {
 
 
     @Override
-    public Page getPlayers(PageReq<Map> pageReq) {
+    public Page getPlayers(Page pageReq) {
         Page page = new Page();
         page.setCondition(pageReq.getCondition());
 
@@ -163,10 +162,11 @@ public class PlayerServiceImpl implements PlayerService {
 
         List<Map> playersMap = new ArrayList<>();
         if (!CollectionUtils.isEmpty(players)){
+            Map<String,Object> condition = JSON.parseObject(JSON.toJSONString(pageReq.getCondition()));
             String getFriendAgree = "添加";
             for (Map player:players){
-                if (pageReq.getCondition().containsKey("username")){
-                    getFriendAgree = this.getFriendAgree(String.valueOf(pageReq.getCondition().get("username")),player);
+                if (condition.containsKey("username")){
+                    getFriendAgree = this.getFriendAgree(String.valueOf(condition.get("username")),player);
                 }
                 player.put("addfriend",getFriendAgree);
                 player.put("friendId","");
@@ -175,7 +175,7 @@ public class PlayerServiceImpl implements PlayerService {
             }
         }
         page.setResult(playersMap);
-        page.setTotalCount( count== null?0:count);
+        page.setTotal( count== null?0:count);
 
         return page;
     }

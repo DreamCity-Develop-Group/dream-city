@@ -2,7 +2,6 @@ package com.dream.city.service.impl;
 
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.PlayerExt;
-import com.dream.city.base.model.req.PageReq;
 import com.dream.city.service.ConsumerPlayerService;
 import org.springframework.web.bind.annotation.RequestBody;
 

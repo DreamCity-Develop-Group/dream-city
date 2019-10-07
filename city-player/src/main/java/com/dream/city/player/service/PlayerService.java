@@ -3,12 +3,10 @@ package com.dream.city.player.service;
 import com.dream.city.base.model.Page;
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.PlayerGrade;
-import com.dream.city.base.model.req.PageReq;
 import com.dream.city.base.model.entity.Player;
 import com.dream.city.base.model.resp.PlayerResp;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -50,7 +48,7 @@ public interface PlayerService {
      * @param pageReq
      * @return
      */
-    Page getPlayers(PageReq<Map> pageReq);
+    Page getPlayers(Page pageReq);
 
     PlayerResp getPlayerByName(String username, String playerNick);
 

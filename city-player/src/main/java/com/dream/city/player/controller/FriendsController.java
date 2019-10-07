@@ -3,7 +3,6 @@ package com.dream.city.player.controller;
 
 import com.dream.city.base.model.Page;
 import com.dream.city.base.model.Result;
-import com.dream.city.base.model.req.PageReq;
 import com.dream.city.base.model.entity.Friends;
 import com.dream.city.player.service.FriendsService;
 import org.slf4j.Logger;

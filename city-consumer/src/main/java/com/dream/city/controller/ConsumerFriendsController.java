@@ -3,7 +3,6 @@ package com.dream.city.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.dream.city.base.model.*;
-import com.dream.city.base.model.req.PageReq;
 import com.dream.city.service.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

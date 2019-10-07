@@ -3,7 +3,6 @@ package com.dream.city.service;
 import com.alibaba.fastjson.JSONObject;
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.PlayerExt;
-import com.dream.city.base.model.req.PageReq;
 import com.dream.city.service.impl.FallBackPlayer;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;

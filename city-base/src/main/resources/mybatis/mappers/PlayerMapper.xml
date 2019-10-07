@@ -57,7 +57,7 @@
     limit 1
   </select>
 
-  <select id="getPlayers" parameterType="com.dream.city.base.model.req.PageReq" resultType="java.util.Map">
+  <select id="getPlayers" parameterType="com.dream.city.base.model.Page" resultType="java.util.Map">
     SELECT p.player_id playerId,p.player_name username,p.player_nick nick,p.create_time createTime,
         (SELECT e1.friendlink FROM player_ext e1 WHERE e1.player_id = p.player_id) playerLink,
         (SELECT e2.imgurl FROM player_ext e2 WHERE e2.player_id = p.player_id) imgurl,
@@ -77,7 +77,7 @@
     </where>
     GROUP BY p.player_id ORDER BY p.create_time DESC limit ${start},${pageSize}
   </select>
-  <select id="getPlayersCount" parameterType="com.dream.city.base.model.req.PageReq" resultType="java.lang.Integer">
+  <select id="getPlayersCount" parameterType="com.dream.city.base.model.Page" resultType="java.lang.Integer">
     SELECT COUNT(a.player_id) FROM (SELECT p.player_id
         from city_player p LEFT JOIN player_friends f ON p.player_id=f.friend_id
         <where> (f.agree IS NULL OR f.agree = 0)
@@ -95,7 +95,7 @@
     ) a
   </select>
 
-  <select id="getSquareFriends" parameterType="com.dream.city.base.model.req.PageReq" resultType="java.util.Map">
+  <select id="getSquareFriends" parameterType="com.dream.city.base.model.Page" resultType="java.util.Map">
     SELECT p.player_id playerId,p.player_name username,p.player_nick nick,p.create_time createTime,
     e.friendlink playerLink,e.imgurl,g.grade,g.integral
     from city_player p INNER JOIN player_ext e ON p.player_id=e.player_id
@@ -111,7 +111,7 @@
     </where>
     ORDER BY p.create_time DESC limit ${start},${pageSize}
   </select>
-  <select id="getSquareFriendsCount" parameterType="com.dream.city.base.model.req.PageReq" resultType="java.lang.Integer">
+  <select id="getSquareFriendsCount" parameterType="com.dream.city.base.model.Page" resultType="java.lang.Integer">
     SELECT COUNT(p.player_id)
     from city_player p INNER JOIN player_ext e ON p.player_id=e.player_id
     INNER JOIN player_grade g ON p.player_id=g.player_id

@@ -17,17 +17,17 @@
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
-    from game_setting
+    from player_game_setting
     where id = #{id,jdbcType=BIGINT}
   </select>
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
-    delete from game_setting
+    delete from player_game_setting
     where id = #{id,jdbcType=BIGINT}
   </delete>
 
   <insert id="insertSelective" parameterType="com.dream.city.base.model.entity.GameSetting" >
-    insert into city_setting
+    insert into player_game_setting
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
         id,
@@ -77,7 +77,7 @@
   </insert>
 
   <update id="updateByPrimaryKeySelective" parameterType="com.dream.city.base.model.entity.GameSetting" >
-    update city_setting
+    update player_game_setting
     <set >
       <if test="playerId != null" >
         player_id = #{playerId,jdbcType=VARCHAR},
@@ -102,7 +102,7 @@
   </update>
 
   <update id="updateByType" parameterType="com.dream.city.base.model.entity.GameSetting" >
-    update city_setting
+    update player_game_setting
     <set >
       <if test="val != null" >
         val = #{val,jdbcType=VARCHAR},
@@ -126,7 +126,7 @@
   <select id="selectByType" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select
     <include refid="Base_Column_List" />
-    from game_setting
+    from player_game_setting
     where type = #{type,jdbcType=BIGINT}
   </select>
 

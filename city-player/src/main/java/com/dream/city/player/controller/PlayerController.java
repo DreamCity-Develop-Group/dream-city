@@ -8,7 +8,6 @@ import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.LoginLog;
 import com.dream.city.base.model.entity.Player;
 import com.dream.city.base.model.entity.PlayerExt;
-import com.dream.city.base.model.req.PageReq;
 import com.dream.city.base.model.req.UserReq;
 import com.dream.city.base.model.resp.PlayerResp;
 import com.dream.city.base.utils.InvitedCodeUtil;
@@ -20,8 +19,6 @@ import com.dream.city.player.service.PlayerHandleService;
 import com.dream.city.player.service.PlayerService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
