@@ -23,11 +23,8 @@ public interface RelationTreeMapper {
 
     int updateByPrimaryKey(RelationTree record);
 
-
-
     @Select("select * from city_tree where 1=1")
     List<RelationTree> getCity();
-
 
     @Select("select * from city_tree where 1=1 and tree_parent_id = #{pid} and tree_player_id=#{cid}")
     RelationTree get(String pid,String cid);
@@ -44,7 +41,7 @@ public interface RelationTreeMapper {
 
 
 
-    @Select("select * from city_tree where 1=1 and tree_player_id=#{playerId} limit 1 ")
+    //@Select("select * from city_tree where 1=1 and tree_player_id=#{playerId} limit 1 ")
     RelationTree getByPlayer(String playerId);
 
     /**

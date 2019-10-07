@@ -19,6 +19,14 @@
     from city_tree
     where tree_id = #{treeId,jdbcType=INTEGER}
   </select>
+
+  <select id="getByPlayer" resultMap="TreeBaseResultMap" parameterType="java.lang.String" >
+    select
+    <include refid="Base_Column_List" />
+    from city_tree
+    where tree_player_id = #{treePlayerId,jdbcType=STRING}
+  </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from city_tree
     where tree_id = #{treeId,jdbcType=INTEGER}
