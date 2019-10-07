@@ -3,11 +3,15 @@ package com.dream.city.base.model.mapper;
 
 import com.dream.city.base.model.entity.PlayerGameSetting;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 @Mapper
-public interface GameSettingMapper {
+public interface PlayerGameSettingMapper {
+
     int deleteByPrimaryKey(Long id);
 
     int insertSelective(PlayerGameSetting record);
@@ -18,6 +22,8 @@ public interface GameSettingMapper {
 
     int updateByType(PlayerGameSetting record);
 
-    PlayerGameSetting selectByType(String type);
+    List<PlayerGameSetting> getGameSettingList(PlayerGameSetting record);
+
+    PlayerGameSetting selectByType(@Param("type") String type);
 
 }

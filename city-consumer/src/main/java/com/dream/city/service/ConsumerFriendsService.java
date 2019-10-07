@@ -2,6 +2,7 @@ package com.dream.city.service;
 
 import com.dream.city.base.model.Page;
 import com.dream.city.base.model.Result;
+import com.github.pagehelper.PageInfo;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,7 +39,7 @@ public interface ConsumerFriendsService {
      * @return
      */
     @RequestMapping("/friendList")
-    Result<Page> friendList(@RequestBody Page pageReq);
+    Result<PageInfo> friendList(@RequestBody Page pageReq);
 
     /**
      * 好友申请列表
@@ -46,6 +47,6 @@ public interface ConsumerFriendsService {
      * @return
      */
     @RequestMapping("/applyFriendList")
-    Result<Page> applyFriendList(@RequestBody Page pageReq);
+    Result<PageInfo> applyFriendList(@RequestBody Page pageReq);
 
 }

@@ -19,6 +19,9 @@ public interface PlayerMapper {
 
     PlayerResp getPlayerById(Player record);
 
+    List<PlayerResp> getPlayerList(Player pageReq);
+
+
     List<PlayerResp> getPlayers(Page pageReq);
     Integer getPlayersCount(Page pageReq);
 

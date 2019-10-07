@@ -167,7 +167,7 @@ public class DataUtils {
         likes.setLikedId(likedId);
         likes.setLikedPlayerId(likedPlayerId);
         likes.setLikedInvestId(likedInvestId);
-        likes.setLikedInvestTotal(likedInvestTotal);
+        likes.setLikedGetTotal(likedInvestTotal);
         likes.setLikePlayerId(likePlayerId);
         return likes;
     }
@@ -186,6 +186,19 @@ public class DataUtils {
     }
 
 
+    public static FriendsReq getFriendsReq(Message msg){
+        Map map = (Map)msg.getData().getData();
+        String username = map.containsKey("username")?(String) map.get("username"):null;
+        if (StringUtils.isBlank(username)){
+            username = map.containsKey("playerName")?(String) map.get("playerName"):null;
+        }
+        String nick = map.containsKey("nick")?(String) map.get("nick"):null;
+
+        FriendsReq resultMap = new FriendsReq();
+        resultMap.setPlayerName(username);
+        resultMap.setFriendNick(nick);
+        return resultMap;
+    }
 
 
     /**

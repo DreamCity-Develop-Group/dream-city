@@ -1,12 +1,12 @@
 package com.dream.city.base.model.mapper;
 
 
-import com.dream.city.base.model.Page;
 import com.dream.city.base.model.entity.Friends;
+import com.dream.city.base.model.req.FriendsReq;
+import com.dream.city.base.model.resp.FriendsResp;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author WVV
@@ -37,16 +37,18 @@ public interface FriendsMapper {
      * @param page
      * @return
      */
-    List<Map> friendList(Page page);
-    Integer friendCount(Page page);
+    List<FriendsResp> friendList(FriendsReq page);
+    //Integer friendCount(Page page);
 
     /**
      * 申请列表
      * @param page
      * @return
      */
-    List<Map> applyFriendList(Page page);
-    Integer applyFriendCount(Page page);
+    List<FriendsResp> applyFriendList(FriendsReq page);
+    //Integer applyFriendCount(Page page);
 
     Integer getFriendAgree(Friends record);
+
+    FriendsResp getFriend(Friends record);
 }

@@ -5,13 +5,14 @@
     <id column="liked_id" property="likedId" jdbcType="INTEGER" />
     <result column="liked_player_id" property="likedPlayerId" jdbcType="VARCHAR" />
     <result column="liked_invest_id" property="likedInvestId" jdbcType="INTEGER" />
-    <result column="liked_invest_total" property="likedInvestTotal" jdbcType="INTEGER" />
+    <result column="liked_set_total" property="likedSetTotal" jdbcType="INTEGER" />
+    <result column="liked_get_total" property="likedGetTotal" jdbcType="INTEGER" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
     <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
   </resultMap>
 
   <sql id="Base_Column_List" >
-    liked_id, liked_player_id, liked_invest_id, liked_invest_total, create_time, update_time
+    liked_id, liked_player_id, liked_invest_id, liked_set_total, liked_get_total, create_time, update_time
   </sql>
 
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
@@ -38,8 +39,11 @@
       <if test="likedInvestId != null" >
         liked_invest_id,
       </if>
-      <if test="likedInvestTotal != null" >
-        liked_invest_total,
+      <if test="likedSetTotal != null" >
+        liked_set_total,
+      </if>
+      <if test="likedGetTotal != null" >
+        liked_get_total,
       </if>
       <if test="createTime != null" >
         create_time,
@@ -58,8 +62,11 @@
       <if test="likedInvestId != null" >
         #{likedInvestId,jdbcType=INTEGER},
       </if>
-      <if test="likedInvestTotal != null" >
-        #{likedInvestTotal,jdbcType=INTEGER},
+      <if test="likedSetTotal != null" >
+        #{likedSetTotal,jdbcType=INTEGER},
+      </if>
+      <if test="likedGetTotal != null" >
+        #{likedGetTotal,jdbcType=INTEGER},
       </if>
       <if test="createTime != null" >
         #{createTime,jdbcType=TIMESTAMP},
@@ -78,8 +85,11 @@
       <if test="likedInvestId != null" >
         liked_invest_id = #{likedInvestId,jdbcType=INTEGER},
       </if>
-      <if test="likedInvestTotal != null" >
-        liked_invest_total = #{likedInvestTotal,jdbcType=INTEGER},
+      <if test="likedSetTotal != null" >
+        liked_set_total = #{likedSetTotal,jdbcType=INTEGER},
+      </if>
+      <if test="likedGetTotal != null" >
+        liked_get_total = #{likedGetTotal,jdbcType=INTEGER},
       </if>
       <if test="createTime != null" >
         create_time = #{createTime,jdbcType=TIMESTAMP},

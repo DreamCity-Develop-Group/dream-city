@@ -35,21 +35,21 @@
   </select>
 
   <!-- 好友列表  -->
-  <select id="friendList" parameterType="com.dream.city.base.model.Page" resultType="java.util.Map">
+  <select id="friendList" parameterType="com.dream.city.base.model.req.FriendsReq" resultType="com.dream.city.base.model.resp.FriendsResp">
     select a.id, a.player_id playerId, a.friend_id friendId, a.agree,
       b.friend_name friendName,b.friend_nick friendNick,b.friendlink,b.imgurl FROM
       (select f.id, f.player_id, f.friend_id , f.agree,f.create_time FROM player_friends f,city_player p
-      where f.player_id =p.player_id  and f.agree =1 and p.player_name = #{condition.username,jdbcType=VARCHAR}
+      where f.player_id =p.player_id  and f.agree =1 and p.player_name = #{playerName,jdbcType=VARCHAR}
       ) a,
       (SELECT p.player_id friend_id,p.player_name friend_name,p.player_nick friend_nick,e.friendlink,e.imgurl
       FROM city_player p,player_ext e WHERE p.player_id=e.player_id) b
     WHERE a.friend_id = b.friend_id
     <if test="condition.nick != null">
-      and b.friend_nick = #{condition.nick,jdbcType=VARCHAR}
+      and b.friend_nick = #{friendNick,jdbcType=VARCHAR}
     </if>
-    ORDER BY a.create_time DESC limit ${start},${pageSize}
+    ORDER BY a.create_time DESC
   </select>
-  <select id="friendCount" parameterType="com.dream.city.base.model.Page" resultType="java.lang.Integer">
+  <!--<select id="friendCount" parameterType="com.dream.city.base.model.Page" resultType="java.lang.Integer">
     select COUNT(a.friend_id) FROM
       (select f.id, f.player_id, f.friend_id , f.agree,f.create_time FROM player_friends f,city_player p
       where f.player_id =p.player_id  and f.agree =1 and p.player_name = #{condition.username,jdbcType=VARCHAR}
@@ -60,25 +60,25 @@
     <if test="condition.nick != null">
       and b.friend_nick = #{condition.nick,jdbcType=VARCHAR}
     </if>
-  </select>
+  </select>-->
 
   <!-- 申请列表  -->
-  <select id="applyFriendList" parameterType="com.dream.city.base.model.Page" resultType="java.util.Map">
+  <select id="applyFriendList" parameterType="com.dream.city.base.model.req.FriendsReq" resultType="com.dream.city.base.model.resp.FriendsResp">
     select a.id, a.player_id playerId, a.friend_id friendId, a.agree,
       b.friend_name username,b.friend_nick nick,b.friendlink playerLink,b.imgurl,g.grade,g.integral
-    FROM (select f.id, f.player_id, f.friend_id , f.agree,f.create_time FROM player_friends f,city_player p
-      where f.player_id =p.player_id and f.agree =0 and p.player_name = #{condition.username,jdbcType=VARCHAR}
+    FROM (select f.id, f.player_id, f.friend_id , f.agree,f.create_time FROM player_friends f,citpy_player p
+      where f.player_id =p.player_id and f.agree =0 and p.player_name = #{playerName,jdbcType=VARCHAR}
       ) a INNER JOIN
       (SELECT p.player_id friend_id,p.player_name friend_name,p.player_nick friend_nick,e.friendlink,e.imgurl
       FROM city_player p,player_ext e WHERE p.player_id=e.player_id) b ON a.friend_id = b.friend_id
            INNER JOIN player_grade g ON b.friend_id=g.player_id
       WHERE a.friend_id = b.friend_id and b.friend_id=g.player_id
       <if test="condition.nick != null and condition.nick != ''">
-        and b.friend_nick = #{condition.nick,jdbcType=VARCHAR}
+        and b.friend_nick = #{friendNick,jdbcType=VARCHAR}
       </if>
-    ORDER BY a.create_time DESC limit ${start},${pageSize}
+    ORDER BY a.create_time DESC
   </select>
-  <select id="applyFriendCount" parameterType="com.dream.city.base.model.Page" resultType="java.lang.Integer">
+  <!--<select id="applyFriendCount" parameterType="com.dream.city.base.model.Page" resultType="java.lang.Integer">
     select COUNT(a.friend_id)
     FROM (select f.id, f.player_id, f.friend_id , f.agree,f.create_time FROM player_friends f,city_player p
       where f.player_id =p.player_id and f.agree =0 and p.player_name = #{condition.username,jdbcType=VARCHAR}
@@ -90,7 +90,7 @@
     <if test="condition.nick != null and condition.nick != ''">
       and b.friend_nick = #{condition.nick,jdbcType=VARCHAR}
     </if>
-  </select>
+  </select>-->
 
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
@@ -179,6 +179,28 @@
     AND f.player_id = #{playerId,jdbcType=VARCHAR}
     AND f.friend_id = #{friendId,jdbcType=VARCHAR}
     order by create_time desc limit 1
+  </select>
+
+  <select id="getFriend" parameterType="com.dream.city.base.model.entity.Friends" resultType="com.dream.city.base.model.resp.FriendsResp">
+    select f.id, (SELECT player_name FROM city_player a1 WHERE a1.player_id = f.player_id) playerName,
+    (SELECT player_nick FROM city_player a2 WHERE a2.player_id = f.player_id) playerNick,
+    (SELECT player_name FROM city_player a3 WHERE a3.player_id = f.friend_id) friendName,
+    (SELECT player_nick FROM city_player a3 WHERE a3.player_id = f.friend_id) friendNick,
+    (SELECT imgurl FROM player_ext a4 WHERE a4.player_id = f.friend_id) friendImgurl,
+    f.agree,f.invite,f.is_valid isValid,DATE_FORMAT(f.create_time,"%Y-%m-%d %h:%m:%s") createTime,
+    DATE_FORMAT(f.update_time,"%Y-%m-%d %h:%m:%s") updateTime
+    FROM player_friends f
+    where 1=1
+    <if test="id != null">
+      and f.id = #{id,jdbcType=BIGINT}
+    </if>
+    <if test="playerId != null and playerId != ''">
+      and f.player_id = #{playerId,jdbcType=VARCHAR}
+    </if>
+    <if test="friendId != null and friendId != ''">
+      and f.friend_id = #{friendId,jdbcType=VARCHAR}
+    </if>
+    order by update_time desc limit 1
   </select>
 
 

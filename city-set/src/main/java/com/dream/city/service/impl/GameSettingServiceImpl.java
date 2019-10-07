@@ -4,7 +4,7 @@ import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.Notice;
 import com.dream.city.base.model.enu.GameSettingType;
 import com.dream.city.base.model.entity.PlayerGameSetting;
-import com.dream.city.base.model.mapper.GameSettingMapper;
+import com.dream.city.base.model.mapper.PlayerGameSettingMapper;
 import com.dream.city.base.model.mapper.NoticeMapper;
 import com.dream.city.base.utils.RedisUtils;
 import com.dream.city.service.GameSettingService;
@@ -17,7 +17,7 @@ import java.util.*;
 public class GameSettingServiceImpl implements GameSettingService {
 
     @Autowired
-    private GameSettingMapper gameSettingMapper;
+    private PlayerGameSettingMapper gameSettingMapper;
     @Autowired
     private NoticeMapper noticeMapper;
     @Autowired

@@ -1,5 +1,6 @@
 package com.dream.city.base.model.entity;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -11,9 +12,7 @@ import java.util.Date;
  *
  * @author Wvv
  */
-@Setter
-@Getter
-@ToString
+@Data
 public class User implements Serializable {
     /**
      * 编号

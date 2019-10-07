@@ -22,11 +22,18 @@
     where earn_id = #{earnId,jdbcType=INTEGER}
   </select>
 
-  <select id="getPlayerEarningByPlayerId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+  <select id="getPlayerEarning" resultMap="BaseResultMap"  parameterType="com.dream.city.base.model.entity.PlayerEarning" >
     select
     <include refid="Base_Column_List" />
     from player_earning
-    where earn_player_id = #{earnPlayerId,jdbcType=VARCHAR}
+    where 1=1
+    <if test="earnId != null">
+      and earn_id = #{earnId,jdbcType=INTEGER}
+    </if>
+    <if test="earnPlayerId != null and earnPlayerId != ''">
+      and earn_player_id = #{earnPlayerId,jdbcType=VARCHAR}
+    </if>
+    order by update_time desc limit 1
   </select>
 
   <select id="selectPlayerEarningList" resultMap="BaseResultMap" parameterType="com.dream.city.base.model.entity.PlayerEarning" >

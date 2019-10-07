@@ -31,7 +31,7 @@ public class LikesServiceImpl implements LikesService {
         }else {
             int count = getLikeCount(record.getLikedId());
             record.setUpdateTime(new Date());
-            record.setLikedInvestTotal(count + record.getLikedInvestTotal());
+            record.setLikedSetTotal(count + record.getLikedSetTotal());
             i = playerLikesMapper.updateByPrimaryKeySelective(record);
         }
         if(i>0){
@@ -45,7 +45,7 @@ public class LikesServiceImpl implements LikesService {
     public int cancelLike(PlayerLikesReq record) {
         int count = getLikeCount(record.getLikedId());
         record.setUpdateTime(new Date());
-        record.setLikedInvestTotal(count > 0? (count - 1): count);
+        record.setLikedSetTotal(count > 0? (count - 1): count);
         Integer i = playerLikesMapper.updateByPrimaryKeySelective(record);
         if(i>0){
             savePlayerLikesLog(record);

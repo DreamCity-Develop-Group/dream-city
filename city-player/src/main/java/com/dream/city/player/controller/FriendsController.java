@@ -5,6 +5,7 @@ import com.dream.city.base.model.Page;
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.Friends;
 import com.dream.city.player.service.FriendsService;
+import com.github.pagehelper.PageInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,9 +74,9 @@ public class FriendsController {
      * @return
      */
     @RequestMapping("/friendList")
-    public Result<Page> friendList(@RequestBody Page pageReq){
+    public Result<PageInfo> friendList(@RequestBody Page pageReq){
         logger.info("friendList，pageReq：{}",pageReq);
-        Page page = friendsService.friendList(pageReq);
+        PageInfo page = friendsService.friendList(pageReq);
         return new Result<>(Boolean.TRUE,"好友列表",page);
     }
 
@@ -86,9 +87,9 @@ public class FriendsController {
      * @return
      */
     @RequestMapping("/applyFriendList")
-    public Result<Page> applyFriendList(@RequestBody Page pageReq){
+    public Result<PageInfo> applyFriendList(@RequestBody Page pageReq){
         logger.info("applyFriendList，pageReq：{}",pageReq);
-        Page page = friendsService.applyFriendList(pageReq);
+        PageInfo page = friendsService.applyFriendList(pageReq);
         return new Result<>(Boolean.TRUE,"好友申请列表",page);
     }
 
