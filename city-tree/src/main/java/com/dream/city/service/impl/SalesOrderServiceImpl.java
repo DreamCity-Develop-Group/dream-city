@@ -6,7 +6,7 @@ import com.dream.city.base.model.entity.RelationTree;
 import com.dream.city.base.model.entity.SalesOrder;
 import com.dream.city.base.model.enu.InvestStatus;
 import com.dream.city.base.model.enu.OrderState;
-import com.dream.city.base.model.mapper.CityTreeMapper;
+import com.dream.city.base.model.mapper.RelationTreeMapper;
 import com.dream.city.base.model.mapper.PlayerAccountMapper;
 import com.dream.city.base.model.mapper.SalesOrderMapper;
 import com.dream.city.service.SalesOrderService;
@@ -27,7 +27,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
     @Autowired
     private PlayerAccountMapper playerAccountMapper;
     @Autowired
-    private CityTreeMapper treeMapper;
+    private RelationTreeMapper treeMapper;
 
     @Override
     public List<SalesOrder> selectSalesOrder(String playerId) {
@@ -64,7 +64,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
         }
         //找出上家
         RelationTree tree = treeMapper.getByPlayer(playerId);
-        String parentId = tree.getParentId();
+        String parentId = tree.getTreeParentId();
 
         //生成订单
         SalesOrder order = new SalesOrder();

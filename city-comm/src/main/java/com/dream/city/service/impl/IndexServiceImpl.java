@@ -15,6 +15,7 @@ public class IndexServiceImpl implements IndexService {
 
     @Override
     public List<InvestRule> selectRules() {
-        return ruleMapper.selectRules();
+        //return ruleMapper.selectRules();
+        return null;
     }
 }

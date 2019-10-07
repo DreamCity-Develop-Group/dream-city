@@ -197,7 +197,7 @@
     </select>
 
 
-    <select id="getAccountByPlayerId" resultMap="BasePlayerAccountResultMap"
+    <select id="getAccountByPlayerIds" resultMap="BasePlayerAccountResultMap"
             parameterType="java.lang.String">
         select
         <include refid="Base_Column_List"/>

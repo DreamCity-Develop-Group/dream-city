@@ -32,9 +32,10 @@ public interface PlayerAccountMapper {
             @Result(property = "updateTime", column = "update_time", id = true),
 
     })
+    @Select("select * from player_account where 1=1 and  acc_player_id = #{playerId} limit 1 ")
     PlayerAccount getAccountByPlayerId(String playerId);
 
-    @Select("select * from player_account where 1=1 and acc_id=#{accId}")
+    @Select("select acc_id accId, from player_account where 1=1 and acc_id=#{accId}")
     PlayerAccount findPlayerAccount(int accid);
 
     Integer deleteByPrimaryKey(Integer accId);
@@ -55,7 +56,7 @@ public interface PlayerAccountMapper {
      * @param playerId
      * @return
      */
-    @ResultMap("BaseCityAccountResultMap")
+    //@ResultMap("BaseCityAccountResultMap")
     @Select("select * from player_account where 1=1 and  acc_player_id = #{playerId} limit 1 ")
     PlayerAccount getPlayerAccount(String playerId);
     @Update("update player_account set acc_usdt = acc_usdt-#{payAmount} ,acc_usdt_availble=acc_usdt_availble-#{payAmount} where 1=1 adnd acc_player_id=#{playerId}")

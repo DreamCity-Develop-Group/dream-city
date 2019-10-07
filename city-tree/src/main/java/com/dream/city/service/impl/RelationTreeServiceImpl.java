@@ -5,7 +5,7 @@ import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.InvestRule;
 import com.dream.city.base.model.entity.RelationTree;
 import com.dream.city.base.model.entity.RuleItem;
-import com.dream.city.base.model.mapper.CityTreeMapper;
+import com.dream.city.base.model.mapper.RelationTreeMapper;
 import com.dream.city.service.InvestRuleService;
 import com.dream.city.service.PlayerAccountService;
 import com.dream.city.service.RelationTreeService;
@@ -28,7 +28,7 @@ public class RelationTreeServiceImpl implements RelationTreeService {
     private final String PlAYER_FLAG = "PlAYER_LEVEL";
 
     @Autowired
-    private CityTreeMapper treeMapper;
+    private RelationTreeMapper treeMapper;
 
     @Autowired
     InvestRuleService investRuleService;
@@ -49,10 +49,11 @@ public class RelationTreeServiceImpl implements RelationTreeService {
             return Result.result(false, "失败", 201);
         }
         if (null == playerTree) {
-            tree.setId(0);
-            tree.setParentId(parent);
-            tree.setPlayerId(child);
-            tree.setRelation(parentTree.getRelation() + "/" + invite);
+            tree.setTreeId(0);
+            tree.setTreeParentId(parent);
+            tree.setTreePlayerId(child);
+            tree.setTreeRelation(parentTree.getTreeRelation() + "/" + invite);
+            tree.setSendAuto("");
             tree.setTreeLevel(0);
             treeMapper.saveTree(tree);
             log.info("保存树成功");
@@ -135,7 +136,7 @@ public class RelationTreeServiceImpl implements RelationTreeService {
         }
         RelationTree tree = treeMapper.getByPlayer(playerId);
 
-        like = tree.getRelation() + like + "";
+        like = tree.getTreeRelation() + like + "";
         System.out.println("Select Like: " + like);
         List<RelationTree> trees = treeMapper.selectByRelation(like);
 
@@ -163,7 +164,7 @@ public class RelationTreeServiceImpl implements RelationTreeService {
     @Override
     public RelationTree getParent(String playerId) {
         RelationTree player = treeMapper.getByPlayer(playerId);
-        return treeMapper.getByPlayer(player.getParentId());
+        return treeMapper.getByPlayer(player.getTreeParentId());
     }
 
     @Override
@@ -188,7 +189,7 @@ public class RelationTreeServiceImpl implements RelationTreeService {
         Map<Integer, RelationTree> trees = new Hashtable<>();
 
         RelationTree self = getByPlayer(playerId);
-        String selfRef = self.getRelation();
+        String selfRef = self.getTreeRelation();
         String[] relations = selfRef.split("/");
         Integer levels = relations.length;
         Integer level = 0;

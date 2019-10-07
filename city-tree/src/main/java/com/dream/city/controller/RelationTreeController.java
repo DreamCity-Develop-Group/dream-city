@@ -33,12 +33,24 @@ public class RelationTreeController {
      * @param playerId
      * @return
      */
-    @RequestMapping("/get/tree")
-    public Result get(@RequestParam("playerId") String playerId) {
-        RelationTree tree = relationTreeService.getByPlayer(playerId);
+    @RequestMapping("/get/trees")
+    public Result getTrees(@RequestParam("playerId") String playerId) {
         List<RelationTree> trees = relationTreeService.getTrees();
 
         return new Result(CityGlobal.Constant.TREE_RELATION_SUCCESS, 200, trees);
+    }
+
+    /**
+     * 根据玩家ID查找关系
+     *
+     * @param playerId
+     * @return
+     */
+    @RequestMapping("/get/tree")
+    public Result getTree(@RequestParam("playerId") String playerId) {
+        RelationTree tree = relationTreeService.getByPlayer(playerId);
+
+        return new Result(CityGlobal.Constant.TREE_RELATION_SUCCESS, 200, tree);
     }
 
     /**

@@ -9,15 +9,32 @@ import java.sql.Timestamp;
  */
 @Data
 public class RelationTree {
-    Integer id;
-    String parentId;
-    String playerId;
-    String relation;
+    /**
+     *
+     */
+    private Integer treeId;
+
+    /**
+     * 上级ID
+     */
+    private String treeParentId;
+
+    /**
+     * 当前用户ID
+     */
+    private String treePlayerId;
+
+    /**
+     * 关系网络
+     */
+    private String treeRelation;
+
     /**
      * 是否自动发货
+     *
      * @return
      */
-    String sendAuto;
+    private String sendAuto;
     /**
      *   商会等级
      */
