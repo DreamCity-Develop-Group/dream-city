@@ -43,6 +43,8 @@ public class PlayerResp implements Serializable {
 
     private String updateTime;
 
+    private String addfriend;
+
 
 
 }

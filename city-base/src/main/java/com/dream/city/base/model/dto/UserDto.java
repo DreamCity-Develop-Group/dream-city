@@ -1,22 +1,24 @@
-package com.dream.city.base.model.entity;
+package com.dream.city.base.model.dto;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  *
  * @author Wvv
+ * @date 2017/11/01
  */
 @Setter
 @Getter
 @ToString
-public class User implements Serializable {
+public class UserDto {
+
     /**
-     * 编号
+     * 用户id
      */
     private Integer id;
 
@@ -68,7 +70,7 @@ public class User implements Serializable {
     /**
      * 最后登陆IP
      */
-        private String loginIp;
+    private String loginIp;
 
     /**
      * 最后登陆时间
@@ -83,7 +85,7 @@ public class User implements Serializable {
     /**
      * 创建时间
      */
-    private Date createDate;
+    private String createDate;
 
     /**
      * 更新者
@@ -93,7 +95,7 @@ public class User implements Serializable {
     /**
      * 更新时间
      */
-    private Date updateDate;
+    private String updateDate;
 
     /**
      * 备注信息
@@ -103,6 +105,16 @@ public class User implements Serializable {
     /**
      * 删除标记
      */
-    private Integer delFlag;
+    private String delFlag;
+
+    /**
+     * 角色id列表
+     */
+    private List<Integer> roleIdList;
+
+    /**
+     * 用户对应的角色列表
+     */
+    private List<UserRoleDto> roleList;
 
 }

@@ -3,7 +3,7 @@ package com.dream.city.service.impl;
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.Notice;
 import com.dream.city.base.model.enu.GameSettingType;
-import com.dream.city.base.model.entity.GameSetting;
+import com.dream.city.base.model.entity.PlayerGameSetting;
 import com.dream.city.base.model.mapper.GameSettingMapper;
 import com.dream.city.base.model.mapper.NoticeMapper;
 import com.dream.city.base.utils.RedisUtils;
@@ -27,7 +27,7 @@ public class GameSettingServiceImpl implements GameSettingService {
 
     @Override
     public boolean settingGameVioce(String playerId,boolean isOpen) {
-        GameSetting gameSetting = gameSettingMapper.selectByType(GameSettingType.game.name());
+        PlayerGameSetting gameSetting = gameSettingMapper.selectByType(GameSettingType.game.name());
         gameSetting.setPlayerId(playerId);
         gameSetting.setType(GameSettingType.game.name());
         gameSetting.setVal(String.valueOf(isOpen));
@@ -37,7 +37,7 @@ public class GameSettingServiceImpl implements GameSettingService {
 
     @Override
     public boolean settingBgVioce(String playerId,boolean isOpen) {
-        GameSetting gameSetting = gameSettingMapper.selectByType(GameSettingType.bg.name());
+        PlayerGameSetting gameSetting = gameSettingMapper.selectByType(GameSettingType.bg.name());
         gameSetting.setPlayerId(playerId);
         gameSetting.setType(GameSettingType.bg.name());
         gameSetting.setVal(String.valueOf(isOpen));

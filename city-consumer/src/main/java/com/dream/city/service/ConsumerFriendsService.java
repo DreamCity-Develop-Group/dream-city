@@ -38,7 +38,7 @@ public interface ConsumerFriendsService {
      * @return
      */
     @RequestMapping("/friendList")
-    Result<Page> friendList(@RequestBody PageReq pageReq);
+    Result<Page> friendList(@RequestBody Page pageReq);
 
     /**
      * 好友申请列表
@@ -46,6 +46,6 @@ public interface ConsumerFriendsService {
      * @return
      */
     @RequestMapping("/applyFriendList")
-    Result<Page> applyFriendList(@RequestBody PageReq pageReq);
+    Result<Page> applyFriendList(@RequestBody Page pageReq);
 
 }

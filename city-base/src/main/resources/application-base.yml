@@ -1,10 +1,10 @@
-server:
-  port: 8090
+#server:
+#  port: 8090
 spring:
-  application:
-    name: city-player
-  profiles:
-    active: dev
+#  application:
+#    name: city-player
+#  profiles:
+#    active: dev
   main:
     allow-bean-definition-overriding: true
 
@@ -23,6 +23,15 @@ mybatis:
   mapper-locations: classpath:/mybatis/mappers/*.xml
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+
+
+#pagehelper分页插件
+pagehelper:
+  reasonable: false
+  support-methods-arguments: true
+  params: countSql
+  helper-dialect: mysql
 
 
 

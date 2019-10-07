@@ -39,9 +39,9 @@ public interface PlayerService {
 
     Player update(Player player);
 
-    Player getPlayer(Player player);
+    PlayerResp getPlayer(Player player);
 
-    Player getPlayerById(String playerId);
+    PlayerResp  getPlayerById(String playerId);
 
     /**
      * 玩家列表

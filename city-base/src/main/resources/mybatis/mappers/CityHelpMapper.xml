@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dream.city.base.model.mapper.CityHelpMapper" >
+  <resultMap id="BaseResultMap" type="com.dream.city.base.model.entity.CityHelp" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="VARCHAR" />
+    <result column="is_valid" property="isValid" jdbcType="TINYINT" />
+    <result column="descr" property="descr" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+  <resultMap id="ResultMapWithBLOBs" type="com.dream.city.base.model.entity.CityHelp" extends="BaseResultMap" >
+    <result column="content" property="content" jdbcType="LONGVARCHAR" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, name, type, is_valid, descr, DATE_FORMAT(create_time,'%Y-%m-%d %h:%m:%s') create_time, DATE_FORMAT(update_time,'%Y-%m-%d %h:%m:%s') update_time
+  </sql>
+
+  <sql id="Blob_Column_List" >
+    content
+  </sql>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from city_help
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectCityHelpList" resultMap="ResultMapWithBLOBs" parameterType="com.dream.city.base.model.entity.CityHelp" >
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from city_help
+    <where>
+      <if test="id != null">
+        and id = #{id,jdbcType=INTEGER}
+      </if>
+      <if test="name != null and name != ''">
+        and name like '%${name}%'
+      </if>
+      <if test="type != null and type != ''">
+        and type = #{type,jdbcType=VARCHAR}
+      </if>
+      <if test="isValid != null">
+        and is_valid = #{isValid,jdbcType=TINYINT}
+      </if>
+      <if test="content != null and content != ''">
+        and content like '%${content}%'
+      </if>
+    </where>
+      order by update_time desc
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from city_help
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+
+
+  <insert id="insertSelective" parameterType="com.dream.city.base.model.entity.CityHelp" >
+    insert into city_help
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+      <if test="isValid != null" >
+        is_valid,
+      </if>
+      <if test="descr != null" >
+        descr,
+      </if>
+      <if test="content != null" >
+        content,
+      </if>
+      create_time,
+      update_time,
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="isValid != null" >
+        #{isValid,jdbcType=TINYINT},
+      </if>
+      <if test="descr != null" >
+        #{descr,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=LONGVARCHAR},
+      </if>
+      now(),
+      now(),
+    </trim>
+  </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.dream.city.base.model.entity.CityHelp" >
+    update city_help
+    <set >
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null and type != ''" >
+        type = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="isValid != null" >
+        is_valid = #{isValid,jdbcType=TINYINT},
+      </if>
+      <if test="descr != null and descr != ''" >
+        descr = #{descr,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null and content != ''" >
+        content = #{content,jdbcType=LONGVARCHAR},
+      </if>
+      update_time = now(),
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+
+
+</mapper>

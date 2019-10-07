@@ -1,6 +1,7 @@
 package com.dream.city.service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.dream.city.base.model.Page;
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.PlayerExt;
 import com.dream.city.service.impl.FallBackPlayer;
@@ -33,7 +34,7 @@ public interface ConsumerPlayerService {
      * @return
      */
     @RequestMapping("/player/getPlayers")
-    Result getPlayers(@RequestBody PageReq pageReq);
+    Result getPlayers(@RequestBody Page pageReq);
 
 
     /**

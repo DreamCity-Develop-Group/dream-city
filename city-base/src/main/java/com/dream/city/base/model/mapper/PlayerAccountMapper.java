@@ -44,6 +44,18 @@ public interface PlayerAccountMapper {
     void updateByPrimaryKeySelective(PlayerAccount account);
     void insert(PlayerAccount account);
     PlayerAccount selectByPrimaryKey(Integer accId);
+
+
+    /**
+     * 获取平台账户
+     * @param record
+     * @return
+     */
+    List<PlayerAccount> getPlatformAccounts(PlayerAccount record);
+
+    Integer updateByPlayerId(PlayerAccount record);
+
+
     /**
      * 获取平台账户
      * @param record
@@ -59,10 +71,13 @@ public interface PlayerAccountMapper {
     //@ResultMap("BaseCityAccountResultMap")
     @Select("select * from player_account where 1=1 and  acc_player_id = #{playerId} limit 1 ")
     PlayerAccount getPlayerAccount(String playerId);
+
     @Update("update player_account set acc_usdt = acc_usdt-#{payAmount} ,acc_usdt_availble=acc_usdt_availble-#{payAmount} where 1=1 adnd acc_player_id=#{playerId}")
     void subtractAmount(BigDecimal payAmount, String playerId);
+
     @Insert("insert into `player_account`(acc_id,acc_player_id,acc_addr)value(0,#{playerId},#{address})")
     void createAccount(@Param("playerId")String playerId,@Param("address")String address);
+
     @Update({"<script>" +
             "<foreach collection=\"accounts\" item=\"item\" separator=\";\">" +
             " UPDATE" +

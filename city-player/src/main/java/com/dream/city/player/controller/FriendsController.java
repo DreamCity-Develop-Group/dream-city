@@ -73,7 +73,7 @@ public class FriendsController {
      * @return
      */
     @RequestMapping("/friendList")
-    public Result<Page> friendList(@RequestBody PageReq pageReq){
+    public Result<Page> friendList(@RequestBody Page pageReq){
         logger.info("friendList，pageReq：{}",pageReq);
         Page page = friendsService.friendList(pageReq);
         return new Result<>(Boolean.TRUE,"好友列表",page);
@@ -86,7 +86,7 @@ public class FriendsController {
      * @return
      */
     @RequestMapping("/applyFriendList")
-    public Result<Page> applyFriendList(@RequestBody PageReq pageReq){
+    public Result<Page> applyFriendList(@RequestBody Page pageReq){
         logger.info("applyFriendList，pageReq：{}",pageReq);
         Page page = friendsService.applyFriendList(pageReq);
         return new Result<>(Boolean.TRUE,"好友申请列表",page);

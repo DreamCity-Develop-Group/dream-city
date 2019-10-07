@@ -25,6 +25,10 @@ public interface InvestOrderMapper {
     int countOrdersByPayerIdInvestId(InvestOrder record);
 
 
+    InvestOrder selectByPrimaryKey(Integer orderId);
+
+    Integer updateOrderStateById(InvestOrder record);
+
 
     @Results(id = "BaseInvestOrderResultMap", value = {
             @Result(property = "orderId", column = "order_id", id = true),

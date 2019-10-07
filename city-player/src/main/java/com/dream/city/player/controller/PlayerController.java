@@ -283,7 +283,7 @@ public class PlayerController {
         // 用户是否存在
         Player player = new Player();
         player.setPlayerId(playerId);
-        Player playerExit = playerService.getPlayer(player);
+        PlayerResp playerExit = playerService.getPlayer(player);
         if (playerExit == null){
             return result;
         }
@@ -354,7 +354,7 @@ public class PlayerController {
     @RequestMapping("/get/{playerId}")
     public Result getPlayer(@PathVariable("playerId")String playerId){
         log.info("获取玩家，playerId:{}",playerId);
-        Player player = playerService.getPlayerById(playerId);
+        PlayerResp player = playerService.getPlayerById(playerId);
         Result result = null;
         if (player != null){
             result = new Result(CityGlobal.ResultCode.success.getStatus(),JSONObject.toJSONString(player));
@@ -371,7 +371,7 @@ public class PlayerController {
      * @return
      */
     @RequestMapping("/getPlayers")
-    public Result<Map> getPlayers(@RequestBody PageReq pageReq){
+    public Result getPlayers(@RequestBody Page pageReq){
         log.info("获取广场玩家列表，{}",pageReq);
         Result result = null;
         Page page = null;

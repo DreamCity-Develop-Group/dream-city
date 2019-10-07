@@ -96,7 +96,7 @@ public class PlayerServiceImpl implements PlayerService {
     private Result changePwdVelid(String username, String oldpwshop,String pwdType){
         Player player = new Player();
         player.setPlayerName(username);
-        Player playerExit = playerMapper.getPlayerById(player);
+        PlayerResp playerExit = playerMapper.getPlayerById(player);
 
         // 用户不存在
         if(playerExit == null){
@@ -137,12 +137,12 @@ public class PlayerServiceImpl implements PlayerService {
     }
 
     @Override
-    public Player getPlayer(Player player) {
+    public PlayerResp getPlayer(Player player) {
         return playerMapper.getPlayerById(player);
     }
 
     @Override
-    public Player getPlayerById(String playerId) {
+    public PlayerResp getPlayerById(String playerId) {
         Player player = new Player();
         if (StringUtils.isBlank(playerId)){
             return null;
@@ -158,30 +158,25 @@ public class PlayerServiceImpl implements PlayerService {
         page.setCondition(pageReq.getCondition());
 
         Integer count = playerMapper.getPlayersCount(pageReq);
-        List<Map> players = playerMapper.getPlayers(pageReq);
-
-        List<Map> playersMap = new ArrayList<>();
+        List<PlayerResp> players = playerMapper.getPlayers(pageReq);
         if (!CollectionUtils.isEmpty(players)){
             Map<String,Object> condition = JSON.parseObject(JSON.toJSONString(pageReq.getCondition()));
             String getFriendAgree = "添加";
-            for (Map player:players){
+            for (int i=0;i<players.size();i++){
                 if (condition.containsKey("username")){
-                    getFriendAgree = this.getFriendAgree(String.valueOf(condition.get("username")),player);
+                    getFriendAgree = this.getFriendAgree(String.valueOf(condition.get("username")),players.get(i));
                 }
-                player.put("addfriend",getFriendAgree);
-                player.put("friendId","");
-                player.put("createTime",DateUtils.str2Date(String.valueOf(player.get("createTime"))));
-                playersMap.add(player);
+                players.get(i).setAddfriend(getFriendAgree);
             }
         }
-        page.setResult(playersMap);
+        page.setResult(players);
         page.setTotal( count== null?0:count);
 
         return page;
     }
 
-    private String getFriendAgree(String playerId,Map player){
-        String friendId = player.containsKey("player")?String.valueOf(player.get("player")): null;
+    private String getFriendAgree(String playerId,PlayerResp player){
+        String friendId = player.getFriendId();
         Friends record = new Friends();
         record.setPlayerId(playerId);
         record.setFriendId(friendId);
@@ -209,7 +204,7 @@ public class PlayerServiceImpl implements PlayerService {
         if (StringUtils.isNotBlank(playerNick)) {
             player.setPlayerNick(playerNick);
         }
-        Player playerByName = null;
+        PlayerResp playerByName = null;
         if (StringUtils.isNotBlank(playerName) || StringUtils.isNotBlank(playerNick)) {
             playerByName = playerMapper.getPlayerById(player);
         }

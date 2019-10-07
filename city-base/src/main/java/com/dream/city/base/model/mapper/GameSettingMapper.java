@@ -1,7 +1,7 @@
 package com.dream.city.base.model.mapper;
 
 
-import com.dream.city.base.model.entity.GameSetting;
+import com.dream.city.base.model.entity.PlayerGameSetting;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
@@ -10,14 +10,14 @@ import org.springframework.stereotype.Repository;
 public interface GameSettingMapper {
     int deleteByPrimaryKey(Long id);
 
-    int insertSelective(GameSetting record);
+    int insertSelective(PlayerGameSetting record);
 
-    GameSetting selectByPrimaryKey(Long id);
+    PlayerGameSetting selectByPrimaryKey(Long id);
 
-    int updateByPrimaryKeySelective(GameSetting record);
+    int updateByPrimaryKeySelective(PlayerGameSetting record);
 
-    int updateByType(GameSetting record);
+    int updateByType(PlayerGameSetting record);
 
-    GameSetting selectByType(String type);
+    PlayerGameSetting selectByType(String type);
 
 }
