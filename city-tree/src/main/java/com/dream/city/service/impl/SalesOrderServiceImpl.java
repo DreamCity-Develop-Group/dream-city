@@ -31,7 +31,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
 
     @Override
     public List<SalesOrder> selectSalesOrder(String playerId) {
-        return null;
+        return salesOrderMapper.selectSalesSellerOrder(playerId);
     }
 
     @Override

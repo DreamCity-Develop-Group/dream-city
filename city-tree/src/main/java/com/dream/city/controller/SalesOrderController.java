@@ -65,6 +65,7 @@ public class SalesOrderController {
      * @param playerId
      * @return
      */
+    @RequestMapping("/checkpaypwd")
     public Result playerBuyMtFinish(@RequestParam("payPass")String payPass,@RequestParam("playerId")String playerId,@RequestParam("orderId")String orderId){
         //找出待支付订单
         SalesOrder  salesOrder = salesOrderService.getSalesOrder(orderId);

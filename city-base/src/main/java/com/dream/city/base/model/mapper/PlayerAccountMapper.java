@@ -37,7 +37,6 @@ public interface PlayerAccountMapper {
      * @return
      */
     @Select("select * from player_account where 1=1 and  acc_player_id = #{playerId}")
-    @ResultMap("BasePlayerAccountResultMap")
     PlayerAccount getPlayerAccount(String playerId);
 
     @Update("update player_account set acc_usdt = acc_usdt-#{payAmount} ,acc_usdt_availble=acc_usdt_availble-#{payAmount} where 1=1 adnd acc_player_id=#{playerId}")

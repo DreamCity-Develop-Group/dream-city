@@ -87,7 +87,7 @@ public class RelationTreeController {
      * @param playerId
      * @return
      */
-    @RequestMapping("query/sales")
+    @RequestMapping("/query/sales")
     public Result querySales(@RequestParam("playerId")String playerId){
         List<SalesOrder> orders = salesOrderService.selectSalesSellerOrder(playerId);
         return new Result(true,"获取订单成功",200,orders);
@@ -99,7 +99,7 @@ public class RelationTreeController {
      * @param amount
      * @return
      */
-    @RequestMapping("buy/mt")
+    @RequestMapping("/buy/mt")
     public Result buyMt(@RequestParam("playerId")String playerId, @RequestParam("amount")BigDecimal amount){
         BigDecimal rate = salesOrderService.getUsdtToMtRate();
         Result ret = salesOrderService.buyMtCreate(amount,rate,playerId);

@@ -65,7 +65,7 @@ public class EarningController {
         try {
             i = earningService.insertEarning(record);
         }catch (Exception e){
-            b = Boolean.TRUE;
+            b = Boolean.FALSE;
             descr = "新增玩家提现收入失败";
             logger.error("新增玩家提现收入异常",e);
         }
