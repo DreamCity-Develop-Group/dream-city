@@ -1,5 +1,6 @@
 package com.dream.city.service.impl;
 
+import com.dream.city.base.model.Page;
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.PlayerExt;
 import com.dream.city.service.ConsumerPlayerService;
@@ -22,7 +23,7 @@ public class FallBackPlayer implements ConsumerPlayerService {
     }
 
     @Override
-    public Result getPlayers(PageReq pageReq) {
+    public Result getPlayers(Page pageReq) {
         return null;
     }
 
