@@ -1,11 +1,6 @@
 package com.dream.city.base.model.enu;
 
-/**
- * 改用 InvestStatus
- */
-@Deprecated
 public enum OrderState {
-
     CANCEL(0,"取消"),
 
     CREATE(1,"新建"),
@@ -28,17 +23,17 @@ public enum OrderState {
 
     // 成员变量
     private int status;
-    private String name;
     private String desc;
 
-    OrderState(int status, String name){
+    OrderState(int status, String desc){
         this.status = status;
-        this.name = name;
+        this.desc = desc;
     }
 
     public String getCode() {
         return this.name();
     }
+
     public int getStatus() {
         return status;
     }

@@ -1,8 +1,9 @@
 package com.dream.city.service;
 
 
-import com.dream.city.base.model.entity.CityTree;
+import com.dream.city.base.model.entity.RelationTree;
 import com.dream.city.base.model.entity.Notice;
+import com.dream.city.base.model.entity.RelationTree;
 
 import java.util.List;
 
@@ -21,6 +22,6 @@ public interface NoticeService {
 
     int updateNoticeById(Notice record);
 
-    List<CityTree> testMapper();
+    List<RelationTree> testMapper();
 
 }

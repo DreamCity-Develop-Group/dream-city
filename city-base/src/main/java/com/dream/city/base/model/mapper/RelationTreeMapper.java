@@ -1,31 +1,30 @@
 package com.dream.city.base.model.mapper;
 
 
-import com.dream.city.base.model.entity.CityTree;
 import com.dream.city.base.model.entity.RelationTree;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
+/**
+ * @author wvv
+ */
 @Mapper
-public interface CityTreeMapper {
+public interface RelationTreeMapper {
     int deleteByPrimaryKey(Integer treeId);
 
-    int insert(CityTree record);
+    int insert(RelationTree record);
 
-    int insertSelective(CityTree record);
+    int insertSelective(RelationTree record);
 
-    CityTree selectByPrimaryKey(Integer treeId);
+    RelationTree selectByPrimaryKey(Integer treeId);
 
-    int updateByPrimaryKeySelective(CityTree record);
+    int updateByPrimaryKeySelective(RelationTree record);
 
-    int updateByPrimaryKey(CityTree record);
-
-
+    int updateByPrimaryKey(RelationTree record);
 
     @Select("select * from city_tree where 1=1")
-    List<CityTree> getCity();
-
+    List<RelationTree> getCity();
 
     @Select("select * from city_tree where 1=1 and tree_parent_id = #{pid} and tree_player_id=#{cid}")
     RelationTree get(String pid,String cid);
@@ -42,7 +41,7 @@ public interface CityTreeMapper {
 
 
 
-    @Select("select * from city_tree where 1=1 and tree_player_id=#{playerId} limit 1 ")
+    //@Select("select * from city_tree where 1=1 and tree_player_id=#{playerId} limit 1 ")
     RelationTree getByPlayer(String playerId);
 
     /**

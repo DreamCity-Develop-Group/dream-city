@@ -1,5 +1,7 @@
 package com.dream.city.controller;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.dream.city.base.model.Message;
 import com.dream.city.base.model.MessageData;
 import com.dream.city.base.model.Result;
@@ -67,10 +69,13 @@ public class DefaultController {
         Result result = playerService.getPlayerByAccount(name);
         String json = JsonUtil.parseObjToJson(result.getData());
         player = JsonUtil.parseJsonToObj(json,Player.class);
+
+        String treeJson = JsonUtil.parseObjToJson(treeService.getTree(player.getPlayerId()).getData());
+        RelationTree tree = JsonUtil.parseJsonToObj(treeJson,RelationTree.class);
         //个人信息
         Map<String,Object> profile = new HashMap<>();
         profile.put("nick",player.getPlayerNick());
-        profile.put("level",player.getPlayerLevel());
+        profile.put("level",tree.getTreeLevel());
 
         //取出公告缓存
         //公告

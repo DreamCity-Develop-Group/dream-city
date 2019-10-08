@@ -1,8 +1,9 @@
 package com.dream.city.service.impl;
 
-import com.dream.city.base.model.entity.CityTree;
+import com.dream.city.base.model.entity.RelationTree;
 import com.dream.city.base.model.entity.Notice;
-import com.dream.city.base.model.mapper.CityTreeMapper;
+import com.dream.city.base.model.entity.RelationTree;
+import com.dream.city.base.model.mapper.RelationTreeMapper;
 import com.dream.city.base.model.mapper.NoticeMapper;
 import com.dream.city.base.utils.RedisUtils;
 import com.dream.city.service.NoticeService;
@@ -20,14 +21,14 @@ public class NoticeServiceImpl implements NoticeService {
     @Autowired
     NoticeMapper noticeMapper;
     @Autowired
-    CityTreeMapper cityTreeMapper;
+    RelationTreeMapper RelationTreeMapper;
     @Autowired
     RedisUtils redisUtils;
 
 
     @Override
-    public List<CityTree> testMapper(){
-       List<CityTree> trees =  cityTreeMapper.getCity();
+    public List<RelationTree> testMapper(){
+       List<RelationTree> trees =  RelationTreeMapper.getTrees();
 
         return trees;
     }

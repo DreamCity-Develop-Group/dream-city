@@ -44,8 +44,6 @@ public interface InvestRuleMapper {
     @Select({"select * from `invest_rule` where 1=1 and rule_id = #{ruleId}"})
     InvestRule getPlayer(String ruleId);
 
-
-
     /**
      *  玩家的资金账户
      * @param playerId
@@ -54,11 +52,8 @@ public interface InvestRuleMapper {
     @Select("select * from `invest_rule` where 1=1 and  player_id = #{playerId}")
     InvestRule getInvestAllowByPlayerId(String playerId);
 
-
     @Select("select * from `invest_rule` where 1=1 and  rule_item = #{itemId}")
     List<InvestRule> getRulesByItem(Integer itemId);
-
-
 
     /**
      * 获取单个投资
@@ -67,17 +62,12 @@ public interface InvestRuleMapper {
     @Select({"select * from `invest_rule` where 1=1 and in_id = #{investId}"})
     InvestRule getCityInvest(Integer investId);
 
-
     /**
      * 获取所有投资项列表
-     *
-     *
      * @return
      */
     @Select("select * from `invest_rule` where 1=1 ")
     List<InvestRule> getAllCityInvests();
-
-
 
     @Select({
             "<script>",

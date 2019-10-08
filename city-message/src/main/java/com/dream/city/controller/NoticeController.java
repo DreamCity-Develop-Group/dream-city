@@ -2,8 +2,9 @@ package com.dream.city.controller;
 
 
 import com.dream.city.base.model.Result;
-import com.dream.city.base.model.entity.CityTree;
+import com.dream.city.base.model.entity.RelationTree;
 import com.dream.city.base.model.entity.Notice;
+import com.dream.city.base.model.entity.RelationTree;
 import com.dream.city.service.NoticeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,9 +28,9 @@ public class NoticeController {
     NoticeService noticeService;
 
     @RequestMapping("/getMapper")
-    public List<CityTree> testMapper(){
+    public List<RelationTree> testMapper(){
 
-        List<CityTree> trees = noticeService.testMapper();
+        List<RelationTree> trees = noticeService.testMapper();
         return trees;
     }
 

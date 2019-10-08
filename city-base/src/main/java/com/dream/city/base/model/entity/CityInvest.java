@@ -26,6 +26,8 @@ public class CityInvest implements Serializable {
     /** 开始时间 */
     private Date inStart;
 
+    private Float inTax;
+
     /** 税金 */
     private BigDecimal inPersonalTax;
     /** 税金 */

@@ -10,15 +10,17 @@ public enum InvestStatus {
 
     INVEST(3,"投资"),
 
-    MANAGEMENT(4,"经营中"),
+    INVESTED(4,"已投资"),
 
-    EXTRACT(5,"可提取"),
+    MANAGEMENT(5,"经营中"),
 
-    FINISHED(6,"已完成"),
+    EXTRACT(6,"可提取"),
 
-    CANCEL(7,"取消"),
+    FINISHED(7,"已完成"),
 
-    SUBSCRIBE_VERIFY_FAIL(8,"预约审核不通过"),
+    CANCEL(8,"取消"),
+
+    SUBSCRIBE_VERIFY_FAIL(9,"预约审核不通过"),
 
     INVALID(-1,"作废");
 

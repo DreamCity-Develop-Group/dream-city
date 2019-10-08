@@ -169,6 +169,9 @@ public class HttpClientServiceImpl implements HttpClientService {
     @Async
     @Override
     public void post(Message msg) {
+        log.info(">>>>>执行[httpClientService]=>Post");
+        log.info("{}",msg);
+
         CloseableHttpClient client = HttpClientBuilder.create().build();
         //网关地址
         String gateWayUrl = gateWayConfig.getUrl();
@@ -196,6 +199,7 @@ public class HttpClientServiceImpl implements HttpClientService {
                 WebSocketServer.sendInfo(message);
                 return;
             }
+            log.info(">>>>>执行[httpClientService]=>Post["+serviceModel + "/" + serviceOpt+"]");
 
             //请求地址url
             String url = gateWayUrl + "/" + serviceModel + "/" + serviceOpt;
