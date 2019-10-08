@@ -17,4 +17,6 @@ public interface TradeVerifyMapper {
 
     List<TradeVerify> getTradeVerifyList(TradeVerify record);
 
+    TradeVerify getTradeVerify(TradeVerify record);
+
 }

@@ -130,10 +130,10 @@ CREATE TABLE `city_player` (
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for city_setting
+-- Table structure for player_game_setting
 -- ----------------------------
-DROP TABLE IF EXISTS `city_setting`;
-CREATE TABLE `city_setting` (
+DROP TABLE IF EXISTS `player_game_setting`;
+CREATE TABLE `player_game_setting` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `player_id` varchar(64) NOT NULL COMMENT '玩家id',
   `type` varchar(50) NOT NULL DEFAULT '' COMMENT '设置类型',
@@ -147,10 +147,10 @@ CREATE TABLE `city_setting` (
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='游戏设置';
 
 -- ----------------------------
--- Records of city_setting
+-- Records of player_game_setting
 -- ----------------------------
-INSERT INTO `city_setting` VALUES ('1', '123', 'game', 'true', '1', null, '2019-09-16 08:25:39');
-INSERT INTO `city_setting` VALUES ('2', '123', 'bg', 'false', '1', null, '2019-09-16 08:26:33');
+INSERT INTO `player_game_setting` VALUES ('1', '123', 'game', 'true', '1', null, '2019-09-16 08:25:39');
+INSERT INTO `player_game_setting` VALUES ('2', '123', 'bg', 'false', '1', null, '2019-09-16 08:26:33');
 
 -- ----------------------------
 -- Table structure for city_tree

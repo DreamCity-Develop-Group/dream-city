@@ -2,14 +2,10 @@ package com.dream.city.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.dream.city.base.model.CityGlobal;
-import com.dream.city.base.model.Message;
-import com.dream.city.base.model.MessageData;
-import com.dream.city.base.model.Result;
+import com.dream.city.base.model.*;
 import com.dream.city.base.model.entity.Player;
 import com.dream.city.base.model.entity.PlayerAccount;
 import com.dream.city.base.model.entity.PlayerExt;
-import com.dream.city.base.model.req.PageReq;
 import com.dream.city.base.model.req.UserReq;
 import com.dream.city.base.model.resp.PlayerResp;
 import com.dream.city.base.utils.DataUtils;
@@ -96,7 +92,7 @@ public class ConsumerPlayerController {
         log.info("广场玩家列表 换一批", JSONObject.toJSONString(msg));
 
         UserReq jsonReq = DataUtils.getUserReq(msg);
-        PageReq<String> pageReq = new PageReq<>();
+        Page<String> pageReq = new Page<>();
 
         int pageNo = 1;
         String redisKey = RedisKeys.SQUARE_PLAYER_LIST_ANOTHER_BATCH + jsonReq.getUsername();
@@ -106,7 +102,7 @@ public class ConsumerPlayerController {
         } else {
             redisUtils.setStr(redisKey, String.valueOf(pageNo));
         }
-        pageReq.setPageNo(pageNo);
+        pageReq.setPageNum(pageNo);
 
         Result<Map> players = consumerPlayerService.getPlayers(pageReq);
         MessageData messageData = new MessageData(msg.getData().getType(), msg.getData().getModel());
@@ -196,7 +192,7 @@ public class ConsumerPlayerController {
         conditionMap.put("playerId",playerId);
         conditionMap.put("nick",nick);
         conditionMap.put("username",username);
-        PageReq<Map<String,String>> pageReq = new PageReq<>((Map) msg.getData().getData());
+        Page<Map<String,String>> pageReq = new Page<>();
         pageReq.setCondition(conditionMap);
 
         Result players = consumerPlayerService.getPlayers(pageReq);

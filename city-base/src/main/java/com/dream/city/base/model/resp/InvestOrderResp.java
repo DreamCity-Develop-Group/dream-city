@@ -31,7 +31,7 @@ public class InvestOrderResp implements Serializable {
     private String playerNick;
 
     /** 订单状态 */
-    private int orderState;
+    private String orderState;
 
     /** 订单是否复投 */
     private int orderRepeat;
@@ -52,6 +52,20 @@ public class InvestOrderResp implements Serializable {
     /** 收益倍数 */
     private String inEarning;
 
-    /** 投资时间 */
-    private Date createTime;
+
+    /** 投资金额 */
+    private BigDecimal orderAmount;
+
+
+    /** 审核状态(待审核wait，审核中verifying，pass审核通过，notpass审核不通过)*/
+    private String verifyStatus;
+
+    /** 审核意见 */
+    private String verifyDesc;
+
+    /**  */
+    private String createTime;
+
+    /**  */
+    private String updateTime;
 }

@@ -197,7 +197,7 @@
     </select>
 
 
-    <select id="getAccountByPlayerIds" resultMap="BasePlayerAccountResultMap"
+    <!--<select id="getAccountByPlayerIds" resultMap="BasePlayerAccountResultMap"
             parameterType="java.lang.String">
         select
         <include refid="Base_Column_List"/>
@@ -209,4 +209,34 @@
         </where>
         order by create_time desc
     </select>
+-->
+
+    <update id="updateByPlayerId" parameterType="com.dream.city.base.model.entity.PlayerAccount" >
+        update player_account
+        <set >
+            <if test="accUsdt != null" >
+                acc_usdt = #{accUsdt,jdbcType=DECIMAL},
+            </if>
+            <if test="accUsdtAvailable != null" >
+                acc_usdt_available = #{accUsdtAvailable,jdbcType=DECIMAL},
+            </if>
+            <if test="accUsdtFreeze != null" >
+                acc_usdt_freeze = #{accUsdtFreeze,jdbcType=DECIMAL},
+            </if>
+            <if test="accMt != null" >
+                acc_mt = #{accMt,jdbcType=DECIMAL},
+            </if>
+            <if test="accMtAvailable != null" >
+                acc_mt_available = #{accMtAvailable,jdbcType=DECIMAL},
+            </if>
+            <if test="accMtFreeze != null" >
+                acc_mt_freeze = #{accMtFreeze,jdbcType=DECIMAL},
+            </if>
+            update_time = now(),
+        </set>
+        where acc_player_id = #{accPlayerId,jdbcType=VARCHAR}
+
+    </update>
+
+
 </mapper>

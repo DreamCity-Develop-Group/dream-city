@@ -2,8 +2,8 @@ package com.dream.city.service.impl;
 
 import com.dream.city.base.model.entity.InvestRule;
 import com.dream.city.base.model.entity.RuleItem;
-import com.dream.city.base.model.mapper.InvestRuleItemMapper;
 import com.dream.city.base.model.mapper.InvestRuleMapper;
+import com.dream.city.base.model.mapper.RuleItemMapper;
 import com.dream.city.service.InvestRuleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,7 +19,7 @@ public class InvestRuleServiceImpl implements InvestRuleService {
     InvestRuleMapper investRuleMapper;
 
     @Autowired
-    InvestRuleItemMapper investRuleItemMapper;
+    RuleItemMapper investRuleItemMapper;
 
     @Override
     public RuleItem getRuleItemByFlag(String flag) {

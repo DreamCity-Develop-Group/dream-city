@@ -3,8 +3,10 @@ package com.dream.city.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.dream.city.base.model.*;
-import com.dream.city.base.model.req.PageReq;
+import com.dream.city.base.model.req.FriendsReq;
+import com.dream.city.base.utils.DataUtils;
 import com.dream.city.service.*;
+import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang.StringUtils;
@@ -90,11 +92,10 @@ public class ConsumerFriendsController {
         MessageData data = new MessageData(msg.getData().getType(),msg.getData().getModel());
         String desc = "获取好友成功";
         try {
-            Map condition = getCheckCondition(msg);
-            PageReq<Map> pageReq = new PageReq<>((Map)msg.getData().getData());
+            FriendsReq condition = DataUtils.getFriendsReq(msg);
+            Page pageReq = new Page<>();
             pageReq.setCondition(condition);
-
-            Result<Page> page = consumerFriendsService.friendList(pageReq);
+            Result<PageInfo> page = consumerFriendsService.friendList(pageReq);
             data.setData(page.getData());
         }catch (Exception e){
             desc = "获取好友失败";
@@ -113,11 +114,10 @@ public class ConsumerFriendsController {
         MessageData data = new MessageData(msg.getData().getType(),msg.getData().getModel());
         String desc = "获取好友申请列表成功";
         try {
-            Map condition = getCheckCondition(msg);
-            PageReq<Map> pageReq = new PageReq<>((Map)msg.getData().getData());
+            FriendsReq condition = DataUtils.getFriendsReq(msg);
+            Page pageReq = new Page<>();
             pageReq.setCondition(condition);
-
-            Result<Page> page = consumerFriendsService.applyFriendList(pageReq);
+            Result<PageInfo> page = consumerFriendsService.applyFriendList(pageReq);
             data.setData(page.getData());
         }catch (Exception e){
             desc = "获取好友申请列表失败";
@@ -155,24 +155,6 @@ public class ConsumerFriendsController {
     }
 
 
-    /**
-     *
-     * @param msg
-     * @return
-     */
-    private Map getCheckCondition(Message msg){
-        Map map = (Map)msg.getData().getData();
-        String username = map.containsKey("username")?(String) map.get("username"):null;
-        if (StringUtils.isBlank(username)){
-            username = map.containsKey("playerName")?(String) map.get("playerName"):null;
-        }
-        String nick = map.containsKey("nick")?(String) map.get("nick"):null;
-
-        Map<String,String> resultMap = new HashMap<>();
-        resultMap.put("username",username);
-        resultMap.put("nick",nick);
-        return resultMap;
-    }
 
 
     /**

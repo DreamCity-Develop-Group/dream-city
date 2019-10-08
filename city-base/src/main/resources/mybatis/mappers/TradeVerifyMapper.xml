@@ -24,6 +24,29 @@
     where verify_id = #{verifyId,jdbcType=INTEGER}
   </select>
 
+  <select id="getTradeVerify" resultMap="BaseResultMap" parameterType="com.dream.city.verify.entity.TradeVerify" >
+    select
+    <include refid="Base_Column_List" />
+    from trade_verify
+    <where>
+      1=1
+      <if test="verifyId != null and verifyId != 0">
+        and verify_id = #{verifyId,jdbcType=INTEGER}
+      </if>
+      <if test="verifyStatus != null and verifyStatus != ''">
+        and verify_status = #{verifyStatus,jdbcType=VARCHAR}
+      </if>
+      <if test="verifyTradeId != null and verifyTradeId != ''">
+        and verify_trade_id = #{verifyTradeId,jdbcType=INTEGER}
+      </if>
+      <if test="verifyOrderId != null and verifyOrderId != ''">
+        and verify_order_id = #{verifyOrderId,jdbcType=INTEGER}
+      </if>
+    </where>
+    order by update_time desc limit 1
+  </select>
+
+
   <select id="getTradeVerifyList" resultMap="BaseResultMap" parameterType="com.dream.city.base.model.entity.TradeVerify" >
     select
     <include refid="Base_Column_List" />

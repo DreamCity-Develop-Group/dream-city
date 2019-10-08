@@ -125,4 +125,33 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where rule_id = #{ruleId,jdbcType=INTEGER}
   </update>
+
+  <select id="getInvestRuleList" resultMap="BaseResultMap" parameterType="com.dream.city.setting.dto.RuleReq" >
+    select
+    <include refid="Base_Column_List" />
+    from invest_rule
+    <where>
+      <if test="ruleId != null" >
+        and rule_id = #{ruleId,jdbcType=INTEGER}
+      </if>
+      <if test="ruleName != null and ruleName != ''" >
+        and rule_name like '%${ruleName}%'
+      </if>
+      <if test="ruleItem != null" >
+        and rule_item = #{ruleItem,jdbcType=INTEGER}
+      </if>
+      <if test="ruleDesc != null and ruleDesc != ''" >
+        and rule_desc like '%${ruleDesc}%'
+      </if>
+      <if test="ruleRate != null and ruleRate != 0" >
+        and rule_rate = #{ruleRate,jdbcType=DOUBLE}
+      </if>
+      <if test="raleLevel != null and raleLevel != 0" >
+        and rale_level = #{raleLevel,jdbcType=TINYINT}
+      </if>
+    </where>
+    order by update_time desc
+  </select>
+
+
 </mapper>

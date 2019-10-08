@@ -1,8 +1,8 @@
 package com.dream.city.player.service;
 
 import com.dream.city.base.model.Page;
-import com.dream.city.base.model.req.PageReq;
 import com.dream.city.base.model.entity.Friends;
+import com.github.pagehelper.PageInfo;
 
 /**
  * @author Wvv
@@ -29,14 +29,14 @@ public interface FriendsService {
      * @param pageReq
      * @return
      */
-    Page friendList(PageReq pageReq);
+    PageInfo friendList(Page pageReq);
 
     /**
      * 申请列表
      * @param pageReq
      * @return
      */
-    Page applyFriendList(PageReq pageReq);
+    PageInfo applyFriendList(Page pageReq);
 
     Friends selectByPlayerIdFriendId(Friends record);
 
