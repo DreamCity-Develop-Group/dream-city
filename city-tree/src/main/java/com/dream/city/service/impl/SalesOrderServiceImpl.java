@@ -31,11 +31,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
 
     @Override
     public List<SalesOrder> selectSalesOrder(String playerId) {
-<<<<<<< HEAD
         return salesOrderMapper.selectSalesSellerOrder(playerId);
-=======
-        return salesOrderMapper.getSalesOrderByBuyerPlayerId(playerId);
->>>>>>> 862eb0b48e15820b29f1f3c075209a7630a7e530
     }
 
     @Override
