@@ -23,7 +23,7 @@ public interface PlayerEarningMapper {
 
     PlayerEarning selectByPrimaryKey(Integer earnId);
 
-    List<PlayerEarning> getPlayerEarningByPlayerId(String playerId);
+    PlayerEarning getPlayerEarning(PlayerEarning record);
 
     List<PlayerEarning> selectPlayerEarningList(PlayerEarning record);
 

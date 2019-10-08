@@ -39,7 +39,7 @@ public class InvestOrderReq implements Serializable {
     private String orderState;
 
     /** 订单是否复投 */
-    private int orderRepeat;
+    private Integer orderRepeat;
 
     /** 限额 */
     private Float inLimit;
@@ -61,4 +61,13 @@ public class InvestOrderReq implements Serializable {
 
     /**  */
     private Date orderEndTime;
+
+
+    /** 订单id */
+    private Integer id;
+
+
+    /** 玩家Name */
+    private String payerName;
+
 }

@@ -44,7 +44,7 @@ public class ConsumerTreeController {
      * @return
      */
     @RequestMapping("/tree/add")
-    public Message jobPush(@RequestParam("playerId")String playerId,@RequestParam("invite")String invite){
+    public Message treeAdd(@RequestParam("playerId")String playerId,@RequestParam("invite")String invite){
         MessageData data = new MessageData("add","/consumer/tree");
         Message message = new Message("server","client",data,"加入失败");
         Result retPlayer = playerService.getPlayer(playerId);

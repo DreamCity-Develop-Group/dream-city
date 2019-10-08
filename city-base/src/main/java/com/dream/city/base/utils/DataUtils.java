@@ -2,6 +2,7 @@ package com.dream.city.base.utils;
 
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.dream.city.base.model.Message;
 import com.dream.city.base.model.entity.CityFile;
 import com.dream.city.base.model.entity.CityInvest;
@@ -11,6 +12,7 @@ import org.apache.commons.lang.StringUtils;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class DataUtils {
@@ -165,7 +167,7 @@ public class DataUtils {
         likes.setLikedId(likedId);
         likes.setLikedPlayerId(likedPlayerId);
         likes.setLikedInvestId(likedInvestId);
-        likes.setLikedInvestTotal(likedInvestTotal);
+        likes.setLikedGetTotal(likedInvestTotal);
         likes.setLikePlayerId(likePlayerId);
         return likes;
     }
@@ -184,9 +186,50 @@ public class DataUtils {
     }
 
 
+    public static FriendsReq getFriendsReq(Message msg){
+        Map map = (Map)msg.getData().getData();
+        String username = map.containsKey("username")?(String) map.get("username"):null;
+        if (StringUtils.isBlank(username)){
+            username = map.containsKey("playerName")?(String) map.get("playerName"):null;
+        }
+        String nick = map.containsKey("nick")?(String) map.get("nick"):null;
+
+        FriendsReq resultMap = new FriendsReq();
+        resultMap.setPlayerName(username);
+        resultMap.setFriendNick(nick);
+        return resultMap;
+    }
 
 
+    /**
+     * 转化为List<T>
+     * @param data
+     * @param clazz
+     * @param <T>
+     * @return
+     */
+    public static <T> List<T> getDataArray(Object data, Class<T> clazz) {
+        String jsonString = JSONObject.toJSONString(data);
+        return JSONObject.parseArray(jsonString, clazz);
+    }
 
+    /**
+     * 转化为T
+     * @param data
+     * @param clazz
+     * @param <T>
+     * @return
+     */
+    public static <T> T getData(Object data, Class<T> clazz) {
+        String jsonString = JSONObject.toJSONString(data);
+        return JSONObject.parseObject(jsonString, clazz);
+    }
+
+
+    public static <T> T toJavaObject(Object data, Class<T> clazz) {
+        String jsonString = JSON.toJSONStringWithDateFormat(data,DateUtils.DATE_FORMAT_DEFAULT);
+        return JSON.toJavaObject(JSON.parseObject(jsonString),clazz);
+    }
 
 
 

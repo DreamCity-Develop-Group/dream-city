@@ -103,4 +103,26 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where item_id = #{itemId,jdbcType=INTEGER}
   </update>
+
+  <select id="getRuleItemList" resultMap="BaseResultMap" parameterType="com.dream.city.base.model.entity.RuleItem" >
+    select
+    <include refid="Base_Column_List" />
+    from rule_item
+    <where>
+      <if test="itemId != null" >
+        and item_id = #{itemId,jdbcType=INTEGER}
+      </if>
+      <if test="itemName != null and itemName != ''" >
+        and item_name like '%${itemName}%'
+      </if>
+      <if test="itemDesc != null and itemDesc != ''" >
+        and item_desc like '%${itemDesc}%'
+      </if>
+      <if test="itemState != null" >
+        and item_state = #{itemState,jdbcType=TINYINT}
+      </if>
+    </where>
+    order by update_time desc
+  </select>
+
 </mapper>

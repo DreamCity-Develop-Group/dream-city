@@ -14,9 +14,9 @@ import java.util.*;
 
 public class DateUtils {
 
-    public static final String DEFAULT_FORMAT = "yyyy-MM-dd HH:mm:ss";
-    public static final String DEFAULT_FORMAT_NUMBER = "yyyyMMddHHmmss";
-    public static final String DAY_PATTERN = "yyyy-MM-dd";
+    public static final String DATE_FORMAT_DEFAULT = "yyyy-MM-dd HH:mm:ss";
+    public static final String DATE_FORMAT_NUMBER = "yyyyMMddHHmmss";
+    public static final String DATE_FORMAT_DAY_PATTERN = "yyyy-MM-dd";
     public static final String YEAR_MONTH_DAY_EN_SECOND  = "yyyy/MM/dd HH:mm:ss";
     public static final String YEAR_MONTH_DAY_CN_SECOND = "yyyy年MM月dd日 HH时mm分ss秒";
     public static final String YEAR_MONTH_DAY_CN = "yyyy年MM月dd日";
@@ -37,7 +37,7 @@ public class DateUtils {
      */
     private static SimpleDateFormat getDateFormat(String pattern) {
         if (StringUtils.isBlank(pattern)){
-            pattern = DEFAULT_FORMAT;
+            pattern = DATE_FORMAT_DEFAULT;
         }
         Map<String, SimpleDateFormat> strDateFormatMap = sThreadLocal.get();
 
@@ -68,7 +68,7 @@ public class DateUtils {
 
     public static LocalDateTime parse(String dateTimeStr, String format){
         if (StringUtils.isBlank(format)){
-            format = DEFAULT_FORMAT;
+            format = DATE_FORMAT_DEFAULT;
         }
         if(dateTimeStr == null) return null;
         DateTimeFormatter sf = DateTimeFormatter.ofPattern(format);
@@ -77,11 +77,11 @@ public class DateUtils {
     }
 
     public static String format(LocalDateTime dateTime){
-        return format(dateTime, DEFAULT_FORMAT);
+        return format(dateTime, DATE_FORMAT_DEFAULT);
     }
 
     public static LocalDateTime parse(String dateTimeStr){
-        return parse(dateTimeStr, DEFAULT_FORMAT);
+        return parse(dateTimeStr, DATE_FORMAT_DEFAULT);
     }
 
     // #############################################################################
@@ -95,7 +95,7 @@ public class DateUtils {
      */
     public static String date2Str(Date date, String format) {
         if (StringUtils.isBlank(format)){
-            format = DEFAULT_FORMAT;
+            format = DATE_FORMAT_DEFAULT;
         }
         if (date == null) {
             return null;
@@ -106,7 +106,7 @@ public class DateUtils {
         if (date == null) {
             return null;
         }
-        return getDateFormat(DEFAULT_FORMAT).format(date);
+        return getDateFormat(DATE_FORMAT_DEFAULT).format(date);
     }
 
     /**
@@ -118,7 +118,7 @@ public class DateUtils {
      */
     public static Date str2Date(String dateStr, String format) {
         if (StringUtils.isBlank(format)){
-            format = DEFAULT_FORMAT;
+            format = DATE_FORMAT_DEFAULT;
         }
         if (StringUtils.isBlank(dateStr)) {
             return null;
@@ -136,7 +136,7 @@ public class DateUtils {
             return null;
         }
         try {
-            Date dateTemp = getDateFormat(DEFAULT_FORMAT_NUMBER).parse(dateStr);
+            Date dateTemp = getDateFormat(DATE_FORMAT_DEFAULT).parse(dateStr);
             return dateTemp;
         } catch (ParseException pe) {
             pe.printStackTrace();
@@ -195,7 +195,7 @@ public class DateUtils {
      * @return
      */
     public static long getOffsetBetweenTimes(String time1, String time2) {
-        return str2Date(time1, DEFAULT_FORMAT).getTime() - str2Date(time2, DEFAULT_FORMAT).getTime();
+        return str2Date(time1, DATE_FORMAT_DEFAULT).getTime() - str2Date(time2, DATE_FORMAT_DEFAULT).getTime();
     }
 
     /**
@@ -209,7 +209,7 @@ public class DateUtils {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         calendar.add(Calendar.DATE, days);
-        return date2Str(calendar.getTime(), DEFAULT_FORMAT);
+        return date2Str(calendar.getTime(), DATE_FORMAT_DEFAULT);
     }
 
     /**
@@ -223,7 +223,7 @@ public class DateUtils {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         calendar.add(Calendar.MINUTE, minutes);
-        return date2Str(calendar.getTime(), DEFAULT_FORMAT);
+        return date2Str(calendar.getTime(), DATE_FORMAT_DEFAULT);
     }
 
     /**
@@ -282,7 +282,7 @@ public class DateUtils {
         GregorianCalendar gCalendar = new GregorianCalendar();
         String strDateTime;
         try {
-            strDateTime = getDateFormat(DEFAULT_FORMAT).format(gCalendar.getTime());
+            strDateTime = getDateFormat(DATE_FORMAT_DEFAULT).format(gCalendar.getTime());
         } catch (Exception ex) {
             System.out.println("Error Message:".concat(String.valueOf(String.valueOf(ex.toString()))));
             String s = null;
@@ -303,7 +303,7 @@ public class DateUtils {
         if (StringUtils.isBlank(dateTimeStr)) {
             return day;
         }
-        Date dateTime = str2Date(dateTimeStr,DEFAULT_FORMAT);
+        Date dateTime = str2Date(dateTimeStr,DATE_FORMAT_DEFAULT);
         return dayOfYear(dateTime);
     }
 

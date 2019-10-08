@@ -2,17 +2,17 @@ package com.dream.city.base.model.mapper;
 
 
 import com.dream.city.base.model.entity.InvestRule;
+import com.dream.city.base.model.req.RuleReq;
 import org.apache.ibatis.annotations.*;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 /**
  * @author Wvv
  */
-@Repository
 @Mapper
 public interface InvestRuleMapper {
+
     int deleteByPrimaryKey(Integer ruleId);
 
     int insert(InvestRule record);
@@ -21,9 +21,11 @@ public interface InvestRuleMapper {
 
     InvestRule selectByPrimaryKey(Integer ruleId);
 
-    int updateByPrimaryKeySelective(InvestRule record);
-
     int updateByPrimaryKey(InvestRule record);
+
+    List<InvestRule> getInvestRuleList(RuleReq record);
+
+    Integer updateByPrimaryKeySelective(InvestRule record);
 
     @Results(id = "BasePlayerResultMap1", value = {
             @Result(property = "ruleId", column = "rule_id", id = true),

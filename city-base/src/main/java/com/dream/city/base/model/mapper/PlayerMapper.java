@@ -1,9 +1,10 @@
 package com.dream.city.base.model.mapper;
 
 
+import com.dream.city.base.model.Page;
 import com.dream.city.base.model.entity.Player;
 import com.dream.city.base.model.entity.PlayerAccount;
-import com.dream.city.base.model.req.PageReq;
+import com.dream.city.base.model.resp.PlayerResp;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -16,18 +17,21 @@ public interface PlayerMapper {
 
     Integer insertSelective(Player record);
 
-    Player getPlayerById(Player record);
+    PlayerResp getPlayerById(Player record);
 
-    List<Map> getPlayers(PageReq pageReq);
-    Integer getPlayersCount(PageReq pageReq);
+    List<PlayerResp> getPlayerList(Player pageReq);
+
+
+    List<PlayerResp> getPlayers(Page pageReq);
+    Integer getPlayersCount(Page pageReq);
 
     /**
      * 广场玩家列表
      * @param pageReq
      * @return
      */
-    List<Map> getSquareFriends(PageReq pageReq);
-    Integer getSquareFriendsCount(PageReq pageReq);
+    List<Map> getSquareFriends(Page pageReq);
+    Integer getSquareFriendsCount(Page pageReq);
 
     Integer updateByPlayerId(Player record);
 

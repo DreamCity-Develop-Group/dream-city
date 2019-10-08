@@ -18,7 +18,7 @@
     create_time, update_time,is_valid
   </sql>
 
-  <select id="getPlayerById" parameterType="com.dream.city.base.model.entity.Player" resultMap="BaseResultMap">
+  <select id="getPlayerById" parameterType="com.dream.city.base.model.resp.PlayerResp" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from city_player p
@@ -57,7 +57,24 @@
     limit 1
   </select>
 
-  <select id="getPlayers" parameterType="com.dream.city.base.model.req.PageReq" resultType="java.util.Map">
+  <select id="getPlayerList" parameterType="com.dream.city.base.model.entity.Player" resultType="com.dream.city.base.model.resp.PlayerResp">
+    SELECT p.id, p.player_id playerId,p.player_name playerName,p.player_nick playerNick,
+    p.player_level playerLevel, p.is_valid isValid, e.imgurl, DATE_FORMAT(p.create_time,"%Y-%m-%d %h:%m:%s") createTime
+    from city_player p INNER JOIN player_ext e ON p.player_id=e.player_id
+    <where>
+      p.player_id=e.player_id
+      <if test="playerName != null and playerName != ''">
+        and p.player_name like '%${playerName}%'
+      </if>
+      <if test="playerNick != null and playerNick != ''">
+        and p.player_nick like '%${playerNick}%'
+      </if>
+    </where>
+    ORDER BY p.update_time DESC
+  </select>
+
+
+  <select id="getPlayers" parameterType="com.dream.city.base.model.Page" resultType="com.dream.city.base.model.resp.PlayerResp">
     SELECT p.player_id playerId,p.player_name username,p.player_nick nick,p.create_time createTime,
         (SELECT e1.friendlink FROM player_ext e1 WHERE e1.player_id = p.player_id) playerLink,
         (SELECT e2.imgurl FROM player_ext e2 WHERE e2.player_id = p.player_id) imgurl,
@@ -77,7 +94,7 @@
     </where>
     GROUP BY p.player_id ORDER BY p.create_time DESC limit ${start},${pageSize}
   </select>
-  <select id="getPlayersCount" parameterType="com.dream.city.base.model.req.PageReq" resultType="java.lang.Integer">
+  <select id="getPlayersCount" parameterType="com.dream.city.base.model.Page" resultType="java.lang.Integer">
     SELECT COUNT(a.player_id) FROM (SELECT p.player_id
         from city_player p LEFT JOIN player_friends f ON p.player_id=f.friend_id
         <where> (f.agree IS NULL OR f.agree = 0)
@@ -95,7 +112,7 @@
     ) a
   </select>
 
-  <select id="getSquareFriends" parameterType="com.dream.city.base.model.req.PageReq" resultType="java.util.Map">
+  <select id="getSquareFriends" parameterType="com.dream.city.base.model.Page" resultType="java.util.Map">
     SELECT p.player_id playerId,p.player_name username,p.player_nick nick,p.create_time createTime,
     e.friendlink playerLink,e.imgurl,g.grade,g.integral
     from city_player p INNER JOIN player_ext e ON p.player_id=e.player_id
@@ -111,7 +128,7 @@
     </where>
     ORDER BY p.create_time DESC limit ${start},${pageSize}
   </select>
-  <select id="getSquareFriendsCount" parameterType="com.dream.city.base.model.req.PageReq" resultType="java.lang.Integer">
+  <select id="getSquareFriendsCount" parameterType="com.dream.city.base.model.Page" resultType="java.lang.Integer">
     SELECT COUNT(p.player_id)
     from city_player p INNER JOIN player_ext e ON p.player_id=e.player_id
     INNER JOIN player_grade g ON p.player_id=g.player_id
