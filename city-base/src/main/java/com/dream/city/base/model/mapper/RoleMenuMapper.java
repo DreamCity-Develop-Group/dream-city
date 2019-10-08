@@ -3,6 +3,7 @@ package com.dream.city.base.model.mapper;
 import com.dream.city.base.model.entity.RoleMenu;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
@@ -10,6 +11,7 @@ import java.util.Map;
 /**
  * Created by eric on 2017/10/30.
  */
+@Repository
 @Mapper
 public interface RoleMenuMapper {
 

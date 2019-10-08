@@ -5,14 +5,17 @@
     <id column="earn_id" property="earnId" jdbcType="INTEGER" />
     <result column="earn_player_id" property="earnPlayerId" jdbcType="VARCHAR" />
     <result column="earn_max" property="earnMax" jdbcType="DECIMAL" />
-    <result column="earn_tax" property="earnTax" jdbcType="DECIMAL" />
+    <result column="earn_personal_tax" property="earnPersonalTax" jdbcType="DECIMAL" />
+    <result column="earn_enterprise_tax" property="earnEnterpriseTax" jdbcType="DECIMAL" />
+    <result column="earn_current" property="earnCurrent" jdbcType="DECIMAL" />
     <result column="is_withdrew" property="isWithdrew" jdbcType="CHAR" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
     <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
   </resultMap>
 
   <sql id="Base_Column_List" >
-    earn_id, earn_player_id, earn_max, earn_tax, is_withdrew,create_time,update_time
+    earn_id, earn_player_id, earn_max, earn_tax, is_withdrew,earn_personal_tax,earn_enterprise_tax,earn_current
+    ,create_time,update_time
   </sql>
 
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
@@ -29,6 +32,9 @@
     where 1=1
     <if test="earnId != null">
       and earn_id = #{earnId,jdbcType=INTEGER}
+    </if>
+    <if test="earnInvestId != null">
+      and earn_invest_id = #{earnInvestId,jdbcType=VARCHAR}
     </if>
     <if test="earnPlayerId != null and earnPlayerId != ''">
       and earn_player_id = #{earnPlayerId,jdbcType=VARCHAR}
@@ -51,8 +57,14 @@
         <if test="earnMax != null">
           and earn_max = #{earnMax,jdbcType=DECIMAL}
         </if>
-        <if test="earnTax != null">
-          and earn_tax = #{earnTax,jdbcType=DECIMAL}
+        <if test="earnPersonalTax != null">
+          and earn_personal_tax = #{earnPersonalTax,jdbcType=DECIMAL}
+        </if>
+        <if test="earnEnterpriseTax != null">
+          and earn_enterprise_tax = #{earnEnterpriseTax,jdbcType=DECIMAL}
+        </if>
+        <if test="earnCurrent != null">
+          and earn_current = #{earnCurrent,jdbcType=DECIMAL}
         </if>
         <if test="isWithdrew != null">
           and is_withdrew = #{isWithdrew,jdbcType=CHAR}
@@ -110,13 +122,13 @@
         #{earnMax,jdbcType=DOUBLE},
       </if>
       <if test="earnCurrent != null" >
-        #{earnCurrent,jdbcType=DOUBLE},
+        #{earnCurrent,jdbcType=DECIMAL},
       </if>
       <if test="earnPersonalTax != null" >
-        #{earnPersonalTax,jdbcType=DOUBLE},
+        #{earnPersonalTax,jdbcType=DECIMAL},
       </if>
       <if test="earnEnterpriseTax != null" >
-        #{earnEnterpriseTax,jdbcType=DOUBLE},
+        #{earnEnterpriseTax,jdbcType=DECIMAL},
       </if>
       <if test="isWithdrew != null" >
         #{isWithdrew,jdbcType=CHAR},
@@ -132,13 +144,19 @@
         earn_player_id = #{earnPlayerId,jdbcType=VARCHAR},
       </if>
       <if test="earnMax != null" >
-        earn_max = #{earnMax,jdbcType=DOUBLE},
-      </if>
-      <if test="earnTax != null" >
-        earn_tax = #{earnTax,jdbcType=DOUBLE},
+        earn_max = #{earnMax,jdbcType=DECIMAL},
       </if>
       <if test="isWithdrew != null" >
         is_withdrew = #{isWithdrew,jdbcType=CHAR},
+      </if>
+      <if test="earnCurrent != null" >
+        earn_current= #{earnCurrent,jdbcType=DECIMAL},
+      </if>
+      <if test="earnPersonalTax != null" >
+        earn_personal_tax= #{earnPersonalTax,jdbcType=CHDECIMALAR},
+      </if>
+      <if test="earnEnterpriseTax != null" >
+        earn_enterprise_tax = #{earnEnterpriseTax,jdbcType=DECIMAL},
       </if>
       update_time = now(),
     </set>

@@ -20,12 +20,17 @@ public class PlayerEarningServiceImpl  implements PlayerEarningService {
 
     @Override
     public List<PlayerEarning> getPlayerEarnByPlayerId(String playerId) {
-        return playerEarningMapper.getPlayerEarningByPlayerId(playerId);
+        PlayerEarning record = new PlayerEarning();
+        record.setEarnPlayerId(playerId);
+        return playerEarningMapper.selectPlayerEarningList(record);
     }
 
     @Override
     public PlayerEarning getPlayerEarnByPlayerId(String playerId, Integer investId) {
-        return playerEarningMapper.getPlayerEarning(playerId, investId);
+        PlayerEarning record = new PlayerEarning();
+        record.setEarnPlayerId(playerId);
+        record.setEarnInvestId(investId);
+        return playerEarningMapper.getPlayerEarning(record);
     }
 
     @Override

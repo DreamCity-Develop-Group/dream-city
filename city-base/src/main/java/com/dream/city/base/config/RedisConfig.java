@@ -55,7 +55,8 @@ public class RedisConfig extends CachingConfigurerSupport {
     private int maxIdle;
     @Value("${spring.redis.jedis.pool.min-idle:1}")
     private int minIdle;
-
+    @Value("${spring.redis.jedis.timeout:-1}")
+    private int timeout;
 
 
 
@@ -74,13 +75,23 @@ public class RedisConfig extends CachingConfigurerSupport {
     @ConditionalOnMissingBean(name = "poolConfig")
     public JedisPoolConfig poolConfig() {
         JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
-
         jedisPoolConfig.setBlockWhenExhausted(true);
         jedisPoolConfig.setTestOnBorrow(true);
         jedisPoolConfig.setMaxTotal(maxActive);
         jedisPoolConfig.setMaxIdle(maxIdle);
         jedisPoolConfig.setMinIdle(minIdle);
         jedisPoolConfig.setMaxWaitMillis(maxWait);// 100000
+
+        jedisPoolConfig.setTestOnBorrow(true);
+        jedisPoolConfig.setTestOnReturn(true);
+        //Idle时进行连接扫描
+        jedisPoolConfig.setTestWhileIdle(true);
+        //表示idle object evitor两次扫描之间要sleep的毫秒数
+        jedisPoolConfig.setTimeBetweenEvictionRunsMillis(30000);
+        //表示idle object evitor每次扫描的最多的对象数
+        jedisPoolConfig.setNumTestsPerEvictionRun(10);
+        //表示一个对象至少停留在idle状态的最短时间，然后才能被idle object evitor扫描并驱逐；这一项只有在timeBetweenEvictionRunsMillis大于0时才有意义
+        jedisPoolConfig.setMinEvictableIdleTimeMillis(60000);
         return jedisPoolConfig;
     }
 
@@ -99,7 +110,6 @@ public class RedisConfig extends CachingConfigurerSupport {
         redisStandaloneConfiguration.setPort(port);
         redisStandaloneConfiguration.setPassword(password);
         redisStandaloneConfiguration.setDatabase(database);
-
         //获得默认的连接池构造
         //这里需要注意的是，edisConnectionFactoryJ对于Standalone模式的没有（RedisStandaloneConfiguration，JedisPoolConfig）的构造函数，对此
         //我们用JedisClientConfiguration接口的builder方法实例化一个构造器，还得类型转换

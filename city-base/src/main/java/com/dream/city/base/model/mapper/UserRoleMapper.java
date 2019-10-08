@@ -4,6 +4,7 @@ import com.dream.city.base.model.dto.UserRoleDto;
 import com.dream.city.base.model.entity.UserRole;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
@@ -11,6 +12,7 @@ import java.util.Map;
 /**
  * Created by Wvv on 2017/9/22.
  */
+@Repository
 @Mapper
 public interface UserRoleMapper {
 

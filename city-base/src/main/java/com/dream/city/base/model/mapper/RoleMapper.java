@@ -2,10 +2,12 @@ package com.dream.city.base.model.mapper;
 
 import com.dream.city.base.model.entity.Role;
 import org.apache.ibatis.annotations.Mapper;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
 
+@Repository
 @Mapper
 public interface RoleMapper {
     int deleteById(Integer id);

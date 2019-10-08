@@ -24,7 +24,7 @@
     where verify_id = #{verifyId,jdbcType=INTEGER}
   </select>
 
-  <select id="getTradeVerify" resultMap="BaseResultMap" parameterType="com.dream.city.verify.entity.TradeVerify" >
+  <select id="getTradeVerify" resultMap="BaseResultMap" parameterType="com.dream.city.base.model.entity.TradeVerify" >
     select
     <include refid="Base_Column_List" />
     from trade_verify

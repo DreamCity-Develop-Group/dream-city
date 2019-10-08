@@ -128,9 +128,9 @@ public interface RuleItemMapper {
     @Select("select * from `rule_item` where 1=1 and  player_id = #{playerId}")
     InvestAllow getInvestAllowByPlayerId(String playerId);
 
-    @Insert("insert into `rule_item`(id,player_id,allowed,amount,create_time)values(#{id},#{playerId},#{allowed},#{amount},#{createTime}) ")
-    @Options(useGeneratedKeys = true, keyProperty = "id")
-    void insert(InvestAllow allow);
+//    @Insert("insert into `rule_item`(id,player_id,allowed,amount,create_time)values(#{id},#{playerId},#{allowed},#{amount},#{createTime}) ")
+//    @Options(useGeneratedKeys = true, keyProperty = "id")
+//    void insert(InvestAllow allow);
 
     @Select({"select * from `rule_item` where 1=1 and item_flag = #{flag} and item_state=1"})
     RuleItem getRuleItemByFlag(String flag);

@@ -33,7 +33,10 @@ public class EarningServiceImpl implements EarningService {
 
     @Override
     public PlayerEarning getPlayerEarningByPlayerId(String playerId,Integer investId) {
-        return earningMapper.getPlayerEarning(playerId,investId);
+        PlayerEarning record = new PlayerEarning();
+        record.setEarnPlayerId(playerId);
+        record.setEarnInvestId(investId);
+        return earningMapper.getPlayerEarning(record);
     }
 
     @Override
