@@ -3,11 +3,24 @@ package com.dream.city.base.model.resp;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Date;
 
 @Data
 public class RuleResp implements Serializable {
+
+
     /**  */
     private Integer ruleId;
+
+    /**  */
+    private String ruleFlag;
+
+    /**  */
+    private String ruleOptPre;
+
+    /**  */
+    private String ruleOpt;
 
     /** 规则名称 */
     private String ruleName;
@@ -19,12 +32,24 @@ public class RuleResp implements Serializable {
     private Integer ruleItem;
     /** 规则项目名称 */
     private String itemName;
-
+    private String itemFlag;
 
     /**  */
-    private Double ruleRate;
+    private BigDecimal ruleRatePre;
+
+    /**  */
+    private BigDecimal ruleRate;
 
     /** 规则优先级别 */
-    private Byte raleLevel;
+    private Integer ruleLevel;
+
+    /**  */
+    private Date createTime;
+
+    /**  */
+    private Date updateTime;
+
+
+
 
 }

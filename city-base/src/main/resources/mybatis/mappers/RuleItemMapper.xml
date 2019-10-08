@@ -4,14 +4,14 @@
   <resultMap id="BaseResultMap" type="com.dream.city.base.model.entity.RuleItem" >
     <id column="item_id" property="itemId" jdbcType="INTEGER" />
     <result column="item_name" property="itemName" jdbcType="VARCHAR" />
-    <result column="item_type" property="itemType" jdbcType="VARCHAR" />
+    <result column="rule_flag" property="itemFlag" jdbcType="VARCHAR" />
     <result column="item_desc" property="itemDesc" jdbcType="VARCHAR" />
-    <result column="item_state" property="itemState" jdbcType="TINYINT" />
+    <result column="item_state" property="itemState" jdbcType="INTEGER" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
     <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    item_id, item_name, item_desc, item_state,item_type, create_time, update_time
+    item_id, item_name, item_desc, item_state,item_flag, create_time, update_time
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -25,7 +25,7 @@
   </delete>
   <insert id="insert" parameterType="com.dream.city.base.model.entity.RuleItem" >
     insert into rule_item (item_id, item_name, item_desc, 
-      item_state, create_time, update_time,item_type
+      item_state, create_time, update_time,item_flag
       )
     values (#{itemId,jdbcType=INTEGER}, #{itemName,jdbcType=VARCHAR}, #{itemDesc,jdbcType=VARCHAR}, 
       #{itemState,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{itemType,jdbcType=VARCHAR}
@@ -46,8 +46,8 @@
       <if test="itemState != null" >
         item_state,
       </if>
-      <if test="itemType != null" >
-        item_type,
+      <if test="itemFlag != null" >
+        item_flag,
       </if>
       create_time,
       update_time,
@@ -65,8 +65,8 @@
       <if test="itemState != null" >
         #{itemState,jdbcType=TINYINT},
       </if>
-      <if test="itemType != null" >
-        #{itemType,jdbcType=VARCHAR},
+      <if test="itemFlag != null" >
+        #{itemFlag,jdbcType=VARCHAR},
       </if>
       now(),
       now(),
@@ -82,10 +82,10 @@
         item_desc = #{itemDesc,jdbcType=VARCHAR},
       </if>
       <if test="itemState != null" >
-        item_state = #{itemState,jdbcType=TINYINT},
+        item_state = #{itemState,jdbcType=INTEGER},
       </if>
-      <if test="itemType != null" >
-        item_type = #{itemType,jdbcType=VARCHAR},
+      <if test="itemFlag != null" >
+        item_flag = #{itemFlag,jdbcType=VARCHAR},
       </if>
       <if test="updateTime != null" >
       </if>
@@ -97,8 +97,8 @@
     update rule_item
     set item_name = #{itemName,jdbcType=VARCHAR},
       item_desc = #{itemDesc,jdbcType=VARCHAR},
-      item_state = #{itemState,jdbcType=TINYINT},
-      item_type = #{itemType,jdbcType=VARCHAR},
+      item_state = #{itemState,jdbcType=INTEGER},
+      item_flag = #{itemFlag,jdbcType=VARCHAR},
       create_time = now(),
       update_time = now(),
     where item_id = #{itemId,jdbcType=INTEGER}
@@ -119,11 +119,23 @@
       <if test="itemDesc != null and itemDesc != ''" >
         and item_desc like '%${itemDesc}%'
       </if>
-      <if test="itemType != null and itemType != ''" >
-        and item_type = #{itemType,jdbcType=VARCHAR}
+      <if test="itemFlag != null and itemFlag != ''" >
+        and item_flag = #{itemFlag,jdbcType=VARCHAR}
       </if>
       <if test="itemState != null" >
-        and item_state = #{itemState,jdbcType=TINYINT}
+        and item_state = #{itemState,jdbcType=INTEGER}
+      </if>
+    </where>
+    order by update_time desc
+  </select>
+
+  <select id="getRuleItemFlagList" resultType="com.dream.city.base.model.entity.RuleItem" parameterType="java.lang.String">
+    select item_id itemId,item_flag itemFlag, item_name itemName
+    from rule_item
+    <where>
+      item_state = 1
+      <if test="itemFlag != null and itemFlag != ''" >
+        and item_flag = #{itemFlag,jdbcType=VARCHAR}
       </if>
     </where>
     order by update_time desc

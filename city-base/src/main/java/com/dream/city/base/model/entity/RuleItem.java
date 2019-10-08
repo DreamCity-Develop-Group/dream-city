@@ -16,10 +16,10 @@ public class RuleItem implements Serializable {
     /** 规则项目描述 */
     private String itemDesc;
 
-    private String itemType;
+    private String itemFlag;
 
     /** 可用状态 */
-    private Byte itemState;
+    private Integer itemState;
 
     /**  */
     private Date createTime;

@@ -5,13 +5,13 @@ package com.dream.city.base.model.enu;
  * */
 public enum TradeAmountType {
 
-    USDT_INVEST("usdt_invest","投资usdt"),
-    USDT_INVEST_TAX("mt_invest_tax","usdt投资mt税金"),
-    MT_INVEST("mt_invest","投资mt"),
-    USDT_EARNINGS("usdt_earnings","usdt投资收益"),
-    TRANSFER("transfer","转账"),
-    RECHARGE("recharge","充值"),
-    WITHDRAW("withdraw","提现");
+    USDT_INVEST("USDT_INVEST","usdt投资"),
+    USDT_INVEST_TAX("USDT_INVEST_TAX","usdt投资mt税金"),
+    MT_INVEST("MT_INVEST","mt投资"),
+    USDT_EARNINGS("USDT_EARNINGS","usdt投资收益"),
+    TRANSFER("TRANSFER","转账"),
+    RECHARGE("RECHARGE","充值"),
+    WITHDRAW("WITHDRAW","提现");
 
     private String code;
     private String desc;
