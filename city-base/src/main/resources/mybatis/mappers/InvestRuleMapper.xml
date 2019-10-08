@@ -7,12 +7,12 @@
     <result column="rule_desc" property="ruleDesc" jdbcType="VARCHAR" />
     <result column="rule_item" property="ruleItem" jdbcType="INTEGER" />
     <result column="rule_rate" property="ruleRate" jdbcType="DOUBLE" />
-    <result column="rale_level" property="ruleLevel" jdbcType="TINYINT" />
+    <result column="rale_level" property="raleLevel" jdbcType="TINYINT" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
     <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    rule_id, rule_name, rule_desc, rule_item, rule_rate, rale_level, create_time, update_time
+    rule_id, rule_name, rule_desc, rule_item, rule_rate, rale_level, DATE_FORMAT(create_time,'%Y-%m-%d %h:%m:%s') create_time, DATE_FORMAT(update_time,'%Y-%m-%d %h:%m:%s') update_time
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 

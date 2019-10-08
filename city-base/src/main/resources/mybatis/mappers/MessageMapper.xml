@@ -12,7 +12,7 @@
   </resultMap>
 
   <sql id="Base_Column_List" >
-    id, player_id, friend_id, content, have_read, create_time, update_time
+    id, player_id, friend_id, content, have_read, DATE_FORMAT(create_time,'%Y-%m-%d %h:%m:%s') create_time, DATE_FORMAT(update_time,'%Y-%m-%d %h:%m:%s') update_time
   </sql>
 
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >

@@ -13,8 +13,7 @@
   </resultMap>
 
   <sql id="Base_Column_List" >
-    order_id, order_invest_id, order_payer_id, order_amount, order_state, order_repeat, create_time,
-    update_time
+    order_id, order_invest_id, order_payer_id, order_amount, order_state, order_repeat, DATE_FORMAT(create_time,'%Y-%m-%d %h:%m:%s') create_time, DATE_FORMAT(update_time,'%Y-%m-%d %h:%m:%s') update_time
   </sql>
 
 

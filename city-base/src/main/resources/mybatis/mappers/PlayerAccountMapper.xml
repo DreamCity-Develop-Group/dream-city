@@ -19,7 +19,7 @@
 
     <sql id="Base_Column_List">
     acc_id, acc_player_id, acc_usdt, acc_usdt_available, acc_usdt_freeze, acc_mt, acc_mt_available, 
-    acc_mt_freeze, acc_income, create_time, update_time
+    acc_mt_freeze, acc_income, DATE_FORMAT(create_time,'%Y-%m-%d %h:%m:%s') create_time, DATE_FORMAT(update_time,'%Y-%m-%d %h:%m:%s') update_time
   </sql>
     <select id="selectByPrimaryKey" resultMap="BasePlayerAccountResultMap" parameterType="java.lang.Integer">
         select

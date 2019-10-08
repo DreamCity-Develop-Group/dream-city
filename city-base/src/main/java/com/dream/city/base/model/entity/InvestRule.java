@@ -29,10 +29,9 @@ public class InvestRule implements Serializable {
     /**  */
     private Double ruleRatePre;
     private Double ruleRate;
+    /** 规则优先级别 */
     private Integer raleLevel;
 
-    /** 规则优先级别 */
-    private Byte ruleLevel;
 
     /**  */
     private Date createTime;

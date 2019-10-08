@@ -8,7 +8,7 @@
     <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
   </resultMap>
   <sql id="Like_Base_Column_List">
-    id, player_id, likes, create_date
+    id, player_id, likes, DATE_FORMAT(create_time,'%Y-%m-%d %h:%m:%s') create_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="LikeBaseResultMap">
     select 

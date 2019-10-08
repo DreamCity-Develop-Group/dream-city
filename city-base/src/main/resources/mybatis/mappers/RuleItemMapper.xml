@@ -4,13 +4,14 @@
   <resultMap id="BaseResultMap" type="com.dream.city.base.model.entity.RuleItem" >
     <id column="item_id" property="itemId" jdbcType="INTEGER" />
     <result column="item_name" property="itemName" jdbcType="VARCHAR" />
+    <result column="item_type" property="itemType" jdbcType="VARCHAR" />
     <result column="item_desc" property="itemDesc" jdbcType="VARCHAR" />
     <result column="item_state" property="itemState" jdbcType="TINYINT" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
     <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    item_id, item_name, item_desc, item_state, create_time, update_time
+    item_id, item_name, item_desc, item_state,item_type, create_time, update_time
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -24,10 +25,10 @@
   </delete>
   <insert id="insert" parameterType="com.dream.city.base.model.entity.RuleItem" >
     insert into rule_item (item_id, item_name, item_desc, 
-      item_state, create_time, update_time
+      item_state, create_time, update_time,item_type
       )
     values (#{itemId,jdbcType=INTEGER}, #{itemName,jdbcType=VARCHAR}, #{itemDesc,jdbcType=VARCHAR}, 
-      #{itemState,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
+      #{itemState,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{itemType,jdbcType=VARCHAR}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.dream.city.base.model.entity.RuleItem" >
@@ -45,12 +46,11 @@
       <if test="itemState != null" >
         item_state,
       </if>
-      <if test="createTime != null" >
-        create_time,
+      <if test="itemType != null" >
+        item_type,
       </if>
-      <if test="updateTime != null" >
-        update_time,
-      </if>
+      create_time,
+      update_time,
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="itemId != null" >
@@ -65,12 +65,11 @@
       <if test="itemState != null" >
         #{itemState,jdbcType=TINYINT},
       </if>
-      <if test="createTime != null" >
-        #{createTime,jdbcType=TIMESTAMP},
+      <if test="itemType != null" >
+        #{itemType,jdbcType=VARCHAR},
       </if>
-      <if test="updateTime != null" >
-        #{updateTime,jdbcType=TIMESTAMP},
-      </if>
+      now(),
+      now(),
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.dream.city.base.model.entity.RuleItem" >
@@ -85,12 +84,12 @@
       <if test="itemState != null" >
         item_state = #{itemState,jdbcType=TINYINT},
       </if>
-      <if test="createTime != null" >
-        create_time = #{createTime,jdbcType=TIMESTAMP},
+      <if test="itemType != null" >
+        item_type = #{itemType,jdbcType=VARCHAR},
       </if>
       <if test="updateTime != null" >
-        update_time = #{updateTime,jdbcType=TIMESTAMP},
       </if>
+      update_time = now(),
     </set>
     where item_id = #{itemId,jdbcType=INTEGER}
   </update>
@@ -99,8 +98,9 @@
     set item_name = #{itemName,jdbcType=VARCHAR},
       item_desc = #{itemDesc,jdbcType=VARCHAR},
       item_state = #{itemState,jdbcType=TINYINT},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_time = #{updateTime,jdbcType=TIMESTAMP}
+      item_type = #{itemType,jdbcType=VARCHAR},
+      create_time = now(),
+      update_time = now(),
     where item_id = #{itemId,jdbcType=INTEGER}
   </update>
 
@@ -109,6 +109,7 @@
     <include refid="Base_Column_List" />
     from rule_item
     <where>
+       1=1
       <if test="itemId != null" >
         and item_id = #{itemId,jdbcType=INTEGER}
       </if>
@@ -117,6 +118,9 @@
       </if>
       <if test="itemDesc != null and itemDesc != ''" >
         and item_desc like '%${itemDesc}%'
+      </if>
+      <if test="itemType != null and itemType != ''" >
+        and item_type = #{itemType,jdbcType=VARCHAR}
       </if>
       <if test="itemState != null" >
         and item_state = #{itemState,jdbcType=TINYINT}

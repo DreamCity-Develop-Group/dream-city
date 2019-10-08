@@ -11,7 +11,7 @@
   </resultMap>
 
   <sql id="Base_Column_List">
-    id, code, valid,phone, create_time
+    id, code, valid,phone, DATE_FORMAT(create_time,'%Y-%m-%d %h:%m:%s') create_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 

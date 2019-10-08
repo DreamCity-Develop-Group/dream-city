@@ -15,7 +15,7 @@
 
   <sql id="Base_Column_List" >
     earn_id, earn_player_id, earn_max, earn_tax, is_withdrew,earn_personal_tax,earn_enterprise_tax,earn_current
-    ,create_time,update_time
+    ,DATE_FORMAT(create_time,'%Y-%m-%d %h:%m:%s') create_time, DATE_FORMAT(update_time,'%Y-%m-%d %h:%m:%s') update_time
   </sql>
 
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
