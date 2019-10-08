@@ -184,7 +184,6 @@ public class PushController {
         JSONObject jsonObject = JSONObject.parseObject(com.dream.city.base.utils.JsonUtil.parseObjToJson(message.getData().getData()));
         String channel = jsonObject.getString("channel");
 
-
         redisTemplate.convertAndSend(channel, com.dream.city.base.utils.JsonUtil.parseObjToJson(message));
 
         return new Result(true, "成功！", 200, message);
