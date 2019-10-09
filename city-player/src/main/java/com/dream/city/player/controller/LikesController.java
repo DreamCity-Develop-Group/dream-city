@@ -2,12 +2,15 @@ package com.dream.city.player.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.dream.city.base.model.CityGlobal;
+import com.dream.city.base.model.Page;
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.PlayerLikes;
 import com.dream.city.base.model.req.PlayerLikesReq;
+import com.dream.city.base.model.resp.PlayerLikesResp;
 import com.dream.city.base.utils.DataUtils;
 import com.dream.city.base.model.mapper.PlayerLikesLogMapper;
 import com.dream.city.player.service.LikesService;
+import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -203,7 +206,11 @@ public class LikesController {
         String data = null;
         try {
             PlayerLikesReq playerLikes = DataUtils.getPlayerLikes(jsonReq);
-            List<PlayerLikes> likesList = likesService.playerLikesList(playerLikes);
+            Page pageReq = new Page();
+            pageReq.setCondition(playerLikes);
+            pageReq.setPages(1000000);
+            PageInfo<PlayerLikesResp> pageInfo = likesService.playerLikesList(pageReq);
+            List<PlayerLikesResp> likesList = pageInfo.getList();
             b = Boolean.TRUE;
             msg = "获取点赞项目成功";
 

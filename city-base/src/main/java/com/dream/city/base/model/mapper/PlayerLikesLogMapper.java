@@ -1,22 +1,24 @@
 package com.dream.city.base.model.mapper;
 
 import com.dream.city.base.model.entity.PlayerLikesLog;
+import com.dream.city.base.model.req.PlayerLikesReq;
+import com.dream.city.base.model.resp.PlayerLikesResp;
 import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
 
 @Mapper
 public interface PlayerLikesLogMapper {
 
-    int deleteByPrimaryKey(Integer likeId);
-
-    int insert(PlayerLikesLog record);
+    int deleteByPrimaryKey(Integer id);
 
     int insertSelective(PlayerLikesLog record);
 
-    PlayerLikesLog selectByPrimaryKey(Integer likeId);
+    PlayerLikesResp selectByPrimaryKey(Integer id);
+
+    List<PlayerLikesResp> getLikesLogList(PlayerLikesReq record);
 
     int updateByPrimaryKeySelective(PlayerLikesLog record);
-
-    int updateByPrimaryKey(PlayerLikesLog record);
 
     /**
      * 当天点赞次数

@@ -27,13 +27,13 @@
       and 1.player_id = #{playerId,jdbcType=VARCHAR}
     </if>
     <if test="playerName != null and playerName != ''" >
-      and p.player_name = #{playerName,jdbcType=VARCHAR}
+      and p.player_name like '%${playerName}%'
     </if>
     <if test="playerNick != null and playerNick != ''" >
-      and p.player_nick = #{playerNick,jdbcType=VARCHAR}
+      and p.player_nick like '%${playerNick}%'
     </if>
     <if test="descr != null and descr != ''" >
-      and l.descr = #{descr,jdbcType=VARCHAR}
+      and l.descr  like '%${descr}%'
     </if>
     <if test="imei != null and imei != ''" >
       and l.imei = #{imei,jdbcType=VARCHAR}

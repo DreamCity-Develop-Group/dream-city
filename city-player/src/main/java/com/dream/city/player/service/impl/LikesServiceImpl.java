@@ -1,11 +1,16 @@
 package com.dream.city.player.service.impl;
 
+import com.dream.city.base.model.Page;
 import com.dream.city.base.model.entity.PlayerLikes;
 import com.dream.city.base.model.entity.PlayerLikesLog;
 import com.dream.city.base.model.req.PlayerLikesReq;
 import com.dream.city.base.model.mapper.PlayerLikesLogMapper;
 import com.dream.city.base.model.mapper.PlayerLikesMapper;
+import com.dream.city.base.model.resp.PlayerLikesResp;
+import com.dream.city.base.utils.DataUtils;
 import com.dream.city.player.service.LikesService;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -60,8 +65,11 @@ public class LikesServiceImpl implements LikesService {
     }
 
     @Override
-    public List<PlayerLikes> playerLikesList(PlayerLikesReq record) {
-        return playerLikesMapper.playerLikesList(record);
+    public PageInfo<PlayerLikesResp> playerLikesList(Page record) {
+        PlayerLikesReq likesReq = DataUtils.toJavaObject(record.getCondition(),PlayerLikesReq.class);
+        PageHelper.startPage(record.getPageNum(),record.getPageSize(),record.isCount());
+        List<PlayerLikesResp> likesList = playerLikesMapper.playerLikesList(likesReq);
+        return new PageInfo<>(likesList);
     }
 
     @Override

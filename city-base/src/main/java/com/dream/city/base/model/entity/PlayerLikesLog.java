@@ -8,6 +8,8 @@ import java.util.Date;
 @Data
 public class PlayerLikesLog implements Serializable {
 
+    private Integer id;
+
     private Integer likeId;
 
     /**

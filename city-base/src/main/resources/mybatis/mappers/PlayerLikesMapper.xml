@@ -45,12 +45,8 @@
       <if test="likedGetTotal != null" >
         liked_get_total,
       </if>
-      <if test="createTime != null" >
-        create_time,
-      </if>
-      <if test="updateTime != null" >
-        update_time,
-      </if>
+      create_time,
+      update_time,
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="likedId != null" >
@@ -68,12 +64,8 @@
       <if test="likedGetTotal != null" >
         #{likedGetTotal,jdbcType=INTEGER},
       </if>
-      <if test="createTime != null" >
-        #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateTime != null" >
-        #{updateTime,jdbcType=TIMESTAMP},
-      </if>
+      now(),
+      now(),
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.dream.city.base.model.req.PlayerLikesReq" >
@@ -94,9 +86,7 @@
       <if test="createTime != null" >
         create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="updateTime != null" >
-        update_time = #{updateTime,jdbcType=TIMESTAMP},
-      </if>
+      update_time = now(),
     </set>
     where liked_id = #{likedId,jdbcType=INTEGER}
   </update>
@@ -108,10 +98,40 @@
   </select>
 
 
-  <select id="playerLikesList" resultMap="BaseResultMap" parameterType="com.dream.city.base.model.req.PlayerLikesReq" >
-    select <include refid="Base_Column_List" />
-    from player_likes
-    where liked_player_id = #{likedPlayerId,jdbcType=VARCHAR}
+  <select id="playerLikesList" resultType="com.dream.city.base.model.resp.PlayerLikesResp" parameterType="com.dream.city.base.model.req.PlayerLikesReq" >
+    select * FROM (
+    select l.liked_id likedId, l.liked_player_id likedPlayerId, l.liked_invest_id likedInvestId, l.liked_set_total likedGetTotal, l.liked_get_total likedSetTotal,
+    DATE_FORMAT(l.create_time,'%Y-%m-%d %h:%m:%s') createTime, DATE_FORMAT(l.update_time,'%Y-%m-%d %h:%m:%s') updateTime,
+    (SELECT p1.player_name from city_player p1 WHERE l.liked_player_id =p1.player_id ) friendName,
+    (SELECT p2.player_nick from city_player p2 WHERE l.liked_player_id =p2.player_id ) friendNick,
+    (SELECT i.in_name FROM city_invest i WHERE i.in_id=l.liked_invest_id) inName
+    from player_likes l) a
+    where 1=1
+    <if test="likedId != null">
+      and likedId = #{likedId,jdbcType=INTEGER}
+    </if>
+    <if test="likedPlayerId != null and likedPlayerId != ''">
+      and likedPlayerId = #{likedPlayerId,jdbcType=VARCHAR}
+    </if>
+    <if test="friendName != null and friendName != ''">
+      and friendName like '%${friendName}%'
+    </if>
+    <if test="friendNick != null and friendNick != ''">
+      and friendNick like '%${friendNick}%'
+    </if>
+    <if test="playerName != null and playerName != ''">
+      and playerName like '%${playerName}%'
+    </if>
+    <if test="playerNick != null and playerNick != ''">
+      and playerNick like '%${playerNick}%'
+    </if>
+    <if test="inName != null and inName != ''">
+      and inName like '%${inName}%'
+    </if>
+    <if test="likedInvestId != null">
+      and likedInvestId = #{likedInvestId,jdbcType=INTEGER}
+    </if>
+    order by updateTime desc
   </select>
 
 </mapper>
