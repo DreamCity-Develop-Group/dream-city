@@ -4,14 +4,14 @@
   <resultMap id="BaseResultMap" type="com.dream.city.base.model.entity.RuleItem" >
     <id column="item_id" property="itemId" jdbcType="INTEGER" />
     <result column="item_name" property="itemName" jdbcType="VARCHAR" />
-    <result column="rule_flag" property="itemFlag" jdbcType="VARCHAR" />
+    <result column="item_flag" property="itemFlag" jdbcType="VARCHAR" />
     <result column="item_desc" property="itemDesc" jdbcType="VARCHAR" />
     <result column="item_state" property="itemState" jdbcType="INTEGER" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
     <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    item_id, item_name, item_desc, item_state,item_flag, create_time, update_time
+    item_id, item_name, item_desc, item_state,item_flag, DATE_FORMAT(create_time,'%Y-%m-%d %h:%m:%s') create_time, DATE_FORMAT(update_time,'%Y-%m-%d %h:%m:%s') update_time
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 

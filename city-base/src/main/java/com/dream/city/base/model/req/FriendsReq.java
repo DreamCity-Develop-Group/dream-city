@@ -12,10 +12,12 @@ public class FriendsReq implements Serializable {
     private String playerId;
     private String playerName;
     private String playerNick;
+    private String playerImgurl;
 
     private String friendId;
     private String friendName;
     private String friendNick;
+    private String friendImgurl;
 
     private Integer agree;
 

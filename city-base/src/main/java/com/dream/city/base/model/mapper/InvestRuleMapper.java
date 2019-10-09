@@ -3,6 +3,7 @@ package com.dream.city.base.model.mapper;
 
 import com.dream.city.base.model.entity.InvestRule;
 import com.dream.city.base.model.req.RuleReq;
+import com.dream.city.base.model.resp.RuleResp;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -24,7 +25,7 @@ public interface InvestRuleMapper {
 
     int updateByPrimaryKey(InvestRule record);
 
-    List<InvestRule> getInvestRuleList(RuleReq record);
+    List<RuleResp> getInvestRuleList(RuleReq record);
 
     List<InvestRule> getRuleFlagList(InvestRule record);
 

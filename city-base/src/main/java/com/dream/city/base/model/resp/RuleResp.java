@@ -4,7 +4,6 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
 
 @Data
 public class RuleResp implements Serializable {
@@ -44,10 +43,10 @@ public class RuleResp implements Serializable {
     private Integer ruleLevel;
 
     /**  */
-    private Date createTime;
+    private String createTime;
 
     /**  */
-    private Date updateTime;
+    private String updateTime;
 
 
 

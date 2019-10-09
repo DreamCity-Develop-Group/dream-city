@@ -90,6 +90,13 @@ public class ValiCodeController {
         }
     }
 
+    /**
+     * 验证验证码
+     *
+     * @param code
+     * @param account
+     * @return
+     */
     @RequestMapping("/checkCode")
     public Result checkCode(@RequestParam("code")String code,@RequestParam("account")String account) {
         boolean ret = Boolean.FALSE;
@@ -126,6 +133,12 @@ public class ValiCodeController {
         }
     }
 
+    /**
+     * 获取验证码
+     *
+     * @param message
+     * @return
+     */
     @RequestMapping("/getCode")
     public Result getCode(@RequestBody Message message) {
         String code = String.valueOf(new Random().nextInt(999999));
