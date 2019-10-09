@@ -19,20 +19,19 @@
   </sql>
 
   <select id="getPlayerById" parameterType="com.dream.city.base.model.entity.Player" resultType="com.dream.city.base.model.resp.PlayerResp">
-    select  id, player_id playerId, player_name playerName, player_nick playerNick, player_pass playerPass,
-    player_trade_pass playerTradePass, player_invite playerInvite, is_valid isValid
-    from city_player p
+    select  p.id, p.player_id playerId, p.player_name playerName, p.player_nick playerNick, p.player_pass playerPass,
+    p.player_trade_pass playerTradePass, p.player_invite playerInvite, p.is_valid isValid,e.imgurl
+    from city_player p inner join player_ext e on p.player_id=e.player_id
     where 1=1
     <if test="playerId != null and playerId != ''">
-      and p.player_id = #{playerId,jdbcType=VARCHAR} 
+    and p.player_id = #{playerId,jdbcType=VARCHAR}
     </if>
     <if test="playerName != null and playerName != ''" >
-      and p.player_name = #{playerName,jdbcType=VARCHAR}
+    and p.player_name = #{playerName,jdbcType=VARCHAR}
     </if>
     <if test="playerNick != null and playerNick != ''" >
-      and p.player_nick = #{playerNick,jdbcType=VARCHAR}
-    </if>
-    limit 1
+    and p.player_nick = #{playerNick,jdbcType=VARCHAR}
+    </if> limit 1
   </select>
 
   <select id="getPlayerByInvite" parameterType="java.lang.String" resultMap="BaseResultMap">
