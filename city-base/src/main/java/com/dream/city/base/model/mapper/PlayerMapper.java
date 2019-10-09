@@ -68,5 +68,5 @@ public interface PlayerMapper {
     PlayerAccount getPlayerAccount(String playerId);
 
     @Update("update city_player set player_level=#{level} where player_id=#{playerId}")
-    void updatePlayerLevel(String playerId,Integer level);
+    void updatePlayerLevel(@Param("playerId") String playerId,@Param("level") Integer level);
 }

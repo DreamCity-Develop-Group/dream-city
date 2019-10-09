@@ -66,6 +66,9 @@ public interface ConsumerPlayerService {
     @RequestMapping("/player/quit")
     Result quit(@RequestParam("playerId") String playerId);
 
+    @RequestMapping("/player/quitAccount")
+    Result quitAccount(@RequestParam("account") String account);
+
 
     /**
      * 用户忘记密码重置
@@ -108,6 +111,8 @@ public interface ConsumerPlayerService {
     @RequestMapping("/player/getPlayerByAccount")
     Result getPlayerByAccount(@RequestParam String account);
 
-    @RequestMapping("/player/check/invite")
-    Result checkPlayerInvite(String invite);
+    @RequestMapping("/player/checkInvite")
+    Result checkPlayerInvite(@RequestParam String invite);
+
+
 }

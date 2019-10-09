@@ -238,11 +238,11 @@ public class ConsumerPlayerController {
         Result result = consumerPlayerService.resetLoginPwd(jsonReq.getUsername(), jsonReq.getOldpw(), jsonReq.getNewpw());
 
         log.info("##################### 修改密码 : {}", msg);
-        Map<String, String> t = new HashMap<>();
-        t.put("desc", result.getMsg());
+        Map<String, String> dataMap = new HashMap<>();
+        dataMap.put("desc", result.getMsg());
 
         MessageData data = new MessageData(msg.getData().getType(), msg.getData().getModel());
-        data.setData(t);
+        data.setData(dataMap);
         Message message = new Message(msg.getSource(), msg.getTarget(), data);
         return message;
     }
@@ -336,7 +336,7 @@ public class ConsumerPlayerController {
         String account = jsonObject.getString("username");
         String code = jsonObject.getString("code");
         String invite = jsonObject.getString("invite");
-        if (StringUtils.isBlank(account) || StringUtils.isBlank(code) || StringUtils.isBlank(invite)) {
+        if (StringUtils.isBlank(account) || StringUtils.isBlank(code) ) {
             msg.setDesc("参数值不能为空");
             msg.setCreatetime(String.valueOf(System.currentTimeMillis()));
             MessageData messageData = message.getData();
@@ -352,15 +352,17 @@ public class ConsumerPlayerController {
         /*todo************************************************************/
         // TODO [[邀请码验证]]
         /*todo************************************************************/
-        Result retInvite = consumerPlayerService.checkPlayerInvite(invite);
-        if (!retInvite.getSuccess()){
-            msg.setDesc("邀请码错误");
-            msg.setCreatetime(String.valueOf(System.currentTimeMillis()));
-            MessageData messageData = message.getData();
+        if (StringUtils.isNotBlank(invite)){
+            Result retInvite = consumerPlayerService.checkPlayerInvite(invite);
+            if (!retInvite.getSuccess()){
+                msg.setDesc("邀请码错误");
+                msg.setCreatetime(String.valueOf(System.currentTimeMillis()));
+                MessageData messageData = message.getData();
 
-            messageData.setCode(ReturnStatus.ERROR_INVITE.getStatus());
-            msg.setData(messageData);
-            return msg;
+                messageData.setCode(ReturnStatus.ERROR_INVITE.getStatus());
+                msg.setData(messageData);
+                return msg;
+            }
         }
 
         String descT = CityGlobal.Constant.REG_FAIL;
@@ -416,7 +418,7 @@ public class ConsumerPlayerController {
                         log.info("商会关系创建完成");
                     }
                     //创建好友关系 待同意
-                    Result<Boolean> addFriend = friendsService.addFriend(playerId, parentId);
+                    Result<Boolean> addFriend = friendsService.addFriend(playerId, parentId,invite);
 
                     if (addFriend.getSuccess()) {
                         log.info("添加默认好友关系成功");
@@ -591,7 +593,15 @@ public class ConsumerPlayerController {
     public Message exit(@RequestBody Message msg) {
         log.info("登出", JSONObject.toJSONString(msg));
         UserReq jsonReq = DataUtils.getUserReq(msg);
-        Result result = consumerPlayerService.quit(jsonReq.getPlayerId());
+        String account = jsonReq.getUsername();
+        String playerId = jsonReq.getPlayerId();
+        Result result = Result.result(false);
+        if (StringUtils.isNotBlank(playerId)){
+            result = consumerPlayerService.quit(playerId);
+        }else{
+            result = consumerPlayerService.quitAccount(account);
+        }
+
         log.info("##################### 用户登出 :{}", msg);
 
         String redisKey = RedisKeys.LOGIN_USER_TOKEN + jsonReq.getUsername();

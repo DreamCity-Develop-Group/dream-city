@@ -4,6 +4,7 @@ import com.dream.city.base.model.entity.InvestAllow;
 import com.dream.city.base.model.entity.InvestRule;
 import com.dream.city.base.model.entity.RelationTree;
 import com.dream.city.base.model.entity.RuleItem;
+import org.apache.ibatis.annotations.Select;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -13,7 +14,8 @@ import java.util.List;
  */
 public interface InvestRuleService {
 
-    RuleItem getRuleItemByFlag(String plAYER_flag);
+
+    RuleItem getRuleItemByFlag(String itemFlag);
 
     List<InvestRule> getRulesByItem(Integer itemId);
 }

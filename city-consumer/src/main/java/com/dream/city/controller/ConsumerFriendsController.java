@@ -57,8 +57,9 @@ public class ConsumerFriendsController {
         Map map = getPlayerIdOrFriendId(msg);
         String playerId = map.containsKey("playerId")?(String)map.get("playerId"):null;
         String friendId = map.containsKey("friendId")?(String)map.get("friendId"):null;
+        String invite = map.containsKey("invite")?(String)map.get("friendId"):null;
 
-        Result<Boolean> b = consumerFriendsService.addFriend(playerId,friendId);
+        Result<Boolean> b = consumerFriendsService.addFriend(playerId,friendId,invite);
         Message message = getResultMessage(b.getSuccess(),"添加好友",msg);
         return message;
     }

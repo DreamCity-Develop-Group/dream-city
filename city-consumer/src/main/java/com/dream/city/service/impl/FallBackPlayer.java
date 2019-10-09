@@ -49,6 +49,11 @@ public class FallBackPlayer implements ConsumerPlayerService {
     }
 
     @Override
+    public Result quitAccount(String account) {
+        return null;
+    }
+
+    @Override
     public Result forgetPwd(String username, String oldPwd) {
         return null;
     }

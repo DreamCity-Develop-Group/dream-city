@@ -135,7 +135,9 @@ public interface RuleItemMapper {
 //    @Options(useGeneratedKeys = true, keyProperty = "id")
 //    void insert(InvestAllow allow);
 
-    @Select({"select * from `rule_item` where 1=1 and item_flag = #{flag} and item_state=1"})
+    @Select({"select item_id itemId,item_flag itemFlag,item_name itemName,item_desc itemDesc," +
+            "item_state itemState,create_time createTime,update_time updateTime " +
+            "from `rule_item` where 1=1 and item_flag = #{flag} and item_state=1"})
     RuleItem getRuleItemByFlag(String flag);
 
 

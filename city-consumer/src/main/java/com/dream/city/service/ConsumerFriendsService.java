@@ -21,7 +21,8 @@ public interface ConsumerFriendsService {
      */
     @RequestMapping("/addFriend")
     Result<Boolean> addFriend(@RequestParam("playerId") String playerId,
-                              @RequestParam("friendId") String friendId);
+                              @RequestParam("friendId") String friendId,
+                              @RequestParam("invite") String invite);
 
     /**
      * 同意添加好友

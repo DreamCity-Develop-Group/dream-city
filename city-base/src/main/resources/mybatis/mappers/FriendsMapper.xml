@@ -31,6 +31,9 @@
     <if test="friendId != null and friendId != ''">
       and friend_id = #{friendId,jdbcType=VARCHAR}
     </if>
+    <if test="agree != null and agree != ''">
+      and agree != #{agree,jdbcType=INTEGER}
+    </if>
     order by create_time desc limit 1
   </select>
 

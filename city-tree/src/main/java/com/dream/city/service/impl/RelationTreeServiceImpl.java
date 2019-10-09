@@ -15,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -39,9 +41,10 @@ public class RelationTreeServiceImpl implements RelationTreeService {
 
     @Override
     public Result save(String parent, String child, String invite) {
+
         RelationTree tree = new RelationTree();
-        RelationTree parentTree = treeMapper.getByPlayer(parent);
-        RelationTree playerTree = treeMapper.getByPlayer(child);
+        RelationTree parentTree = treeMapper.getTreeByPlayerId(parent);
+        RelationTree playerTree = treeMapper.getTreeByPlayerId(child);
         if (StringUtils.isBlank(parent) || StringUtils.isBlank(child) || StringUtils.isBlank(invite)) {
             return Result.result(false, CityGlobal.Constant.TREE_PARAMS_ERROR, 501);
         }
@@ -56,6 +59,7 @@ public class RelationTreeServiceImpl implements RelationTreeService {
             tree.setTreeRelation(parentTree.getTreeRelation() + "/" + invite);
             tree.setSendAuto("");
             tree.setTreeLevel(0);
+            tree.setCreateTime(new Timestamp(new Date().getTime()));
             treeMapper.saveTree(tree);
             log.info("保存树成功");
 
@@ -70,9 +74,10 @@ public class RelationTreeServiceImpl implements RelationTreeService {
             RuleItem ruleItem = investRuleService.getRuleItemByFlag(PlAYER_FLAG);
             List<InvestRule> rules = investRuleService.getRulesByItem(ruleItem.getItemId());
             for (InvestRule rule : rules){
-                if (rule.getRuleOpt() == "OPT_NUM" && rule.getRuleRate().compareTo(new BigDecimal(childsSize))==0){
-                    stars = rule.getRuleLevel();
-                    break;
+                if ("OPT_NUM".equals(rule.getRuleOpt())){
+                    if(rule.getRuleRate().compareTo(new BigDecimal(childsSize)) != 1){
+                        stars = rule.getRuleLevel();
+                    }
                 }
             }
             if (stars>0){

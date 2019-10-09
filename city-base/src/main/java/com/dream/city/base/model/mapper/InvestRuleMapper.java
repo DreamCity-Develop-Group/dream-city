@@ -59,6 +59,7 @@ public interface InvestRuleMapper {
     InvestRule getInvestAllowByPlayerId(String playerId);
 
     @Select("select * from `invest_rule` where 1=1 and  rule_item = #{itemId}")
+    @ResultMap("BasePlayerResultMap1")
     List<InvestRule> getRulesByItem(Integer itemId);
 
     /**

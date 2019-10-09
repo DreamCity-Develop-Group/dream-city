@@ -29,14 +29,15 @@ public interface RelationTreeMapper {
     @Select("select * from city_tree where 1=1 and tree_parent_id = #{pid} and tree_player_id=#{cid}")
     RelationTree get(String pid,String cid);
 
-    @Insert({"insert into `city_tree`(tree_parent_id, tree_player_id, tree_relation) values (#{parentId}, #{playerId}, #{relation})"})
-    @Options(useGeneratedKeys = true, keyProperty = "id")
+    @Insert({"insert into `city_tree`(tree_id,tree_parent_id, tree_player_id, tree_relation,send_auto,tree_level,create_time) " +
+            "values (#{treeId},#{treeParentId}, #{treePlayerId}, #{treeRelation},#{sendAuto},#{treeLevel},#{createTime})"})
+    //@Options(useGeneratedKeys = true, keyProperty = "tree_id")
     void  saveTree(RelationTree tree);
 
     @Select("select * from city_tree where 1=1 limit 0,10")
     List<RelationTree> getTrees();
 
-    @Update(" update city_tree set tree_parent_id=#{parentId},tree_player_id=#{playerId},tree_relation=#{relation},send_auto=#{sendAuto} where id = #{id}")
+    @Update(" update city_tree set tree_parent_id=#{treeParentId},tree_player_id=#{treePlayerId},tree_relation=#{treeRelation},send_auto=#{sendAuto},tree_level=#{treeLevel} where tree_id = #{treeId}")
     void updateTree(RelationTree tree);
 
 

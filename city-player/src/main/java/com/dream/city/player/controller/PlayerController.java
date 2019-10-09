@@ -303,6 +303,33 @@ public class PlayerController {
         return result;
     }
 
+    @RequestMapping("/quitAccount")
+    public Result quitAccount(@RequestParam("account")String account){
+        log.info("用户退出，account:{}",account);
+        Player playerByAccount = playerService.getPlayerByAccount(account);
+        Result result = new Result(Boolean.TRUE,"退出成功",CityGlobal.ResultCode.success.getStatus());
+        // 用户是否存在
+        Player player = new Player();
+        String playerId = playerByAccount.getPlayerId();
+        player.setPlayerId(playerId);
+        PlayerResp playerExit = playerService.getPlayer(player);
+        if (playerExit == null){
+            return result;
+        }
+
+        LoginLog record = new LoginLog();
+        record.setDescr("用户退出");
+        record.setPlayerId(playerId);
+        record.setType("quit");
+        loginLogServcie.insertLoginLog(record);
+
+        if (redisUtils.hasKey(RedisKeys.CURRENT_USER + playerExit.getPlayerName())) {
+            redisUtils.del(RedisKeys.CURRENT_USER + playerExit.getPlayerName());
+            redisUtils.decr(RedisKeys.CURRENT_LOGIN_USER_COUNT);
+        }
+        return result;
+    }
+
 
     /**
      * 忘记密码
@@ -311,8 +338,9 @@ public class PlayerController {
      * @return
      */
     @RequestMapping("/forgetPwd")
-    public Result forgetPwd(@RequestParam("username")String username,
-                                @RequestParam("newpw") String newpw){
+    public Result forgetPwd(
+            @RequestParam("username")String username,
+            @RequestParam("newpw") String newpw){
         log.info("忘记密码，userName:{},newpw:{}",username,newpw);
         return playerService.forgetPwd(username, newpw);
     }
@@ -445,7 +473,7 @@ public class PlayerController {
         return new Result<Boolean>(true,"fail",200,false);
     }
 
-    @RequestMapping("/check/invite")
+    @RequestMapping("/checkInvite")
     public Result checkPlayerInvite(@RequestParam("invite")String invite){
         Player player = playerService.getPlayerByInvite(invite);
         if (player != null){

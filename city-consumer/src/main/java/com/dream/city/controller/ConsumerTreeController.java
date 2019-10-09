@@ -7,12 +7,14 @@ import com.dream.city.base.model.MessageData;
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.Player;
 import com.dream.city.base.model.entity.PlayerAccount;
+import com.dream.city.base.model.entity.SalesOrder;
 import com.dream.city.base.utils.JsonUtil;
 import com.dream.city.service.ConsumerAccountService;
 import com.dream.city.service.ConsumerPlayerService;
 import com.dream.city.service.ConsumerTreeService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Wvv
@@ -39,12 +42,18 @@ public class ConsumerTreeController {
 
     /**
      * 添加玩家商会关系
-     * @param playerId
-     * @param invite
+     *
+     * @param msg
      * @return
      */
     @RequestMapping("/tree/add")
-    public Message treeAdd(@RequestParam("playerId")String playerId,@RequestParam("invite")String invite){
+    public Message treeAdd(@RequestBody Message msg){
+        Object dataMsg = msg.getData().getData();
+        JSONObject jsonObject = JsonUtil.parseJsonToObj(JsonUtil.parseObjToJson(dataMsg), JSONObject.class);
+        String playerId =  jsonObject.getString("playerId");
+        String invite =  jsonObject.getString("invite");
+
+        //@RequestParam("playerId")String playerId,@RequestParam("invite")String invite
         MessageData data = new MessageData("add","/consumer/tree");
         Message message = new Message("server","client",data,"加入失败");
         Result retPlayer = playerService.getPlayer(playerId);
@@ -71,12 +80,17 @@ public class ConsumerTreeController {
     /**
      * 添加经营许可
      *
-     * @param playerId
-     * @param amount
+     * @param msg
      * @return
      */
     @RequestMapping("/tree/join")
-    public Message Join(@RequestParam("playerId")String playerId, @RequestParam("amount")BigDecimal amount){
+    public Message Join(@RequestBody Message msg){
+        Object dataMsg = msg.getData().getData();
+        JSONObject jsonObject = JsonUtil.parseJsonToObj(JsonUtil.parseObjToJson(dataMsg), JSONObject.class);
+        //@RequestParam("playerId")String playerId, @RequestParam("amount")BigDecimal amount
+        String playerId = jsonObject.getString("playerId");
+        BigDecimal amount = jsonObject.getBigDecimal("amount");
+
         Message message = new Message("server","client",new MessageData("join","/consumer/tree"),"加入经营许可失败，尚未设置交易 密码");
         Result result = playerService.getPlayer(playerId);
         Player player = JsonUtil.parseJsonToObj(result.getData().toString(),Player.class);
@@ -115,11 +129,15 @@ public class ConsumerTreeController {
     /**
      * 获取商会成员
      *
-     * @param playerId
+     * @param msg
      * @return
      */
     @RequestMapping("/tree/getMembers")
-    public Message getMembers(@RequestParam("playerId")String playerId){
+    public Message getMembers(@RequestBody Message msg){
+        Object dataMsg = msg.getData().getData();
+        JSONObject jsonObject = JsonUtil.parseJsonToObj(JsonUtil.parseObjToJson(dataMsg), JSONObject.class);
+        String playerId = jsonObject.getString("playerId");
+        //@RequestParam("playerId")String playerId
         Integer level = 1;
         Result result = treeService.getMembers(playerId, level);
 
@@ -129,8 +147,18 @@ public class ConsumerTreeController {
         return message;
     }
 
+    /**
+     * 获取订单
+     *
+     * @param msg
+     * @return
+     */
     @RequestMapping("/tree/getSalesOrder")
-    public Message getSalesOrder(@RequestParam("playerId")String playerId){
+    public Message getSalesOrder(@RequestBody Message msg){
+        Object dataMsg = msg.getData().getData();
+        JSONObject jsonObject = JsonUtil.parseJsonToObj(JsonUtil.parseObjToJson(dataMsg), JSONObject.class);
+        String playerId = jsonObject.getString("playerId");
+        //@RequestParam("playerId")String playerId
         Result result = treeService.getSalesOrder(playerId);
         Message message = new Message("server","client",new MessageData("getSalesOrder","/consumer/tree"),"获取MT交易订单");
         message.getData().setData(result.getData());
@@ -141,11 +169,17 @@ public class ConsumerTreeController {
     /**
      * 设置自动发货，并备货
      *
-     * @param playerId
+     * @param msg
      * @return
      */
     @RequestMapping("/tree/setAutoSend")
-    public Message setAutoSend(@RequestParam("playerId")String playerId,@RequestParam("amount")BigDecimal amount){
+    public Message setAutoSend(@RequestBody Message msg){
+        Object dataMsg = msg.getData().getData();
+        JSONObject jsonObject = JsonUtil.parseJsonToObj(JsonUtil.parseObjToJson(dataMsg), JSONObject.class);
+        String playerId = jsonObject.getString("playerId");
+        BigDecimal amount = jsonObject.getBigDecimal("amount");
+
+        //@RequestParam("playerId")String playerId,@RequestParam("amount")BigDecimal amount
         Message message = new Message("server","client",new MessageData("setAutoSend","/consumer/tree"),"设置自动发货成功");
         PlayerAccount account = accountService.getPlayerAccountByPlayerId(playerId);
 
@@ -164,13 +198,18 @@ public class ConsumerTreeController {
 
     /**
      * 订单发货
-     *
-     * @param playerId
-     * @param orders
+     * 
+     * @param msg
      * @return
      */
     @RequestMapping("/tree/sendOrder")
-    public Message sendOrder(@RequestParam("playerId")String playerId,@RequestParam("orders") List<String> orders){
+    public Message sendOrder(@RequestBody Message msg){
+        Object dataMsg = msg.getData().getData();
+        JSONObject jsonObject = JsonUtil.parseJsonToObj(JsonUtil.parseObjToJson(dataMsg), JSONObject.class);
+        String playerId = jsonObject.getString("playerId");
+        List<String> orders = (List<String>)jsonObject.get("orders");
+
+        //@RequestParam("playerId")String playerId,@RequestParam("orders") List<String> orders
         Result result = treeService.sendOrder(playerId,orders);
         Message message = new Message("server","client",new MessageData("sendOrder","/consumer/tree"),"发货成功");
         if (result.getSuccess()){
