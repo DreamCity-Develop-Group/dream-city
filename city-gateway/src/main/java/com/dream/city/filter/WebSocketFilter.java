@@ -72,7 +72,7 @@ public class WebSocketFilter extends ZuulFilter {
             log.warn("Access token is Empty!");
 
             context.setSendZuulResponse(false);
-            context.setResponseStatusCode(401);
+            context.setResponseStatusCode(707);
             return null;
         }else{//"token_"+username
             String username = request.getHeader("username");
@@ -88,7 +88,7 @@ public class WebSocketFilter extends ZuulFilter {
             }
             log.warn("Access token is Wrong!");
             context.setSendZuulResponse(false);
-            context.setResponseStatusCode(500);
+            context.setResponseStatusCode(707);
             return null;
         }
 

@@ -6,6 +6,7 @@ import com.dream.city.base.model.Result;
 import com.dream.city.service.ConsumerWorkerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import sun.rmi.runtime.Log;
@@ -25,7 +26,7 @@ public class ConsumerWorkerController {
     ConsumerWorkerService workerService;
 
     @RequestMapping("/createWorker")
-    public Message createWorker(Message message) {
+    public Message createWorker(@RequestBody Message message) {
         Message ret;
         String task = message.getData().getType();
         Result result = workerService.createWorker(message);

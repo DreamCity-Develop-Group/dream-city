@@ -38,4 +38,6 @@ public interface RelationTreeService {
     Map<Integer,RelationTree> getParents(String playerId);
 
     boolean hasParent(String playerId);
+
+    RelationTree getTreeByPlayerId(String playerId);
 }

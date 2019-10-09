@@ -24,10 +24,31 @@ public class MessageData<T> {
      */
     T data;
 
+    /**
+     * 操作状态码
+     */
+    private Integer code;
+
 
     public MessageData(String type,String model){
         this.type = type;
         this.model = model;
+        this.data=null;
+        this.code = 200;
+    }
+
+    public MessageData(String type,String model,Integer code){
+        this.type = type;
+        this.model = model;
+        this.code = code;
+        this.data = null;
+    }
+
+    public MessageData(String type,String model,T data){
+        this.type = type;
+        this.model = model;
+        this.code = 200;
+        this.data = data;
     }
 
 }

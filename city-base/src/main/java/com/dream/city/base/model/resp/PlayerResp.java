@@ -45,6 +45,4 @@ public class PlayerResp implements Serializable {
 
     private String addfriend;
 
-
-
 }

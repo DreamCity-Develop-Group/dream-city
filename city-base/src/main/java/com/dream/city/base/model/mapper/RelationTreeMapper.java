@@ -59,4 +59,14 @@ public interface RelationTreeMapper {
 
     @Select("select * from city_tree where 1=1 and tree_parent_id=#{parentId}")
     List<RelationTree> getChilds(String parentId);
+
+    @Select("select " +
+            "tree_id treeId,tree_parent_id treeParentId, " +
+            "tree_player_id treePlayerId," +
+            "tree_relation treeRelation," +
+            "send_auto sendAuto," +
+            "tree_level treeLevel," +
+            "create_time createTime " +
+            "from city_tree where 1=1 and tree_player_id=#{playerId}")
+    RelationTree getTreeByPlayerId(String playerId);
 }

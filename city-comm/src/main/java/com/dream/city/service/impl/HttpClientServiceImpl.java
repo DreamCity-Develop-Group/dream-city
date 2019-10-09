@@ -3,6 +3,7 @@ package com.dream.city.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.dream.city.base.model.MessageData;
+import com.dream.city.base.model.enu.ReturnStatus;
 import com.dream.city.base.utils.RedisUtils;
 import com.dream.city.config.GateWayConfig;
 import com.dream.city.base.model.Message;
@@ -281,6 +282,15 @@ public class HttpClientServiceImpl implements HttpClientService {
                 WebSocketServer.sendInfo(message);
                 /**TODO**********完*************************************/
 
+            }else if(responseEntity != null && responseCode == 707){
+                Message message = new Message();
+                message.setSource("server");
+                message.setTarget(msg.getSource());
+                message.setDesc("尚未登录或登录已过期");
+                message.setCreatetime(String.valueOf(System.currentTimeMillis()));
+                message.setData(new MessageData(msg.getData().getType(),msg.getData().getModel(),null, ReturnStatus.SUCCESS.getStatus()));
+
+                WebSocketServer.sendInfo(message);
             } else {
                 /**TODO**********完成任务创建***********未完成相应请求，创建任务*******************/
                 createWork(msg);

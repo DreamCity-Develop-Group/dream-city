@@ -48,7 +48,7 @@ public class RelationTreeController {
      */
     @RequestMapping("/get/tree")
     public Result getTree(@RequestParam("playerId") String playerId) {
-        RelationTree tree = relationTreeService.getByPlayer(playerId);
+        RelationTree tree = relationTreeService.getTreeByPlayerId(playerId);
 
         return new Result(CityGlobal.Constant.TREE_RELATION_SUCCESS, 200, tree);
     }

@@ -18,9 +18,9 @@
     create_time, update_time,is_valid
   </sql>
 
-  <select id="getPlayerById" parameterType="com.dream.city.base.model.resp.PlayerResp" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
+  <select id="getPlayerById" parameterType="com.dream.city.base.model.entity.Player" resultType="com.dream.city.base.model.resp.PlayerResp">
+    select  id, player_id playerId, player_name playerName, player_nick playerNick, player_pass playerPass,
+    player_trade_pass playerTradePass, player_invite playerInvite, is_valid isValid
     from city_player p
     where 1=1
     <if test="playerId != null and playerId != ''">

@@ -28,6 +28,9 @@ public class Message implements Serializable{
     // 其他信息
     private String desc;
 
+    //操作状态码
+    private Integer code;
+
     public Message() {
     }
 
@@ -38,6 +41,7 @@ public class Message implements Serializable{
         this.target = target;
         this.data = data;
         this.desc = "";
+        this.code = 200;
         this.createtime = String.valueOf(System.currentTimeMillis());
     }
 
@@ -48,6 +52,7 @@ public class Message implements Serializable{
         this.target = target;
         this.data = data;
         this.desc = desc;
+        this.code = 200;
         this.createtime = String.valueOf(System.currentTimeMillis());
     }
 
@@ -58,8 +63,8 @@ public class Message implements Serializable{
         this.source = source;
         this.data = data;
         this.desc = desc;
+        this.code = 200;
         this.target = target;
         this.createtime = createtime;
     }
-
 }

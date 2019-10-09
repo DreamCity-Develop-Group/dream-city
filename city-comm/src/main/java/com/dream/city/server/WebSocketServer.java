@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.dream.city.base.model.Message;
 import com.dream.city.base.model.MessageData;
+import com.dream.city.base.model.enu.ReturnStatus;
 import com.dream.city.base.utils.JsonUtil;
 import com.dream.city.base.utils.RedisKeys;
 import com.dream.city.base.utils.RedisUtils;
@@ -135,11 +136,14 @@ public class WebSocketServer {
             message.setTarget(clientId);
             message.setCreatetime(new Date().toString());
             message.setDesc(connect);
+            message.setCode(ReturnStatus.SUCCESS.getStatus());
             MessageData data = new MessageData();
             data.setType("init");
             data.setModel("socket");
             data.setData(null);
+            data.setCode(ReturnStatus.SUCCESS.getStatus());
             message.setData(data);
+
             String msg = JSON.toJSON(message).toString();
             sendMessage(msg);
         } catch (IOException e) {
@@ -209,7 +213,14 @@ public class WebSocketServer {
                 replay.setTarget(WebSocketServer.this.clientId);
                 replay.setDesc("服务端消息中心同步通知");
                 replay.setCreatetime(String.valueOf(System.currentTimeMillis()));
-                replay.setData(new MessageData("replay", "messageCenter", null));
+                replay.setData(
+                        new MessageData(
+                                "replay",
+                                "messageCenter",
+                                null,
+                                ReturnStatus.SUCCESS.getStatus()
+                        )
+                );
 
                 //TODO 2、客户端断线重连，客户端已经有相应的逻辑处理
                 boolean offline = false;

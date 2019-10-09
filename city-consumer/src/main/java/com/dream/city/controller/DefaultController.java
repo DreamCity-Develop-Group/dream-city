@@ -75,7 +75,7 @@ public class DefaultController {
         //个人信息
         Map<String,Object> profile = new HashMap<>();
         profile.put("nick",player.getPlayerNick());
-        profile.put("level",tree.getTreeLevel());
+        profile.put("level",tree.getTreeLevel()==null?0:tree.getTreeLevel());
 
         //取出公告缓存
         //公告

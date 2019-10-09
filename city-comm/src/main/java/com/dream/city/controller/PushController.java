@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.Notice;
+import com.dream.city.base.model.enu.ReturnStatus;
 import com.dream.city.base.utils.RedisUtils;
 import com.dream.city.base.model.MessageData;
 import com.dream.city.config.GateWayConfig;
@@ -54,7 +55,7 @@ public class PushController {
     @GetMapping("/gate")
     public String getGateUrl() {
         //GateWayConfig gateWayConfig = new GateWayConfig();
-        MessageData data = new MessageData("test", "server", gateWayConfig);
+        MessageData data = new MessageData("test", "server", gateWayConfig, ReturnStatus.SUCCESS.getStatus());
         Message message = new Message("client", "server", data, "desc", String.valueOf(System.currentTimeMillis()));
         httpClientService.post(message);
 
@@ -157,7 +158,7 @@ public class PushController {
         Message message = new Message(
                 "server",
                 "clients",
-                new MessageData("notice", "notice", notice),
+                new MessageData("notice", "notice", notice,ReturnStatus.SUCCESS.getStatus()),
                 "这是所有"+channel+"客户端的广播",
                 String.valueOf(System.currentTimeMillis()));
 
@@ -170,7 +171,7 @@ public class PushController {
             Message message = new Message(
                     "server",
                     "clients",
-                    new MessageData("notice", "notice", notice),
+                    new MessageData("notice", "notice", notice,ReturnStatus.SUCCESS.getStatus()),
                     "这是"+channel+":客户端【"+client+"】的广播",
                     String.valueOf(System.currentTimeMillis()));
 

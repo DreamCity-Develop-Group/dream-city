@@ -489,22 +489,19 @@ public class ConsumerPlayerController {
         Result result = consumerPlayerService.login(jsonReq);
         log.info("##################### 用户登录: {}", result);
 
-        Map<String, String> t = new HashMap<>();
-        String descT = CityGlobal.Constant.LOGIN_FAIL;
+        Map<String, String> data = new HashMap<>();
+        String desc = CityGlobal.Constant.LOGIN_FAIL;
         if (result.getSuccess()) {
-            descT = CityGlobal.Constant.LOGIN_SUCCESS;
+            desc = CityGlobal.Constant.LOGIN_SUCCESS;
 
             String token = saveToken(userReq.getUsername());
-            t.put("token", token);
+            data.put("token", token);
         }
-
-        MessageData data = new MessageData("Login", "consumer");
-        t.put("desc", descT);
-        data.setData(t);
-        Message message = new Message(msg.getSource(), msg.getTarget(), data);
-        message.setSource(msg.getSource());
-        message.setTarget(msg.getTarget());
-        message.setDesc(result.getMsg());
+        MessageData msgData = new MessageData(
+                msg.getData().getType(), msg.getData().getModel(),
+                data,result.getCode()
+        );
+        Message message = new Message(msg.getSource(), msg.getTarget(), msgData,result.getMsg());
         return message;
     }
 

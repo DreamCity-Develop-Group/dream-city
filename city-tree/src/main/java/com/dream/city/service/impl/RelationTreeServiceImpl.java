@@ -178,6 +178,11 @@ public class RelationTreeServiceImpl implements RelationTreeService {
         return tree != null;
     }
 
+    @Override
+    public RelationTree getTreeByPlayerId(String playerId) {
+        return treeMapper.getTreeByPlayerId(playerId);
+    }
+
     /**
      * 获取以上9级的父结点
      *

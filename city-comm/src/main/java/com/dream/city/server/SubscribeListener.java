@@ -45,7 +45,7 @@ public class SubscribeListener extends MessageListenerAdapter implements Message
         log.info(new String(pattern) + "主题发布：" + msg);
         if(null!=session){
             try {
-                RemoteEndpoint.Basic endpoint = session.getBasicRemote();
+                //RemoteEndpoint.Basic endpoint = session.getBasicRemote();
                 log.info("clientId:"+session.getId());
 
                 if (myMsg == null){
@@ -55,12 +55,12 @@ public class SubscribeListener extends MessageListenerAdapter implements Message
                     if (strs.length>1){
                         String id = strs[1];
                         if (id.equals(session.getId())){
-                            endpoint.sendText(msg);
+                            session.getBasicRemote().sendText(msg);
                         }
                     }
                     //发给所有的用户
                     else if("clients".equals(myMsg.getTarget())){
-                        endpoint.sendText(msg);
+                        session.getBasicRemote().sendText(msg);
                     }
                     //session.getBasicRemote().sendText(msg);
                 }

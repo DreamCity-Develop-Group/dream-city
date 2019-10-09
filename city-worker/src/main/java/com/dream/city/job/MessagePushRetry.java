@@ -24,6 +24,6 @@ public class MessagePushRetry extends QuartzJobBean {
         String jsonString = dataMap.get("data").toString();
         Map data = JsonUtil.parseJsonToObj(jsonString,Map.class);
         //推送消息到客户端
-        messageService.pushRetry(data.get("clientId").toString(),data);
+        messageService.pushRetry(data.get("username").toString(),data);
     }
 }
