@@ -131,21 +131,18 @@ public class WebSocketServer {
             boolean token = redisUtils.hasKey(redisKey);
             String connect = token ? "重连成功" : "连接成功";
             log.info(connect);
-            Message message = new Message();
-            message.setSource("server");
-            message.setTarget(clientId);
-            message.setCreatetime(new Date().toString());
-            message.setDesc(connect);
-            message.setCode(ReturnStatus.SUCCESS.getStatus());
-            MessageData data = new MessageData();
-            data.setType("init");
-            data.setModel("socket");
-            data.setData(null);
-            data.setCode(ReturnStatus.SUCCESS.getStatus());
-            message.setData(data);
+
+            Message message = new Message(
+                    "server",
+                    clientId,
+                    new MessageData("init","socket",ReturnStatus.SUCCESS.getStatus()),
+                    connect,
+                    new Date().toString()
+            );
 
             String msg = JSON.toJSON(message).toString();
             sendMessage(msg);
+
         } catch (IOException e) {
             log.error("websocket IO异常");
         }
@@ -173,7 +170,7 @@ public class WebSocketServer {
     public void onMessage(String message, Session session, @PathParam("topic") String topic, @PathParam("name") String username) {
         log.info("收到来自窗口client-" + sid + "的信息:" + topic + "/" + username);
         log.info("Message:" + message);
-
+        //this.session.addMessageHandler(SocketMessageHandler.MessageHandler.handleTextMessage(this.session,message));
         publishService.publish(topic, message);
 
         //根据sid 到服务上找对应的数据，=》校验 =》 推送数据到客户端
@@ -208,20 +205,17 @@ public class WebSocketServer {
                 //解析出客户端发来的消息
                 Message msg = JSONObject.parseObject(message, Message.class);
 
-                Message replay = new Message();
-                replay.setSource("server");
-                replay.setTarget(WebSocketServer.this.clientId);
-                replay.setDesc("服务端消息中心同步通知");
-                replay.setCreatetime(String.valueOf(System.currentTimeMillis()));
-                replay.setData(
+                Message replay = new Message(
+                        "server",
+                        WebSocketServer.this.clientId,
                         new MessageData(
                                 "replay",
                                 "messageCenter",
-                                null,
                                 ReturnStatus.SUCCESS.getStatus()
-                        )
+                        ),
+                        "服务端消息中心同步通知",
+                        String.valueOf(System.currentTimeMillis())
                 );
-
                 //TODO 2、客户端断线重连，客户端已经有相应的逻辑处理
                 boolean offline = false;
                 if (offline) {
@@ -229,7 +223,6 @@ public class WebSocketServer {
                     sendMessage("success");
                     return;
                 }
-
 
                 if (null != msg.getData().getData()) {
                     Map data = JsonUtil.parseJsonToObj(msg.getData().getData().toString(), Map.class);
@@ -284,6 +277,7 @@ public class WebSocketServer {
                 } else {
                     log.info("没有收到相应的消息数据，无法完成相应的业务逻辑！");
                     replay.setDesc("消息数据不可用");
+                    replay.setCode(ReturnStatus.INVALID.getStatus());
                     WebSocketServer.sendInfo(replay);
                 }
             }
@@ -314,7 +308,8 @@ public class WebSocketServer {
      */
     @OnError
     public void onError(Session session, Throwable error) {
-        log.error("发生错误");
+        log.error("发生错误:"+error.getMessage());
+
         error.printStackTrace();
     }
 

@@ -6,6 +6,7 @@ import com.dream.city.base.model.*;
 import com.dream.city.base.model.entity.Player;
 import com.dream.city.base.model.entity.PlayerAccount;
 import com.dream.city.base.model.entity.PlayerExt;
+import com.dream.city.base.model.enu.ReturnStatus;
 import com.dream.city.base.model.req.UserReq;
 import com.dream.city.base.model.resp.PlayerResp;
 import com.dream.city.base.utils.DataUtils;
@@ -78,7 +79,7 @@ public class ConsumerPlayerController {
         record.setImgurl(jsonReq.getImgUrl());
         Result<Boolean> result = consumerPlayerService.updatePlayerHeadImg(record);
 
-        MessageData messageData = new MessageData(msg.getData().getType(), msg.getData().getModel());
+        MessageData messageData = new MessageData(msg.getData().getType(), msg.getData().getModel(),result.getCode());
         messageData.setData(result.getData());
         Message message = new Message(msg.getSource(), msg.getTarget(), messageData);
         message.setDesc(result.getMsg());
@@ -125,15 +126,18 @@ public class ConsumerPlayerController {
         log.info("获取认证码", JSONObject.toJSONString(msg));
         Map<String, Object> map = new HashMap<>();
         Result code = messageService.getCode(msg);
+        MessageData messageData = new MessageData(msg.getData().getType(), msg.getData().getModel());
         if (code.getSuccess()) {
             map.put("code", code.getData());
-            map.put("desc","获取认证码成功");
-            MessageData messageData = new MessageData(msg.getData().getType(), msg.getData().getModel());
+            map.put("desc", "获取认证码成功");
+
             messageData.setData(map);
             Message message = new Message(msg.getSource(), msg.getTarget(), messageData);
             return message;
         } else {
+            messageData.setCode(code.getCode());
             msg.setDesc(code.getMsg());
+            msg.setData(messageData);
             return msg;
         }
     }
@@ -153,12 +157,7 @@ public class ConsumerPlayerController {
         String id = map.get("id").toString();
         Result player = consumerPlayerService.getPlayer(id);
 
-        Map<String, Object> t = new HashMap<>();
-        t.put("user", player.getData());
-        MessageData data = new MessageData(msg.getData().getType(), msg.getData().getModel());
-        data.setData(t);
-        Message message = new Message(msg.getSource(), msg.getTarget(), data);
-        return message;
+        return Message.generateMessage(msg,player);
     }
 
 
@@ -181,18 +180,18 @@ public class ConsumerPlayerController {
 
         PlayerResp playerByStrUserName = commonsService.getPlayerByStrUserName(username);
         PlayerResp playerByStrNick = commonsService.getPlayerByStrNick(username);
-        if (playerByStrUserName != null){
+        if (playerByStrUserName != null) {
             nick = playerByStrUserName.getPlayerNick();
         }
-        if (playerByStrNick != null){
+        if (playerByStrNick != null) {
             username = playerByStrNick.getPlayerName();
             nick = playerByStrNick.getPlayerNick();
         }
-        Map<String,String> conditionMap = new HashMap<>();
-        conditionMap.put("playerId",playerId);
-        conditionMap.put("nick",nick);
-        conditionMap.put("username",username);
-        Page<Map<String,String>> pageReq = new Page<>();
+        Map<String, String> conditionMap = new HashMap<>();
+        conditionMap.put("playerId", playerId);
+        conditionMap.put("nick", nick);
+        conditionMap.put("username", username);
+        Page<Map<String, String>> pageReq = new Page<>();
         pageReq.setCondition(conditionMap);
 
         Result players = consumerPlayerService.getPlayers(pageReq);
@@ -266,8 +265,8 @@ public class ConsumerPlayerController {
         Map<String, String> t = new HashMap<>();
         t.put("desc", result.getMsg());
 
-        if (result.getSuccess()){
-            if(StringUtils.isNotBlank(player.getPlayerTradePass())){
+        if (result.getSuccess()) {
+            if (StringUtils.isNotBlank(player.getPlayerTradePass())) {
                 //修改交易密码，扣除1MT
                 //玩家账户
                 PlayerAccount playerAccount = playerAccountService.getPlayerAccount(player.getPlayerId());
@@ -315,7 +314,6 @@ public class ConsumerPlayerController {
     @RequestMapping("/reg")
     public Message reg(@RequestBody Message message) {
         log.info("用户注册", JSONObject.toJSONString(message));
-        Map<String, String> dataInner = new HashMap<>();
         UserReq userReq = DataUtils.getUserReq(message);
         String jsonReq = JSON.toJSONString(userReq);
         Message msg = new Message();
@@ -326,8 +324,8 @@ public class ConsumerPlayerController {
             msg.setDesc("参数错误或不能识别");
             msg.setCreatetime(String.valueOf(System.currentTimeMillis()));
             MessageData messageData = message.getData();
-            dataInner.put("desc", "参数错误或不能识别");
-            messageData.setData(dataInner);
+
+            messageData.setCode(ReturnStatus.ERROR.getStatus());
             msg.setData(messageData);
             return msg;
         }
@@ -337,12 +335,12 @@ public class ConsumerPlayerController {
         JSONObject jsonObject = JSON.parseObject(jsonData);
         String account = jsonObject.getString("username");
         String code = jsonObject.getString("code");
-        if (StringUtils.isBlank(account) || StringUtils.isBlank(code)) {
+        String invite = jsonObject.getString("invite");
+        if (StringUtils.isBlank(account) || StringUtils.isBlank(code) || StringUtils.isBlank(invite)) {
             msg.setDesc("参数值不能为空");
             msg.setCreatetime(String.valueOf(System.currentTimeMillis()));
             MessageData messageData = message.getData();
-            dataInner.put("desc", "参数值不能为空");
-            messageData.setData(dataInner);
+            messageData.setCode(ReturnStatus.ACCOUNT_PASS_REQUIRED.getStatus());
             msg.setData(message.getData());
             return msg;
         }
@@ -350,6 +348,20 @@ public class ConsumerPlayerController {
         // TODO [[验证码验证]]
         /*todo************************************************************/
         Result ret = messageService.checkCode(code, account);
+
+        /*todo************************************************************/
+        // TODO [[邀请码验证]]
+        /*todo************************************************************/
+        Result retInvite = consumerPlayerService.checkPlayerInvite(invite);
+        if (!retInvite.getSuccess()){
+            msg.setDesc("邀请码错误");
+            msg.setCreatetime(String.valueOf(System.currentTimeMillis()));
+            MessageData messageData = message.getData();
+
+            messageData.setCode(ReturnStatus.ERROR_INVITE.getStatus());
+            msg.setData(messageData);
+            return msg;
+        }
 
         String descT = CityGlobal.Constant.REG_FAIL;
         Result<JSONObject> reg = null;
@@ -370,7 +382,7 @@ public class ConsumerPlayerController {
                 String json = JsonUtil.parseObjToJson(message);
                 JSONObject jsonMsg = JSON.parseObject(json);
                 JSONObject dataMsg = jsonMsg.getJSONObject("data").getJSONObject("data");
-                String invite = dataMsg.getString("invite");
+
                 String username = dataMsg.getString("username");
                 //todo 1、取到注册成功的用户信息
                 JSONObject jsonObject1 = JSON.parseObject(JsonUtil.parseObjToJson(reg.getData()));
@@ -394,7 +406,8 @@ public class ConsumerPlayerController {
                 /*todo************************************************************/
                 if (!StringUtils.isBlank(invite)) {
                     Result resultParent = consumerPlayerService.getPlayerByInvite(invite);
-                    Player parent = JsonUtil.parseJsonToObj((JSON.toJSONString(resultParent.getData())),Player.class);
+                    Player parent = JsonUtil.parseJsonToObj((JSON.toJSONString(resultParent.getData())), Player.class);
+
                     String parentId = parent.getPlayerId();
 
                     //商会关系
@@ -408,7 +421,7 @@ public class ConsumerPlayerController {
                     if (addFriend.getSuccess()) {
                         log.info("添加默认好友关系成功");
                     }
-                }else {
+                } else {
                     log.info("没有写邀请码");
                 }
 
@@ -423,18 +436,16 @@ public class ConsumerPlayerController {
                 dataInner.put("token", token);
                 dataInner.put("desc", CityGlobal.Constant.REG_SUCCESS);
                 */
-                dataInner.put("desc", "注册成功");
-                data.setData(dataInner);
+                data.setCode(ReturnStatus.SUCCESS.getStatus());
                 msg.setData(data);
                 msg.setDesc(regSuccess);
                 return msg;
             } else {
-                msg.setDesc(reg.getMsg());
-
                 MessageData messageData = message.getData();
-                dataInner.put("desc", reg.getMsg());
-                messageData.setData(dataInner);
+                messageData.setCode(reg.getCode());
+
                 msg.setData(messageData);
+                msg.setDesc(reg.getMsg());
                 return msg;
             }
         }
@@ -499,9 +510,9 @@ public class ConsumerPlayerController {
         }
         MessageData msgData = new MessageData(
                 msg.getData().getType(), msg.getData().getModel(),
-                data,result.getCode()
+                data, result.getCode()
         );
-        Message message = new Message(msg.getSource(), msg.getTarget(), msgData,result.getMsg());
+        Message message = new Message(msg.getSource(), msg.getTarget(), msgData, result.getMsg());
         return message;
     }
 
@@ -540,7 +551,7 @@ public class ConsumerPlayerController {
 
         UserReq userReq = DataUtils.getUserReq(msg);
         // 校验认证码
-        Result checkRet = messageService.checkCode(userReq.getCode(),userReq.getUsername());
+        Result checkRet = messageService.checkCode(userReq.getCode(), userReq.getUsername());
         //String descMsg = checkCode(userReq.getCode(), msg.getSource());
         String descMsg = checkRet.getMsg();
         String descT = CityGlobal.Constant.LOGIN_FAIL;
@@ -556,7 +567,7 @@ public class ConsumerPlayerController {
 
                 String token = saveToken(userReq.getUsername());
                 dataInner.put("token", token);
-            }else {
+            } else {
                 log.info("验证码登录失败");
             }
         }

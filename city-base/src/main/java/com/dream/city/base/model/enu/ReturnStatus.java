@@ -1,9 +1,10 @@
 package com.dream.city.base.model.enu;
 
+import lombok.Data;
+
 /**
  * @author Wvv
  */
-
 public enum ReturnStatus {
     SUCCESS(200,"成功"),
     CLOSE(512,"已关闭"),
@@ -26,15 +27,26 @@ public enum ReturnStatus {
     WAITE_OPT(200,"操作成功，请耐心等待审核"),
     RETRY_OPT(511,"操作失败，请重试");
 
-    // 成员变量
+    /**
+     * 成员变量
+     */
     private int status;
     private String desc;
 
+    /**
+     * ReturnStatus
+     * @param status
+     * @param desc
+     */
     ReturnStatus(int status, String desc){
         this.status = status;
         this.desc = desc;
     }
 
+    /**
+     * getCode
+     * @return
+     */
     public String getCode() {
         return this.name();
     }
@@ -43,6 +55,11 @@ public enum ReturnStatus {
         return status;
     }
 
+    /**
+     * getDesc
+     *
+     * @return
+     */
     public String getDesc() {
         return desc;
     }

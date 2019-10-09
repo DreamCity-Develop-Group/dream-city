@@ -14,6 +14,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -69,7 +70,7 @@ public class RelationTreeServiceImpl implements RelationTreeService {
             RuleItem ruleItem = investRuleService.getRuleItemByFlag(PlAYER_FLAG);
             List<InvestRule> rules = investRuleService.getRulesByItem(ruleItem.getItemId());
             for (InvestRule rule : rules){
-                if (rule.getRuleOpt() == "OPT_NUM" && rule.getRuleRate() == childsSize){
+                if (rule.getRuleOpt() == "OPT_NUM" && rule.getRuleRate().compareTo(new BigDecimal(childsSize))==0){
                     stars = rule.getRuleLevel();
                     break;
                 }

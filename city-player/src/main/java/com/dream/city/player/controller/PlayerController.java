@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * 玩家
@@ -441,6 +442,15 @@ public class PlayerController {
             return new Result<Boolean>(true,"success",200,true);
         }
         return new Result<Boolean>(true,"fail",200,false);
+    }
+
+    @RequestMapping("/check/invite")
+    public Result checkPlayerInvite(@RequestParam("invite")String invite){
+        Player player = playerService.getPlayerByInvite(invite);
+        if (player != null){
+            return Result.result(true);
+        }
+        return Result.result(false);
     }
 
 }

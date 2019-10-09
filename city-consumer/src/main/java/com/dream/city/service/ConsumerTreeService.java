@@ -56,6 +56,7 @@ public interface ConsumerTreeService {
     @RequestMapping("/tree/player/seller/send")
     Result sendOrder(@RequestParam("playerId")String playerId,@RequestParam("orders") List<String> orders);
 
-    @RequestMapping("tree/set/autoSend")
+    @RequestMapping("/tree/set/autoSend")
     Result setAutoSend(@RequestParam("playerId")String playerId);
+
 }

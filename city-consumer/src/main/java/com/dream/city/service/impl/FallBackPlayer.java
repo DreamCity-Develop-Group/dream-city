@@ -78,5 +78,10 @@ public class FallBackPlayer implements ConsumerPlayerService {
         return null;
     }
 
+    @Override
+    public Result checkPlayerInvite(String invite) {
+        return null;
+    }
+
 
 }

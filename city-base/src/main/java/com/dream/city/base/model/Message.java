@@ -3,6 +3,7 @@ package com.dream.city.base.model;
 
 import lombok.Data;
 import lombok.ToString;
+import sun.java2d.loops.GeneralRenderer;
 
 import java.io.Serializable;
 
@@ -66,5 +67,18 @@ public class Message implements Serializable{
         this.code = 200;
         this.target = target;
         this.createtime = createtime;
+    }
+
+    public static Message generateMessage(Message msg,Result result){
+        msg.setData(
+                new MessageData(
+                        msg.getData().getType(),
+                        msg.getData().getModel(),
+                        result.getData(),
+                        result.getCode()
+                )
+        );
+        msg.setDesc(result.getMsg());
+        return msg;
     }
 }
