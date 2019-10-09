@@ -44,7 +44,7 @@
       (SELECT p.player_id friend_id,p.player_name friend_name,p.player_nick friend_nick,e.friendlink,e.imgurl
       FROM city_player p,player_ext e WHERE p.player_id=e.player_id) b
     WHERE a.friend_id = b.friend_id
-    <if test="condition.nick != null">
+    <if test="friendNick != null and friendNick != ''">
       and b.friend_nick = #{friendNick,jdbcType=VARCHAR}
     </if>
     ORDER BY a.create_time DESC
@@ -73,7 +73,7 @@
       FROM city_player p,player_ext e WHERE p.player_id=e.player_id) b ON a.friend_id = b.friend_id
            INNER JOIN player_grade g ON b.friend_id=g.player_id
       WHERE a.friend_id = b.friend_id and b.friend_id=g.player_id
-      <if test="condition.nick != null and condition.nick != ''">
+      <if test="friendNick != null and friendNick != ''">
         and b.friend_nick = #{friendNick,jdbcType=VARCHAR}
       </if>
     ORDER BY a.create_time DESC
@@ -117,6 +117,7 @@
         invite,
       </if>
       create_time,
+      update_time,
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -134,6 +135,7 @@
       <if test="invite != null">
         #{invite},
       </if>
+      now(),
       now(),
     </trim>
   </insert>
@@ -201,6 +203,40 @@
       and f.friend_id = #{friendId,jdbcType=VARCHAR}
     </if>
     order by update_time desc limit 1
+  </select>
+
+
+  <select id="getFriendsAll" parameterType="com.dream.city.base.model.req.FriendsReq" resultType="com.dream.city.base.model.resp.FriendsResp">
+    SELECT * FROM (
+      SELECT f.id, f.player_id playerId, f.friend_id friendId, f.agree,f.invite,f.is_valid isValid,f.create_time createTime,f.update_time updateTime,
+        (SELECT p1.player_name from city_player p1 WHERE f.player_id =p1.player_id ) playerName,
+        (SELECT p2.player_nick from city_player p2 WHERE f.player_id =p2.player_id ) playerNick,
+        (SELECT e.imgurl FROM player_ext e WHERE f.player_id =e.player_id) playerImgurl,
+        (SELECT p3.player_name from city_player p3 WHERE f.friend_id =p3.player_id ) friendName,
+        (SELECT p4.player_nick from city_player p4 WHERE f.friend_id =p4.player_id ) friendNick,
+        (SELECT e1.imgurl FROM player_ext e1 WHERE f.friend_id =e1.player_id) friendImgurl
+      FROM player_friends f
+    ) a
+    WHERE 1=1
+    <if test="playerName != null and playerName != ''">
+      and a.playerName = #{playerName,jdbcType=VARCHAR}
+    </if>
+    <if test="playerNick != null and playerNick != ''">
+      and a.playerNick = #{playerNick,jdbcType=VARCHAR}
+    </if>
+    <if test="friendName != null and friendName != ''">
+      and a.friendName = #{friendName,jdbcType=VARCHAR}
+    </if>
+    <if test="friendNick != null and friendNick != ''">
+      and a.friendNick = #{friendNick,jdbcType=VARCHAR}
+    </if>
+    <if test="agree != null">
+      and a.agree = #{agree,jdbcType=INTEGER}
+    </if>
+    <if test="invite != null and invite != ''">
+      and a.invite = #{invite,jdbcType=VARCHAR}
+    </if>
+    ORDER BY a.updateTime DESC
   </select>
 
 

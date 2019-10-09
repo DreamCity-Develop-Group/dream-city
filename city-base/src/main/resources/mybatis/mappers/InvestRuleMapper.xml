@@ -17,7 +17,7 @@
   </resultMap>
   <sql id="Base_Column_List" >
     rule_id, rule_flag, rule_opt_pre, rule_opt, rule_name, rule_desc, rule_item, rule_rate_pre,
-    rule_rate, rule_level, create_time, update_time
+    rule_rate, rule_level, DATE_FORMAT(create_time,'%Y-%m-%d %h:%m:%s') create_time, DATE_FORMAT(update_time,'%Y-%m-%d %h:%m:%s') update_time
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select
@@ -175,38 +175,51 @@
     where rule_id = #{ruleId,jdbcType=INTEGER}
   </update>
 
-  <select id="getInvestRuleList" resultMap="BaseResultMap" parameterType="com.dream.city.base.model.entity.InvestRule" >
+
+  <sql id="Rule_Item_Column_List" >
+    r.rule_id ruleId, r.rule_flag ruleFlag, r.rule_opt_pre ruleOptPre, r.rule_opt ruleOpt,r. rule_name ruleName, r.rule_desc ruleDesc, r.rule_item ruleItem, r.rule_rate_pre ruleRatePre,
+    r.rule_rate ruleRate, r.rule_level ruleLevel, DATE_FORMAT(r.create_time,'%Y-%m-%d %h:%m:%s') createTime, DATE_FORMAT(r.update_time,'%Y-%m-%d %h:%m:%s') updateTime,i.item_name itemName,i.item_flag itemFlag
+  </sql>
+  <select id="getInvestRuleList" resultType="com.dream.city.base.model.resp.RuleResp" parameterType="com.dream.city.base.model.req.RuleReq" >
     select
-    <include refid="Base_Column_List" />
-    from invest_rule
+    <include refid="Rule_Item_Column_List" />
+    from invest_rule r INNER JOIN rule_item i ON r.rule_item = i.item_id
     <where>
+      r.rule_item = i.item_id
       <if test="ruleId != null" >
-        and rule_id = #{ruleId,jdbcType=INTEGER}
+        and r.rule_id = #{ruleId,jdbcType=INTEGER}
       </if>
       <if test="ruleName != null and ruleName != ''" >
-        and rule_name like '%${ruleName}%'
+        and r.rule_name like '%${ruleName}%'
       </if>
       <if test="ruleFlag != null and ruleFlag != ''" >
-        and rule_flag = #{ruleFlag,jdbcType=VARCHAR}
+        and r.rule_flag = #{ruleFlag,jdbcType=VARCHAR}
       </if>
       <if test="ruleItem != null" >
-        and rule_item = #{ruleItem,jdbcType=INTEGER}
+        and r.rule_item = #{ruleItem,jdbcType=INTEGER}
       </if>
       <if test="ruleDesc != null and ruleDesc != ''" >
-        and rule_desc like '%${ruleDesc}%'
+        and r.rule_desc like '%${ruleDesc}%'
       </if>
       <if test="ruleRate != null and ruleRate != 0" >
         and rule_rate = #{ruleRate,jdbcType=DECIMAL}
       </if>
       <if test="ruleLevel != null" >
-        and rule_level = #{ruleLevel,jdbcType=INTEGER}
+        and r.rule_level = #{ruleLevel,jdbcType=INTEGER}
+      </if>
+      <if test="itemName != null and itemName != ''" >
+        and i.item_name = #{itemName,jdbcType=VARCHAR}
+      </if>
+      <if test="itemFlag != null and itemFlag != ''" >
+        and i.item_flag = #{itemFlag,jdbcType=VARCHAR}
       </if>
     </where>
-    order by rule_level ase,update_time desc
+    order by r.rule_level asc,r.update_time desc
   </select>
 
+
   <select id="getRuleFlagList" resultType="com.dream.city.base.model.entity.InvestRule" parameterType="com.dream.city.base.model.entity.InvestRule" >
-    select rule_flag ruleFlag,rule_name ruleName
+    select rule_flag ruleFlag,rule_name ruleName,rule_opt_pre ruleOptPre,rule_opt ruleOpt,rule_rate_pre ruleRatePre,rule_rate ruleRate
     from invest_rule
     <where>
       <if test="ruleName != null and ruleName != ''" >

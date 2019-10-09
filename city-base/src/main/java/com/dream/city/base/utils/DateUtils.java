@@ -277,8 +277,7 @@ public class DateUtils {
         return temp;
     }
 
-    public static String getFormatDatetime()
-            throws Exception {
+    public static String getFormatDatetime() {
         GregorianCalendar gCalendar = new GregorianCalendar();
         String strDateTime;
         try {

@@ -51,4 +51,9 @@ public interface FriendsMapper {
     Integer getFriendAgree(Friends record);
 
     FriendsResp getFriend(Friends record);
+
+
+    List<FriendsResp> getFriendsAll(FriendsReq page);
+
+
 }
