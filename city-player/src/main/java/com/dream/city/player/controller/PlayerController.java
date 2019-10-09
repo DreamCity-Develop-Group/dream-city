@@ -8,6 +8,7 @@ import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.LoginLog;
 import com.dream.city.base.model.entity.Player;
 import com.dream.city.base.model.entity.PlayerExt;
+import com.dream.city.base.model.enu.ReturnStatus;
 import com.dream.city.base.model.req.UserReq;
 import com.dream.city.base.model.resp.PlayerResp;
 import com.dream.city.base.utils.InvitedCodeUtil;
@@ -144,7 +145,7 @@ public class PlayerController {
         log.info("用户密码登录，{}",jsonReq);
         Map map = JSON.parseObject(jsonReq,Map.class);
         Result result = new Result();
-        result.setCode(CityGlobal.ResultCode.fail.getStatus());
+        result.setCode(ReturnStatus.ERROR_NOTEXISTS.getStatus());
 
         String username = (String)map.get("username");
         String userpass = (String)map.get("userpass");

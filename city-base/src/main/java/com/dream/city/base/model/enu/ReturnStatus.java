@@ -22,6 +22,7 @@ public enum ReturnStatus {
     CODE_EXPIRED(505,"验证码过期"),
     ERROR_ACCOUNT(506,"已账号或密码错误"),
     ERROR_RECEIVED(507,"获取失败"),
+    ERROR_NOTEXISTS(508,"账号不存在"),
     SET_SUCCESS(200,"设置成功"),
     SET_FAILED(509,"设置失败"),
     WAITE_OPT(200,"操作成功，请耐心等待审核"),
