@@ -15,11 +15,40 @@
     id, player_id, imei, ip, descr, type, DATE_FORMAT(create_time,'%Y-%m-%d %h:%m:%s') create_time
   </sql>
 
-  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from player_login_log
-    where id = #{id,jdbcType=BIGINT}
+  <select id="getLoginLogList" parameterType="com.dream.city.base.model.req.LoginLogReq" resultType="com.dream.city.base.model.resp.LoginLogResp">
+    select l.id, l.player_id playerId, l.imei, l.ip, l.descr, type, DATE_FORMAT(l.create_time,'%Y-%m-%d %h:%m:%s') createTime,
+         e.imgurl,p.player_name playerName,p.player_nick playerNick
+    from player_login_log l left join city_player p on l.player_id= p.player_id left join player_ext e on l.player_id=e.player_id
+    where 1=1
+    <if test="id != null and id != ''">
+      and 1.id = #{id,jdbcType=BIGINT}
+    </if>
+    <if test="playerId != null and playerId != ''">
+      and 1.player_id = #{playerId,jdbcType=VARCHAR}
+    </if>
+    <if test="playerName != null and playerName != ''" >
+      and p.player_name = #{playerName,jdbcType=VARCHAR}
+    </if>
+    <if test="playerNick != null and playerNick != ''" >
+      and p.player_nick = #{playerNick,jdbcType=VARCHAR}
+    </if>
+    <if test="descr != null and descr != ''" >
+      and l.descr = #{descr,jdbcType=VARCHAR}
+    </if>
+    <if test="imei != null and imei != ''" >
+      and l.imei = #{imei,jdbcType=VARCHAR}
+    </if>
+    <if test="ip != null and ip != ''" >
+      and l.ip = #{ip,jdbcType=VARCHAR}
+    </if>
+    order by l.create_time desc
+  </select>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultType="com.dream.city.base.model.resp.LoginLogResp">
+    select l.id, l.player_id playerId, l.imei, l.ip, l.descr, type, DATE_FORMAT(l.create_time,'%Y-%m-%d %h:%m:%s') createTime,
+    e.imgurl,p.player_name playerName,p.player_nick playerNick
+    from player_login_log l left join city_player p on l.player_id= p.player_id left join player_ext e on l.player_id=e.player_id
+    where l.id = #{id,jdbcType=BIGINT}
   </select>
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
