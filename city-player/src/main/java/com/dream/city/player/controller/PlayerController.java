@@ -442,5 +442,4 @@ public class PlayerController {
         }
         return new Result<Boolean>(true,"fail",200,false);
     }
-
 }
