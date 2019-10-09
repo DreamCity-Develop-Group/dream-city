@@ -5,21 +5,21 @@
     <id column="notice_id" property="noticeId" jdbcType="INTEGER" />
     <result column="notice_content" property="noticeContent" jdbcType="VARCHAR" />
     <result column="notice_state" property="noticeState" jdbcType="INTEGER" />
-    <result column="createtime" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    notice_id, notice_content, notice_state, DATE_FORMAT(createtime,'%Y-%m-%d %h:%m:%s') createtime
+    notice_id, notice_content, notice_state, DATE_FORMAT(create_time,'%Y-%m-%d %h:%m:%s') create_time
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
-    from game_notice
+    from city_notice
     where notice_id = #{noticeId,jdbcType=INTEGER}
   </select>
   <select id="getNoticeList" resultMap="BaseResultMap" parameterType="com.dream.city.base.model.entity.Notice" >
     select
     <include refid="Base_Column_List" />
-    from game_notice
+    from city_notice
     where 1=1
     <if test="noticeState != null" >
       and notice_state = #{noticeState,jdbcType=INTEGER}
@@ -29,17 +29,12 @@
     </if>
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
-    delete from game_notice
+    delete from city_notice
     where notice_id = #{noticeId,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.dream.city.base.model.entity.Notice" >
-    insert into game_notice (notice_id, notice_content, notice_state, 
-      createtime)
-    values (#{noticeId,jdbcType=INTEGER}, #{noticeContent,jdbcType=VARCHAR}, #{noticeState,jdbcType=INTEGER},
-      #{createtime,jdbcType=TIMESTAMP})
-  </insert>
+
   <insert id="insertSelective" parameterType="com.dream.city.base.model.entity.Notice" >
-    insert into game_notice
+    insert into city_notice
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="noticeId != null" >
         notice_id,
@@ -50,9 +45,7 @@
       <if test="noticeState != null" >
         notice_state,
       </if>
-      <if test="createtime != null" >
-        createtime,
-      </if>
+      create_time,
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="noticeId != null" >
@@ -64,13 +57,11 @@
       <if test="noticeState != null" >
         #{noticeState,jdbcType=INTEGER},
       </if>
-      <if test="createtime != null" >
-        #{createtime,jdbcType=TIMESTAMP},
-      </if>
+      now(),
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.dream.city.base.model.entity.Notice" >
-    update game_notice
+    update city_notice
     <set >
       <if test="noticeContent != null" >
         notice_content = #{noticeContent,jdbcType=VARCHAR},
@@ -78,17 +69,8 @@
       <if test="noticeState != null" >
         notice_state = #{noticeState,jdbcType=INTEGER},
       </if>
-      <if test="createtime != null" >
-        createtime = #{createtime,jdbcType=TIMESTAMP},
-      </if>
     </set>
     where notice_id = #{noticeId,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.dream.city.base.model.entity.Notice" >
-    update game_notice
-    set notice_content = #{noticeContent,jdbcType=VARCHAR},
-      notice_state = #{noticeState,jdbcType=INTEGER},
-      createtime = #{createtime,jdbcType=TIMESTAMP}
-    where notice_id = #{noticeId,jdbcType=INTEGER}
-  </update>
+
 </mapper>

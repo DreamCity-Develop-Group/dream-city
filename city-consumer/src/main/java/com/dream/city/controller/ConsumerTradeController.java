@@ -7,7 +7,9 @@ import com.dream.city.base.model.Message;
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.PlayerTrade;
 import com.dream.city.base.model.req.PlayerAccountReq;
+import com.dream.city.base.model.req.PlayerTradeReq;
 import com.dream.city.base.model.resp.PlayerResp;
+import com.dream.city.base.model.resp.PlayerTradeResp;
 import com.dream.city.base.utils.DataUtils;
 import com.dream.city.service.ConsumerCommonsService;
 import com.dream.city.service.ConsumerTradeService;
@@ -58,7 +60,7 @@ public class ConsumerTradeController {
 
         PlayerAccountReq accountReq = DataUtils.getPlayerAccountReqFromMessage(msg);
 
-        Result<PlayerTrade> tradeResult = tradeService.getPlayerTradeById(accountReq.getAccId());
+        Result<PlayerTradeResp> tradeResult = tradeService.getPlayerTradeById(accountReq.getAccId());
         Map result = JSON.parseObject(JSON.toJSONString(tradeResult.getData()));
         result.put("username",accountReq.getUsername());
         msg.getData().setData(result);
@@ -116,17 +118,17 @@ public class ConsumerTradeController {
             player = commonsService.getPlayerByUserName(msg);
             playerId = player.getPlayerId();
         }
-        PlayerTrade record = new PlayerTrade();
-        record.setTradeAccId(accountReq.getAccId());
-        record.setTradeOrderId(accountReq.getTradeOrderId());
-        record.setTradePlayerId(playerId);
+        PlayerTradeReq record = new PlayerTradeReq();
+        record.setAccId(accountReq.getAccId());
+        record.setOrderId(accountReq.getTradeOrderId());
+        record.setPlayerId(playerId);
         record.setTradeAmountType(accountReq.getTradeType());
 
-        Result<List<PlayerTrade>> tradeResult = tradeService.getPlayerTradeList(record);
-        List<PlayerTrade> tradeList = tradeResult.getData();
+        Result<List<PlayerTradeResp>> tradeResult = tradeService.getPlayerTradeList(record);
+        List<PlayerTradeResp> tradeList = tradeResult.getData();
         List<Map> resultList = new ArrayList<>();
         Map<String,Object> map = null;
-        for (PlayerTrade trade : tradeList){
+        for (PlayerTradeResp trade : tradeList){
             map = JSON.parseObject(JSON.toJSONString(trade),Map.class);
             map.put("username",accountReq.getUsername());
             resultList.add(map);

@@ -1,9 +1,12 @@
 package com.dream.city.player.service;
 
 
+import com.dream.city.base.model.Page;
 import com.dream.city.base.model.entity.PlayerLikes;
 import com.dream.city.base.model.entity.PlayerLikesLog;
 import com.dream.city.base.model.req.PlayerLikesReq;
+import com.dream.city.base.model.resp.PlayerLikesResp;
+import com.github.pagehelper.PageInfo;
 
 import java.util.List;
 
@@ -36,7 +39,7 @@ public interface LikesService {
      * @param record
      * @return
      */
-    List<PlayerLikes> playerLikesList(PlayerLikesReq  record);
+    PageInfo<PlayerLikesResp> playerLikesList(Page record);
 
 
     /**

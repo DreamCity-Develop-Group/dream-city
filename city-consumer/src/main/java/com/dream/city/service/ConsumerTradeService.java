@@ -3,6 +3,8 @@ package com.dream.city.service;
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.PlayerTrade;
 import com.dream.city.base.model.req.PlayerAccountReq;
+import com.dream.city.base.model.req.PlayerTradeReq;
+import com.dream.city.base.model.resp.PlayerTradeResp;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,7 +35,7 @@ public interface ConsumerTradeService {
      * @return
      */
     @RequestMapping("/getPlayerTradeById")
-    Result<PlayerTrade> getPlayerTradeById(@RequestParam Integer tradeId);
+    Result<PlayerTradeResp> getPlayerTradeById(@RequestParam Integer tradeId);
 
 
     /**
@@ -50,7 +52,7 @@ public interface ConsumerTradeService {
      * @return
      */
     @RequestMapping("/getPlayerTradeList")
-    Result<List<PlayerTrade>> getPlayerTradeList(@RequestBody PlayerTrade record);
+    Result<List<PlayerTradeResp>> getPlayerTradeList(@RequestBody PlayerTradeReq record);
 
 
     /**

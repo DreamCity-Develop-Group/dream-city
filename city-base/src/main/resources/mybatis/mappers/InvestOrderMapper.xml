@@ -7,7 +7,7 @@
     <result column="order_payer_id" property="orderPayerId" jdbcType="VARCHAR" />
     <result column="order_amount" property="orderAmount" jdbcType="DECIMAL" />
     <result column="order_state" property="orderState" jdbcType="VARCHAR" />
-    <result column="order_repeat" property="orderRepeat" jdbcType="TINYINT" />
+    <result column="order_repeat" property="orderRepeat" jdbcType="INTEGER" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
     <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
   </resultMap>
@@ -46,8 +46,8 @@
       <if test="orderAmount !=null">
         and  order_amount = #{orderAmount,jdbcType=DECIMAL}
       </if>
-      <if test="order_repeat !=null">
-        and  order_state = #{order_repeat,jdbcType=TINYINT}
+      <if test="orderRepeat !=null">
+        and  order_state = #{orderRepeat,jdbcType=TINYINT}
       </if>
     </where>
     order by update_time

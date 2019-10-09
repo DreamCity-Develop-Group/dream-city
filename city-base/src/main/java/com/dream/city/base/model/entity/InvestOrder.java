@@ -25,7 +25,7 @@ public class InvestOrder implements Serializable {
     private String orderState;
 
     /** 是否复投 */
-    private int orderRepeat;
+    private Integer orderRepeat;
 
     @Override
     public boolean equals(Object o) {
@@ -85,11 +85,11 @@ public class InvestOrder implements Serializable {
         this.orderState = orderState;
     }
 
-    public int getOrderRepeat() {
+    public Integer getOrderRepeat() {
         return orderRepeat;
     }
 
-    public void setOrderRepeat(int orderRepeat) {
+    public void setOrderRepeat(Integer orderRepeat) {
         this.orderRepeat = orderRepeat;
     }
 

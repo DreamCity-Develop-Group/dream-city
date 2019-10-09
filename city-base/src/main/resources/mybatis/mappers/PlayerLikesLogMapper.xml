@@ -2,7 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.dream.city.base.model.mapper.PlayerLikesLogMapper" >
   <resultMap id="BaseResultMap" type="com.dream.city.base.model.entity.PlayerLikesLog" >
-    <id column="like_id" property="likeId" jdbcType="INTEGER" />
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="like_id" property="likeId" jdbcType="INTEGER" />
     <result column="like_player_id" property="likePlayerId" jdbcType="VARCHAR" />
     <result column="like_liked_id" property="likeLikedId" jdbcType="VARCHAR" />
     <result column="like_invest_id" property="likeInvestId" jdbcType="INTEGER" />
@@ -10,28 +11,60 @@
     <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    like_id, like_player_id, like_liked_id, like_invest_id, DATE_FORMAT(create_time,'%Y-%m-%d %h:%m:%s') create_time, DATE_FORMAT(update_time,'%Y-%m-%d %h:%m:%s') update_time
+    id, like_id, like_player_id, like_liked_id, like_invest_id, DATE_FORMAT(create_time,'%Y-%m-%d %h:%m:%s') create_time, DATE_FORMAT(update_time,'%Y-%m-%d %h:%m:%s') update_time
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select 
-    <include refid="Base_Column_List" />
-    from player_likes_log
-    where like_id = #{likeId,jdbcType=INTEGER}
+
+  <select id="getLikesLogList" resultType="com.dream.city.base.model.resp.PlayerLikesResp" parameterType="com.dream.city.base.model.req.PlayerLikesReq" >
+    select l.id logId,(SELECT p1.player_name from city_player p1 WHERE l.like_player_id =p1.player_id ) playerName,
+    (SELECT p2.player_nick from city_player p2 WHERE l.like_player_id =p2.player_id ) playerNick,
+    (SELECT p3.player_name from city_player p3 WHERE l.like_liked_id =p3.player_id ) friendName,
+    (SELECT p4.player_nick from city_player p4 WHERE l.like_liked_id =p4.player_id ) friendNick,
+    (SELECT i.in_name FROM city_invest i WHERE i.in_id=l.like_invest_id) inName,
+    DATE_FORMAT(l.create_time,'%Y-%m-%d %h:%m:%s') createTime,DATE_FORMAT(l.update_time,'%Y-%m-%d %h:%m:%s') updateTime
+    FROM likes_log l
+    where 1=1
+    <if test="logId != null">
+      and l.id = #{logId,jdbcType=INTEGER}
+    </if>
+    <if test="likedId != null">
+      and likedId = #{likedId,jdbcType=INTEGER}
+    </if>
+    <if test="likedPlayerId != null and likedPlayerId != ''">
+      and likedPlayerId = #{likedPlayerId,jdbcType=VARCHAR}
+    </if>
+    <if test="friendName != null and friendName != ''">
+      and friendName like '%${friendName}%'
+    </if>
+    <if test="friendNick != null and friendNick != ''">
+      and friendNick like '%${friendNick}%'
+    </if>
+    <if test="inName != null and inName != ''">
+      and inName like '%${inName}%'
+    </if>
+    <if test="likedInvestId != null">
+      and likedInvestId = #{likedInvestId,jdbcType=INTEGER}
+    </if>
+    order by updateTime desc
   </select>
+
+  <select id="selectByPrimaryKey" resultType="com.dream.city.base.model.resp.PlayerLikesResp" parameterType="java.lang.Integer" >
+    select l.id logId,(SELECT p1.player_name from city_player p1 WHERE l.like_player_id =p1.player_id ) playerName,
+    (SELECT p2.player_nick from city_player p2 WHERE l.like_player_id =p2.player_id ) playerNick,
+    (SELECT p3.player_name from city_player p3 WHERE l.like_liked_id =p3.player_id ) friendName,
+    (SELECT p4.player_nick from city_player p4 WHERE l.like_liked_id =p4.player_id ) friendNick,
+    (SELECT i.in_name FROM city_invest i WHERE i.in_id=l.like_invest_id) inName,
+    DATE_FORMAT(l.create_time,'%Y-%m-%d %h:%m:%s') createTime
+    FROM likes_log l
+    where l.id = #{id,jdbcType=INTEGER}
+  </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
-    delete from player_likes_log
-    where like_id = #{likeId,jdbcType=INTEGER}
+    delete from likes_log
+    where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.dream.city.base.model.entity.PlayerLikesLog" >
-    insert into player_likes_log (like_id, like_player_id, like_liked_id,
-      like_invest_id, create_time, update_time
-      )
-    values (#{likeId,jdbcType=INTEGER}, #{likePlayerId,jdbcType=VARCHAR}, #{likeLikedId,jdbcType=VARCHAR}, 
-      #{likeInvestId,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
-      )
-  </insert>
+
   <insert id="insertSelective" parameterType="com.dream.city.base.model.entity.PlayerLikesLog" >
-    insert into player_likes_log
+    insert into likes_log
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="likeId != null" >
         like_id,
@@ -45,12 +78,8 @@
       <if test="likeInvestId != null" >
         like_invest_id,
       </if>
-      <if test="createTime != null" >
-        create_time,
-      </if>
-      <if test="updateTime != null" >
-        update_time,
-      </if>
+      create_time,
+      update_time,
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="likeId != null" >
@@ -65,16 +94,13 @@
       <if test="likeInvestId != null" >
         #{likeInvestId,jdbcType=INTEGER},
       </if>
-      <if test="createTime != null" >
-        #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateTime != null" >
-        #{updateTime,jdbcType=TIMESTAMP},
-      </if>
+      now(),
+      now(),
     </trim>
   </insert>
+
   <update id="updateByPrimaryKeySelective" parameterType="com.dream.city.base.model.entity.PlayerLikesLog" >
-    update player_likes_log
+    update likes_log
     <set >
       <if test="likePlayerId != null" >
         like_player_id = #{likePlayerId,jdbcType=VARCHAR},
@@ -88,21 +114,11 @@
       <if test="createTime != null" >
         create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="updateTime != null" >
-        update_time = #{updateTime,jdbcType=TIMESTAMP},
-      </if>
+      update_time = now(),
     </set>
     where like_id = #{likeId,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.dream.city.base.model.entity.PlayerLikesLog" >
-    update player_likes_log
-    set like_player_id = #{likePlayerId,jdbcType=VARCHAR},
-      like_liked_id = #{likeLikedId,jdbcType=VARCHAR},
-      like_invest_id = #{likeInvestId,jdbcType=INTEGER},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_time = #{updateTime,jdbcType=TIMESTAMP}
-    where like_id = #{likeId,jdbcType=INTEGER}
-  </update>
+
 
   <select id="playerLikesCountToday" resultType="INTEGER" parameterType="com.dream.city.base.model.entity.PlayerLikesLog" >
     SELECT IFNULL(COUNT(like_invest_id),0) FROM likes_log

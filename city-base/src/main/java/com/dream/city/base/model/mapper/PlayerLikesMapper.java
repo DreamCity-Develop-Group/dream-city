@@ -5,6 +5,7 @@ import com.dream.city.base.model.entity.InvestOrder;
 import com.dream.city.base.model.entity.Likes;
 import com.dream.city.base.model.entity.PlayerLikes;
 import com.dream.city.base.model.req.PlayerLikesReq;
+import com.dream.city.base.model.resp.PlayerLikesResp;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -36,7 +37,7 @@ public interface PlayerLikesMapper {
      * @param record
      * @return
      */
-    List<PlayerLikes> playerLikesList(PlayerLikesReq record);
+    List<PlayerLikesResp> playerLikesList(PlayerLikesReq record);
 
 
     @Results(id = "BaseInvestOrderResultMap", value = {
