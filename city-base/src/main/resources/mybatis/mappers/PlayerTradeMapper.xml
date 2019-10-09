@@ -5,6 +5,7 @@
     <id column="trade_id" property="tradeId" jdbcType="INTEGER" />
     <result column="trade_acc_id" property="tradeAccId" jdbcType="INTEGER" />
     <result column="trade_player_id" property="tradePlayerId" jdbcType="VARCHAR" />
+    <result column="trade_order_id" property="tradeOrderId" jdbcType="INTEGER" />
     <result column="trade_amount" property="tradeAmount" jdbcType="DECIMAL" />
     <result column="trade_type" property="tradeType" jdbcType="CHAR" />
     <result column="trade_amount_type" property="tradeAmountType" jdbcType="VARCHAR" />
@@ -18,10 +19,10 @@
     trade_amount_type, trade_desc,DATE_FORMAT(create_time,'%Y-%m-%d %h:%m:%s') create_time, DATE_FORMAT(update_time,'%Y-%m-%d %h:%m:%s') update_time
   </sql>
 
-  <select id="getPlayerTradeById" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select 
-    <include refid="Base_Column_List" />
-    from player_trade
+  <select id="getPlayerTradeById" resultType="com.dream.city.base.model.resp.PlayerTradeResp" parameterType="java.lang.Integer" >
+    SELECT t.trade_id tradeId, t.trade_acc_id tradeAccId, t.trade_player_id playerId, t.trade_order_id tradeOrderId, t.trade_amount tradeAmount, t.trade_type tradeType,
+    t.trade_amount_type tradeAmountType, t.trade_desc tradeDesc,t.create_time createTime, t.update_time updateTime,p.player_name playerName,p.player_nick playerNick
+    FROM player_trade t LEFT JOIN city_player p ON t.trade_player_id = p.player_id
     where trade_id = #{tradeId,jdbcType=INTEGER}
   </select>
 
@@ -53,38 +54,44 @@
     linit 1
   </select>
 
-  <select id="getPlayerTradeList" resultMap="BaseResultMap" parameterType="com.dream.city.base.model.entity.PlayerTrade" >
-    select
-    <include refid="Base_Column_List" />
-    from player_trade
+  <select id="getPlayerTradeList" resultType="com.dream.city.base.model.resp.PlayerTradeResp" parameterType="com.dream.city.base.model.req.PlayerTradeReq" >
+    SELECT t.trade_id tradeId, t.trade_acc_id tradeAccId, t.trade_player_id playerId, t.trade_order_id tradeOrderId, t.trade_amount tradeAmount, t.trade_type tradeType,
+    t.trade_amount_type tradeAmountType, t.trade_desc tradeDesc,t.create_time createTime, t.update_time updateTime,p.player_name playerName,p.player_nick playerNick
+    FROM player_trade t LEFT JOIN city_player p ON t.trade_player_id = p.player_id
     <where>
       1=1
       <if test="tradeId != null" >
-        and trade_id = #{tradeId,jdbcType=INTEGER}
+        and t.trade_id = #{tradeId,jdbcType=INTEGER}
       </if>
       <if test="tradeAccId != null" >
-        and trade_acc_id = #{tradeAccId,jdbcType=INTEGER}
+        and t.trade_acc_id = #{tradeAccId,jdbcType=INTEGER}
       </if>
       <if test="tradeOrderId != null" >
-        and trade_order_id = #{tradeOrderId,jdbcType=INTEGER}
+        and t.trade_order_id = #{tradeOrderId,jdbcType=INTEGER}
       </if>
       <if test="tradeAmount != null" >
-        and trade_amount = #{tradeAmount,jdbcType=DECIMAL}
+        and t.trade_amount = #{tradeAmount,jdbcType=DECIMAL}
       </if>
       <if test="tradeType != null and tradeType != ''" >
-        and trade_type = #{dynType,tradeType=CHAR},
+        and t.trade_type = #{dynType,tradeType=CHAR},
       </if>
       <if test="tradeAmountType != null and tradeAmountType != ''" >
-        and trade_amount_type = #{tradeAmountType,jdbcType=CHAR}
+        and t.trade_amount_type = #{tradeAmountType,jdbcType=CHAR}
       </if>
       <if test="tradeDesc != null and tradeDesc != ''" >
-        and trade_desc = #{tradeDesc,jdbcType=VARCHAR}
+        and t.trade_desc LIKE '%${tradeDesc}%'
       </if>
-      <if test="createTime != null" >
-        and create_time = #{createTime,jdbcType=TIMESTAMP}
+      <if test="playerName != null and playerName != ''" >
+        and p.player_name LIKE '%${playerName}%'
       </if>
-      <if test="updateTime != null" >
-        and update_time = #{updateTime,jdbcType=TIMESTAMP}
+      <if test="playerNick != null and playerNick != ''" >
+        and p.player_nick LIKE '%${playerNick}%'
+      </if>
+      <if test="createTimeStart != null and createTimeStart != ''" >
+        and t.create_time <![CDATA[>=]]> STR_TO_DATE(#{createTimeStart,jdbcType=VARCHAR},'%Y-%m-%d %h:%m:%s')
+      </if>
+      <if test="createTimeEnd != null and createTimeEnd != ''" >
+        and t.create_time <![CDATA[<=]]> STR_TO_DATE(#{createTimeEnd,jdbcType=VARCHAR},'%Y-%m-%d %h:%m:%s')
       </if>
     </where>
     order by create_time desc

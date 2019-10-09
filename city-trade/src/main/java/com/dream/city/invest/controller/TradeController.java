@@ -3,6 +3,8 @@ package com.dream.city.invest.controller;
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.PlayerTrade;
 import com.dream.city.base.model.req.PlayerAccountReq;
+import com.dream.city.base.model.req.PlayerTradeReq;
+import com.dream.city.base.model.resp.PlayerTradeResp;
 import com.dream.city.invest.service.PlayerTradeHandleService;
 import com.dream.city.invest.service.PlayerTradeService;
 import org.slf4j.Logger;
@@ -58,11 +60,11 @@ public class TradeController {
      * @return
      */
     @RequestMapping("/getPlayerTradeById")
-    public Result<PlayerTrade> getPlayerTradeById(@RequestParam Integer tradeId){
+    public Result<PlayerTradeResp> getPlayerTradeById(@RequestParam Integer tradeId){
         logger.info("根据tradeId获取投资记录，tradeId：{}", tradeId);
         boolean success = Boolean.FALSE;
         String desc = "根据tradeId获取投资记录成功";
-        PlayerTrade resultDate = null;
+        PlayerTradeResp resultDate = null;
         try {
             resultDate = tradeService.getPlayerTradeById(tradeId);
             success = Boolean.TRUE;
@@ -70,7 +72,7 @@ public class TradeController {
             desc = "根据tradeId获取投资记录异常";
             logger.error(desc,e);
         }
-        return new Result<PlayerTrade>(success,desc,resultDate);
+        return new Result<>(success,desc,resultDate);
     }
 
 
@@ -101,11 +103,11 @@ public class TradeController {
      * @return
      */
     @RequestMapping("/getPlayerTradeList")
-    public Result<List<PlayerTrade>> getPlayerTradeList(@RequestBody PlayerTrade record){
+    public Result<List<PlayerTradeResp>> getPlayerTradeList(@RequestBody PlayerTradeReq record){
         logger.info("获取投资记录，{}", record);
         boolean success = Boolean.FALSE;
         String desc = "获取投资记录失败";
-        List<PlayerTrade> resultDate = null;
+        List<PlayerTradeResp> resultDate = null;
         try {
             resultDate = tradeService.getPlayerTradeList(record);
             success = Boolean.TRUE;
@@ -114,7 +116,7 @@ public class TradeController {
             desc = "获取投资记录异常";
             logger.error(desc,e);
         }
-        return new Result<List<PlayerTrade>>(success,desc,resultDate);
+        return new Result<>(success,desc,resultDate);
     }
 
 
