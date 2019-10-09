@@ -23,7 +23,7 @@
     SELECT t.trade_id tradeId, t.trade_acc_id tradeAccId, t.trade_player_id playerId, t.trade_order_id tradeOrderId, t.trade_amount tradeAmount, t.trade_type tradeType,
     t.trade_amount_type tradeAmountType, t.trade_desc tradeDesc,t.create_time createTime, t.update_time updateTime,p.player_name playerName,p.player_nick playerNick
     FROM player_trade t LEFT JOIN city_player p ON t.trade_player_id = p.player_id
-    where trade_id = #{tradeId,jdbcType=INTEGER}
+    where t.trade_id = #{tradeId,jdbcType=INTEGER}
   </select>
 
   <select id="getPlayerTrade" resultMap="BaseResultMap" parameterType="com.dream.city.base.model.entity.PlayerTrade" >
@@ -45,7 +45,7 @@
         and trade_amount = #{tradeAmount,jdbcType=DECIMAL}
       </if>
       <if test="tradeType != null and tradeType != ''" >
-        and trade_type = #{dynType,tradeType=CHAR},
+        and trade_type = #{tradeType,tradeType=CHAR},
       </if>
       <if test="tradeAmountType != null and tradeAmountType != ''" >
         and trade_amount_type = #{tradeAmountType,jdbcType=VARCHAR}
@@ -63,17 +63,14 @@
       <if test="tradeId != null" >
         and t.trade_id = #{tradeId,jdbcType=INTEGER}
       </if>
-      <if test="tradeAccId != null" >
-        and t.trade_acc_id = #{tradeAccId,jdbcType=INTEGER}
+      <if test="accId != null" >
+        and t.trade_acc_id = #{accId,jdbcType=INTEGER}
       </if>
-      <if test="tradeOrderId != null" >
-        and t.trade_order_id = #{tradeOrderId,jdbcType=INTEGER}
-      </if>
-      <if test="tradeAmount != null" >
-        and t.trade_amount = #{tradeAmount,jdbcType=DECIMAL}
+      <if test="orderId != null" >
+        and t.trade_order_id = #{orderId,jdbcType=INTEGER}
       </if>
       <if test="tradeType != null and tradeType != ''" >
-        and t.trade_type = #{dynType,tradeType=CHAR},
+        and t.trade_type = #{tradeType,tradeType=CHAR},
       </if>
       <if test="tradeAmountType != null and tradeAmountType != ''" >
         and t.trade_amount_type = #{tradeAmountType,jdbcType=CHAR}
@@ -94,7 +91,7 @@
         and t.create_time <![CDATA[<=]]> STR_TO_DATE(#{createTimeEnd,jdbcType=VARCHAR},'%Y-%m-%d %h:%m:%s')
       </if>
     </where>
-    order by create_time desc
+    order by t.create_time desc
   </select>
 
   <insert id="insertSelective" useGeneratedKeys="true" keyProperty="tradeId" parameterType="com.dream.city.base.model.entity.PlayerTrade" >
