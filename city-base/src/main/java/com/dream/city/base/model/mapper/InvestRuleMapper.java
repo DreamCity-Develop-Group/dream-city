@@ -6,6 +6,7 @@ import com.dream.city.base.model.req.RuleReq;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Wvv
@@ -24,6 +25,8 @@ public interface InvestRuleMapper {
     int updateByPrimaryKey(InvestRule record);
 
     List<InvestRule> getInvestRuleList(RuleReq record);
+
+    List<InvestRule> getRuleFlagList(InvestRule record);
 
     Integer updateByPrimaryKeySelective(InvestRule record);
 

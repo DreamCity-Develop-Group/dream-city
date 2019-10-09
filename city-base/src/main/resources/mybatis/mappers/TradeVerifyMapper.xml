@@ -14,7 +14,7 @@
   </resultMap>
   <sql id="Base_Column_List" >
     verify_id, verify_trade_id,verify_order_id, verify_emp_id, verify_amount, verify_status, verify_desc,
-    create_time, update_time
+    DATE_FORMAT(create_time,'%Y-%m-%d %h:%m:%s') create_time, DATE_FORMAT(update_time,'%Y-%m-%d %h:%m:%s') update_time
   </sql>
 
   <select id="getTradeVerifyBiId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >

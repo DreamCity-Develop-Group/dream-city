@@ -24,7 +24,7 @@
   <sql id="Base_Column_List">
     id, login_name, `password`, state, `no`,
     `name`, email, phone, mobile, photo, login_ip, login_date, create_by,
-    create_date, update_by, update_date, remarks, del_flag
+     update_by,  remarks, del_flag,DATE_FORMAT(create_date,'%Y-%m-%d %h:%m:%s') create_date, DATE_FORMAT(update_date,'%Y-%m-%d %h:%m:%s') update_date
   </sql>
 
   <sql id="Exclude_Delete_Flag">

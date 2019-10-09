@@ -15,7 +15,7 @@
   </resultMap>
   <sql id="Base_Column_List">
     id, name, enname, useable, create_by, create_date, update_by,
-    update_date, remarks, del_flag
+    update_date, remarks, del_flag,DATE_FORMAT(create_date,'%Y-%m-%d %h:%m:%s') create_date, DATE_FORMAT(update_date,'%Y-%m-%d %h:%m:%s') update_date
   </sql>
   <select id="getById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 

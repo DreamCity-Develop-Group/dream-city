@@ -8,6 +8,7 @@ import com.dream.city.base.model.entity.RuleItem;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface RuleItemMapper {
@@ -25,6 +26,8 @@ public interface RuleItemMapper {
 
 
     List<RuleItem> getRuleItemList(RuleItem record);
+
+    List<RuleItem> getRuleItemFlagList(@Param("itemFlag") String itemFlag);
 
 
     @Results(id = "BaseCityInvestnResultMap", value = {

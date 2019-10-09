@@ -15,7 +15,7 @@
 
   <sql id="Base_Column_List" >
     trade_id, trade_acc_id, trade_player_id, trade_order_id, trade_amount, trade_type, 
-    trade_amount_type, trade_desc, create_time, update_time
+    trade_amount_type, trade_desc,DATE_FORMAT(create_time,'%Y-%m-%d %h:%m:%s') create_time, DATE_FORMAT(update_time,'%Y-%m-%d %h:%m:%s') update_time
   </sql>
 
   <select id="getPlayerTradeById" resultMap="BaseResultMap" parameterType="java.lang.Integer" >

@@ -15,7 +15,7 @@
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <sql id="Base_Column_List" >
-    in_id, in_name, in_limit, in_start, in_tax, in_earning, in_end,create_time, update_time,is_valid,in_img
+    in_id, in_name, in_limit, in_start, in_tax, in_earning, in_end,DATE_FORMAT(create_time,'%Y-%m-%d %h:%m:%s') create_time, DATE_FORMAT(update_time,'%Y-%m-%d %h:%m:%s') update_time,is_valid,in_img
   </sql>
 
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.dream.city.base.model.entity.CityInvest" >

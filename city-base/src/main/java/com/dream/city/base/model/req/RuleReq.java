@@ -17,6 +17,8 @@ public class RuleReq implements Serializable {
     /** 规则项目名称 */
     private String itemName;
 
+    private String itemType;
+
     /** 规则描述 */
     private String ruleDesc;
 

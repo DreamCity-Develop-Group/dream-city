@@ -8,7 +8,7 @@
     <result column="createtime" property="createTime" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    notice_id, notice_content, notice_state, createtime
+    notice_id, notice_content, notice_state, DATE_FORMAT(createtime,'%Y-%m-%d %h:%m:%s') createtime
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 

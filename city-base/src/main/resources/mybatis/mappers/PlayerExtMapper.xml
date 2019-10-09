@@ -11,7 +11,8 @@
   </resultMap>
 
   <sql id="Base_Column_List">
-    id, player_id, friendlink, imgurl, create_date, update_date
+    id, player_id, friendlink, imgurl,
+    DATE_FORMAT(create_date,'%Y-%m-%d %h:%m:%s') create_date, DATE_FORMAT(update_date,'%Y-%m-%d %h:%m:%s') update_date
   </sql>
 
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">

@@ -15,7 +15,7 @@
   </resultMap>
   <sql id="Base_Column_List">
     id, player_id, player_name, player_nick, player_pass, player_trade_pass, player_invite,
-    create_time, update_time,is_valid
+    is_valid,DATE_FORMAT(create_time,'%Y-%m-%d %h:%m:%s') create_time, DATE_FORMAT(update_time,'%Y-%m-%d %h:%m:%s') update_time
   </sql>
 
   <select id="getPlayerById" parameterType="com.dream.city.base.model.entity.Player" resultType="com.dream.city.base.model.resp.PlayerResp">

@@ -12,11 +12,13 @@ public class RuleItemReq implements Serializable {
     /** 规则项目名称 */
     private String itemName;
 
+    private String itemFlag;
+
     /** 规则项目描述 */
     private String itemDesc;
 
     /** 可用状态 */
-    private Byte itemState;
+    private int itemState;
 
 
 }
