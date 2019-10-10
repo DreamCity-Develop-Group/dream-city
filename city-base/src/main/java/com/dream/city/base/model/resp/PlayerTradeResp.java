@@ -41,4 +41,22 @@ public class PlayerTradeResp implements Serializable {
     private String verifyDesc;
     private String verifyTime;
 
+
+    /** 预计最大收益，达到就可以出局 */
+    private BigDecimal earnMax;
+    /**
+     * 当前获利
+     */
+    private BigDecimal earnCurrent;
+    /**
+     * 是否已经可以提取
+     */
+    private String isWithdrew;
+
+    /**
+     * 转账所得税
+     */
+    private BigDecimal transferTax;
+
+
 }

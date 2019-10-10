@@ -24,10 +24,14 @@
 
   <select id="getPlayerTradeById" resultType="com.dream.city.base.model.resp.PlayerTradeResp" parameterType="java.lang.Integer" >
     SELECT t.trade_id tradeId, t.trade_acc_id tradeAccId, t.trade_player_id playerId, t.trade_order_id tradeOrderId, t.trade_amount tradeAmount, t.trade_type tradeType,t.in_out inOutStatus,
-    t.trade_desc tradeDesc,t.create_time createTime, t.update_time updateTime,p.player_name playerName,p.player_nick playerNick,
-    t.personal_tax personalTax,t.enterprise_tax enterpriseTax,t.trade_status tradeStatus,
-    (SELECT v1.verify_status FROM trade_verify v1 WHERE t.trade_id = v1.verify_trade_id ORDER BY v1.create_time DESC LIMIT 1) verifyStatus
-    FROM player_trade t LEFT JOIN city_player p ON t.trade_player_id = p.player_id
+        t.trade_desc tradeDesc,t.create_time createTime, t.update_time updateTime,p.player_name playerName,p.player_nick playerNick,
+        t.personal_tax personalTax,t.enterprise_tax enterpriseTax,t.trade_status tradeStatus,
+        (SELECT v1.verify_status FROM trade_verify v1 WHERE t.trade_id = v1.verify_trade_id ORDER BY v1.create_time DESC LIMIT 1) verifyStatus,
+        (SELECT e1.earn_max FROM player_earning e1,invest_order o WHERE t.trade_player_id = e1.earn_player_id AND e1.earn_invest_id=o.order_id and o.order_id = t.trade_order_id) earnMax,
+        (SELECT e1.earn_current FROM player_earning e1,invest_order o WHERE t.trade_player_id = e1.earn_player_id AND e1.earn_invest_id=o.order_id and o.order_id = t.trade_order_id) earnCurrent,
+        (SELECT e1.is_withdrew FROM player_earning e1,invest_order o WHERE t.trade_player_id = e1.earn_player_id AND e1.earn_invest_id=o.order_id and o.order_id = t.trade_order_id) isWithdrew,
+        (SELECT d.trade_amount FROM trade_detail d WHERE d.trade_id=t.trade_id and d.trade_detail_type = 'TRANSFER_TAX') transferTax
+      FROM player_trade t LEFT JOIN city_player p ON t.trade_player_id = p.player_id
     where t.trade_id = #{tradeId,jdbcType=INTEGER}
   </select>
 
@@ -59,9 +63,13 @@
   <select id="getPlayerTradeList" resultType="com.dream.city.base.model.resp.PlayerTradeResp" parameterType="com.dream.city.base.model.req.PlayerTradeReq" >
     SELECT * FROM (
       SELECT t.trade_id tradeId, t.trade_acc_id tradeAccId, t.trade_player_id playerId, t.trade_order_id tradeOrderId, t.trade_amount tradeAmount, t.trade_type tradeType,t.in_out inOutStatus,
-      t.trade_desc tradeDesc,t.create_time createTime, t.update_time updateTime,p.player_name playerName,p.player_nick playerNick,
-      t.personal_tax personalTax,t.enterprise_tax enterpriseTax,t.trade_status tradeStatus,
-      (SELECT v1.verify_status FROM trade_verify v1 WHERE t.trade_id = v1.verify_trade_id ORDER BY v1.create_time DESC LIMIT 1) verifyStatus
+        t.trade_desc tradeDesc,t.create_time createTime, t.update_time updateTime,p.player_name playerName,p.player_nick playerNick,
+        t.personal_tax personalTax,t.enterprise_tax enterpriseTax,t.trade_status tradeStatus,
+        (SELECT v1.verify_status FROM trade_verify v1 WHERE t.trade_id = v1.verify_trade_id ORDER BY v1.create_time DESC LIMIT 1) verifyStatus,
+        (SELECT e1.earn_max FROM player_earning e1,invest_order o WHERE t.trade_player_id = e1.earn_player_id AND e1.earn_invest_id=o.order_id and o.order_id = t.trade_order_id) earnMax,
+        (SELECT e1.earn_current FROM player_earning e1,invest_order o WHERE t.trade_player_id = e1.earn_player_id AND e1.earn_invest_id=o.order_id and o.order_id = t.trade_order_id) earnCurrent,
+        (SELECT e1.is_withdrew FROM player_earning e1,invest_order o WHERE t.trade_player_id = e1.earn_player_id AND e1.earn_invest_id=o.order_id and o.order_id = t.trade_order_id) isWithdrew,
+        (SELECT d.trade_amount FROM trade_detail d WHERE d.trade_id=t.trade_id and d.trade_detail_type = 'TRANSFER_TAX') transferTax
       FROM player_trade t LEFT JOIN city_player p ON t.trade_player_id = p.player_id
     ) a
     <where>

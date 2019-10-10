@@ -6,6 +6,7 @@ package com.dream.city.base.model.enu;
  * usdt投资税金:usdt_invest_tax,mt投资税金:mt_invest_tax,个人所得税:personal_tax,企业所得税:enterprise_tax,
  * 转账冻结:transfer_freeze,提现冻结:withdraw_freeze,购买mt冻结:buy_mt_freeze,usdt投资冻结:usdt_invest_freeze,
  * mt投资冻结:mt_inves_freeze,转账审核通过扣款:transfer_verify,提现审核通过扣款:withdraw_verify,usdt投资审核通过扣款:usdt_invest_verify
+ * 转账所得税:transfer_tax
  * */
 public enum TradeDetailType {
 
@@ -16,6 +17,7 @@ public enum TradeDetailType {
     MT_INVEST_TAX("MT_INVEST_TAX","mt投资税金"),
     PERSONAL_TAX("PERSONAL_TAX","个人所得税"),
     ENTERPRISE_TAX("ENTERPRISE_TAX","企业所得税"),
+    TRANSFER_TAX("TRANSFER_TAX","转账所得税"),
     TRANSFER_FREEZE("TRANSFER_FREEZE","转账冻结"),
     WITHDRAW_FREEZE("WITHDRAW_FREEZE","提现冻结"),
     BUY_MT_FREEZE("BUY_MT_FREEZE","购买mt冻结"),
