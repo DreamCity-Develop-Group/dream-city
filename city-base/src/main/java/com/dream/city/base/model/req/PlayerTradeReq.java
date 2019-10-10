@@ -21,7 +21,9 @@ public class PlayerTradeReq implements Serializable {
 
     private String tradeType;
 
-    private String tradeAmountType;
+    private String verifyStatus;
+
+    private String inOut;
 
     private String tradeDesc;
 

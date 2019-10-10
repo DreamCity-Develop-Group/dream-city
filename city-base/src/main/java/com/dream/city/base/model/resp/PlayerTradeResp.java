@@ -20,10 +20,14 @@ public class PlayerTradeResp implements Serializable {
     private Integer tradeOrderId;
 
     private BigDecimal tradeAmount;
+    private BigDecimal personalTax;
+    private BigDecimal enterpriseTax;
+
+    private String verifyStatus;
+
+    private String inOut;
 
     private String tradeType;
-
-    private String tradeAmountType;
 
     private String tradeDesc;
 

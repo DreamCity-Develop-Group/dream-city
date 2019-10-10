@@ -293,7 +293,7 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
     private Result<PlayerTrade> createPlayerTrade(PlayerAccountReq record,BigDecimal tradeAmount,String desc) throws Exception{
         PlayerTrade tradeReq = new PlayerTrade();
         tradeReq.setTradeType(record.getTradeType());
-        tradeReq.setTradeAmountType(record.getTradeType());
+        tradeReq.setTradeType(record.getTradeType());
         tradeReq.setTradeDesc(desc);
         tradeReq.setTradeAccId(record.getAccId());
         tradeReq.setTradePlayerId(record.getAccPlayerId());
@@ -318,11 +318,9 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
      */
     private void createTradeVerify(Integer tradeId,BigDecimal verifyAmount,String verifyStatus,String verifyDesc){
         TradeVerify verifyReq = new TradeVerify();
-        verifyReq.setVerifyAmount(verifyAmount);
         verifyReq.setVerifyDesc(verifyDesc);
         verifyReq.setVerifyStatus(verifyStatus);
         verifyReq.setVerifyTradeId(tradeId);
-
         verifyService.insertTradeVerify(verifyReq);
     }
 

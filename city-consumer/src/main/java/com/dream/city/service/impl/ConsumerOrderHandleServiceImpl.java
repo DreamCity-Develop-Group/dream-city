@@ -316,11 +316,11 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
      * @param amountType
      * @return
      */
-    private Result<PlayerTrade> createPlayerTrade(String playerId,Integer orderId, BigDecimal tradeAmount,String amountType,String tradeAmountType){
+    private Result<PlayerTrade> createPlayerTrade(String playerId,Integer orderId, BigDecimal tradeAmount,String amountType,String tradeType){
         PlayerTrade insertPlayerTradeReq = new PlayerTrade();
         insertPlayerTradeReq.setTradeOrderId(orderId);
         insertPlayerTradeReq.setTradeAmount(tradeAmount);
-        insertPlayerTradeReq.setTradeAmountType(tradeAmountType);
+        insertPlayerTradeReq.setTradeType(tradeType);
         insertPlayerTradeReq.setTradeType(AmountDynType.out.name());
         insertPlayerTradeReq.setTradePlayerId(playerId);
         insertPlayerTradeReq.setTradeDesc("玩家投资"+amountType);
@@ -335,7 +335,6 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
     private Result<Integer> createTradeVerify(PlayerTrade trade){
         TradeVerify insertTradeVerifyReq = new TradeVerify();
         insertTradeVerifyReq.setVerifyTradeId(trade.getTradeId());
-        insertTradeVerifyReq.setVerifyAmount(trade.getTradeAmount());
         insertTradeVerifyReq.setVerifyStatus(VerifyStatus.wait.name());
         //insertTradeVerifyReq.setVerifyEmpId();//审核人id TODO
         insertTradeVerifyReq.setVerifyDesc(VerifyStatus.wait.getDesc());

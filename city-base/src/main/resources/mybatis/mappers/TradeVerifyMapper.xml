@@ -6,14 +6,13 @@
     <result column="verify_trade_id" property="verifyTradeId" jdbcType="INTEGER" />
     <result column="verify_order_id" property="verifyOrderId" jdbcType="INTEGER" />
     <result column="verify_emp_id" property="verifyEmpId" jdbcType="INTEGER" />
-    <result column="verify_amount" property="verifyAmount" jdbcType="DECIMAL" />
     <result column="verify_status" property="verifyStatus" jdbcType="VARCHAR" />
     <result column="verify_desc" property="verifyDesc" jdbcType="VARCHAR" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
     <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    verify_id, verify_trade_id,verify_order_id, verify_emp_id, verify_amount, verify_status, verify_desc,
+    verify_id, verify_trade_id,verify_order_id, verify_emp_id,  verify_status, verify_desc,
     DATE_FORMAT(create_time,'%Y-%m-%d %h:%m:%s') create_time, DATE_FORMAT(update_time,'%Y-%m-%d %h:%m:%s') update_time
   </sql>
 
@@ -90,9 +89,6 @@
       <if test="verifyEmpId != null" >
         verify_emp_id,
       </if>
-      <if test="verifyAmount != null" >
-        verify_amount,
-      </if>
       <if test="verifyStatus != null" >
         verify_status,
       </if>
@@ -114,9 +110,6 @@
       </if>
       <if test="verifyEmpId != null" >
         #{verifyEmpId,jdbcType=INTEGER},
-      </if>
-      <if test="verifyAmount != null" >
-        #{verifyAmount,jdbcType=DECIMAL},
       </if>
       <if test="verifyStatus != null" >
         #{verifyStatus,jdbcType=VARCHAR},
@@ -140,9 +133,6 @@
       </if>
       <if test="verifyEmpId != null" >
         verify_emp_id = #{verifyEmpId,jdbcType=INTEGER},
-      </if>
-      <if test="verifyAmount != null" >
-        verify_amount = #{verifyAmount,jdbcType=DECIMAL},
       </if>
       <if test="verifyStatus != null" >
         verify_status = #{verifyStatus,jdbcType=VARCHAR},

@@ -1,6 +1,5 @@
 package com.dream.city.base.model.entity;
 
-import com.dream.city.base.model.enu.InvestStatus;
 import com.dream.city.base.model.enu.OrderState;
 import lombok.Data;
 
