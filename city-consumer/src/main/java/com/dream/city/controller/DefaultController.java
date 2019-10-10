@@ -9,6 +9,7 @@ import com.dream.city.base.model.entity.Notice;
 import com.dream.city.base.model.entity.Player;
 import com.dream.city.base.model.entity.PlayerAccount;
 import com.dream.city.base.model.entity.RelationTree;
+import com.dream.city.base.model.enu.ReturnStatus;
 import com.dream.city.base.utils.JsonUtil;
 import com.dream.city.base.utils.RedisUtils;
 import com.dream.city.service.ConsumerGameSettingService;
@@ -17,6 +18,7 @@ import com.dream.city.service.ConsumerPlayerService;
 import com.dream.city.service.ConsumerTreeService;
 import com.dream.city.service.impl.ConsumerNoticeServiceImpl;
 import io.swagger.annotations.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,6 +26,7 @@ import java.util.*;
 
 @Api(value = "API-Consumer Main Default Page", description = "主页数据接口")
 @RestController
+@Slf4j
 @RequestMapping("/consumer/main")
 public class DefaultController {
 
@@ -73,9 +76,15 @@ public class DefaultController {
         String treeJson = JsonUtil.parseObjToJson(treeResult.getData());
         RelationTree tree = JsonUtil.parseJsonToObj(treeJson, RelationTree.class);
         //是否已经加入商会
-        boolean commerce = false;
+        int commerce = 0;
         if (tree != null){
-            commerce = true;
+            Result allowed = treeService.getInvestAllowed(player.getPlayerId());
+
+            commerce = 1;
+            if (allowed.getSuccess()) {
+                log.info("已经获得投资许可，设置交易密码");
+                commerce = 2;
+            }
         }
         //个人信息
         Map<String, Object> profile = new HashMap<>();
@@ -97,6 +106,7 @@ public class DefaultController {
         Map<String, Object> account = new HashMap<>();
         account.put("usdt", playerAccount.getAccUsdt());
         account.put("mt", playerAccount.getAccMt());
+        account.put("address",playerAccount.getAccAddr());
 
         Map<String, Object> data = new Hashtable<>();
 

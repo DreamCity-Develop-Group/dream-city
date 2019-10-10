@@ -36,7 +36,10 @@ public class InvestController {
      */
     @RequestMapping("/invest/allowed")
     public Result isAllowedInvest(@RequestParam("playerId")String playerId){
+
         InvestAllow allow = investService.getInvestAllowByPlayerId(playerId);
+
+
         if (null != allow && StringUtils.isBlank(allow.getAllowed())){
             return Result.result(true);
         }
@@ -46,9 +49,14 @@ public class InvestController {
 
     @RequestMapping("/invest/join")
     public Result joinInvestAllow(@RequestParam("playerId")String playerId, @RequestParam("amount")BigDecimal amount){
-        boolean allowed = investService.addInvestAllow(playerId,amount);
-
         InvestAllow allow = investService.getInvestAllowByPlayerId(playerId);
+        boolean allowed =false;
+        if(allow == null){
+            allowed = investService.addInvestAllow(playerId,amount);
+        }else {
+            allowed = true;
+        }
+
         //TODO 遍历印记分配
         if (allowed && null != allow){
             //直推接收
@@ -57,9 +65,8 @@ public class InvestController {
             BigDecimal rateInterpolation =investService.getRateInterpolation();
             /**
              *TODO
-             * 分配USDT印记收益
+             * 分配USDT印记收益,key>1 表示为直推的收益分配
              */
-
             parents.forEach((key,value)->{
                 if (key>1){
                     investService.allowcationUSDTToPlayer(amount.multiply(rateDirection),parents.get(key));

@@ -11,6 +11,7 @@ import com.dream.city.service.RelationTreeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -43,7 +44,8 @@ public class InvestOrderServiceImpl implements InvestOrderService {
         List<InvestOrder> investOrders = investOrderMapper.getInvestOrdersByCurrentDay(investId, InvestStatus.SUBSCRIBED.getStatus());
         //final List<InvestOrder>[] investOrdersSucess = new List[]{new ArrayList<>()};
         final Map<String, List<InvestOrder>> investOrdersSucess = new Hashtable<>();
-        long total = investOrders.size();
+        long total1 = investOrders.size();
+        BigDecimal total = new BigDecimal(total1);
         //Map<InvestOrder>
         //根据权重排序，权重数值小的权限大，应该先计算
         rules.sort((r1, r2) -> (r1.getRuleLevel() - r2.getRuleLevel()));
@@ -53,25 +55,25 @@ public class InvestOrderServiceImpl implements InvestOrderService {
                 case "OPT_RATE":
                     switch (rule.getRuleFlag()) {
                         case "ALL_ORDERS"://所有的40%
-                            long all = Long.parseLong(total * rule.getRuleRate() + "");
+                            long all = Long.parseLong(rule.getRuleRate().multiply(total) + "");
                             List<InvestOrder> allOrders = getRandomOrders(investOrders, all);
                             investOrdersSucess.put(rule.getRuleFlag(), allOrders);
                             investOrders.removeAll(allOrders);
                             break;
                         case "FIRST_TIME"://第一次投资 20
-                            long first = Long.parseLong(total * rule.getRuleRate() + "");
+                            long first = Long.parseLong(rule.getRuleRate().multiply(total) + "");
                             List<InvestOrder> firstOrders = getFirstTimeOrders(investOrders, first);
                             investOrdersSucess.put(rule.getRuleFlag(), firstOrders);
                             investOrders.removeAll(firstOrders);
                             break;
                         case "LIKES_GATHER"://点赞最多 20
-                            long likes = Long.parseLong(total * rule.getRuleRate() + "");
+                            long likes = Long.parseLong(rule.getRuleRate().multiply(total) + "");
                             List<InvestOrder> likesOrders = getLiksGatherOrders(investOrders, likes);
                             investOrdersSucess.put(rule.getRuleFlag(), likesOrders);
                             investOrders.removeAll(likesOrders);
                             break;
                         case "INVEST_LONG"://投资时间最长10%
-                            long longs = Long.parseLong(total * rule.getRuleRate() + "");
+                            long longs = Long.parseLong(rule.getRuleRate().multiply(total) + "");
                             List<InvestOrder> longsOrders = getInvestLongTimeOrders(investOrders, longs);
                             investOrdersSucess.put(rule.getRuleFlag(), longsOrders);
                             if (longsOrders!=null){
@@ -79,7 +81,7 @@ public class InvestOrderServiceImpl implements InvestOrderService {
                             }
                             break;
                         case "ORDER_OTHERS"://其他 100%
-                            long other = Long.parseLong(total * rule.getRuleRate() + "");
+                            long other = Long.parseLong(rule.getRuleRate().multiply(total) + "");
                             List<InvestOrder> othersOrders = getOtherOrders(investOrders, other);
                             if (othersOrders != null) {
                                 investOrdersSucess.put(rule.getRuleFlag(), othersOrders);
@@ -94,7 +96,7 @@ public class InvestOrderServiceImpl implements InvestOrderService {
                 case "OPT_TOP"://新增玩家 前20
                     switch (rule.getRuleFlag()) {
                         case "TOP_MEMBERS":
-                            long top = Long.parseLong(total * rule.getRuleRate() + "");
+                            long top = Long.parseLong(rule.getRuleRate().multiply(total) + "");
                             List<InvestOrder> topOrders = getTopMembersOrders(investOrders, top);
                             investOrdersSucess.put(rule.getRuleFlag(), topOrders);
                             investOrders.removeAll(topOrders);

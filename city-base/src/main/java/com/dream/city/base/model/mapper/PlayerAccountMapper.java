@@ -69,6 +69,7 @@ public interface PlayerAccountMapper {
      * @return
      */
     @Select("select * from player_account where 1=1 and  acc_player_id = #{playerId}")
+    @ResultMap("BaseCityAccountResultMap")
     PlayerAccount getPlayerAccount(String playerId);
 
     @Update("update player_account set acc_usdt = acc_usdt-#{payAmount} ,acc_usdt_availble=acc_usdt_availble-#{payAmount} where 1=1 adnd acc_player_id=#{playerId}")
@@ -90,6 +91,7 @@ public interface PlayerAccountMapper {
     void updateBuyerAccount(@Param("accounts") List<PlayerAccount> accounts);
 
     @Select("select * from player_account where 1=1 and  acc_player_id = #{playerId}")
+    @ResultMap("BaseCityAccountResultMap")
     PlayerAccount getPlayerAccountByPlayerId(String playerId);
 
 
@@ -104,5 +106,9 @@ public interface PlayerAccountMapper {
             "</foreach>" +
             "</script>"})
 
-    void updatePlayerAccount(PlayerAccount record);
+    void updatePlayerAccounts(@Param("accounts") List<PlayerAccount> accounts);
+
+
+    @Update("update player_account set acc_usdt = #{accUsdt} ,acc_usdt_available=#{accUsdtAvailable} where 1=1 and acc_player_id=#{accPlayerId}")
+    void updatePlayerAccount(PlayerAccount payAmount);
 }

@@ -313,6 +313,8 @@ public class ConsumerPlayerController {
     @ApiOperation(value = "用户注册", notes = "用户注册", response = Message.class)
     @RequestMapping("/reg")
     public Message reg(@RequestBody Message message) {
+        long start = System.currentTimeMillis();
+        long end;
         log.info("用户注册", JSONObject.toJSONString(message));
         UserReq userReq = DataUtils.getUserReq(message);
         String jsonReq = JSON.toJSONString(userReq);
@@ -441,6 +443,7 @@ public class ConsumerPlayerController {
                 data.setCode(ReturnStatus.SUCCESS.getStatus());
                 msg.setData(data);
                 msg.setDesc(regSuccess);
+                end = System.currentTimeMillis();
                 return msg;
             } else {
                 MessageData messageData = message.getData();
@@ -448,11 +451,14 @@ public class ConsumerPlayerController {
 
                 msg.setData(messageData);
                 msg.setDesc(reg.getMsg());
+                end = System.currentTimeMillis();
                 return msg;
             }
         }
+        end = System.currentTimeMillis();
         msg.setData(message.getData());
         msg.setDesc(ret.getMsg());
+        log.info("spend:"+(end-start));
         return msg;
     }
 
@@ -509,6 +515,7 @@ public class ConsumerPlayerController {
 
             String token = saveToken(userReq.getUsername());
             data.put("token", token);
+            data.put("playerId",result.getData().toString());
         }
         MessageData msgData = new MessageData(
                 msg.getData().getType(), msg.getData().getModel(),
@@ -569,6 +576,7 @@ public class ConsumerPlayerController {
 
                 String token = saveToken(userReq.getUsername());
                 dataInner.put("token", token);
+                dataInner.put("playerId",idlog.getData().toString());
             } else {
                 log.info("验证码登录失败");
             }

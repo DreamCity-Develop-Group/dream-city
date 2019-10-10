@@ -47,7 +47,7 @@ public class WebSocketServer {
 
     private StringRedisTemplate redisTampate = SpringUtils.getBean(StringRedisTemplate.class);
 
-    private RedisMessageListenerContainer redisMessageListenerContainer = SpringUtils.getBean(RedisMessageListenerContainer.class);
+    //private RedisMessageListenerContainer redisMessageListenerContainer = SpringUtils.getBean(RedisMessageListenerContainer.class);
     //RedisSubListenerConfig config = SpringUtils.getBean(RedisSubListenerConfig.class);
 
     private RedisUtils redisUtils = SpringUtils.getBean(RedisUtils.class);
@@ -109,8 +109,8 @@ public class WebSocketServer {
         subscribeListener.setSession(session);
         subscribeListener.setStringRedisTemplate(redisTampate);
         //设置订阅topic
-        redisMessageListenerContainer.addMessageListener(subscribeListener, new ChannelTopic(topic));
-        redisMessageListenerContainer.setTaskExecutor(newFixedThreadPool(4));
+        //redisMessageListenerContainer.addMessageListener(subscribeListener, new ChannelTopic(topic));
+        //redisMessageListenerContainer.setTaskExecutor(newFixedThreadPool(4));
 
         //redisMessageListenerContainer.addMessageListener(subscribeListener, new ChannelTopic(topic+":"+name));
         //redisMessageListenerContainer.setTaskExecutor(newFixedThreadPool(4));
@@ -135,7 +135,7 @@ public class WebSocketServer {
             Message message = new Message(
                     "server",
                     clientId,
-                    new MessageData("init","socket",ReturnStatus.SUCCESS.getStatus()),
+                    new MessageData("init", "socket", ReturnStatus.SUCCESS.getStatus()),
                     connect,
                     new Date().toString()
             );
@@ -177,7 +177,7 @@ public class WebSocketServer {
         try {
             //TODO 1、如果客户端发心跳包[ping&&XXXX],回复success：包括登录期间的ping和登录之前的连接检测
             String[] msgArray = message.split("&&");
-            if (msgArray.length>1) {
+            if (msgArray.length > 1) {
                 String ping = msgArray[0];
                 String account = msgArray[1];
                 String heartBeat = "ping";
@@ -186,7 +186,7 @@ public class WebSocketServer {
                     System.out.println("心跳消息接收...");
                     //TODO 保持连接状态，更新TOKEN：当用户Token即将过期，但此时用户实际在线，需要续期
                     String redisKey = RedisKeys.LOGIN_USER_TOKEN + account;
-                    if (redisUtils.hasKey(redisKey)){
+                    if (redisUtils.hasKey(redisKey)) {
                         long expire = redisUtils.getExpire(redisKey);
                         long expired = 60;
                         if (expire < expired && expire != 0) {
@@ -200,7 +200,7 @@ public class WebSocketServer {
                     sendMessage("success");
                     return;
                 }
-            }else {
+            } else {
 
                 //解析出客户端发来的消息
                 Message msg = JSONObject.parseObject(message, Message.class);
@@ -308,7 +308,7 @@ public class WebSocketServer {
      */
     @OnError
     public void onError(Session session, Throwable error) {
-        log.error("发生错误:"+error.getMessage());
+        log.error("发生错误:" + error.getMessage());
 
         error.printStackTrace();
     }
@@ -351,6 +351,7 @@ public class WebSocketServer {
     public static void sendInfo(Message message) throws IOException {
         log.info("推送消息到窗口" + message.getTarget() + "，推送内容:" + message);
         String clientId = message.getTarget();
+
         for (WebSocketServer item : webSocketSet) {
             try {
                 //这里可以设定只推送给这个sid的，为null则全部推送
@@ -360,6 +361,38 @@ public class WebSocketServer {
                     item.sendAsyncObject(message);
                     item.sendMessage(JSONObject.toJSONString(message));
                     log.info(">>>>>>" + JSONObject.toJSONString(message));
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * 发自定义消息
+     */
+    public static void pushInfo(Message message) throws IOException {
+        log.info("推送消息到窗口" + message.getTarget() + "，推送内容:" + message);
+        String clientId = message.getTarget();
+        MessageData data = message.getData();
+        Object obj = data.getData();
+        String json = JsonUtil.parseObjToJson(obj);
+        JSONObject jsonObject = JSONObject.parseObject(json);
+        String from = jsonObject.getString("fromPlayerId");
+        String to = jsonObject.getString("toPlayerId");
+
+        //message.getData().setCode(222);
+        for (WebSocketServer item : webSocketSet) {
+            try {
+                //这里可以设定只推送给这个sid的，为null则全部推送
+                if (clientId.equals(item.username)) {
+                    item.sendAsyncObject(message);
+                    log.info(">>>>>>" + JSONObject.toJSONString(message));
+                    item.sendMessage(JSONObject.toJSONString(message));
+                } else {
+                    // item.sendAsyncObject(message);
+                    //item.sendMessage(JSONObject.toJSONString(message));
+                    log.info(">>>>>>" + item.username + "[" + item.clientId + "]");
                 }
             } catch (IOException e) {
                 e.printStackTrace();

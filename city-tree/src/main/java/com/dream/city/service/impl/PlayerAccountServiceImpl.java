@@ -68,5 +68,10 @@ public class PlayerAccountServiceImpl implements PlayerAccountService {
         playerMapper.updatePlayerLevel(playerId,level);
     }
 
+    @Override
+    public Player getPlayerByPlayerId(String playerId) {
+        return playerMapper.getPlayer(playerId);
+    }
+
 
 }

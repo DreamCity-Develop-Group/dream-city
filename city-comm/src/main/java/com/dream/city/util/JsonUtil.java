@@ -70,8 +70,9 @@ public final class JsonUtil {
 
     //Map转Object
     public static Object mapToObject(Map<Object, Object> map, Class<?> beanClass) throws Exception {
-        if (map == null)
+        if (map == null) {
             return null;
+        }
         Object obj = beanClass.newInstance();
         Field[] fields = obj.getClass().getDeclaredFields();
         for (Field field : fields) {

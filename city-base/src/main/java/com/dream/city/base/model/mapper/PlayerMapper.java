@@ -49,7 +49,7 @@ public interface PlayerMapper {
             @Result(property = "playerPass", column = "player_pass"),
             @Result(property = "playerTradePass", column = "player_trade_pass"),
             @Result(property = "playerInvite", column = "player_invite"),
-            @Result(property = "playerLevel", column = "player_invite"),
+            @Result(property = "playerLevel", column = "player_level"),
             @Result(property = "isValid", column = "is_valid"),
             @Result(property = "createTime", column = "createtime"),
             @Result(property = "updateTime", column = "updatetime")

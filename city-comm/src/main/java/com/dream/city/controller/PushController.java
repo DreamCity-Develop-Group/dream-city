@@ -189,4 +189,21 @@ public class PushController {
 
         return new Result(true, "成功！", 200, message);
     }
+
+    @RequestMapping("push/to")
+    public Result pushTo(@RequestParam("name")String name,@RequestParam("client")String client) {
+        Message message = new Message(
+                "server",
+                 client,
+                new MessageData(),
+                ""
+        );
+        try {
+            WebSocketServer.sendInfo(message);
+            //WebSocketServer.pushInfo(message);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return Result.result(true);
+    }
 }

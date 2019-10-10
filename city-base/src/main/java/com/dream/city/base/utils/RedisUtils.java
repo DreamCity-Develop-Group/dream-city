@@ -364,6 +364,28 @@ public class RedisUtils {
         }
     }
 
+    public boolean publish(String channel, JSONObject value) {
+        try {
+            redisTemplate.convertAndSend(channel,value);
+            //stringRedisTemplate.convertAndSend(channel,value);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean publishMsg(String channel, String value) {
+        try {
+            redisTemplate.convertAndSend(channel,value);
+            //stringRedisTemplate.convertAndSend(channel,value);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public boolean lpush(String key, JSONObject value) {
         try {
             //jedis.lpush(key, value.toString());

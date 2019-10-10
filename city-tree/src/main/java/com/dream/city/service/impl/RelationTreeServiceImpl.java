@@ -1,17 +1,27 @@
 package com.dream.city.service.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.dream.city.base.model.CityGlobal;
+import com.dream.city.base.model.Message;
+import com.dream.city.base.model.MessageData;
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.InvestRule;
+import com.dream.city.base.model.entity.Player;
 import com.dream.city.base.model.entity.RelationTree;
 import com.dream.city.base.model.entity.RuleItem;
+import com.dream.city.base.model.enu.ReturnStatus;
 import com.dream.city.base.model.mapper.RelationTreeMapper;
+import com.dream.city.base.utils.JsonUtil;
+import com.dream.city.base.utils.RedisUtils;
 import com.dream.city.service.InvestRuleService;
 import com.dream.city.service.PlayerAccountService;
 import com.dream.city.service.RelationTreeService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -29,6 +39,7 @@ import java.util.Map;
 public class RelationTreeServiceImpl implements RelationTreeService {
 
     private final String PlAYER_FLAG = "PlAYER_LEVEL";
+    private final String PlAYER_UPGRADE = "PUSHER_CHANNEL";
 
     @Autowired
     private RelationTreeMapper treeMapper;
@@ -38,6 +49,9 @@ public class RelationTreeServiceImpl implements RelationTreeService {
 
     @Autowired
     PlayerAccountService playerAccountService;
+
+    @Autowired
+    RedisUtils redisUtils;
 
     @Override
     public Result save(String parent, String child, String invite) {
@@ -59,7 +73,7 @@ public class RelationTreeServiceImpl implements RelationTreeService {
             tree.setTreeRelation(parentTree.getTreeRelation() + "/" + invite);
             tree.setSendAuto("");
             tree.setTreeLevel(0);
-            tree.setCreateTime(new Timestamp(new Date().getTime()));
+            tree.setCreateTime(new Timestamp(System.currentTimeMillis()));
             treeMapper.saveTree(tree);
             log.info("保存树成功");
 
@@ -84,11 +98,65 @@ public class RelationTreeServiceImpl implements RelationTreeService {
                 parentTree.setTreeLevel(stars);
                 Result result = updateTree(parentTree);
                 playerAccountService.updatePlayerLevel(parent,stars);
+                Message message = new Message(
+                        "server",
+                        "client",
+                        new MessageData("push","comm",new JSONObject(),200),
+                        "升级成功"
+                );
+
+                Player playerTo = playerAccountService.getPlayerByPlayerId(parentTree.getTreePlayerId());
+                String clientId =  redisUtils.get("clientID-"+playerTo.getPlayerName()).get();
+
+                message.setTarget(clientId);
+                message.getData().setCode(ReturnStatus.UPGRADE_TIP.getStatus());
+                message.setDesc(ReturnStatus.UPGRADE_TIP.getDesc());
 
                 if (result.getSuccess()){
                     log.info("改变商会等级成功!");
+                    //message.setTarget(playerTo.getPlayerName());
+                    //主动推送消息，升级成功
+                    JSONObject upgrade = new JSONObject();
+                    upgrade.put("level",stars);
+                    upgrade.put("toPlayerId",parent);
+                    upgrade.put("username",playerTo.getPlayerName());
+                    upgrade.put("fromPlayerId",child);
+                    message.getData().setData(upgrade);
+                    String json = JsonUtil.parseObjToJson(message);
+                    log.info("升级：》"+json);
+                    JSONObject ret = JSONObject.parseObject(json);
+                    redisUtils.publishMsg(PlAYER_UPGRADE,json);
                 }else {
-                    updateTree(parentTree);
+                    result = updateTree(parentTree);
+                    if (result.getSuccess()){
+                        //message.setTarget(playerTo.getPlayerName());
+                        log.info("改变商会等级成功!");
+                        //主动推送消息，升级成功
+                        JSONObject upgrade = new JSONObject();
+                        upgrade.put("level",stars);
+                        upgrade.put("toPlayerId",parent);
+                        upgrade.put("username",playerTo.getPlayerName());
+                        upgrade.put("fromPlayerId",child);
+                        message.getData().setData(upgrade);
+                        String json = JsonUtil.parseObjToJson(message);
+                        JSONObject ret = JSONObject.parseObject(json);
+                        redisUtils.publishMsg(PlAYER_UPGRADE,json);
+                    }else {
+                        result = updateTree(parentTree);
+                        if(result.getSuccess()){
+                            //message.setTarget(playerTo.getPlayerName());
+                            //主动推送消息，升级成功
+                            JSONObject upgrade = new JSONObject();
+                            upgrade.put("level",stars);
+                            upgrade.put("toPlayerId",parent);
+                            upgrade.put("username",playerTo.getPlayerName());
+                            upgrade.put("fromPlayerId",child);
+                            message.getData().setData(upgrade);
+                            String json = JsonUtil.parseObjToJson(message);
+                            JSONObject ret = JSONObject.parseObject(json);
+                            redisUtils.publishMsg(PlAYER_UPGRADE,json);
+                        }
+                    }
                 }
             }
 
@@ -199,7 +267,7 @@ public class RelationTreeServiceImpl implements RelationTreeService {
     public Map<Integer, RelationTree> getParents(String playerId) {
         Map<Integer, RelationTree> trees = new Hashtable<>();
 
-        RelationTree self = getByPlayer(playerId);
+        RelationTree self = this.getTreeByPlayerId(playerId);
         String selfRef = self.getTreeRelation();
         String[] relations = selfRef.split("/");
         Integer levels = relations.length;
@@ -209,7 +277,9 @@ public class RelationTreeServiceImpl implements RelationTreeService {
 
             int start = 0;
             int end = 7 * (levels - level) - 1;
-
+            if(end<0){
+                break;
+            }
             String parentRef = selfRef.substring(start, end);
             RelationTree parent = getPlayerByRef(parentRef);
             trees.put(level, parent);

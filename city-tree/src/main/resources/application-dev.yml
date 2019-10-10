@@ -18,3 +18,6 @@ mybatis:
 
 auth:
   secret: oKKLJOoasdl
+
+platform:
+  account: 4E2EE556055042AB80E3D164E51DDD1A

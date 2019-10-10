@@ -1,17 +1,40 @@
 package com.dream.city.server;
 
+import com.alibaba.druid.support.json.JSONUtils;
+import com.alibaba.fastjson.JSONObject;
+import com.dream.city.base.model.Message;
+import com.dream.city.util.JsonUtil;
+import com.sun.org.apache.bcel.internal.generic.PUSH;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
  * @author Wvv
  */
-//@Component
+@Component
+@Slf4j
 public class MessageReceiver {
+    @Autowired
+    PublishServer publishServer;
     /**
      * 接收消息的方法
      */
-    public void receiveMessage1(String message) {
-        System.out.println("收到一条消息：" + message);
+    public void receiveMessage1(String message) throws InterruptedException {
+        System.out.println("收到一条消息1：" + message);
+        log.info("现在开始推送信息");
+        //JsonUtil.
+        String msg = message.replace("\\","");
+        msg = msg.substring(1,msg.length()-1);
+
+        com.dream.city.base.model.Message myMsg = JsonUtil.parseJsonToObj(msg, com.dream.city.base.model.Message.class);
+        //Message msg = JsonUtil.parseJsonToObj(message,Message.class);
+        publishServer.pushToClient(myMsg);
+
+        Thread.sleep(2000);
+        new Thread(()->{
+            publishServer.pushToClient(myMsg);
+        }).start();
     }
 
     /**

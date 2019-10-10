@@ -26,7 +26,9 @@ public enum ReturnStatus {
     SET_SUCCESS(200,"设置成功"),
     SET_FAILED(509,"设置失败"),
     WAITE_OPT(200,"操作成功，请耐心等待审核"),
-    RETRY_OPT(511,"操作失败，请重试");
+    RETRY_OPT(511,"操作失败，请重试"),
+    UPGRADE_TIP(666,"恭喜升级成功"),
+    NEXT_OPT(512,"请完成下一步设置");
 
     /**
      * 成员变量

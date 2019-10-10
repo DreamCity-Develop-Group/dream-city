@@ -23,6 +23,9 @@ public interface RelationTreeMapper {
 
     int updateByPrimaryKey(RelationTree record);
 
+    RelationTree getByPlayer(String playerId);
+
+
     @Select("select * from city_tree where 1=1")
     List<RelationTree> getCity();
 
@@ -40,18 +43,20 @@ public interface RelationTreeMapper {
     @Update(" update city_tree set tree_parent_id=#{treeParentId},tree_player_id=#{treePlayerId},tree_relation=#{treeRelation},send_auto=#{sendAuto},tree_level=#{treeLevel} where tree_id = #{treeId}")
     void updateTree(RelationTree tree);
 
-
-
-    //@Select("select * from city_tree where 1=1 and tree_player_id=#{playerId} limit 1 ")
-    RelationTree getByPlayer(String playerId);
-
     /**
      * 根据关系取玩家
      *
      * @param relation
      * @return
      */
-    @Select("select * from city_tree where 1=1 and tree_relation=#{relation} limit 1 ")
+    @Select("select " +
+            "tree_id treeId,tree_parent_id treeParentId, " +
+            "tree_player_id treePlayerId," +
+            "tree_relation treeRelation," +
+            "send_auto sendAuto," +
+            "tree_level treeLevel," +
+            "create_time createTime " +
+            "from city_tree where 1=1 and tree_relation=#{relation} limit 1 ")
     RelationTree getTreeByRef(String relation);
 
     @Select("select * from city_tree where 1=1 and tree_relation like  #{relation}")

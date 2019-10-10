@@ -180,7 +180,7 @@ public class PlayerController {
                     tip.append(CityGlobal.Constant.LOGIN_SUCCESS);
                     result.setCode(CityGlobal.ResultCode.success.getStatus());
                     result.setSuccess(Boolean.TRUE);
-
+                    result.setData(playerId);
                     // 登录成功保存redis
                     loginToRedis(playerExists);
                 }
@@ -254,7 +254,7 @@ public class PlayerController {
                     result.setMsg(tip.toString());
                     result.setSuccess(login);
                     result.setCode(CityGlobal.ResultCode.success.getStatus());
-
+                    result.setData(playerId);
                     // 登录成功保存redis
                     loginToRedis(playerExists);
                 }
@@ -447,14 +447,16 @@ public class PlayerController {
     @RequestMapping("/getPlayerByInvite")
     public Result getPlayerByInvite(@RequestParam("invite")String invite){
         Player player = playerService.getPlayerByInvite(invite);
-        Result<Player>result = new Result<>(true,"获取玩家",200,player);
+        //Result<Player>result = new Result<>(true,);
+        Result result = Result.result(true,"获取玩家",200,player);
         return result;
     }
 
     @RequestMapping("/getPlayerByAccount")
     public Result getPlayerByAccount(@RequestParam("account")String account){
         Player player = playerService.getPlayerByAccount(account);
-        Result<Player>result = new Result<>(true,"获取玩家",200,player);
+        //Result<Player>result = new Result<>(true,"获取玩家",200,player);
+        Result result = Result.result(true,"获取玩家",200,player);
         return result;
     }
 
@@ -478,6 +480,18 @@ public class PlayerController {
         Player player = playerService.getPlayerByInvite(invite);
         if (player != null){
             return Result.result(true);
+        }
+        return Result.result(false);
+    }
+
+    @RequestMapping("/setTradePassword")
+    public Result setTradePassword(@RequestBody Player player){
+
+        if (player != null){
+            Player p = playerService.update(player);
+            if (p!=null) {
+                return Result.result(true);
+            }
         }
         return Result.result(false);
     }

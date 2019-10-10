@@ -20,7 +20,9 @@ public interface InvestAllowMapper {
             @Result(property = "createTime", column = "createtime"),
     })
     @Select({"select * from `invest_allow` where 1=1 and player_id = #{playerId}"})
-    Player getPlayer(String playerId);
+    InvestAllow getInvestAllow(String playerId);
+
+
 
 
 
@@ -30,6 +32,7 @@ public interface InvestAllowMapper {
      * @return
      */
     @Select("select * from `invest_allow` where 1=1 and  player_id = #{playerId}")
+    @ResultMap("BasePlayerResultMap")
     InvestAllow getInvestAllowByPlayerId(String playerId);
 
     @Insert("insert into `invest_allow`(id,player_id,allowed,amount,create_time)values(#{id},#{playerId},#{allowed},#{amount},#{createTime}) ")

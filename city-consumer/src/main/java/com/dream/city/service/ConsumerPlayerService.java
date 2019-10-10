@@ -3,6 +3,7 @@ package com.dream.city.service;
 import com.alibaba.fastjson.JSONObject;
 import com.dream.city.base.model.Page;
 import com.dream.city.base.model.Result;
+import com.dream.city.base.model.entity.Player;
 import com.dream.city.base.model.entity.PlayerExt;
 import com.dream.city.service.impl.FallBackPlayer;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -114,5 +115,6 @@ public interface ConsumerPlayerService {
     @RequestMapping("/player/checkInvite")
     Result checkPlayerInvite(@RequestParam String invite);
 
-
+    @RequestMapping("/player/setTradePassword")
+    Result setTradePassword(@RequestBody Player player);
 }

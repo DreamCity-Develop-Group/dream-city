@@ -9,12 +9,14 @@ import org.springframework.data.redis.listener.PatternTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 
+import static java.util.concurrent.Executors.newFixedThreadPool;
+
 /**
  * @author Wvv
  */
-//@Configuration
+@Configuration
 public class RedisSubListenerConfig {
-    private static final String channel1 = "notice";
+    private static final String channel1 = "PUSHER_CHANNEL";
     private static final String channel2 = "notice1";
 
     /**
@@ -33,6 +35,7 @@ public class RedisSubListenerConfig {
                                             MessageListenerAdapter listenerAdapter2) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
+        container.setTaskExecutor(newFixedThreadPool(4));
         //订阅了一个叫channel1 的通道
         container.addMessageListener(listenerAdapter1, new PatternTopic(RedisSubListenerConfig.channel1));
         //订阅了一个叫chat的频道

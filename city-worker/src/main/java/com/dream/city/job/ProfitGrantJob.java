@@ -81,7 +81,7 @@ public class ProfitGrantJob extends QuartzJobBean {
                         switch (rule.getRuleFlag()) {
                             case "ALL_ORDERS":
                                 //1、所有玩家，40%
-                                BigDecimal allOrdersProfit = profitSum.multiply(new BigDecimal(rule.getRuleRate()));
+                                BigDecimal allOrdersProfit = profitSum.multiply(rule.getRuleRate());
 
                                 int start = 0, end = 100;
                                 //查出一共多少条数据
@@ -107,8 +107,8 @@ public class ProfitGrantJob extends QuartzJobBean {
                                 break;
                             case "FIRST_TIME":
                                 //3、第一次投资前20% 20%
-                                BigDecimal firstTimeOrdersProfit = profitSum.multiply(new BigDecimal(rule.getRuleRate()));
-                                BigDecimal top = new BigDecimal(rule.getRuleRatePre());
+                                BigDecimal firstTimeOrdersProfit = profitSum.multiply(rule.getRuleRate());
+                                BigDecimal top = rule.getRuleRatePre();
                                 Map<String,String> calTime = investService.getProfitCalculateTime(invest.getCreateTime());
                                 String startTime = calTime.get("start");
                                 String endTime = calTime.get("end");
@@ -137,7 +137,7 @@ public class ProfitGrantJob extends QuartzJobBean {
                             case "TOP_MEMBERS":
                                 int start = 0, end = 100;
                                 long top = rule.getRuleRatePre().longValue();
-                                BigDecimal topMembersProfit = profitSum.multiply(new BigDecimal(rule.getRuleRate()));
+                                BigDecimal topMembersProfit = profitSum.multiply(rule.getRuleRate());
                                 BigDecimal everyTopMembersProfit = topMembersProfit.divide(new BigDecimal(top));
                                 //查出一共多少条数据
                                 int[] statesSum = new int[]{InvestStatus.MANAGEMENT.getStatus()};
@@ -158,7 +158,7 @@ public class ProfitGrantJob extends QuartzJobBean {
                                 break;
                             case "LIKES_GATHER":
                                 long topLike = rule.getRuleRatePre().longValue();
-                                BigDecimal topLikesProfit = profitSum.multiply(new BigDecimal(rule.getRuleRate()));
+                                BigDecimal topLikesProfit = profitSum.multiply(rule.getRuleRate());
                                 BigDecimal everyTopLikesProfit = topLikesProfit.divide(new BigDecimal(topLike));
                                 //查出一共多少条数据
                                 start = 0;
@@ -180,7 +180,7 @@ public class ProfitGrantJob extends QuartzJobBean {
                                 break;
                             case "INVEST_LONG":
                                 long topLong = rule.getRuleRatePre().longValue();
-                                BigDecimal topLongProfit = profitSum.multiply(new BigDecimal(rule.getRuleRate()));
+                                BigDecimal topLongProfit = profitSum.multiply(rule.getRuleRate());
                                 BigDecimal everyTopLongProfit = topLongProfit.divide(new BigDecimal(topLong));
                                 //查出一共多少条数据
                                 start = 0;
