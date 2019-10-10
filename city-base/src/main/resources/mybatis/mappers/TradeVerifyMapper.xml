@@ -29,16 +29,16 @@
     from trade_verify
     <where>
       1=1
-      <if test="verifyId != null and verifyId != 0">
+      <if test="verifyId != null">
         and verify_id = #{verifyId,jdbcType=INTEGER}
       </if>
       <if test="verifyStatus != null and verifyStatus != ''">
         and verify_status = #{verifyStatus,jdbcType=VARCHAR}
       </if>
-      <if test="verifyTradeId != null and verifyTradeId != ''">
+      <if test="verifyTradeId != null'">
         and verify_trade_id = #{verifyTradeId,jdbcType=INTEGER}
       </if>
-      <if test="verifyOrderId != null and verifyOrderId != ''">
+      <if test="verifyOrderId != null">
         and verify_order_id = #{verifyOrderId,jdbcType=INTEGER}
       </if>
     </where>
@@ -56,12 +56,12 @@
         and verify_id = #{verifyId,jdbcType=INTEGER}
       </if>
       <if test="verifyStatus != null and verifyStatus != ''">
-        and verify_status = #{verifyStatus,jdbcType=INTEGER}
+        and verify_status = #{verifyStatus,jdbcType=VARCHAR}
       </if>
-      <if test="verifyTradeId != null and verifyTradeId != ''">
+      <if test="verifyTradeId != null">
         and verify_trade_id = #{verifyTradeId,jdbcType=INTEGER}
       </if>
-      <if test="verifyOrderId != null and verifyOrderId != ''">
+      <if test="verifyOrderId != null">
         and verify_order_id = #{verifyOrderId,jdbcType=INTEGER}
       </if>
     </where>

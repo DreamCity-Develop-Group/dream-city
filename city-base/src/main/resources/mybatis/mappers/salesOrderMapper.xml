@@ -15,4 +15,38 @@
         <result column="createtime" jdbcType="TIMESTAMP" property="createTime"/>
         <result column="updatetime" jdbcType="TIMESTAMP" property="updateTime"/>
     </resultMap>
+
+
+    <select id="getSalesOrderList" resultMap="OrderBaseResultMap" parameterType="com.dream.city.base.model.entity.SalesOrder" >
+        select *
+        from sales_order
+        <where>
+            1=1
+            <if test="id != null">
+                and id = #{id,jdbcType=INTEGER}
+            </if>
+            <if test="orderId != null">
+                and order_id = #{orderId,jdbcType=INTEGER}
+            </if>
+            <if test="orderBuyType != null and orderBuyType != ''">
+                and order_buy_type = #{orderBuyType,jdbcType=VARCHAR}
+            </if>
+            <if test="orderPayType != null and orderPayType != ''">
+                and order_pay_type = #{orderPayType,jdbcType=VARCHAR}
+            </if>
+            <if test="orderPlayerBuyer != null and orderPlayerBuyer != ''">
+                and order_player_buyer = #{orderPlayerBuyer,jdbcType=VARCHAR}
+            </if>
+            <if test="orderPlayerSeller != null and orderPlayerSeller != ''">
+                and order_player_seller = #{orderPlayerSeller,jdbcType=VARCHAR}
+            </if>
+            <if test="orderState != null">
+                and order_state = #{orderState,jdbcType=INTEGER}
+            </if>
+        </where>
+        order by update_time desc limit 1
+    </select>
+
+
+
 </mapper>
