@@ -5,6 +5,8 @@
     <id column="order_id" property="orderId" jdbcType="INTEGER" />
     <result column="order_invest_id" property="orderInvestId" jdbcType="INTEGER" />
     <result column="order_payer_id" property="orderPayerId" jdbcType="VARCHAR" />
+    <result column="order_name" property="orderName" jdbcType="VARCHAR" />
+    <result column="order_num" property="orderNum" jdbcType="VARCHAR" />
     <result column="order_amount" property="orderAmount" jdbcType="DECIMAL" />
     <result column="order_state" property="orderState" jdbcType="VARCHAR" />
     <result column="order_repeat" property="orderRepeat" jdbcType="INTEGER" />
@@ -13,7 +15,7 @@
   </resultMap>
 
   <sql id="Base_Column_List" >
-    order_id, order_invest_id, order_payer_id, order_amount, order_state, order_repeat, DATE_FORMAT(create_time,'%Y-%m-%d %h:%m:%s') create_time, DATE_FORMAT(update_time,'%Y-%m-%d %h:%m:%s') update_time
+    order_id, order_invest_id, order_payer_id, order_amount, order_state, order_repeat, order_name,DATE_FORMAT(create_time,'%Y-%m-%d %h:%m:%s') create_time, DATE_FORMAT(update_time,'%Y-%m-%d %h:%m:%s') update_time
   </sql>
 
 
@@ -39,6 +41,12 @@
       </if>
       <if test="orderPayerId !=null and orderPayerId !=''">
         and  order_payer_id = #{orderPayerId,jdbcType=VARCHAR}
+      </if>
+      <if test="orderName !=null and orderName !=''">
+        and  order_name = #{orderName,jdbcType=VARCHAR}
+      </if>
+      <if test="orderNum !=null and orderNum !=''">
+        and  order_num = #{orderNum,jdbcType=VARCHAR}
       </if>
       <if test="orderState !=null and orderState !=''">
         and  order_state = #{orderState,jdbcType=VARCHAR}
@@ -87,6 +95,12 @@
       <if test="orderPayerId != null" >
         order_payer_id,
       </if>
+      <if test="orderName != null" >
+        order_name,
+      </if>
+      <if test="orderNum != null" >
+        order_num,
+      </if>
       <if test="orderState != null" >
         order_state,
       </if>
@@ -108,6 +122,9 @@
       </if>
       <if test="orderPayerId != null" >
         #{orderPayerId,jdbcType=VARCHAR},
+      </if>
+      <if test="orderName != null" >
+        #{orderName,jdbcType=VARCHAR},
       </if>
       <if test="orderState != null" >
         #{orderState,jdbcType=VARCHAR},

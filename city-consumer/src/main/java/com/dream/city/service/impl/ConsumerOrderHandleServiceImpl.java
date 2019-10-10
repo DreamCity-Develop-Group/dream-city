@@ -102,7 +102,7 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
         int updatePlayerAccountDate = 0;
         String updatePlayerAccountMsg = "";
         String amountType = "";
-        String tradeAmountType = TradeAmountType.USDT_INVEST.getCode();
+        String tradeAmountType = TradeType.INVEST.getCode();
         if (order != null && order.getOrderId() != null){
             success = Boolean.TRUE;
             updatePlayerAccountResult = this.deductPlayerAccountAmount(orderReq,playerAccount,tradeAmountType,inTax);
@@ -132,7 +132,7 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
         if (playerTradeResult != null && playerTradeResult.getSuccess() && trade != null){
             success = Boolean.TRUE;
             //冻结税金 从账户冻结，提取成功后直接扣除税金
-            tradeAmountType = TradeAmountType.USDT_INVEST_TAX.getCode();
+            tradeAmountType = TradeType.INVEST.getCode();
             deductTaxMap = this.deductPlayerAccountAmount(orderReq,playerAccount,tradeAmountType, inTax);
 
             //生成投资待审核
@@ -247,7 +247,7 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
      * @return
      */
     private Map<String,String> deductPlayerAccountAmount(InvestOrderReq orderReq,PlayerAccount playerAccount,String tradeAmountType,BigDecimal inTax){
-        String amountType = AmountType.usdt.name();
+        String amountType = AmountType.USDT.name();
         String msg = "";
         BigDecimal mtAvailable = playerAccount.getAccMtAvailable();
         BigDecimal usdtAvailable = playerAccount.getAccUsdtAvailable();
@@ -268,11 +268,11 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
             playerAccount.setAccPlayerId(playerAccount.getAccPlayerId());
 
             if (StringUtils.isBlank(tradeAmountType)){
-                tradeAmountType = TradeAmountType.USDT_INVEST.getCode();
+                tradeAmountType = TradeType.INVEST.getCode();
             }
-            if (tradeAmountType.equalsIgnoreCase(TradeAmountType.USDT_INVEST.getCode())
-                    && orderReq.getAmountType().equalsIgnoreCase(AmountType.usdt.name())){
-                amountType = AmountType.usdt.name();
+            if (tradeAmountType.equalsIgnoreCase(TradeType.INVEST.getCode())
+                    && orderReq.getAmountType().equalsIgnoreCase(AmountType.USDT.name())){
+                amountType = AmountType.USDT.name();
                 //投资冻结USDT
                 playerAccount.setAccUsdt(playerAccount.getAccUsdt().subtract(orderReq.getOrderAmount()));
                 playerAccount.setAccUsdtAvailable(playerAccount.getAccUsdtAvailable().subtract(orderReq.getOrderAmount()));
@@ -288,7 +288,7 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
             success = String.valueOf(updatePlayerAccountResult.getSuccess());
             data = String.valueOf(updatePlayerAccountResult.getData());
 
-            if (tradeAmountType.equalsIgnoreCase(TradeAmountType.MT_INVEST.getCode()) && Boolean.parseBoolean(success)
+            if (tradeAmountType.equalsIgnoreCase(TradeType.INVEST.getCode()) && Boolean.parseBoolean(success)
                     && Integer.parseInt(data) > 0){
                 msg = "投资预约成功！";
                 success = String.valueOf(Boolean.TRUE);
@@ -316,12 +316,12 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
      * @param amountType
      * @return
      */
-    private Result<PlayerTrade> createPlayerTrade(String playerId,Integer orderId, BigDecimal tradeAmount,String amountType,String tradeAmountType){
+    private Result<PlayerTrade> createPlayerTrade(String playerId,Integer orderId, BigDecimal tradeAmount,String amountType,String tradeType){
         PlayerTrade insertPlayerTradeReq = new PlayerTrade();
         insertPlayerTradeReq.setTradeOrderId(orderId);
         insertPlayerTradeReq.setTradeAmount(tradeAmount);
-        insertPlayerTradeReq.setTradeAmountType(tradeAmountType);
-        insertPlayerTradeReq.setTradeType(AmountDynType.out.name());
+        insertPlayerTradeReq.setTradeType(tradeType);
+        insertPlayerTradeReq.setTradeType(AmountDynType.OUT.name());
         insertPlayerTradeReq.setTradePlayerId(playerId);
         insertPlayerTradeReq.setTradeDesc("玩家投资"+amountType);
         return tradeService.insertPlayerTrade(insertPlayerTradeReq);
@@ -335,10 +335,9 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
     private Result<Integer> createTradeVerify(PlayerTrade trade){
         TradeVerify insertTradeVerifyReq = new TradeVerify();
         insertTradeVerifyReq.setVerifyTradeId(trade.getTradeId());
-        insertTradeVerifyReq.setVerifyAmount(trade.getTradeAmount());
-        insertTradeVerifyReq.setVerifyStatus(VerifyStatus.wait.name());
+        insertTradeVerifyReq.setVerifyStatus(VerifyStatus.WAIT.name());
         //insertTradeVerifyReq.setVerifyEmpId();//审核人id TODO
-        insertTradeVerifyReq.setVerifyDesc(VerifyStatus.wait.getDesc());
+        insertTradeVerifyReq.setVerifyDesc(VerifyStatus.WAIT.getDesc());
         return verifyService.insertTradeVerify(insertTradeVerifyReq);
     }
 

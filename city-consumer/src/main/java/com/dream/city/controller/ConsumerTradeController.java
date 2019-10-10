@@ -90,7 +90,7 @@ public class ConsumerTradeController {
         record.setTradeAccId(accountReq.getAccId());
         record.setTradeOrderId(accountReq.getTradeOrderId());
         record.setTradePlayerId(playerId);
-        record.setTradeAmountType(accountReq.getTradeType());
+        record.setTradeType(accountReq.getTradeType());
         record.setTradePlayerId(playerId);
 
         Result<PlayerTrade> tradeResult = tradeService.getPlayerTrade(record);
@@ -122,7 +122,7 @@ public class ConsumerTradeController {
         record.setAccId(accountReq.getAccId());
         record.setOrderId(accountReq.getTradeOrderId());
         record.setPlayerId(playerId);
-        record.setTradeAmountType(accountReq.getTradeType());
+        record.setTradeType(accountReq.getTradeType());
 
         Result<List<PlayerTradeResp>> tradeResult = tradeService.getPlayerTradeList(record);
         List<PlayerTradeResp> tradeList = tradeResult.getData();

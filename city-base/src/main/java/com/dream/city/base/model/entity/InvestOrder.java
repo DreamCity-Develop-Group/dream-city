@@ -18,6 +18,9 @@ public class InvestOrder implements Serializable {
     /** 玩家ID */
     private String orderPayerId;
 
+    private String orderName;
+    private String orderNum;
+
     /** 投资金额 */
     private BigDecimal orderAmount;
 

@@ -1,17 +1,18 @@
 package com.dream.city.base.model.enu;
 
 /**
- * 资金动态(进账in,出账out)
- * */
-public enum AmountDynType {
+ * 审核状态（冻结freeze，已出账out，已入账in）
+ */
+public enum TradeStatus {
 
-    IN("IN","进账"),
-    OUT("OUT","出账");
+    FREEZE("FREEZE","冻结"),
+    OUT("OUT","已出账"),
+    IN("IN","已入账");
 
     private String code;
     private String desc;
 
-    AmountDynType(String code,String desc){
+    TradeStatus(String code,String desc){
         this.code = code;
         this.desc = desc;
     }
@@ -23,4 +24,5 @@ public enum AmountDynType {
     public String getDesc() {
         return desc;
     }
+
 }

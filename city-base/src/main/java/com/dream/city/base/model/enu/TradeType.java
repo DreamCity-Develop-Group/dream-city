@@ -1,14 +1,13 @@
 package com.dream.city.base.model.enu;
 
 /**
-* 交易类型（投资usdt，投资mt，转账transfer，充值recharge，提现withdraw）
+* 交易类型（充值:recharge,转账:transfer,提现:withdraw,购买mt:buy_mt,投资invest)
  * */
-public enum TradeAmountType {
+public enum TradeType {
 
-    USDT_INVEST("USDT_INVEST","usdt投资"),
-    USDT_INVEST_TAX("USDT_INVEST_TAX","usdt投资mt税金"),
-    MT_INVEST("MT_INVEST","mt投资"),
-    USDT_EARNINGS("USDT_EARNINGS","usdt投资收益"),
+    INVEST("INVEST","USDT投资"),
+    BUY_MT("BUY_MT","购买MT"),
+    INVEST_EARNINGS("INVEST_EARNINGS","投资收益"),
     TRANSFER("TRANSFER","转账"),
     RECHARGE("RECHARGE","充值"),
     WITHDRAW("WITHDRAW","提现");
@@ -16,7 +15,7 @@ public enum TradeAmountType {
     private String code;
     private String desc;
 
-    TradeAmountType(String code, String desc){
+    TradeType(String code, String desc){
         this.code = code;
         this.desc = desc;
     }
