@@ -5,10 +5,10 @@ package com.dream.city.base.model.enu;
  */
 public enum VerifyStatus {
 
-    wait("待审核"),
-    verifying("审核中"),
-    pass("审核通过"),
-    notpass("审核不通过");
+    WAIT("待审核"),
+    VERIFYING("审核中"),
+    PASS("审核通过"),
+    NOTPASS("审核不通过");
 
     private String desc;
 

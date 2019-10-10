@@ -5,8 +5,8 @@ package com.dream.city.base.model.enu;
  * */
 public enum AmountType {
 
-    usdt("usdt"),
-    mt("mt");
+    USDT("usdt"),
+    MT("mt");
 
     private String desc;
 

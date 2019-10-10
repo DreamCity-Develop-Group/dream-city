@@ -5,8 +5,8 @@ package com.dream.city.base.model.enu;
  * */
 public enum AmountDynType {
 
-    in("进账"),
-    out("出账");
+    IN("进账"),
+    OUT("出账");
 
     private String desc;
 

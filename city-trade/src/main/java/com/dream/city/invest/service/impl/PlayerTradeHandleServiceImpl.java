@@ -38,7 +38,7 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
         boolean success = Boolean.FALSE;
         String msg = null;
         record.setTradeType(AmountDynType.in.name());
-        record.setTradeType(TradeAmountType.RECHARGE.name());
+        record.setTradeType(TradeType.RECHARGE.name());
         Result<BigDecimal> updateAccountResult = null;
         try {
             //充值
@@ -68,7 +68,7 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
         boolean success = Boolean.FALSE;
         String msg = "玩家提现";
         record.setTradeType(AmountDynType.out.name());
-        record.setTradeType(TradeAmountType.WITHDRAW.name());
+        record.setTradeType(TradeType.WITHDRAW.name());
         Result<BigDecimal> updateAccountResult = null;
         try {
             //校验提现规则 todo
@@ -100,7 +100,7 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
     public Result<Boolean> playerTransfer(PlayerAccountReq recordOut) {
         boolean success = Boolean.FALSE;
         String msg = "玩家转账";
-        recordOut.setTradeType(TradeAmountType.TRANSFER.name());
+        recordOut.setTradeType(TradeType.TRANSFER.name());
         Result<BigDecimal> updateAccountResult = null;
         try {
             String verifyStatus = VerifyStatus.wait.name();
@@ -197,8 +197,8 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
 
         BigDecimal tradeAmount = BigDecimal.ZERO;
         //充值
-        if (record.getTradeType().equalsIgnoreCase(TradeAmountType.RECHARGE.name())){
-            tradeType = TradeAmountType.RECHARGE.getDesc();
+        if (record.getTradeType().equalsIgnoreCase(TradeType.RECHARGE.name())){
+            tradeType = TradeType.RECHARGE.getDesc();
             //            //账户金额加上充值金额
             if (record.getTradeType().equalsIgnoreCase(AmountType.mt.name())){
                 tradeAmount = record.getAccMt();
@@ -211,8 +211,8 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
             }
         }
         //提现
-        if (record.getTradeType().equalsIgnoreCase(TradeAmountType.WITHDRAW.name())){
-            tradeType = TradeAmountType.WITHDRAW.getDesc();
+        if (record.getTradeType().equalsIgnoreCase(TradeType.WITHDRAW.name())){
+            tradeType = TradeType.WITHDRAW.getDesc();
             //账户金额减去提现金额
             if (record.getTradeType().equalsIgnoreCase(AmountType.mt.name())){
                 tradeAmount = record.getAccMt();
@@ -227,8 +227,8 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
             }
         }
         //转账
-        if (record.getTradeType().equalsIgnoreCase(TradeAmountType.TRANSFER.name())){
-            tradeType = TradeAmountType.TRANSFER.getDesc();
+        if (record.getTradeType().equalsIgnoreCase(TradeType.TRANSFER.name())){
+            tradeType = TradeType.TRANSFER.getDesc();
             if (record.getTradeType().equalsIgnoreCase(AmountDynType.out.name())){
                 //转账转出 账户金额减去转账金额
                 if (isInsideAccAddr(record.getAccAddr())){

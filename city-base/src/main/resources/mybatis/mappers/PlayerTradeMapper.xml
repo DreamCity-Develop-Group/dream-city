@@ -10,7 +10,7 @@
     <result column="personal_tax" property="personalTax" jdbcType="DECIMAL" />
     <result column="enterprise_tax" property="enterpriseTax" jdbcType="DECIMAL" />
     <result column="trade_type" property="tradeType" jdbcType="VARCHAR" />
-    <result column="verify_status" property="verifyStatus" jdbcType="VARCHAR" />
+    <result column="trade_status" property="tradeStatus" jdbcType="VARCHAR" />
     <result column="in_out" property="inOut" jdbcType="VARCHAR" />
     <result column="trade_desc" property="tradeDesc" jdbcType="VARCHAR" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
@@ -25,7 +25,7 @@
   <select id="getPlayerTradeById" resultType="com.dream.city.base.model.resp.PlayerTradeResp" parameterType="java.lang.Integer" >
     SELECT t.trade_id tradeId, t.trade_acc_id tradeAccId, t.trade_player_id playerId, t.trade_order_id tradeOrderId, t.trade_amount tradeAmount, t.trade_type tradeType,
     t.trade_amount_type tradeAmountType, t.trade_desc tradeDesc,t.create_time createTime, t.update_time updateTime,p.player_name playerName,p.player_nick playerNick,
-    t.personal_tax personalTax,t.enterprise_tax enterpriseTax,t.verify_status verifyStatus
+    t.personal_tax personalTax,t.enterprise_tax enterpriseTax,t.trade_status tradeStatus
     FROM player_trade t LEFT JOIN city_player p ON t.trade_player_id = p.player_id
     where t.trade_id = #{tradeId,jdbcType=INTEGER}
   </select>
@@ -61,7 +61,7 @@
   <select id="getPlayerTradeList" resultType="com.dream.city.base.model.resp.PlayerTradeResp" parameterType="com.dream.city.base.model.req.PlayerTradeReq" >
     SELECT t.trade_id tradeId, t.trade_acc_id tradeAccId, t.trade_player_id playerId, t.trade_order_id tradeOrderId, t.trade_amount tradeAmount, t.trade_type tradeType,
     t.trade_amount_type tradeAmountType, t.trade_desc tradeDesc,t.create_time createTime, t.update_time updateTime,p.player_name playerName,p.player_nick playerNick,
-    t.personal_tax personalTax,t.enterprise_tax enterpriseTax,t.verify_status verifyStatus
+    t.personal_tax personalTax,t.enterprise_tax enterpriseTax,t.trade_status tradeStatus
     FROM player_trade t LEFT JOIN city_player p ON t.trade_player_id = p.player_id
     <where>
       1=1
@@ -73,6 +73,9 @@
       </if>
       <if test="orderId != null" >
         and t.trade_order_id = #{orderId,jdbcType=INTEGER}
+      </if>
+      <if test="tradeStatus != null and tradeStatus != ''" >
+        and t.trade_status = #{tradeStatus,tradeType=CHAR},
       </if>
       <if test="tradeType != null and tradeType != ''" >
         and t.trade_type = #{tradeType,tradeType=CHAR},
@@ -120,8 +123,8 @@
       <if test="tradeType != null" >
         trade_type,
       </if>
-      <if test="verifyStatus != null" >
-        verify_status,
+      <if test="tradeStatus != null" >
+        trade_status,
       </if>
       <if test="personalTax != null" >
         personal_tax,
@@ -157,8 +160,8 @@
       <if test="tradeType != null" >
         #{tradeType,jdbcType=CHAR},
       </if>
-      <if test="verifyStatus != null" >
-        #{verifyStatus,jdbcType=VARCHAR},
+      <if test="tradeStatus != null" >
+        #{tradeStatus,jdbcType=VARCHAR},
       </if>
       <if test="personalTax != null" >
         #{personalTax,jdbcType=DECIMAL},
@@ -194,8 +197,8 @@
       <if test="tradeType != null" >
         trade_type = #{tradeType,jdbcType=CHAR},
       </if>
-      <if test="verifyStatus != null" >
-        verify_status = #{verifyStatus,jdbcType=VARCHAR},
+      <if test="tradeStatus != null" >
+        trade_status = #{tradeStatus,jdbcType=VARCHAR},
       </if>
       <if test="personalTax != null" >
         personal_tax = #{personalTax,jdbcType=DECIMAL},

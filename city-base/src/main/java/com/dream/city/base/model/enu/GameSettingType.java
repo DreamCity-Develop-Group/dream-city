@@ -2,8 +2,8 @@ package com.dream.city.base.model.enu;
 
 public enum GameSettingType {
 
-    bg("背景音效"),
-    game("游戏音效");
+    BG("背景音效"),
+    GAME("游戏音效");
 
     // 成员变量
     private String desc;

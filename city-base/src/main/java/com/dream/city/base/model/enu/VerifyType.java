@@ -11,6 +11,8 @@ public enum VerifyType {
     //投资预约
     INVEST_SUBSCRIBE("投资预约"),
 
+    BUY_MT("购买MT"),
+
     //投资
     INVEST("投资");
 
