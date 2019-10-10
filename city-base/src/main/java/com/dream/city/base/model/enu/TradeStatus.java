@@ -5,14 +5,20 @@ package com.dream.city.base.model.enu;
  */
 public enum TradeStatus {
 
-    FREEZE("冻结"),
-    OUT("已出账"),
-    IN("已入账");
+    FREEZE("FREEZE","冻结"),
+    OUT("OUT","已出账"),
+    IN("IN","已入账");
 
+    private String code;
     private String desc;
 
-    TradeStatus(String desc){
+    TradeStatus(String code,String desc){
+        this.code = code;
         this.desc = desc;
+    }
+
+    public String getCode() {
+        return code;
     }
 
     public String getDesc() {

@@ -3,8 +3,6 @@ package com.dream.city.base.model.req;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.Date;
 
 @Data
 public class PlayerTradeReq implements Serializable {
@@ -18,20 +16,23 @@ public class PlayerTradeReq implements Serializable {
     private String playerNick;
 
     private Integer orderId;
+    private String orderName;
+    private String orderNum;
 
     private String tradeType;
-
-    private String verifyStatus;
-
-    private String inOut;
-
+    private String tradeStatus;
     private String tradeDesc;
 
     private String createTimeStart;
     private String createTimeEnd;
 
+    private Integer detailId;
+    private String tradeDetailType;
+    private String tradeDetailDesc;
 
-
-
+    /**  审核人 */
+    private String verifyUserName;
+    private String verifyStatus;
+    private String verifyDesc;
 
 }

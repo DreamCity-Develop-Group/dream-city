@@ -13,43 +13,82 @@
     <result column="descr" property="descr" jdbcType="VARCHAR" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
   </resultMap>
+
   <sql id="Base_Column_List" >
-    id, trade_id, verify_id, order_id, player_id, trade_detail_type, trade_amount, verify_time, 
+    id, trade_id, verify_id, order_id, player_id, trade_detail_type, trade_amount, verify_time,
     descr, create_time
   </sql>
 
-  <select id="getTradeDetail" resultMap="BaseResultMap" parameterType="com.dream.city.base.model.entity.TradeDetail" >
-    select 
-    <include refid="Base_Column_List" />
-    from trade_detail
-    where 1=1
-    <if test="id != null" >
-      and id = #{id,jdbcType=INTEGER}
+  <resultMap id="BaseResultMapExT" type="com.dream.city.base.model.resp.PlayerTradeResp" >
+    <id column="detail_id" property="detailId" jdbcType="INTEGER" />
+    <id column="verify_id" property="verifyId" jdbcType="INTEGER" />
+    <result column="trade_id" property="tradeId" jdbcType="INTEGER" />
+    <result column="verify_id" property="verifyId" jdbcType="INTEGER" />
+    <result column="order_id" property="orderId" jdbcType="INTEGER" />
+    <result column="order_name" property="orderName" jdbcType="VARCHAR" />
+    <result column="order_num" property="orderNum" jdbcType="VARCHAR" />
+    <result column="player_id" property="playerId" jdbcType="VARCHAR" />
+    <result column="trade_type" property="tradeType" jdbcType="VARCHAR" />
+    <result column="trade_detail_type" property="tradeDetailType" jdbcType="VARCHAR" />
+    <result column="trade_status" property="tradeStatus" jdbcType="VARCHAR" />
+    <result column="trade_amount" property="tradeAmount" jdbcType="DECIMAL" />
+    <result column="personal_tax" property="personalTax" jdbcType="DECIMAL" />
+    <result column="enterprise_tax" property="enterpriseTax" jdbcType="DECIMAL" />
+    <result column="player_name" property="playerName" jdbcType="VARCHAR" />
+    <result column="verify_emp_id" property="verifyEmpId" jdbcType="VARCHAR" />
+    <result column="user_name" property="verifyUserName" jdbcType="VARCHAR" />
+    <result column="verify_status" property="verifyStatus" jdbcType="VARCHAR" />
+    <result column="verify_time" property="verifyTime" jdbcType="TIMESTAMP" />
+    <result column="verify_desc" property="verifyDesc" jdbcType="VARCHAR" />
+    <result column="trade_desc" property="tradeDesc" jdbcType="VARCHAR" />
+    <result column="detail_descr" property="detailDesc" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="detail_time" property="detailTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+  <sql id="Base_Column_List_Ext" >
+    d.id detail_id, d.trade_id, d.verify_id, d.order_id, d.player_id, d.trade_detail_type, d.trade_amount, d.verify_time, d.descr detail_descr, d.create_time detail_time,
+    t.personal_tax,t.enterprise_tax,t.trade_type,t.trade_status,p.player_name,u.name user_name,v.verify_status,v.verify_desc,v.create_time verify_time,o.order_id,o.order_name,o.order_num
+  </sql>
+
+  <select id="getTradeDetailList" resultMap="BaseResultMapExT" parameterType="com.dream.city.base.model.req.PlayerTradeReq" >
+    SELECT <include refid="Base_Column_List_Ext" />
+    FROM trade_detail d,player_trade t,city_player p,trade_verify v,invest_order o,user u
+    WHERE d.trade_id = t.trade_id and d.player_id = p.player_id and d.verify_id = v.verify_id and d.order_id=o.order_id and v.verify_emp_id= u.id
+    <if test="detailId != null" >
+      and d.id = #{detailId,jdbcType=INTEGER}
     </if>
     <if test="tradeId != null" >
-      and trade_id= #{tradeId,jdbcType=INTEGER}
+      and d.trade_id= #{tradeId,jdbcType=INTEGER}
     </if>
-    <if test="verifyId != null" >
-      and verify_id= #{verifyId,jdbcType=INTEGER}
+    <if test="playerName != null and playerName != ''" >
+      and p.player_name= #{playerName,jdbcType=VARCHAR}
     </if>
-    <if test="orderId != null" >
-      and order_id= #{orderId,jdbcType=INTEGER}
-    </if>
-    <if test="playerId != null and playerId != ''" >
-      and player_id= #{playerId,jdbcType=INTEGER}
+    <if test="verifyStatus != null and verifyStatus != ''" >
+      and v.verify_status= #{verifyStatus,jdbcType=VARCHAR}
     </if>
     <if test="tradeDetailType != null and tradeDetailType != ''" >
-      and trade_detail_type= #{tradeDetailType,jdbcType=INTEGER}
+      and d.trade_detail_type= #{tradeDetailType,jdbcType=VARCHAR}
     </if>
-    <if test="tradeAmount != null" >
-      and trade_amount= #{tradeAmount,jdbcType=INTEGER}
+    <if test="orderName != null and orderName != ''" >
+      and o.order_name= #{orderName,jdbcType=VARCHAR}
     </if>
-    <if test="verifyTime != null" >
-      and verify_time= #{verifyTime,jdbcType=INTEGER}
+    <if test="orderNum != null and orderNum != ''" >
+      and o.order_num= #{orderNum,jdbcType=VARCHAR}
     </if>
-    <if test="descr != null and descr != ''" >
-      and descr like '%${descr}%'
+    <if test="verifyStatus != null" >
+      and d.verify_status= #{verifyStatus,jdbcType=VARCHAR}
     </if>
+    <if test="tradeDetailDesc != null and tradeDetailDesc != ''" >
+      and d.descr like '%${tradeDetailDesc}%'
+    </if>
+    <if test="createTimeStart != null and createTimeStart != ''" >
+      and d.create_time <![CDATA[>=]]> STR_TO_DATE(#{createTimeStart,jdbcType=VARCHAR},'%Y-%m-%d %h:%m:%s')
+    </if>
+    <if test="createTimeEnd != null and createTimeEnd != ''" >
+      and d.create_time <![CDATA[<=]]> STR_TO_DATE(#{createTimeEnd,jdbcType=VARCHAR},'%Y-%m-%d %h:%m:%s')
+    </if>
+    order by d.create_time desc
   </select>
 
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >

@@ -25,7 +25,7 @@ public class PlayerTrade implements Serializable {
 
     private String tradeStatus;
 
-    private String inOut;
+    private String inOutStatus;
 
     private String tradeType;
 

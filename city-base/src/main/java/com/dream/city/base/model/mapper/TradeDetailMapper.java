@@ -1,6 +1,8 @@
 package com.dream.city.base.model.mapper;
 
 import com.dream.city.base.model.entity.TradeDetail;
+import com.dream.city.base.model.req.PlayerTradeReq;
+import com.dream.city.base.model.resp.PlayerTradeResp;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -14,7 +16,7 @@ public interface TradeDetailMapper {
 
     TradeDetail selectByPrimaryKey(Integer id);
 
-    List<TradeDetail> getTradeDetail(TradeDetail record);
+    List<PlayerTradeResp> getTradeDetailList(PlayerTradeReq record);
 
     int updateByPrimaryKeySelective(TradeDetail record);
 

@@ -11,21 +11,22 @@
     <result column="enterprise_tax" property="enterpriseTax" jdbcType="DECIMAL" />
     <result column="trade_type" property="tradeType" jdbcType="VARCHAR" />
     <result column="trade_status" property="tradeStatus" jdbcType="VARCHAR" />
-    <result column="in_out" property="inOut" jdbcType="VARCHAR" />
+    <result column="in_out" property="inOutStatus" jdbcType="VARCHAR" />
     <result column="trade_desc" property="tradeDesc" jdbcType="VARCHAR" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
     <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
   </resultMap>
 
   <sql id="Base_Column_List" >
-    trade_id, trade_acc_id, trade_player_id, trade_order_id, trade_amount, trade_type, personal_tax,enterprise_tax,verify_status,
-    trade_amount_type, trade_desc,DATE_FORMAT(create_time,'%Y-%m-%d %h:%m:%s') create_time, DATE_FORMAT(update_time,'%Y-%m-%d %h:%m:%s') update_time
+    trade_id, trade_acc_id, trade_player_id, trade_order_id, trade_amount, trade_type, personal_tax,enterprise_tax,verify_status,in_out,
+    trade_desc,DATE_FORMAT(create_time,'%Y-%m-%d %h:%m:%s') create_time, DATE_FORMAT(update_time,'%Y-%m-%d %h:%m:%s') update_time
   </sql>
 
   <select id="getPlayerTradeById" resultType="com.dream.city.base.model.resp.PlayerTradeResp" parameterType="java.lang.Integer" >
-    SELECT t.trade_id tradeId, t.trade_acc_id tradeAccId, t.trade_player_id playerId, t.trade_order_id tradeOrderId, t.trade_amount tradeAmount, t.trade_type tradeType,
-    t.trade_amount_type tradeAmountType, t.trade_desc tradeDesc,t.create_time createTime, t.update_time updateTime,p.player_name playerName,p.player_nick playerNick,
-    t.personal_tax personalTax,t.enterprise_tax enterpriseTax,t.trade_status tradeStatus
+    SELECT t.trade_id tradeId, t.trade_acc_id tradeAccId, t.trade_player_id playerId, t.trade_order_id tradeOrderId, t.trade_amount tradeAmount, t.trade_type tradeType,t.in_out inOutStatus,
+    t.trade_desc tradeDesc,t.create_time createTime, t.update_time updateTime,p.player_name playerName,p.player_nick playerNick,
+    t.personal_tax personalTax,t.enterprise_tax enterpriseTax,t.trade_status tradeStatus,
+    (SELECT v1.verify_status FROM trade_verify v1 WHERE t.trade_id = v1.verify_trade_id ORDER BY v1.create_time DESC LIMIT 1) verifyStatus
     FROM player_trade t LEFT JOIN city_player p ON t.trade_player_id = p.player_id
     where t.trade_id = #{tradeId,jdbcType=INTEGER}
   </select>
@@ -49,57 +50,48 @@
         and trade_amount = #{tradeAmount,jdbcType=DECIMAL}
       </if>
       <if test="tradeType != null and tradeType != ''" >
-        and trade_type = #{tradeType,tradeType=CHAR},
-      </if>
-      <if test="tradeAmountType != null and tradeAmountType != ''" >
-        and trade_amount_type = #{tradeAmountType,jdbcType=VARCHAR}
+        and trade_type = #{tradeType,jdbcType=VARCHAR},
       </if>
     </where>
     linit 1
   </select>
 
   <select id="getPlayerTradeList" resultType="com.dream.city.base.model.resp.PlayerTradeResp" parameterType="com.dream.city.base.model.req.PlayerTradeReq" >
-    SELECT t.trade_id tradeId, t.trade_acc_id tradeAccId, t.trade_player_id playerId, t.trade_order_id tradeOrderId, t.trade_amount tradeAmount, t.trade_type tradeType,
-    t.trade_amount_type tradeAmountType, t.trade_desc tradeDesc,t.create_time createTime, t.update_time updateTime,p.player_name playerName,p.player_nick playerNick,
-    t.personal_tax personalTax,t.enterprise_tax enterpriseTax,t.trade_status tradeStatus
-    FROM player_trade t LEFT JOIN city_player p ON t.trade_player_id = p.player_id
+    SELECT * FROM (
+      SELECT t.trade_id tradeId, t.trade_acc_id tradeAccId, t.trade_player_id playerId, t.trade_order_id tradeOrderId, t.trade_amount tradeAmount, t.trade_type tradeType,t.in_out inOutStatus,
+      t.trade_desc tradeDesc,t.create_time createTime, t.update_time updateTime,p.player_name playerName,p.player_nick playerNick,
+      t.personal_tax personalTax,t.enterprise_tax enterpriseTax,t.trade_status tradeStatus,
+      (SELECT v1.verify_status FROM trade_verify v1 WHERE t.trade_id = v1.verify_trade_id ORDER BY v1.create_time DESC LIMIT 1) verifyStatus
+      FROM player_trade t LEFT JOIN city_player p ON t.trade_player_id = p.player_id
+    ) a
     <where>
       1=1
       <if test="tradeId != null" >
-        and t.trade_id = #{tradeId,jdbcType=INTEGER}
-      </if>
-      <if test="accId != null" >
-        and t.trade_acc_id = #{accId,jdbcType=INTEGER}
-      </if>
-      <if test="orderId != null" >
-        and t.trade_order_id = #{orderId,jdbcType=INTEGER}
+        and a.tradeId = #{tradeId,jdbcType=INTEGER}
       </if>
       <if test="tradeStatus != null and tradeStatus != ''" >
-        and t.trade_status = #{tradeStatus,tradeType=CHAR},
+        and a.tradeStatus = #{tradeStatus,jdbcType=VARCHAR}
       </if>
       <if test="tradeType != null and tradeType != ''" >
-        and t.trade_type = #{tradeType,tradeType=CHAR},
-      </if>
-      <if test="tradeAmountType != null and tradeAmountType != ''" >
-        and t.trade_amount_type = #{tradeAmountType,jdbcType=CHAR}
+        and a.tradeType = #{tradeType,jdbcType=VARCHAR}
       </if>
       <if test="tradeDesc != null and tradeDesc != ''" >
-        and t.trade_desc LIKE '%${tradeDesc}%'
+        and a.tradeDesc LIKE '%${tradeDesc}%'
       </if>
       <if test="playerName != null and playerName != ''" >
-        and p.player_name LIKE '%${playerName}%'
+        and a.playerName LIKE '%${playerName}%'
       </if>
       <if test="playerNick != null and playerNick != ''" >
-        and p.player_nick LIKE '%${playerNick}%'
+        and a.playerNick LIKE '%${playerNick}%'
       </if>
       <if test="createTimeStart != null and createTimeStart != ''" >
-        and t.create_time <![CDATA[>=]]> STR_TO_DATE(#{createTimeStart,jdbcType=VARCHAR},'%Y-%m-%d %h:%m:%s')
+        and a.createTime <![CDATA[>=]]> STR_TO_DATE(#{createTimeStart,jdbcType=VARCHAR},'%Y-%m-%d %h:%m:%s')
       </if>
       <if test="createTimeEnd != null and createTimeEnd != ''" >
-        and t.create_time <![CDATA[<=]]> STR_TO_DATE(#{createTimeEnd,jdbcType=VARCHAR},'%Y-%m-%d %h:%m:%s')
+        and a.createTime <![CDATA[<=]]> STR_TO_DATE(#{createTimeEnd,jdbcType=VARCHAR},'%Y-%m-%d %h:%m:%s')
       </if>
     </where>
-    order by t.create_time desc
+    order by a.createTime desc
   </select>
 
   <insert id="insertSelective" useGeneratedKeys="true" keyProperty="tradeId" parameterType="com.dream.city.base.model.entity.PlayerTrade" >
@@ -132,7 +124,7 @@
       <if test="enterpriseTax != null" >
         enterprise_tax,
       </if>
-      <if test="inOut != null" >
+      <if test="inOutStatus != null" >
         in_out,
       </if>
       <if test="tradeDesc != null" >
@@ -158,7 +150,7 @@
         #{tradeAmount,jdbcType=DECIMAL},
       </if>
       <if test="tradeType != null" >
-        #{tradeType,jdbcType=CHAR},
+        #{tradeType,jdbcType=VARCHAR},
       </if>
       <if test="tradeStatus != null" >
         #{tradeStatus,jdbcType=VARCHAR},
@@ -169,8 +161,8 @@
       <if test="enterpriseTax != null" >
         #{enterpriseTax,jdbcType=DECIMAL},
       </if>
-      <if test="inOut != null" >
-        #{tradeAmount,jdbcType=VARCHAR},
+      <if test="inOutStatus != null" >
+        #{inOutStatus,jdbcType=VARCHAR},
       </if>
       <if test="tradeDesc != null" >
         #{tradeDesc,jdbcType=VARCHAR},
@@ -195,7 +187,7 @@
         trade_amount = #{tradeAmount,jdbcType=DECIMAL},
       </if>
       <if test="tradeType != null" >
-        trade_type = #{tradeType,jdbcType=CHAR},
+        trade_type = #{tradeType,jdbcType=VARCHAR},
       </if>
       <if test="tradeStatus != null" >
         trade_status = #{tradeStatus,jdbcType=VARCHAR},
@@ -206,8 +198,8 @@
       <if test="enterpriseTax != null" >
         enterprise_tax = #{enterpriseTax,jdbcType=DECIMAL},
       </if>
-      <if test="inOut != null" >
-        in_out = #{tradeAmount,jdbcType=VARCHAR},
+      <if test="inOutStatus != null" >
+        in_out = #{inOutStatus,jdbcType=VARCHAR},
       </if>
       <if test="tradeDesc != null" >
         trade_desc = #{tradeDesc,jdbcType=VARCHAR},

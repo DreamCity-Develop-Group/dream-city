@@ -4,37 +4,41 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
 
 @Data
 public class PlayerTradeResp implements Serializable {
 
     private Integer tradeId;
-
     private Integer tradeAccId;
+    private BigDecimal tradeAmount;
+    private BigDecimal personalTax;
+    private BigDecimal enterpriseTax;
+    private String tradeStatus;
+    private String inOutStatus;
+    private String tradeType;
+    private String tradeDesc;
+    private String createTime;
+    private String updateTime;
 
     private String playerId;
     private String playerName;
     private String playerNick;
 
-    private Integer tradeOrderId;
+    private Integer orderId;
+    private String orderName;
+    private String orderNum;
 
-    private BigDecimal tradeAmount;
-    private BigDecimal personalTax;
-    private BigDecimal enterpriseTax;
+    private Integer detailId;
+    private String tradeDetailType;
+    private String detailDesc;
+    private String detailTime;
 
+    private Integer verifyId;
+    private Integer verifyEmpId;
+    /**  审核人 */
+    private String verifyUserName;
     private String verifyStatus;
-
-    private String inOut;
-
-    private String tradeType;
-
-    private String tradeDesc;
-
-    private String createTime;
-
-    private String updateTime;
-
-
+    private String verifyDesc;
+    private String verifyTime;
 
 }
