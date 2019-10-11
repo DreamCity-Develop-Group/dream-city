@@ -75,7 +75,7 @@ public class RelationTreeController {
      */
     @RequestMapping("/find/Level")
     public Result findByLevel(@RequestParam("playerId") String playerId, @RequestParam("level") Integer level) {
-        Map<Integer, List<RelationTree>> treeMap = new Hashtable<>();
+        Map<String,Object> treeMap = new Hashtable<>();
 
         treeMap = relationTreeService.getLevelChildTreesMap(playerId,level);
 

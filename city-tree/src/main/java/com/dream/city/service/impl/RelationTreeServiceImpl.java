@@ -26,10 +26,8 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.Date;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * @author Wvv
@@ -52,6 +50,7 @@ public class RelationTreeServiceImpl implements RelationTreeService {
 
     @Autowired
     RedisUtils redisUtils;
+
 
     @Override
     public Result save(String parent, String child, String invite) {
@@ -208,7 +207,7 @@ public class RelationTreeServiceImpl implements RelationTreeService {
         for (int i = 0; i < level; i++) {
             like += "/______";
         }
-        RelationTree tree = treeMapper.getByPlayer(playerId);
+        RelationTree tree = treeMapper.getTreeByPlayerId(playerId);
 
         like = tree.getTreeRelation() + like + "";
         System.out.println("Select Like: " + like);
@@ -225,14 +224,45 @@ public class RelationTreeServiceImpl implements RelationTreeService {
      * @return
      */
     @Override
-    public Map<Integer, List<RelationTree>> getLevelChildTreesMap(String playerId, int level) {
+    public Map<String,Object> getLevelChildTreesMap(String playerId, int level) {
         Map<Integer, List<RelationTree>> treeListMap = new Hashtable<>();
         for (int i = 0; i < level; i++) {
             List<RelationTree> levelTree = this.findLevel(playerId, i + 1);
             treeListMap.put(i + 1, levelTree);
         }
 
-        return treeListMap;
+        int num = 0;
+        Map<String,Object> data = new HashMap<>();
+        List<Map<String,String>> members = new ArrayList<>();
+        Iterator<Map.Entry<Integer, List<RelationTree>>> entries = treeListMap.entrySet().iterator();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+        while(entries.hasNext()){
+            Map.Entry<Integer, List<RelationTree>> entry = entries.next();
+            Integer key = entry.getKey();
+            List<RelationTree> value = entry.getValue();
+            if (key>1){
+                num+=value.size();
+            }else {
+                for(RelationTree tree : value){
+                    Player player = playerAccountService.getPlayerByPlayerId(tree.getTreePlayerId());
+                    Map<String,String> p = new HashMap<>();
+                    p.put("playerId",player.getPlayerId());
+                    //String pre = player.getPlayerName().substring(0,2);
+                    //String end = player.getPlayerName().substring(7,-1);
+                    p.put("playerName",player.getPlayerNick());
+                    Date date = player.getCreateTime() == null ?new Date():player.getCreateTime();
+                    String date1 = simpleDateFormat.format(date);
+                    p.put("createTime",date1);
+                    members.add(p);
+                }
+
+            }
+        }
+        data.put("num",num);
+        data.put("members",members);
+
+        return data;
     }
 
     @Override

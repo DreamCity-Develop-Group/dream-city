@@ -29,7 +29,7 @@ public interface RelationTreeService {
 
     List<RelationTree> findLevel(String playerId,Integer level);
 
-    Map<Integer,List<RelationTree>> getLevelChildTreesMap(String playerId, int level);
+    Map<String,Object> getLevelChildTreesMap(String playerId, int level);
 
     RelationTree getParent(String playerId);
 

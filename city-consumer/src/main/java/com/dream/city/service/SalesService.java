@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 /**
  * @author Wvv
  */
-@FeignClient(value = "city-user", fallback = SalesServiceImpl.class)
+@FeignClient(value = "city-tree", fallback = SalesServiceImpl.class)
 //@RequestMapping("/sales")
 public interface SalesService {
 

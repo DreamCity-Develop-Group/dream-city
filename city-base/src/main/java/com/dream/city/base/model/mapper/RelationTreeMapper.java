@@ -1,6 +1,7 @@
 package com.dream.city.base.model.mapper;
 
 
+import com.dream.city.base.model.entity.InvestRule;
 import com.dream.city.base.model.entity.RelationTree;
 import org.apache.ibatis.annotations.*;
 
@@ -23,7 +24,20 @@ public interface RelationTreeMapper {
 
     int updateByPrimaryKey(RelationTree record);
 
-    RelationTree getByPlayer(String playerId);
+    RelationTree getByPlayer(String treePlayerId);
+
+    @Results(id = "treeBaseMap", value = {
+            @Result(property = "treeId", column = "tree_id", id = true),
+            @Result(property = "treeParentId", column = "tree_parent_id"),
+            @Result(property = "treePlayerId", column = "tree_player_id"),
+            @Result(property = "treeRelation", column = "tree_relation"),
+            @Result(property = "sendAuto", column = "send_auto"),
+            @Result(property = "treeLevel", column = "tree_level"),
+            @Result(property = "createTime", column = "create_time"),
+            @Result(property = "updateTime", column = "update_time"),
+    })
+    @Select({"select * from `city_tree` where 1=1 and tree_id = #{treeId}"})
+    RelationTree getRuleById(String treeId);
 
 
     @Select("select * from city_tree where 1=1")
@@ -59,7 +73,15 @@ public interface RelationTreeMapper {
             "from city_tree where 1=1 and tree_relation=#{relation} limit 1 ")
     RelationTree getTreeByRef(String relation);
 
-    @Select("select * from city_tree where 1=1 and tree_relation like  #{relation}")
+    @Select("select " +
+            "tree_id treeId," +
+            "tree_parent_id treeParentId, " +
+            "tree_player_id treePlayerId," +
+            "tree_relation treeRelation," +
+            "send_auto sendAuto," +
+            "tree_level treeLevel," +
+            "create_time createTime " +
+            "from city_tree where 1=1 and tree_relation like  #{relation}")
     List<RelationTree> selectByRelation(String relation);
 
 
@@ -67,12 +89,14 @@ public interface RelationTreeMapper {
     List<RelationTree> getChilds(String parentId);
 
     @Select("select " +
-            "tree_id treeId,tree_parent_id treeParentId, " +
+            "tree_id treeId," +
+            "tree_parent_id treeParentId, " +
             "tree_player_id treePlayerId," +
             "tree_relation treeRelation," +
             "send_auto sendAuto," +
             "tree_level treeLevel," +
             "create_time createTime " +
             "from city_tree where 1=1 and tree_player_id=#{playerId}")
+    //@ResultMap("treeBaseMap")
     RelationTree getTreeByPlayerId(String playerId);
 }
