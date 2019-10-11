@@ -158,7 +158,7 @@ public class ConsumerTreeController {
         }
         PlayerAccount account = accountService.getPlayerAccountByPlayerId(playerId);
 
-        if (account.getAccMtAvailable().compareTo(amount) < 0) {
+        if (account.getAccUsdtAvailable().compareTo(amount) < 0) {
             message.setDesc("持有USDT不够支付许可费用");
             return message;
         }
@@ -169,9 +169,21 @@ public class ConsumerTreeController {
             //加入许可设置
             Result ret = treeService.joinInvestAllow(playerId, amount);
             if (ret.getSuccess()) {
+                //将分配时锁定的收益额度扣除
+                account.setAccUsdt(account.getAccUsdt().subtract(amount));
+                account.setAccUsdtFreeze(account.getAccUsdtFreeze().subtract(amount));
 
-                message.getData().setCode(ReturnStatus.SUCCESS.getStatus());
-                message.setDesc("加入成功，可以投资运营");
+                Result updateAcc  = accountService.updatePlayerAccount(account);
+                if (updateAcc.getSuccess()){
+                    message.getData().setCode(ReturnStatus.SUCCESS.getStatus());
+                    message.setDesc("加入成功，可以投资运营");
+                }else {
+                    Result updateAcc1  = accountService.updatePlayerAccount(account);
+                    if (!updateAcc1.getSuccess()){
+                        accountService.updatePlayerAccount(account);
+                    }
+                }
+
                 return message;
             } else {
                 message.getData().setCode(ReturnStatus.SET_FAILED.getStatus());

@@ -23,4 +23,6 @@ public interface PlayerAccountService {
     void updatePlayerLevel(String playerId,Integer level);
 
     Player getPlayerByPlayerId(String playerId);
+
+    Result lockUstdAmount(String playerId, BigDecimal amount);
 }

@@ -55,6 +55,14 @@ public class SalesOrderServiceImpl implements SalesOrderService {
         return salesOrderMapper.selectSalesBuyerOrder(playerId);
     }
 
+    /**
+     * 创建支付订单
+     *
+     * @param buyAmount
+     * @param rate
+     * @param playerId
+     * @return
+     */
     @Override
     public Result buyMtCreate(BigDecimal buyAmount, BigDecimal rate, String playerId) {
         //判断是否有足够的支付USDT:剩余额度
@@ -91,6 +99,17 @@ public class SalesOrderServiceImpl implements SalesOrderService {
         return new Result(true,"下单成功", 200,order);
     }
 
+    /**
+     * 验证支付密码并完成订单
+     * 1、验证密码
+     * 2、修改订单状态
+     * 3、冻结购买的玩家的账户相应的额度，减可用额度
+     * 4、如果上家自动发货，扣除上家MT,增加上家USDT收入，扣除购买玩家的总额度和冻结额度
+     * 5、如果上家未自动发货，不作处理，等待玩家处理或者任务中心调度
+     * @param playerId
+     * @param orderId
+     * @return
+     */
     @Override
     public Result buyMtFinish(String playerId, String orderId) {
         SalesOrder order = salesOrderMapper.getSalesOrderByOrderId(orderId);
@@ -102,6 +121,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
             order.setOrderState(OrderState.PAID);
             order.setUpdateTime(Timestamp.valueOf(new SimpleDateFormat("yMd Hms").format(new Date())));
             salesOrderMapper.updateSalesOrder(order);
+            //TODO 订单支付成功
             return new Result(true, "订单已支付成功", 200);
         } else {
             return new Result(false, "订单已经支付或被取消", 500);

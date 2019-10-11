@@ -8,13 +8,28 @@ import java.util.List;
 
 @Mapper
 public interface PlayerAccountLogMapper {
-    @Insert("insert into player_account_log values(#{id},#{playerId},#{address},#{amountMt},#{amountUsdt},#{type},#{desc},#{createTime})")
+
+    @Results(id = "playerAccountLogMap", value = {
+            @Result(property = "Id", column = "id", id = true),
+            @Result(property = "accId", column = "acc_id"),
+            @Result(property = "playerId", column = "player_id"),
+            @Result(property = "address", column = "address"),
+            @Result(property = "amountMt", column = "amount_mt"),
+            @Result(property = "accountUsdt", column = "account_usdt"),
+            @Result(property = "type", column = "type"),
+            @Result(property = "desc", column = "desc"),
+            @Result(property = "create_time", column = "createTime"),
+    })
+    @Select("select * from player_account_log where 1=1 and id=#{id}")
+    PlayerAccountLog getPlayerAccountLogById(int id);
+
+    @Insert("insert into player_account_log values(#{id},#{accId},#{playerId},#{address},#{amountMt},#{amountUsdt},#{type},#{desc},#{createTime})")
     Integer insertSelective(PlayerAccountLog record);
 
     @Select("select * from player_account_log where id=#{accId}")
     PlayerAccountLog selectByPrimaryKey(Integer accId);
 
-    @Insert("insert into player_account_log values(#{id},#{playerId},#{address},#{amountMt},#{amountUsdt},#{type},#{desc},#{createTime})")
+    @Insert("insert into player_account_log values(#{id},#{accId},#{playerId},#{address},#{amountMt},#{amountUsdt},#{type},#{desc},#{createTime})")
     void insert(PlayerAccountLog account);
     /**
      *  玩家的资金账户

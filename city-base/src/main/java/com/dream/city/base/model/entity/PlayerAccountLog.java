@@ -13,7 +13,10 @@ import java.util.Date;
 @Data
 public class PlayerAccountLog implements Serializable {
     private Long id;
-
+    /**
+     * 账户变化记录交易号
+     */
+    private int accId;
     private String playerId;
 
     private String address;

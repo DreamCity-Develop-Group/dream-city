@@ -20,7 +20,7 @@ public class MessageReceiver {
     /**
      * 接收消息的方法
      */
-    public void receiveMessage1(String message) throws InterruptedException {
+    public void receiveMessageTip(String message) throws InterruptedException {
         System.out.println("收到一条消息1：" + message);
         log.info("现在开始推送信息");
         //JsonUtil.
@@ -29,12 +29,15 @@ public class MessageReceiver {
 
         com.dream.city.base.model.Message myMsg = JsonUtil.parseJsonToObj(msg, com.dream.city.base.model.Message.class);
         //Message msg = JsonUtil.parseJsonToObj(message,Message.class);
-        publishServer.pushToClient(myMsg);
+        String type = myMsg.getData().getType();
 
+        publishServer.pushToClient(myMsg);
+        log.info("第一次推送信息");
         Thread.sleep(2000);
         new Thread(()->{
+            log.info("第二次线程["+Thread.currentThread()+"]发出推送信息");
             publishServer.pushToClient(myMsg);
-        }).start();
+        },"pushToClient").start();
     }
 
     /**

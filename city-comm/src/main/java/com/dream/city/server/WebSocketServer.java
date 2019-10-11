@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.dream.city.base.model.Message;
 import com.dream.city.base.model.MessageData;
+import com.dream.city.base.model.entity.Player;
 import com.dream.city.base.model.enu.ReturnStatus;
 import com.dream.city.base.utils.JsonUtil;
 import com.dream.city.base.utils.RedisKeys;
@@ -87,6 +88,7 @@ public class WebSocketServer {
 
     private String username = "";
 
+
     /**
      * 连接建立成功调用的方法
      *
@@ -104,6 +106,7 @@ public class WebSocketServer {
 
         //在线数加1
         addOnlineCount();
+
 
         SubscribeListener subscribeListener = new SubscribeListener();
         subscribeListener.setSession(session);
@@ -159,6 +162,13 @@ public class WebSocketServer {
         //在线数减1
         subOnlineCount();
         log.info("有一连接[" + this.username + "]关闭！当前在线人数为" + getOnlineCount());
+        boolean ret = redisUtils.rmOnlinePlayer(this.username);
+        if (!ret){
+            ret = redisUtils.rmOnlinePlayer(this.username);
+            if (!ret){
+                ret = redisUtils.rmOnlinePlayer(this.username);
+            }
+        }
     }
 
     /**

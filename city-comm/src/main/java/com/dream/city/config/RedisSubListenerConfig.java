@@ -25,19 +25,19 @@ public class RedisSubListenerConfig {
      * 通过反射技术调用消息订阅处理器的相关方法进行一些业务处理
      *
      * @param connectionFactory
-     * @param listenerAdapter1
+     * @param listenerAdapterTip
      * @return
      */
     @Bean
     //相当于xml中的bean
     RedisMessageListenerContainer container(RedisConnectionFactory connectionFactory,
-                                            MessageListenerAdapter listenerAdapter1,
+                                            MessageListenerAdapter listenerAdapterTip,
                                             MessageListenerAdapter listenerAdapter2) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
         container.setTaskExecutor(newFixedThreadPool(4));
         //订阅了一个叫channel1 的通道
-        container.addMessageListener(listenerAdapter1, new PatternTopic(RedisSubListenerConfig.channel1));
+        container.addMessageListener(listenerAdapterTip, new PatternTopic(RedisSubListenerConfig.channel1));
         //订阅了一个叫chat的频道
         container.addMessageListener(listenerAdapter2, new PatternTopic(RedisSubListenerConfig.channel2));
         return container;
@@ -50,8 +50,8 @@ public class RedisSubListenerConfig {
      * @return
      */
     @Bean
-    MessageListenerAdapter listenerAdapter1(MessageReceiver receiver) {
-        return new MessageListenerAdapter(receiver, "receiveMessage1");
+    MessageListenerAdapter listenerAdapterTip(MessageReceiver receiver) {
+        return new MessageListenerAdapter(receiver, "receiveMessageTip");
     }
 
     @Bean

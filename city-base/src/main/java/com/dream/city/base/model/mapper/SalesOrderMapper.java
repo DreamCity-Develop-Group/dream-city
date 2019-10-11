@@ -14,6 +14,12 @@ import java.util.List;
 @Mapper
 public interface SalesOrderMapper {
 
+
+
+    SalesOrder getSalesOrderById(Integer id);
+
+    List<SalesOrder> getSalesOrderList(SalesOrder record);
+
     @Results(id = "BaseSalesOrderResultMap", value = {
             @Result(property = "id", column = "id", id = true),
             @Result(property = "orderId", column = "order_id"),
@@ -77,10 +83,7 @@ public interface SalesOrderMapper {
 
 
 
-    SalesOrder getSalesOrderById(Integer id);
-
-    List<SalesOrder> getSalesOrderList(SalesOrder record);
-
-
-
+    @Select("select * from `sales_order` where 1=1 and order_state = #{state} limit 1 ")
+    @ResultMap("BaseSalesOrderResultMap")
+    List<SalesOrder> getSalesOrdersByState(int state);
 }

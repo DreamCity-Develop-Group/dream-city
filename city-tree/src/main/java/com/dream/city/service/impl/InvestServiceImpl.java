@@ -2,8 +2,11 @@ package com.dream.city.service.impl;
 
 import com.dream.city.base.model.entity.InvestAllow;
 import com.dream.city.base.model.entity.PlayerAccount;
+import com.dream.city.base.model.entity.PlayerAccountLog;
 import com.dream.city.base.model.entity.RelationTree;
+import com.dream.city.base.model.enu.ReturnStatus;
 import com.dream.city.base.model.mapper.InvestAllowMapper;
+import com.dream.city.base.model.mapper.PlayerAccountLogMapper;
 import com.dream.city.base.model.mapper.PlayerAccountMapper;
 import com.dream.city.service.InvestAllowService;
 import io.swagger.models.Model;
@@ -29,6 +32,9 @@ public class InvestServiceImpl implements InvestAllowService {
 
     @Autowired
     PlayerAccountMapper accountMapper;
+
+    @Autowired
+    PlayerAccountLogMapper accountLogMapper;
 
     @Override
     public InvestAllow getInvestAllowByPlayerId(String playerId) {
@@ -67,10 +73,15 @@ public class InvestServiceImpl implements InvestAllowService {
      */
     @Override
     public void allowcationUSDTToPlatform(BigDecimal amount) {
-        PlayerAccount accountPlatform = accountMapper.getPlayerAccount(platformAccount);
+        PlayerAccount accountPlatform = accountMapper.getPlayerAccountByAddr(platformAccount);
         accountPlatform.setAccUsdt(accountPlatform.getAccUsdt().add(amount));
         accountPlatform.setAccUsdt(accountPlatform.getAccUsdt().add(amount));
-        accountMapper.updatePlayerAccount(accountPlatform);
+
+        //TODO 这里要加日志log
+        boolean logRet = addAccountLog(accountPlatform,amount);
+        if (logRet){
+            accountMapper.updatePlayerAccount(accountPlatform);
+        }
     }
 
     /**
@@ -84,7 +95,30 @@ public class InvestServiceImpl implements InvestAllowService {
         PlayerAccount accountPlayer = accountMapper.getPlayerAccount(relationTree.getTreePlayerId());
         accountPlayer.setAccUsdt(accountPlayer.getAccUsdt().add(amount));
         accountPlayer.setAccUsdtAvailable(accountPlayer.getAccUsdtAvailable().add(amount));
+        //TODO 这里要加日志log
+        boolean logRet = addAccountLog(accountPlayer,amount);
+        if (logRet){
+            accountMapper.updatePlayerAccount(accountPlayer);
+        }
 
-        accountMapper.updatePlayerAccount(accountPlayer);
+    }
+
+    private boolean addAccountLog(PlayerAccount account, BigDecimal amount) {
+        try {
+            PlayerAccountLog accountLog = new PlayerAccountLog();
+            accountLog.setId(0L);
+            accountLog.setAccId(account.getAccId());
+            accountLog.setPlayerId(account.getAccPlayerId());
+            accountLog.setAddress(account.getAccAddr());
+            accountLog.setAmountMt(amount);
+            accountLog.setAmountUsdt(new BigDecimal(0));
+            accountLog.setType(1);
+            accountLog.setDesc("获取印记收益");
+            accountLogMapper.insert(accountLog);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }

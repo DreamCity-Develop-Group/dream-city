@@ -72,6 +72,15 @@ public interface PlayerAccountMapper {
     @ResultMap("BaseCityAccountResultMap")
     PlayerAccount getPlayerAccount(String playerId);
 
+    /**
+     * 通过地址找账户
+     * @param address
+     * @return
+     */
+    @Select("select * from player_account where 1=1 and  acc_addr = #{address}")
+    @ResultMap("BaseCityAccountResultMap")
+    PlayerAccount getPlayerAccountByAddr(String address);
+
     @Update("update player_account set acc_usdt = acc_usdt-#{payAmount} ,acc_usdt_availble=acc_usdt_availble-#{payAmount} where 1=1 adnd acc_player_id=#{playerId}")
     void subtractAmount(BigDecimal payAmount, String playerId);
 
@@ -110,5 +119,5 @@ public interface PlayerAccountMapper {
 
 
     @Update("update player_account set acc_usdt = #{accUsdt} ,acc_usdt_available=#{accUsdtAvailable} where 1=1 and acc_player_id=#{accPlayerId}")
-    void updatePlayerAccount(PlayerAccount payAmount);
+    int updatePlayerAccount(PlayerAccount payAmount);
 }
