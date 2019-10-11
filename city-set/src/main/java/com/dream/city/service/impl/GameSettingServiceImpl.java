@@ -13,6 +13,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
+/**
+ * @author
+ */
 @Service
 public class GameSettingServiceImpl implements GameSettingService {
 
@@ -27,9 +30,9 @@ public class GameSettingServiceImpl implements GameSettingService {
 
     @Override
     public boolean settingGameVioce(String playerId,boolean isOpen) {
-        PlayerGameSetting gameSetting = gameSettingMapper.selectByType(GameSettingType.game.name());
+        PlayerGameSetting gameSetting = gameSettingMapper.selectByType(GameSettingType.GAME.name());
         gameSetting.setPlayerId(playerId);
-        gameSetting.setType(GameSettingType.game.name());
+        gameSetting.setType(GameSettingType.GAME.name());
         gameSetting.setVal(String.valueOf(isOpen));
         gameSetting.setUpdateDate(new Date());
         return gameSettingMapper.updateByPrimaryKeySelective(gameSetting)>0?Boolean.TRUE:Boolean.FALSE;
@@ -37,9 +40,9 @@ public class GameSettingServiceImpl implements GameSettingService {
 
     @Override
     public boolean settingBgVioce(String playerId,boolean isOpen) {
-        PlayerGameSetting gameSetting = gameSettingMapper.selectByType(GameSettingType.bg.name());
+        PlayerGameSetting gameSetting = gameSettingMapper.selectByType(GameSettingType.BG.name());
         gameSetting.setPlayerId(playerId);
-        gameSetting.setType(GameSettingType.bg.name());
+        gameSetting.setType(GameSettingType.BG.name());
         gameSetting.setVal(String.valueOf(isOpen));
         gameSetting.setUpdateDate(new Date());
         return gameSettingMapper.updateByPrimaryKeySelective(gameSetting)>0?Boolean.TRUE:Boolean.FALSE;
