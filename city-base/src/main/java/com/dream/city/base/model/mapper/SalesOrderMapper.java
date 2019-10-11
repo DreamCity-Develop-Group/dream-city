@@ -11,7 +11,6 @@ import java.util.List;
 /**
  * @author wvv
  */
-@Repository
 @Mapper
 public interface SalesOrderMapper {
 
@@ -76,5 +75,12 @@ public interface SalesOrderMapper {
     List<SalesOrder> getSalesOrderByBuyerPlayerId(String playerId);
 
 
+
+
+    SalesOrder getSalesOrderById(Integer id);
+
     List<SalesOrder> getSalesOrderList(SalesOrder record);
+
+
+
 }
