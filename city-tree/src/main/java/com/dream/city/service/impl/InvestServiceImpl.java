@@ -78,8 +78,8 @@ public class InvestServiceImpl implements InvestAllowService {
         accountPlatform.setAccUsdt(accountPlatform.getAccUsdt().add(amount));
 
         //TODO 这里要加日志log
-        boolean logRet = addAccountLog(accountPlatform,amount);
-        if (logRet){
+        boolean logRet = addAccountLog(accountPlatform, amount);
+        if (logRet) {
             accountMapper.updatePlayerAccount(accountPlatform);
         }
     }
@@ -94,17 +94,12 @@ public class InvestServiceImpl implements InvestAllowService {
     public void allowcationUSDTToPlayer(BigDecimal amount, RelationTree relationTree) {
         PlayerAccount accountPlayer = accountMapper.getPlayerAccount(relationTree.getTreePlayerId());
         accountPlayer.setAccUsdt(accountPlayer.getAccUsdt().add(amount));
-<<<<<<< HEAD
-                accountPlayer.setAccUsdtAvailable(accountPlayer.getAccUsdtAvailable().add(amount));
+        accountPlayer.setAccUsdtAvailable(accountPlayer.getAccUsdtAvailable().add(amount));
 
-                accountMapper.updatePlayerAccount(accountPlayer);
-                }
-                }
-=======
         accountPlayer.setAccUsdtAvailable(accountPlayer.getAccUsdtAvailable().add(amount));
         //TODO 这里要加日志log
-        boolean logRet = addAccountLog(accountPlayer,amount);
-        if (logRet){
+        boolean logRet = addAccountLog(accountPlayer, amount);
+        if (logRet) {
             accountMapper.updatePlayerAccount(accountPlayer);
         }
 
@@ -129,4 +124,3 @@ public class InvestServiceImpl implements InvestAllowService {
         return false;
     }
 }
->>>>>>> 30994d15fa589e0e17f6452ed3de996ed92db59d
