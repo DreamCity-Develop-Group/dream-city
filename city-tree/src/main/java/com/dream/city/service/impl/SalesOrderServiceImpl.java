@@ -87,7 +87,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
         order.setOrderPayAmount(usdtPay);
         order.setOrderPlayerBuyer(playerId);
         order.setOrderPlayerSeller(parentId);
-        order.setOrderState(OrderState.CREATE);
+        order.setOrderState(OrderState.CREATE.name());
         order.setOrderAmount(buyAmount);
         salesOrderMapper.createSalesOrder(order);
 
@@ -118,7 +118,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
             //扣除相应的USDT总额和可用额度
             playerAccountMapper.subtractAmount(order.getOrderPayAmount(), playerId);
             //改变订单状态
-            order.setOrderState(OrderState.PAID);
+            order.setOrderState(OrderState.PAID.name());
             order.setUpdateTime(Timestamp.valueOf(new SimpleDateFormat("yMd Hms").format(new Date())));
             salesOrderMapper.updateSalesOrder(order);
             //TODO 订单支付成功
