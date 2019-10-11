@@ -83,8 +83,8 @@ public class InvestServiceImpl implements InvestAllowService {
     public void allowcationUSDTToPlayer(BigDecimal amount, RelationTree relationTree) {
         PlayerAccount accountPlayer = accountMapper.getPlayerAccount(relationTree.getTreePlayerId());
         accountPlayer.setAccUsdt(accountPlayer.getAccUsdt().add(amount));
-        accountPlayer.setAccUsdtAvailable(accountPlayer.getAccUsdtAvailable().add(amount));
+                accountPlayer.setAccUsdtAvailable(accountPlayer.getAccUsdtAvailable().add(amount));
 
-        accountMapper.updatePlayerAccount(accountPlayer);
-    }
-}
+                accountMapper.updatePlayerAccount(accountPlayer);
+                }
+                }
