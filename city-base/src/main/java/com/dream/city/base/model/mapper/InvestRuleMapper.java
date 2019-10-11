@@ -31,7 +31,7 @@ public interface InvestRuleMapper {
 
     Integer updateByPrimaryKeySelective(InvestRule record);
 
-    @Results(id = "BasePlayerResultMap1", value = {
+    @Results(id = "InvestRuleBaseMap", value = {
             @Result(property = "ruleId", column = "rule_id", id = true),
             @Result(property = "ruleFlag", column = "rule_flag"),
             @Result(property = "ruleOpt", column = "rule_opt"),
@@ -44,22 +44,11 @@ public interface InvestRuleMapper {
             @Result(property = "createTime", column = "create_time"),
             @Result(property = "updateTime", column = "update_time"),
     })
-
-
-
     @Select({"select * from `invest_rule` where 1=1 and rule_id = #{ruleId}"})
-    InvestRule getPlayer(String ruleId);
-
-    /**
-     *  玩家的资金账户
-     * @param playerId
-     * @return
-     */
-    @Select("select * from `invest_rule` where 1=1 and  player_id = #{playerId}")
-    InvestRule getInvestAllowByPlayerId(String playerId);
+    InvestRule getRuleById(String ruleId);
 
     @Select("select * from `invest_rule` where 1=1 and  rule_item = #{itemId}")
-    @ResultMap("BasePlayerResultMap1")
+    @ResultMap("InvestRuleBaseMap")
     List<InvestRule> getRulesByItem(Integer itemId);
 
     /**
@@ -81,46 +70,41 @@ public interface InvestRuleMapper {
             "select",
             "*",
             "from `invest_rule`",
-            "where 1=1 and and player_id = #{playerId} and order_state in ",
+            "where 1=1 and and Rule_id = #{RuleId} and rule_state in ",
             "<foreach collection='states' item='state' open='(' separator=',' close=')'>",
             "#{state}",
             "</foreach>",
             "</script>"
     })
-    List<InvestRule> getSuccessCityInvestnsByPlayerId(@Param("playerId") String playerId, @Param("states") int[] states);
+    List<InvestRule> getSuccessCityInvestnsByRuleId(@Param("RuleId") String RuleId, @Param("states") int[] states);
 
-    @Select("select * from `invest_rule` where 1=1 and order_invest_id = #{investId} and order_state=#{state}")
-    List<InvestRule> getCityInvestsByCurrentDay(Integer investId, int state);
 
     /**
-     * 更新订单
-     *
-     * @param order
-     */
-    @Select("update `invest_rule` set order_state = #{orderState} where 1=1 and order_invest_id = #{investId} and order_id=#{orderId}")
-    void updateOrder(InvestRule order);
-
-    /**
-     * 指更新订单状态
+     * 指更新状态
      *
      *
-     * @param orderList
+     * @param ruleList
      */
     @Update({"<script>" +
-            "<foreach collection=\"orderList\" item=\"item\" separator=\";\">" +
+            "<foreach collection=\"ruleList\" item=\"item\" separator=\";\">" +
             " UPDATE" +
             " `invest_rule`" +
-            " SET order_state = #{item.orderState, jdbcType=TINYINT}, " +
+            " SET rule_state = #{item.ruleState, jdbcType=TINYINT}, " +
             "  WHERE " +
-            "  AND order_id = #{item.orderId, jdbcType=VARCHAR} " +
+            "  AND rule_id = #{item.ruleId, jdbcType=VARCHAR} " +
             "</foreach>" +
             "</script>"})
-    void setOrdersState(@Param("orderList") List<InvestRule> orderList);
+    void setRuleState(@Param("ruleList") List<InvestRule> ruleList);
 
-    @Select("select * from `invest_rule` where 1=1 and order_invest_id = #{investId} and order_state=#{state}")
+    @Select("select * from `invest_rule` where 1=1 and rule_invest_id = #{investId} and rule_state=#{state}")
     List<InvestRule> getInvestRuleByKey(Integer key);
 
     @Select("select * from `invest_rule` where 1=1 ")
-    @ResultMap("BasePlayerResultMap1")
+    @ResultMap("InvestRuleBaseMap")
     List<InvestRule> selectRules();
+
+
+    @Select("select * from `invest_rule` where 1=1 and rule_item=#{itemId} ")
+    @ResultMap("InvestRuleBaseMap")
+    List<InvestRule> getInvestRuleByItem(Integer itemId);
 }

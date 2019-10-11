@@ -27,8 +27,11 @@ public enum ReturnStatus {
     SET_FAILED(509,"设置失败"),
     WAITE_OPT(200,"操作成功，请耐心等待审核"),
     RETRY_OPT(511,"操作失败，请重试"),
+    NEXT_OPT(512,"请完成下一步设置"),
+
     UPGRADE_TIP(666,"恭喜升级成功"),
-    NEXT_OPT(512,"请完成下一步设置");
+    MT_MISS_BUY_TIP(602,"错过购买兑换处理提示"),
+    MT_BUY_TIP(601,"购买兑换请求提示");
 
     /**
      * 成员变量

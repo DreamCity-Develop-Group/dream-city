@@ -6,7 +6,6 @@ import com.dream.city.base.model.entity.*;
 import com.dream.city.service.PlayerAccountService;
 import com.dream.city.service.RelationTreeService;
 import com.dream.city.service.SalesOrderService;
-import com.dream.city.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -76,7 +75,7 @@ public class RelationTreeController {
      */
     @RequestMapping("/find/Level")
     public Result findByLevel(@RequestParam("playerId") String playerId, @RequestParam("level") Integer level) {
-        Map<Integer, List<RelationTree>> treeMap = new Hashtable<>();
+        Map<String,Object> treeMap = new Hashtable<>();
 
         treeMap = relationTreeService.getLevelChildTreesMap(playerId,level);
 
@@ -104,6 +103,13 @@ public class RelationTreeController {
         List<SalesOrder> orders = salesOrderService.selectSalesSellerOrder(playerId);
         return new Result(true,"获取订单成功",200,orders);
     }
+
+    @RequestMapping("/check/tradePass")
+    public Result checkTradePass(@RequestParam("playerId")String playerId, @RequestParam("tradePass")String tradePass){
+        Result ret = accountService.checkPayPass(playerId,tradePass);
+        return ret;
+    }
+
 
     /**
      * 购买MT

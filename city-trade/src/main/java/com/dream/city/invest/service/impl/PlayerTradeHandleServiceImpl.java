@@ -37,7 +37,7 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
     public Result<Boolean> playerRecharge(PlayerAccountReq record) {
         boolean success = Boolean.FALSE;
         String msg = null;
-        record.setTradeType(AmountDynType.in.name());
+        record.setTradeType(AmountDynType.IN.name());
         record.setTradeType(TradeType.RECHARGE.name());
         Result<BigDecimal> updateAccountResult = null;
         try {
@@ -67,7 +67,7 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
     public Result<Boolean> playerWithdraw(PlayerAccountReq record) {
         boolean success = Boolean.FALSE;
         String msg = "玩家提现";
-        record.setTradeType(AmountDynType.out.name());
+        record.setTradeType(AmountDynType.OUT.name());
         record.setTradeType(TradeType.WITHDRAW.name());
         Result<BigDecimal> updateAccountResult = null;
         try {
@@ -85,7 +85,7 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
             //新增交易审核 待审核
             if (createPlayerTradeResult.getSuccess()){
                 createTradeVerify(createPlayerTradeResult.getData().getTradeId(),updateAccountResult.getData(),
-                        VerifyStatus.wait.name(),updateAccountResult.getMsg());
+                        VerifyStatus.WAIT.name(),updateAccountResult.getMsg());
             }
         }catch (Exception e){
             logger.error("提现异常",e);
@@ -103,7 +103,7 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
         recordOut.setTradeType(TradeType.TRANSFER.name());
         Result<BigDecimal> updateAccountResult = null;
         try {
-            String verifyStatus = VerifyStatus.wait.name();
+            String verifyStatus = VerifyStatus.WAIT.name();
             //获取转账账户信息
             PlayerAccount accountOut = new PlayerAccount();
             accountOut.setAccPlayerId(recordOut.getAccPlayerId());
@@ -111,13 +111,13 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
             recordOut.setAccId(playerAccountOut.getAccId());
 
             //转账账户 出账
-            recordOut.setTradeType(AmountDynType.out.name());
+            recordOut.setTradeType(AmountDynType.OUT.name());
             updateAccountResult = updatePlayerAccount(recordOut);
             success = updateAccountResult.getSuccess();
             if (isInsideAccAddr(recordOut.getAccAddr())){
                 //内部转账 立即到账
                 msg = "玩家内部转账";
-                verifyStatus = VerifyStatus.pass.name();
+                verifyStatus = VerifyStatus.PASS.name();
                 //转账账户出账成功就立即到账
                 if (success){
                     msg = "玩家内部转账成功";
@@ -129,7 +129,7 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
                     PlayerAccountReq recordIn = new PlayerAccountReq();
                     recordIn.setAccId(playerAccountIn.getAccId());
                     recordIn.setAccPlayerId(recordOut.getFriendId());
-                    recordIn.setTradeType(AmountDynType.in.name());
+                    recordIn.setTradeType(AmountDynType.IN.name());
                     Result<BigDecimal> transferInResult = updatePlayerAccount(recordIn);
 
                     //新增交易记录 入账
@@ -200,11 +200,11 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
         if (record.getTradeType().equalsIgnoreCase(TradeType.RECHARGE.name())){
             tradeType = TradeType.RECHARGE.getDesc();
             //            //账户金额加上充值金额
-            if (record.getTradeType().equalsIgnoreCase(AmountType.mt.name())){
+            if (record.getTradeType().equalsIgnoreCase(AmountType.MT.name())){
                 tradeAmount = record.getAccMt();
                 accMt = getPlayerAccount.getAccMt().add(tradeAmount);
                 accMtAvailable = getPlayerAccount.getAccMtAvailable().add(tradeAmount);
-            }else if (record.getTradeType().equalsIgnoreCase(AmountType.usdt.name())){
+            }else if (record.getTradeType().equalsIgnoreCase(AmountType.USDT.name())){
                 tradeAmount = record.getAccUsdt();
                 accUsdt = getPlayerAccount.getAccUsdt().add(tradeAmount);
                 accUsdtAvailable = getPlayerAccount.getAccUsdtAvailable().add(tradeAmount);
@@ -214,12 +214,12 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
         if (record.getTradeType().equalsIgnoreCase(TradeType.WITHDRAW.name())){
             tradeType = TradeType.WITHDRAW.getDesc();
             //账户金额减去提现金额
-            if (record.getTradeType().equalsIgnoreCase(AmountType.mt.name())){
+            if (record.getTradeType().equalsIgnoreCase(AmountType.MT.name())){
                 tradeAmount = record.getAccMt();
                 accMt = getPlayerAccount.getAccMt();
                 accMtAvailable = getPlayerAccount.getAccMtAvailable().subtract(tradeAmount);
                 accMtFreeze = tradeAmount;
-            }else if (record.getTradeType().equalsIgnoreCase(AmountType.usdt.name())){
+            }else if (record.getTradeType().equalsIgnoreCase(AmountType.USDT.name())){
                 tradeAmount = record.getAccUsdt();
                 accUsdt = getPlayerAccount.getAccUsdt();
                 accUsdtAvailable = getPlayerAccount.getAccUsdtAvailable().subtract(tradeAmount);
@@ -229,26 +229,26 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
         //转账
         if (record.getTradeType().equalsIgnoreCase(TradeType.TRANSFER.name())){
             tradeType = TradeType.TRANSFER.getDesc();
-            if (record.getTradeType().equalsIgnoreCase(AmountDynType.out.name())){
+            if (record.getTradeType().equalsIgnoreCase(AmountDynType.OUT.name())){
                 //转账转出 账户金额减去转账金额
                 if (isInsideAccAddr(record.getAccAddr())){
                     //内部转账 立即到账
-                    if (record.getTradeType().equalsIgnoreCase(AmountType.mt.name())){
+                    if (record.getTradeType().equalsIgnoreCase(AmountType.MT.name())){
                         tradeAmount = record.getAccMt();
                         accMt = getPlayerAccount.getAccMt().subtract(tradeAmount);
                         accMtAvailable = getPlayerAccount.getAccMtAvailable().subtract(tradeAmount);
-                    }else if (record.getTradeType().equalsIgnoreCase(AmountType.usdt.name())){
+                    }else if (record.getTradeType().equalsIgnoreCase(AmountType.USDT.name())){
                         tradeAmount = record.getAccUsdt();
                         accUsdt = getPlayerAccount.getAccUsdt().subtract(tradeAmount);
                         accUsdtAvailable = getPlayerAccount.getAccUsdtAvailable().subtract(tradeAmount);
                     }
                 } else {
-                    if (record.getTradeType().equalsIgnoreCase(AmountType.mt.name())){
+                    if (record.getTradeType().equalsIgnoreCase(AmountType.MT.name())){
                         tradeAmount = record.getAccMt();
                         accMt = getPlayerAccount.getAccMt();
                         accMtAvailable = getPlayerAccount.getAccMtAvailable().subtract(tradeAmount);
                         accMtFreeze = tradeAmount;
-                    }else if (record.getTradeType().equalsIgnoreCase(AmountType.usdt.name())){
+                    }else if (record.getTradeType().equalsIgnoreCase(AmountType.USDT.name())){
                         tradeAmount = record.getAccUsdt();
                         accUsdt = getPlayerAccount.getAccUsdt();
                         accUsdtAvailable = getPlayerAccount.getAccUsdtAvailable().subtract(tradeAmount);
@@ -257,11 +257,11 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
                 }
             } else {
                 //转账转入 账户金额加上转账金额
-                if (record.getTradeType().equalsIgnoreCase(AmountType.mt.name())){
+                if (record.getTradeType().equalsIgnoreCase(AmountType.MT.name())){
                     tradeAmount = record.getAccMt();
                     accMt = getPlayerAccount.getAccMt().add(tradeAmount);
                     accMtAvailable = accMt.add(tradeAmount);
-                }else if (record.getTradeType().equalsIgnoreCase(AmountType.usdt.name())){
+                }else if (record.getTradeType().equalsIgnoreCase(AmountType.USDT.name())){
                     tradeAmount = record.getAccUsdt();
                     accUsdt = getPlayerAccount.getAccUsdt().add(tradeAmount);
                     accUsdtAvailable = getPlayerAccount.getAccUsdtAvailable().add(tradeAmount);

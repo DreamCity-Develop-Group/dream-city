@@ -34,4 +34,6 @@ public class ConsumerNoticeServiceImpl{
 
         return notices;
     }
+
+
 }

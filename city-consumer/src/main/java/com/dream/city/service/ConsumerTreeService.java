@@ -48,7 +48,7 @@ public interface ConsumerTreeService {
     Result joinInvestAllow(@RequestParam("playerId")String playerId, @RequestParam("amount")BigDecimal amount);
 
     @RequestMapping("/tree/find/Level")
-    Result getMembers(@RequestParam("playerId")String playerId, Integer level);
+    Result getMembers(@RequestParam("playerId")String playerId, @RequestParam("level")Integer level);
 
     @RequestMapping("/tree/get/salesOrder")
     Result getSalesOrder(String playerId);

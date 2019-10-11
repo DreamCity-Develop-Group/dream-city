@@ -12,10 +12,7 @@ import com.dream.city.base.model.entity.RelationTree;
 import com.dream.city.base.model.enu.ReturnStatus;
 import com.dream.city.base.utils.JsonUtil;
 import com.dream.city.base.utils.RedisUtils;
-import com.dream.city.service.ConsumerGameSettingService;
-import com.dream.city.service.ConsumerPlayerAccountService;
-import com.dream.city.service.ConsumerPlayerService;
-import com.dream.city.service.ConsumerTreeService;
+import com.dream.city.service.*;
 import com.dream.city.service.impl.ConsumerNoticeServiceImpl;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
@@ -42,6 +39,9 @@ public class DefaultController {
     RedisUtils redisUtils;
     @Autowired
     ConsumerNoticeServiceImpl noticeService;
+    @Autowired
+    PusherService pusherService;
+
 
 
     @ApiOperation(value = "主页数据接口Player", notes = "此接口描述xxxxxxxxxxxxx<br/>xxxxxxx<br>值得庆幸的是这儿支持html标签<hr/>", response = Result.class)
@@ -104,8 +104,8 @@ public class DefaultController {
         PlayerAccount playerAccount = playerAccountService.getPlayerAccount(player.getPlayerId());
 
         Map<String, Object> account = new HashMap<>();
-        account.put("usdt", playerAccount.getAccUsdt());
-        account.put("mt", playerAccount.getAccMt());
+        account.put("usdt", playerAccount.getAccUsdtAvailable());
+        account.put("mt", playerAccount.getAccMtAvailable());
         account.put("address",playerAccount.getAccAddr());
 
         Map<String, Object> data = new Hashtable<>();
@@ -125,6 +125,10 @@ public class DefaultController {
 
         msgData.setData(data);
         ret.setData(msgData);
+        //弹出收到兑换请求提示窗口
+        pusherService.receive(player,1);
+        //弹出收到兑换请求错过提示窗口
+        pusherService.receive(player,2);
         return ret;
     }
 

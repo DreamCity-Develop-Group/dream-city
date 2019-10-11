@@ -275,7 +275,29 @@ public class HttpClientServiceImpl implements HttpClientService {
                 /*if (resp.contains("data")) {
                     String json = JSON.toJSONString(JSON.parseObject(resp).get("data"));
                     JSONObject jsonObject = JSON.parseObject(json);
+                */
 
+
+                /**TODO**********如果是登陆成功，加入在线有序列表******************************/
+                if (message.getData().getType().equals("login") || message.getData().getType().equals("codeLogin")){
+                    if (message.getData().getCode() == 200){
+                        Object dataGet = message.getData().getData();
+                        String json = JsonUtil.parseObjToJson(dataGet);
+                        Map map = JsonUtil.parseJsonToObj(json,Map.class);
+                        String playerId = map.get("playerId").toString();
+                        String playerName = map.get("playerName").toString();
+                        Integer id = Integer.valueOf(map.get("id").toString());
+                        boolean success = redisUtils.addOnlinePlayer(playerName,id);
+                        if (!success){
+                            success = redisUtils.addOnlinePlayer(playerName,id);
+                            if (!success){
+                                redisUtils.addOnlinePlayer(playerName,id);
+                            }
+                        }
+                    }
+
+                }
+                /**TODO**********完*************************************/
 
 
                 /**TODO**********完成请求，推送最终数据******************************/

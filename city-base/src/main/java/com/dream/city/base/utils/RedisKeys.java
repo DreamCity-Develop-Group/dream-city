@@ -21,5 +21,9 @@ public final class RedisKeys {
     //广场玩家列表 换一批
     public static final String SQUARE_PLAYER_LIST_ANOTHER_BATCH = "ANOTHER_BATCH_PLAYER_";
 
+    //玩家在线状态
+    public static final String PLAYER_ONLINE_STATE_KEY = "clientID-";
 
+    //玩家消息通道
+    public static final String PLAYER_MESSAGE_CHANNEL = "PUSHER_CHANNEL";
 }

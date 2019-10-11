@@ -7,6 +7,7 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Import;
+import org.springframework.scheduling.annotation.EnableAsync;
 
 /**
  * @author Wvv
@@ -16,6 +17,7 @@ import org.springframework.context.annotation.Import;
 //@MapperScan("com.dream.city.base.model.mapper")
 @EnableFeignClients
 @EnableCaching
+@EnableAsync
 @Import({RedisConfig.class})
 public class CityConsumerApplication {
 

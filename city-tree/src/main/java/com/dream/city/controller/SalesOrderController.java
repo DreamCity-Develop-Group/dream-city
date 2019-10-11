@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/tree")
+@RequestMapping("/sales")
 public class SalesOrderController {
 
     @Autowired
@@ -37,6 +37,21 @@ public class SalesOrderController {
         //SalesOrder order = salesOrderService.getSalesOrder(1L);
         List<SalesOrder> orders = salesOrderService.selectSalesOrder(playerId);
         return new Result("success",200,orders);
+    }
+
+    /**
+     * 获取订单数量-未处理的请求
+     *
+     * @param playerId
+     * @return
+     */
+    @RequestMapping("/get/sales/num")
+    public Result getSalesNum(@RequestParam("playerId")String playerId){
+        List<SalesOrder> orders = salesOrderService.selectSalesOrder(playerId);
+        if (orders.size()>0){
+            return Result.result(true,orders.size());
+        }
+        return Result.result(false,0);
     }
 
     /**
@@ -65,7 +80,7 @@ public class SalesOrderController {
      * @param playerId
      * @return
      */
-    @RequestMapping("/checkpaypwd")
+    @RequestMapping("/check/tradePass")
     public Result playerBuyMtFinish(@RequestParam("payPass")String payPass,@RequestParam("playerId")String playerId,@RequestParam("orderId")String orderId){
         //找出待支付订单
         SalesOrder  salesOrder = salesOrderService.getSalesOrder(orderId);

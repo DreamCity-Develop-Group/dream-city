@@ -2,6 +2,7 @@ package com.dream.city.base.utils;
 
 import com.alibaba.fastjson.JSONObject;
 import com.dream.city.base.model.entity.Notice;
+import com.dream.city.base.model.entity.Player;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -572,4 +573,13 @@ public class RedisUtils {
         }
     }
 
+    public boolean addOnlinePlayer(String playerName,Integer id) {
+        boolean success = redisTemplate.opsForZSet().add("ONLINE_PLAYERS",playerName,id);
+        return success;
+    }
+
+    public boolean rmOnlinePlayer(String playerName) {
+        Long id = redisTemplate.opsForZSet().remove("ONLINE_PLAYERS",playerName);
+        return id>0;
+    }
 }

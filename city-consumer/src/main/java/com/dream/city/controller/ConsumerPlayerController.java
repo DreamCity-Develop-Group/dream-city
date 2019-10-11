@@ -511,11 +511,15 @@ public class ConsumerPlayerController {
         Map<String, String> data = new HashMap<>();
         String desc = CityGlobal.Constant.LOGIN_FAIL;
         if (result.getSuccess()) {
+            String playerId = result.getData().toString();
             desc = CityGlobal.Constant.LOGIN_SUCCESS;
-
+            Result playerRet = consumerPlayerService.getPlayer(playerId);
+            Player player = JsonUtil.parseJsonToObj(playerRet.getData().toString(),Player.class);
             String token = saveToken(userReq.getUsername());
             data.put("token", token);
-            data.put("playerId",result.getData().toString());
+            data.put("playerId",playerId);
+            data.put("id",player.getId().toString());
+            data.put("playerName",player.getPlayerName());
         }
         MessageData msgData = new MessageData(
                 msg.getData().getType(), msg.getData().getModel(),
@@ -564,7 +568,7 @@ public class ConsumerPlayerController {
         //String descMsg = checkCode(userReq.getCode(), msg.getSource());
         String descMsg = checkRet.getMsg();
         String descT = CityGlobal.Constant.LOGIN_FAIL;
-
+        Map<String, String> ret = new HashMap<>();
         if (checkRet.getSuccess()) {
             Result idlog = consumerPlayerService.codeLogin(JSON.toJSONString(userReq));
             log.info("##################### 验证码登录: {}", idlog);
@@ -573,10 +577,15 @@ public class ConsumerPlayerController {
             if (idlog.getSuccess()) {
                 log.info("验证码登录成功");
                 descT = CityGlobal.Constant.LOGIN_SUCCESS;
+                String playerId = idlog.getData().toString();
 
+                Result playerRet = consumerPlayerService.getPlayer(playerId);
+                Player player = JsonUtil.parseJsonToObj(playerRet.getData().toString(),Player.class);
                 String token = saveToken(userReq.getUsername());
-                dataInner.put("token", token);
-                dataInner.put("playerId",idlog.getData().toString());
+                ret.put("token", token);
+                ret.put("playerId",playerId);
+                ret.put("id",player.getId().toString());
+                ret.put("playerName",player.getPlayerName());
             } else {
                 log.info("验证码登录失败");
             }
@@ -619,6 +628,15 @@ public class ConsumerPlayerController {
 
         redisKey = RedisKeys.SQUARE_PLAYER_LIST_ANOTHER_BATCH + jsonReq.getUsername();
         redisUtils.del(redisKey);
+
+        //删除在线用户
+        boolean ret = redisUtils.rmOnlinePlayer(account);
+        if (!ret){
+            ret = redisUtils.rmOnlinePlayer(account);
+            if (!ret){
+                ret = redisUtils.rmOnlinePlayer(account);
+            }
+        }
 
         Map<String, String> t = new HashMap<>();
         t.put("desc", result.getMsg());
