@@ -19,7 +19,6 @@
 
 
     <select id="getSalesOrderById" resultMap="OrderBaseResultMap" parameterType="com.dream.city.base.model.entity.SalesOrder" >
-        select * FROM (
         select o.id,
         o.order_id,
         o.order_amount,
@@ -32,7 +31,7 @@
         o.createtime,
         o.updatetime
         from sales_order o
-        ) a where  a.id = #{id,jdbcType=INTEGER}
+        where o.id = #{id,jdbcType=INTEGER}
     </select>
 
 
@@ -71,7 +70,7 @@
             <if test="orderPlayerSeller != null and orderPlayerSeller != ''">
                 and a.order_player_seller = #{orderPlayerSeller,jdbcType=VARCHAR}
             </if>
-            <if test="orderState != null">
+            <if test="orderState != null and orderState != ''">
                 and a.order_state = #{orderState,jdbcType=INTEGER}
             </if>
         </where>
