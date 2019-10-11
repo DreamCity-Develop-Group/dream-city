@@ -6,7 +6,8 @@
     <resultMap id="OrderBaseResultMap" type="com.dream.city.base.model.entity.SalesOrder">
         <result column="id" jdbcType="INTEGER" property="id" />
         <result column="order_id" jdbcType="INTEGER" property="orderId"/>
-        <result column="order_amount" jdbcType="DOUBLE" property="orderAmount" />
+        <result column="order_amount" jdbcType="DECIMAL" property="orderAmount" />
+        <result column="order_pay_amount" jdbcType="DECIMAL" property="orderPayAmount" />
         <result column="order_buy_type" jdbcType="VARCHAR" property="orderBuyType"/>
         <result column="order_pay_type" jdbcType="VARCHAR" property="orderPayType"/>
         <result column="order_player_buyer" jdbcType="VARCHAR" property="orderPlayerBuyer"/>
@@ -22,6 +23,7 @@
         select o.id,
         o.order_id,
         o.order_amount,
+        o.order_pay_amount,
         o.order_buy_type,
         o.order_pay_type,
         (SELECT p1.player_name FROM city_player p1 WHERE p1.player_id=o.order_player_buyer) order_player_buyer,
@@ -39,6 +41,7 @@
         select o.id,
         o.order_id,
         o.order_amount,
+        o.order_pay_amount,
         o.order_buy_type,
         o.order_pay_type,
         (SELECT p1.player_name FROM city_player p1 WHERE p1.player_id=o.order_player_buyer) order_player_buyer,
