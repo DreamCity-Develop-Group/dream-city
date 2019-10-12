@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dream.city.base.model.mapper.QrtzJobDetailsMapper" >
+  <resultMap id="BaseResultMap" type="com.dream.city.base.model.entity.QrtzJobDetails" >
+    <id column="SCHED_NAME" property="schedName" jdbcType="VARCHAR" />
+    <id column="JOB_NAME" property="jobName" jdbcType="VARCHAR" />
+    <id column="JOB_GROUP" property="jobGroup" jdbcType="VARCHAR" />
+    <result column="DESCRIPTION" property="description" jdbcType="VARCHAR" />
+    <result column="JOB_CLASS_NAME" property="jobClassName" jdbcType="VARCHAR" />
+    <result column="IS_DURABLE" property="isDurable" jdbcType="VARCHAR" />
+    <result column="IS_NONCONCURRENT" property="isNonconcurrent" jdbcType="VARCHAR" />
+    <result column="IS_UPDATE_DATA" property="isUpdateData" jdbcType="VARCHAR" />
+    <result column="REQUESTS_RECOVERY" property="requestsRecovery" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <resultMap id="ResultMapWithBLOBs" type="com.dream.city.base.model.entity.QrtzJobDetails" extends="BaseResultMap" >
+    <result column="JOB_DATA" property="jobData" jdbcType="LONGVARBINARY" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    SCHED_NAME, JOB_NAME, JOB_GROUP, DESCRIPTION, JOB_CLASS_NAME, IS_DURABLE, IS_NONCONCURRENT, 
+    IS_UPDATE_DATA, REQUESTS_RECOVERY
+  </sql>
+
+  <sql id="Blob_Column_List" >
+    JOB_DATA
+  </sql>
+
+  <select id="getJobByJobNameJobGroup" resultType="com.dream.city.base.model.resp.ScheduleResp"
+          parameterType="com.dream.city.base.model.req.ScheduleReq" >
+    SELECT j.JOB_NAME jobName,j.JOB_GROUP jobGroupName,j.JOB_CLASS_NAME jobClazz,j.DESCRIPTION jobDescr,
+    t.TRIGGER_NAME triggerName,t.TRIGGER_GROUP triggerGroup,t.TRIGGER_STATE jobStatus,t.TRIGGER_TYPE triggerType,
+    t.PREV_FIRE_TIME prevFireTime,t.NEXT_FIRE_TIME nextFireTime,t.PRIORITY,t.START_TIME startTime,
+    t.END_TIME endTime,t.DESCRIPTION triggerDescr,cron.CRON_EXPRESSION jobTime
+    FROM qrtz_job_details j
+    LEFT JOIN qrtz_triggers t ON (t.JOB_NAME=j.JOB_NAME AND t.JOB_GROUP=j.JOB_GROUP)
+    LEFT JOIN qrtz_cron_triggers cron ON (cron.TRIGGER_NAME=t.TRIGGER_NAME AND cron.TRIGGER_GROUP=t.TRIGGER_GROUP)
+    <where>
+      1=1
+      and j.JOB_NAME = #{jobName,jdbcType=VARCHAR}
+      and j.JOB_GROUP = #{jobGroupName,jdbcType=VARCHAR}
+      <if test="jobClazz != null and jobClazz != ''">
+        and j.JOB_CLASS_NAME = #{jobClazz,jdbcType=VARCHAR}
+      </if>
+      <if test="jobTime != null and jobTime != ''">
+        and cron.CRON_EXPRESSION = #{jobTime,jdbcType=VARCHAR}
+      </if>
+      <if test="triggerName != null and triggerName != ''">
+        and t.TRIGGER_NAME = #{triggerName,jdbcType=VARCHAR}
+      </if>
+      <if test="triggerGroup != null and triggerGroup != ''">
+        and t.TRIGGER_GROUP = #{triggerGroup,jdbcType=VARCHAR}
+      </if>
+      <if test="jobStatus != null and jobStatus != ''">
+        and t.TRIGGER_STATE = #{jobStatus,jdbcType=VARCHAR}
+      </if>
+    </where>
+      limit 1
+  </select>
+
+  <select id="getJobTriggerCronList" resultType="com.dream.city.base.model.resp.ScheduleResp"
+          parameterType="com.dream.city.base.model.req.ScheduleReq" >
+    SELECT j.JOB_NAME jobName,j.JOB_GROUP jobGroupName,j.JOB_CLASS_NAME jobClazz,j.DESCRIPTION jobDescr,
+    t.TRIGGER_NAME triggerName,t.TRIGGER_GROUP triggerGroup,t.TRIGGER_STATE jobStatus,t.TRIGGER_TYPE triggerType,
+    t.PREV_FIRE_TIME prevFireTime,t.NEXT_FIRE_TIME nextFireTime,t.PRIORITY,t.START_TIME startTime,
+    t.END_TIME endTime,t.DESCRIPTION triggerDescr, cron.CRON_EXPRESSION jobTime
+    FROM qrtz_job_details j
+      LEFT JOIN qrtz_triggers t ON (t.JOB_NAME=j.JOB_NAME AND t.JOB_GROUP=j.JOB_GROUP)
+      LEFT JOIN qrtz_cron_triggers cron ON (cron.TRIGGER_NAME=t.TRIGGER_NAME AND cron.TRIGGER_GROUP=t.TRIGGER_GROUP)
+    <where>
+      1=1
+      <if test="jobName != null and jobName != ''">
+        and j.JOB_NAME = #{jobName,jdbcType=VARCHAR}
+      </if>
+      <if test="jobGroupName != null and jobGroupName != ''">
+        and j.JOB_GROUP = #{jobGroupName,jdbcType=VARCHAR}
+      </if>
+      <if test="jobClazz != null and jobClazz != ''">
+        and j.JOB_CLASS_NAME = #{jobClazz,jdbcType=VARCHAR}
+      </if>
+      <if test="jobTime != null and jobTime != ''">
+        and cron.CRON_EXPRESSION = #{jobTime,jdbcType=VARCHAR}
+      </if>
+      <if test="triggerName != null and triggerName != ''">
+        and t.TRIGGER_NAME = #{triggerName,jdbcType=VARCHAR}
+      </if>
+      <if test="triggerGroup != null and triggerGroup != ''">
+        and t.TRIGGER_GROUP = #{triggerGroup,jdbcType=VARCHAR}
+      </if>
+      <if test="jobStatus != null and jobStatus != ''">
+        and t.TRIGGER_STATE = #{jobStatus,jdbcType=VARCHAR}
+      </if>
+    </where>
+    order by j.JOB_NAME,t.PRIORITY DESC
+  </select>
+
+
+  <select id="getList" resultMap="ResultMapWithBLOBs" parameterType="com.dream.city.base.model.entity.QrtzJobDetails" >
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from qrtz_job_details
+    where 1=1
+    <if test="schedName != null and schedName != ''">
+      and SCHED_NAME = #{schedName,jdbcType=VARCHAR}
+    </if>
+    <if test="jobName != null and jobName != ''">
+      and JOB_NAME = #{jobName,jdbcType=VARCHAR}
+    </if>
+    <if test="jobGroup != null and jobGroup != ''">
+      and JOB_GROUP = #{jobGroup,jdbcType=VARCHAR}
+    </if>
+    <if test="jobClassName != null and jobClassName != ''">
+      and JOB_CLASS_NAME = #{jobClassName,jdbcType=VARCHAR}
+    </if>
+    order by JOB_NAME
+  </select>
+
+  <select id="getOne" resultMap="ResultMapWithBLOBs" parameterType="com.dream.city.base.model.entity.QrtzJobDetails" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from qrtz_job_details
+    where SCHED_NAME = #{schedName,jdbcType=VARCHAR}
+      and JOB_NAME = #{jobName,jdbcType=VARCHAR}
+      and JOB_GROUP = #{jobGroup,jdbcType=VARCHAR}
+  </select>
+
+  <delete id="delete" parameterType="com.dream.city.base.model.entity.QrtzJobDetails" >
+    delete from qrtz_job_details
+    where SCHED_NAME = #{schedName,jdbcType=VARCHAR}
+      and JOB_NAME = #{jobName,jdbcType=VARCHAR}
+      and JOB_GROUP = #{jobGroup,jdbcType=VARCHAR}
+  </delete>
+
+  <insert id="insert" parameterType="com.dream.city.base.model.entity.QrtzJobDetails" >
+    insert into qrtz_job_details
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="schedName != null" >
+        SCHED_NAME,
+      </if>
+      <if test="jobName != null" >
+        JOB_NAME,
+      </if>
+      <if test="jobGroup != null" >
+        JOB_GROUP,
+      </if>
+      <if test="description != null" >
+        DESCRIPTION,
+      </if>
+      <if test="jobClassName != null" >
+        JOB_CLASS_NAME,
+      </if>
+      <if test="isDurable != null" >
+        IS_DURABLE,
+      </if>
+      <if test="isNonconcurrent != null" >
+        IS_NONCONCURRENT,
+      </if>
+      <if test="isUpdateData != null" >
+        IS_UPDATE_DATA,
+      </if>
+      <if test="requestsRecovery != null" >
+        REQUESTS_RECOVERY,
+      </if>
+      <if test="jobData != null" >
+        JOB_DATA,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="schedName != null" >
+        #{schedName,jdbcType=VARCHAR},
+      </if>
+      <if test="jobName != null" >
+        #{jobName,jdbcType=VARCHAR},
+      </if>
+      <if test="jobGroup != null" >
+        #{jobGroup,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="jobClassName != null" >
+        #{jobClassName,jdbcType=VARCHAR},
+      </if>
+      <if test="isDurable != null" >
+        #{isDurable,jdbcType=VARCHAR},
+      </if>
+      <if test="isNonconcurrent != null" >
+        #{isNonconcurrent,jdbcType=VARCHAR},
+      </if>
+      <if test="isUpdateData != null" >
+        #{isUpdateData,jdbcType=VARCHAR},
+      </if>
+      <if test="requestsRecovery != null" >
+        #{requestsRecovery,jdbcType=VARCHAR},
+      </if>
+      <if test="jobData != null" >
+        #{jobData,jdbcType=LONGVARBINARY},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="update" parameterType="com.dream.city.base.model.entity.QrtzJobDetails" >
+    update qrtz_job_details
+    <set >
+      <if test="description != null" >
+        DESCRIPTION = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="jobClassName != null" >
+        JOB_CLASS_NAME = #{jobClassName,jdbcType=VARCHAR},
+      </if>
+      <if test="isDurable != null" >
+        IS_DURABLE = #{isDurable,jdbcType=VARCHAR},
+      </if>
+      <if test="isNonconcurrent != null" >
+        IS_NONCONCURRENT = #{isNonconcurrent,jdbcType=VARCHAR},
+      </if>
+      <if test="isUpdateData != null" >
+        IS_UPDATE_DATA = #{isUpdateData,jdbcType=VARCHAR},
+      </if>
+      <if test="requestsRecovery != null" >
+        REQUESTS_RECOVERY = #{requestsRecovery,jdbcType=VARCHAR},
+      </if>
+      <if test="jobData != null" >
+        JOB_DATA = #{jobData,jdbcType=LONGVARBINARY},
+      </if>
+    </set>
+    where SCHED_NAME = #{schedName,jdbcType=VARCHAR}
+      and JOB_NAME = #{jobName,jdbcType=VARCHAR}
+      and JOB_GROUP = #{jobGroup,jdbcType=VARCHAR}
+  </update>
+
+
+</mapper>

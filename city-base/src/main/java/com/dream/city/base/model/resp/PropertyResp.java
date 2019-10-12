@@ -27,7 +27,9 @@ public class PropertyResp implements Serializable {
     private String inStart;
 
     /** 税金 */
-    private Float inTax;
+    private BigDecimal inPersonalTax;
+    /** 税金 */
+    private BigDecimal inEnterpriseTax;
 
     /** 收益倍数 */
     private Integer inEarning;
