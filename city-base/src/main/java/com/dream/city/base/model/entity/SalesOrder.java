@@ -19,7 +19,7 @@ public class SalesOrder {
     private BigDecimal orderPayAmount;
     private String orderPlayerBuyer;
     private String orderPlayerSeller;
-    private String orderState;
+    private int orderState;
     private Timestamp createTime;
     private Timestamp updateTime;
 }

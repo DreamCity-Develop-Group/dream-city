@@ -1,11 +1,15 @@
 package com.dream.city.controller;
 
 import com.dream.city.base.model.Result;
+import com.dream.city.base.model.entity.Player;
 import com.dream.city.base.model.entity.PlayerAccount;
 import com.dream.city.base.model.entity.SalesOrder;
+import com.dream.city.base.model.enu.OrderState;
 import com.dream.city.base.model.enu.ReturnStatus;
 import com.dream.city.service.PlayerAccountService;
+import com.dream.city.service.PlayerService;
 import com.dream.city.service.SalesOrderService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.omg.CORBA.ORB;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,11 +18,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/sales")
+@Slf4j
 public class SalesOrderController {
 
     @Autowired
@@ -27,6 +35,8 @@ public class SalesOrderController {
     private PlayerAccountService accountService;
     @Autowired
     private PlayerAccountService playerAccountService;
+    @Autowired
+    private PlayerService playerService;
 
 
     /**
@@ -39,6 +49,21 @@ public class SalesOrderController {
     public Result getSalesOrder(@RequestParam("playerId")String playerId){
         //SalesOrder order = salesOrderService.getSalesOrder(1L);
         List<SalesOrder> orders = salesOrderService.selectSalesOrder(playerId);
+        Map data = new HashMap();
+        SimpleDateFormat formats = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+
+        orders.forEach(order -> {
+            if (order.getOrderPlayerBuyer().equals(playerId)){
+                log.info("自己的购买订单:["+order.getOrderPlayerBuyer()+"]");
+            }else {
+                Player player = playerService.getPlayerByPlayerId(order.getOrderPlayerBuyer());
+                data.put("date",formats.format(order.getCreateTime()));
+                data.put("player",player.getPlayerNick());
+                data.put("amount",order.getOrderAmount());
+                data.put("pay",order.getOrderPayAmount());
+                data.put("state", order.getOrderState());
+            }
+        });
         return new Result("success",200,orders);
     }
 
@@ -50,7 +75,22 @@ public class SalesOrderController {
      */
     @RequestMapping("/get/sales/num")
     public Result getSalesNum(@RequestParam("playerId")String playerId){
-        List<SalesOrder> orders = salesOrderService.selectSalesOrder(playerId);
+        List<SalesOrder> orders = salesOrderService.selectSalesOrderUnSend(playerId);
+        if (orders.size()>0){
+            return Result.result(true,orders.size());
+        }
+        return Result.result(false,0);
+    }
+
+    /**
+     * 获取订单数量-未处理的请求
+     *
+     * @param playerId
+     * @return
+     */
+    @RequestMapping("/get/sales/overtime")
+    public Result getSalesOvertime(@RequestParam("playerId")String playerId){
+        List<SalesOrder> orders = salesOrderService.selectSalesOrderOvertime(playerId);
         if (orders.size()>0){
             return Result.result(true,orders.size());
         }
@@ -73,17 +113,24 @@ public class SalesOrderController {
         }
         //支付比率 USDT 和 MT
         BigDecimal rate = salesOrderService.getUsdtToMtRate();
-
+        Map<String,String> data = new HashMap<>();
+        data.put("empty","yes");
         //如果额度不足
         PlayerAccount playerAccount = playerAccountService.getPlayerAccount(playerId);
         BigDecimal payUsdt = buyAmount.multiply(rate);
         if (playerAccount.getAccUsdtAvailable().compareTo(payUsdt)<0){
-            return Result.result(false, ReturnStatus.NOT_ENOUGH.getDesc(),ReturnStatus.NOT_ENOUGH.getStatus());
+            return Result.result(false, ReturnStatus.NOT_ENOUGH.getDesc(),ReturnStatus.NOT_ENOUGH.getStatus(),data);
         }
-
+        //获取未完成的订单
         SalesOrder salesOrder = salesOrderService.getBuyerNoPayOrder(playerId);
         if (salesOrder!=null){
-            return Result.result(false,ReturnStatus.NOT_FINISHED.getDesc(),ReturnStatus.NOT_FINISHED.getStatus());
+            Result result = Result.result(
+                    false,
+                    ReturnStatus.NOT_FINISHED.getDesc(),
+                    ReturnStatus.NOT_FINISHED.getStatus(),
+                    data
+            );
+            return result;
         }
 
         return salesOrderService.buyMtCreate(buyAmount,rate,playerId);
@@ -92,7 +139,7 @@ public class SalesOrderController {
 
     /**
      * 验证支付密码 ==》完成订单
-     * @param payPass
+     * @param confirmPass
      * @param playerId
      * @return
      */
@@ -100,6 +147,15 @@ public class SalesOrderController {
     public Result playerBuyMtFinish(@RequestParam("playerId")String playerId,@RequestParam("confirmPass")String confirmPass){
         //找出待支付订单
         SalesOrder  salesOrder = salesOrderService.getBuyerNoPayOrder(playerId);
+        if (salesOrder !=null){
+            Result result = Result.result(
+                    false,
+                    ReturnStatus.NOT_FINISHED.getDesc(),
+                    ReturnStatus.NOT_FINISHED.getStatus()
+                    //null
+            );
+            return result;
+        }
         //验证支付密码
         Result result = accountService.checkPayPass(playerId,confirmPass);
         //完成支付

@@ -4,36 +4,26 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.dream.city.base.model.Message;
 import com.dream.city.base.model.MessageData;
-import com.dream.city.base.model.entity.Player;
 import com.dream.city.base.model.enu.ReturnStatus;
 import com.dream.city.base.utils.JsonUtil;
 import com.dream.city.base.utils.RedisKeys;
 import com.dream.city.base.utils.RedisUtils;
 import com.dream.city.base.utils.SpringUtils;
-import com.dream.city.config.RedisSubListenerConfig;
 import com.dream.city.service.HttpClientService;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.listener.ChannelTopic;
-import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
 import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArraySet;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
-
-import static java.util.concurrent.Executors.*;
 
 
 /**
@@ -237,9 +227,9 @@ public class WebSocketServer {
                 if (null != msg.getData().getData()) {
                     Map data = JsonUtil.parseJsonToObj(msg.getData().getData().toString(), Map.class);
                     String tokenStr = "token_" + data.get("username");
-                    String token = redisUtils.get(tokenStr).toString();
+                    String token = redisUtils.getStr(tokenStr);
 
-                    if (!StringUtils.isEmpty(token)) {
+                    if (StringUtils.isNotBlank(token)) {
                         redisUtils.set("clientID-" + data.get("username").toString(), this.clientId, 60);
                         for (WebSocketServer webSocketServer : webSocketSet) {
                             if (webSocketServer.clientId.equals(this.clientId)) {
@@ -247,11 +237,18 @@ public class WebSocketServer {
                                 break;
                             }
                         }
-                    } else {
-                        //TODO TOKEN 无效通知
-                        replay.setDesc("当前token已经失效，不能操作");
-                        WebSocketServer.sendInfo(replay);
-                        return;
+                    }else {
+                        if(msg.getData().getType().equals("login") || msg.getData().getType().equals("codeLogin")){
+
+                        }else{
+                            //TODO TOKEN 无效通知
+                            replay.getData().setType("token");
+                            replay.getData().setCode(ReturnStatus.TOKEN_EXPIRED.getStatus());
+                            replay.setDesc("当前token已经失效，不能操作");
+                            WebSocketServer.sendInfo(replay);
+                            return;
+                        }
+
                     }
                     String strT = "";
                     if (msg.getData().getData() instanceof String) {
@@ -368,8 +365,11 @@ public class WebSocketServer {
                 if (clientId == null) {
                     item.sendAsyncObject(message);
                 } else if (item.clientId.equals(clientId)) {
+                    //String messageTo = JSONObject.toJSONString(message);
+                    String messageTo = JsonUtil.parseObjToJson(message);
                     item.sendAsyncObject(message);
-                    item.sendMessage(JSONObject.toJSONString(message));
+
+                    item.sendMessage(messageTo);
                     log.info(">>>>>>" + JSONObject.toJSONString(message));
                 }
             } catch (IOException e) {

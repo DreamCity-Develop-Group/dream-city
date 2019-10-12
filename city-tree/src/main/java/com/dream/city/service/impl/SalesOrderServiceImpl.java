@@ -11,9 +11,12 @@ import com.dream.city.base.model.enu.ReturnStatus;
 import com.dream.city.base.model.mapper.RelationTreeMapper;
 import com.dream.city.base.model.mapper.PlayerAccountMapper;
 import com.dream.city.base.model.mapper.SalesOrderMapper;
+import com.dream.city.base.utils.KeyGenerator;
 import com.dream.city.service.PlayerAccountService;
 import com.dream.city.service.PlayerService;
+import com.dream.city.service.RelationTreeService;
 import com.dream.city.service.SalesOrderService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,12 +29,14 @@ import java.util.Date;
 import java.util.List;
 
 @Service
+@Slf4j
 public class SalesOrderServiceImpl implements SalesOrderService {
     @Autowired
     private SalesOrderMapper salesOrderMapper;
 
+
     @Autowired
-    private RelationTreeMapper treeMapper;
+    private RelationTreeService  treeService;
     @Autowired
     private PlayerService playerService;
     @Autowired
@@ -40,6 +45,16 @@ public class SalesOrderServiceImpl implements SalesOrderService {
     @Override
     public List<SalesOrder> selectSalesOrder(String playerId) {
         return salesOrderMapper.selectSalesSellerOrder(playerId);
+    }
+
+    @Override
+    public List<SalesOrder> selectSalesOrderUnSend(String playerId) {
+        return salesOrderMapper.selectPlayerSalesOrdersByState(playerId,OrderState.PAY.getStatus());
+    }
+
+    @Override
+    public List<SalesOrder> selectSalesOrderOvertime(String playerId) {
+        return salesOrderMapper.selectPlayerSalesOrdersByState(playerId,OrderState.EXPIRED.getStatus());
     }
 
     @Override
@@ -65,7 +80,11 @@ public class SalesOrderServiceImpl implements SalesOrderService {
 
     @Override
     public SalesOrder getBuyerNoPayOrder(String playerId) {
-        return salesOrderMapper.getBuyerNoPayOrder(playerId);
+        List<SalesOrder> orders = salesOrderMapper.selectPlayerSalesOrdersByState(playerId,OrderState.CREATE.getStatus());
+        if (orders.size()>0){
+            return orders.get(0);
+        }
+        return null;
     }
 
     /**
@@ -88,13 +107,15 @@ public class SalesOrderServiceImpl implements SalesOrderService {
             return new Result(false, "USDT剩余可用额度不足", ReturnStatus.NOT_ENOUGH.getStatus());
         }
         //找出上家
-        RelationTree tree = treeMapper.getByPlayer(playerId);
+        RelationTree tree = treeService.getTreeByPlayerId(playerId);
         String parentId = tree.getTreeParentId();
 
         //生成订单
         SalesOrder order = new SalesOrder();
+        String orderId = KeyGenerator.generateOrderID();
         order.setId(0);
-        order.setCreateTime(Timestamp.valueOf(String.valueOf(System.currentTimeMillis())));
+        order.setOrderId(orderId);
+        order.setCreateTime(new Timestamp(System.currentTimeMillis()));
         order.setOrderId(new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()));
         order.setOrderBuyType("MT");
         order.setOrderPayType("USDT");
@@ -104,7 +125,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
         order.setOrderPayAmount(usdtPay);
         order.setOrderPlayerBuyer(playerId);
         order.setOrderPlayerSeller(parentId);
-        order.setOrderState(OrderState.CREATE.name());
+        order.setOrderState(OrderState.CREATE.getStatus());
         order.setOrderAmount(buyAmount);
         salesOrderMapper.createSalesOrder(order);
 
@@ -113,12 +134,13 @@ public class SalesOrderServiceImpl implements SalesOrderService {
             //上级额度不足
             PlayerAccount account = playerAccountService.getPlayerAccount(parentId);
             if (account.getAccMtAvailable().compareTo(buyAmount) < 0) {
-                return Result.result(
+                /*return Result.result(
                         false,
                         ReturnStatus.NOT_ENOUGH_PARENT.getDesc(),
                         ReturnStatus.NOT_ENOUGH_PARENT.getStatus(),
                         null
-                );
+                );*/
+                log.info("上级玩家额度不足");
             } else {
 
                 /**
@@ -183,7 +205,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
         SalesOrder order = this.getBuyerNoPayOrder(playerId);
         if (order != null && OrderState.PAY.equals(order.getOrderState())) {
             //找出上家
-            RelationTree tree = treeMapper.getByPlayer(playerId);
+            RelationTree tree = treeService.getTreeByPlayerId(playerId);
             String parentId = tree.getTreeParentId();
 
 
@@ -213,7 +235,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
 
 
             //改变订单状态
-            order.setOrderState(OrderState.FINISHED.name());
+            order.setOrderState(OrderState.FINISHED.getStatus());
             order.setUpdateTime(Timestamp.valueOf(new SimpleDateFormat("yMd Hms").format(new Date())));
             salesOrderMapper.updateSalesOrder(order);
 

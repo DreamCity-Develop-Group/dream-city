@@ -264,6 +264,7 @@ public class HttpClientServiceImpl implements HttpClientService {
                 message.setTarget(msg.getSource());
                 message.setDesc("响应数据回复");
                 message.setCreatetime(String.valueOf(System.currentTimeMillis()));
+
                 if(message.getData() == null) {
                     MessageData msgData = new MessageData();
                     msgData.setType(msg.getData().getType());
@@ -272,12 +273,16 @@ public class HttpClientServiceImpl implements HttpClientService {
 
                     message.setData(msgData);
                 }
-                /*if (resp.contains("data")) {
+
+                if (resp.contains("data")) {
                     String json = JSON.toJSONString(JSON.parseObject(resp).get("data"));
                     JSONObject jsonObject = JSON.parseObject(json);
-                */
 
-
+                    log.info("=================================message==================================");
+                    log.info(message.toString());
+                    log.info(jsonObject.getString("data"));
+                    log.info("===========================^^^^==message======^^^^^=====================");
+                }
                 /**TODO**********如果是登陆成功，加入在线有序列表******************************/
                 if (message.getData().getType().equals("login") || message.getData().getType().equals("codeLogin")){
                     if (message.getData().getCode() == 200){
@@ -310,7 +315,13 @@ public class HttpClientServiceImpl implements HttpClientService {
                 message.setTarget(msg.getSource());
                 message.setDesc("尚未登录或登录已过期");
                 message.setCreatetime(String.valueOf(System.currentTimeMillis()));
-                message.setData(new MessageData(msg.getData().getType(),msg.getData().getModel(),null, ReturnStatus.SUCCESS.getStatus()));
+                message.setData(
+                        new MessageData(
+                                "token",
+                                msg.getData().getModel(),null,
+                                ReturnStatus.TOKEN_EXPIRED.getStatus()
+                        )
+                );
 
                 WebSocketServer.sendInfo(message);
             } else {

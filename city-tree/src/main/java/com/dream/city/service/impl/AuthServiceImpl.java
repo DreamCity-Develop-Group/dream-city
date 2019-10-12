@@ -70,7 +70,7 @@ public class AuthServiceImpl implements AuthService {
             //redisUtils.set("token_"+username,token);
             //redisTemplate.expire("token_"+username,30, TimeUnit.MINUTES);
             //redisUtils.expire("token_"+username,30,TimeUnit.MINUTES);
-            redisUtils.set("token_"+username,token,600);
+            redisUtils.set("token_"+username,token,1800);
             return token;
         } catch (IllegalArgumentException | UnsupportedEncodingException e) {
             e.printStackTrace();

@@ -56,14 +56,18 @@ public class PusherServer implements PusherService {
                 "收取玩家个人消息",
                 String.valueOf(System.currentTimeMillis())
         );
-
+        Map<String, Integer> data = new HashMap();
+        data.put("num",0);
         switch (type) {
             case 1:
                 //取出兑换请求数据
                 Result numRet = salesService.getSalesNum(player.getPlayerId());
                 if (numRet.getSuccess()) {
+                    int num = Integer.valueOf(numRet.getData().toString());
+
                     message.getData().setCode(ReturnStatus.MT_BUY_TIP.getStatus());
-                    message.getData().setData(numRet.getData());
+                    data.put("num",num);
+                    message.getData().setData(data);
                 }
                 break;
             case 2:
@@ -72,7 +76,7 @@ public class PusherServer implements PusherService {
                 //取出规则次数
                 Result numRules = ruleService.getRuleItem(RuleKey.SALES_OVERTIME.getKey());
 
-                Map<String, Integer> data = new HashMap();
+
 
                 if (numOverTimeRet.getSuccess() && numRules.getSuccess()) {
                     String jsonRule = JsonUtil.parseObjToJson(numRules.getData());
@@ -88,18 +92,20 @@ public class PusherServer implements PusherService {
             default:
 
         }
+        if(data.get("num") > 0){
+            String json = JsonUtil.parseObjToJson(message);
+            redisUtils.publishMsg(RedisKeys.PLAYER_MESSAGE_CHANNEL, json);
+            log.info("发出推送信息");
+            try {
+                Thread.sleep(2000);
+                new Thread(()->{
+                    log.info("第二次线程["+Thread.currentThread()+"]发出推送信息");
+                    redisUtils.publishMsg(RedisKeys.PLAYER_MESSAGE_CHANNEL, json);
+                },"publishMsg").start();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
 
-        String json = JsonUtil.parseObjToJson(message);
-        redisUtils.publishMsg(RedisKeys.PLAYER_MESSAGE_CHANNEL, json);
-        log.info("发出推送信息");
-        try {
-            Thread.sleep(2000);
-            new Thread(()->{
-                log.info("第二次线程["+Thread.currentThread()+"]发出推送信息");
-                redisUtils.publishMsg(RedisKeys.PLAYER_MESSAGE_CHANNEL, json);
-            },"publishMsg").start();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
         }
 
     }

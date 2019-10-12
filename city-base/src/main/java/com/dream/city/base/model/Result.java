@@ -71,6 +71,14 @@ public class Result<T> {
         }
     }
 
+    public Result(boolean success, String msg, int code) {
+        super();
+        this.success = success;
+        this.msg = msg;
+        this.code = code;
+        this.data = null;
+    }
+
     public Result(boolean success, String msg) {
         super();
         this.success = success;

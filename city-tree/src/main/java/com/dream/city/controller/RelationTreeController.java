@@ -156,9 +156,9 @@ public class RelationTreeController {
 
     @RequestMapping("/set/autoSend")
     public Result setAutoSend(@RequestParam("playerId")String playerId){
-        RelationTree tree = relationTreeService.getByPlayer(playerId);
+        RelationTree tree = relationTreeService.getTreeByPlayerId(playerId);
 
-        tree.setSendAuto("auto");
+        tree.setSendAuto("1");
 
         relationTreeService.updateTree(tree);
 

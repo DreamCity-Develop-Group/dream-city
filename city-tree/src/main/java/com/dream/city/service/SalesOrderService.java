@@ -11,6 +11,10 @@ public interface SalesOrderService {
 
     List<SalesOrder> selectSalesOrder(String playerId);
 
+    List<SalesOrder> selectSalesOrderUnSend(String playerId);
+
+    List<SalesOrder> selectSalesOrderOvertime(String playerId);
+
     SalesOrder getSalesOrder(Long id);
 
     SalesOrder getSalesOrder(String orderId);

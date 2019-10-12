@@ -21,5 +21,5 @@ public interface SalesService {
     Result getSalesNum(@RequestParam("playerId")String playerId);
 
     @RequestMapping("/sales/get/sales/overtime")
-    Result getSalesNumOverTime(String playerId);
+    Result getSalesNumOverTime(@RequestParam("playerId")String playerId);
 }

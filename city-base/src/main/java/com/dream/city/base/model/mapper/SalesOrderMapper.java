@@ -26,6 +26,7 @@ public interface SalesOrderMapper {
             @Result(property = "orderAmount", column = "order_amount"),
             @Result(property = "orderBuyType", column = "order_buy_type"),
             @Result(property = "orderPayType", column = "order_pay_type"),
+            @Result(property = "orderPayAmount", column = "order_pay_amount"),
             @Result(property = "orderPlayerBuyer", column = "order_player_buyer"),
             @Result(property = "orderPlayerSeller", column = "order_player_seller"),
             @Result(property = "orderState", column = "order_state"),
@@ -53,8 +54,8 @@ public interface SalesOrderMapper {
     List<SalesOrder> selectSalesBuyerOrder(String playerId);
 
     @Insert("insert into `sales_order`(" +
-            "order_id,order_amount,order_buy_type,order_pay_type,order_player_buyer,order_player_seller,order_state,createtime)values" +
-            "(orderId,orderAmount,orderBuyType,orderPayType,orderPlayerBuyer,orderPlayerSeller,orderState,createTime) ")
+            "id,order_id,order_amount,order_buy_type,order_pay_type,order_pay_amount,order_player_buyer,order_player_seller,order_state,createtime)values" +
+            "(#{id},#{orderId},#{orderAmount},#{orderBuyType},#{orderPayType},#{orderPayAmount},#{orderPlayerBuyer},#{orderPlayerSeller},#{orderState},#{createTime} ) ")
     void createSalesOrder(SalesOrder order);
 
     @Select("select * from sales_order where 1=1 and ")
@@ -87,6 +88,12 @@ public interface SalesOrderMapper {
     @ResultMap("BaseSalesOrderResultMap")
     List<SalesOrder> getSalesOrdersByState(int state);
 
-    @Select("select * from `sales_order` where 1=1 and order_state = '2' and order_player_buyer = #{playerId} limit 1 ")
+    @Select("select * from `sales_order` where 1=1 and order_state = '1' and order_player_buyer = #{playerId} limit 1 ")
+    @ResultMap("BaseSalesOrderResultMap")
     SalesOrder getBuyerNoPayOrder(String playerId);
+
+
+    @Select("select * from `sales_order` where 1=1 and order_state = #{status} and order_player_buyer = #{playerId}")
+    @ResultMap("BaseSalesOrderResultMap")
+    List<SalesOrder> selectPlayerSalesOrdersByState(@Param("playerId") String playerId, @Param("status") int status);
 }

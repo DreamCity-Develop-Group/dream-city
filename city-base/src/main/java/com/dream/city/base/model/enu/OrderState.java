@@ -23,6 +23,7 @@ public enum OrderState {
     CLOSE(8,"关闭"),
 
     FINISHED(9,"完成"),
+    EXPIRED(10,"过期"),
 
     INVALID(-1,"作废");
 

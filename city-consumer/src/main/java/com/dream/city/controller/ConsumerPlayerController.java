@@ -522,8 +522,10 @@ public class ConsumerPlayerController {
             data.put("playerName",player.getPlayerName());
         }
         MessageData msgData = new MessageData(
-                msg.getData().getType(), msg.getData().getModel(),
-                data, result.getCode()
+                msg.getData().getType(),
+                msg.getData().getModel(),
+                data,
+                result.getCode()
         );
         Message message = new Message(msg.getSource(), msg.getTarget(), msgData, result.getMsg());
         return message;

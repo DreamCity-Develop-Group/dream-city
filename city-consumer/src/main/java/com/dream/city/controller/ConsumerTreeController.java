@@ -226,9 +226,10 @@ public class ConsumerTreeController {
         Integer level = 9;
         Result result = treeService.getMembers(playerId, level);
 
-        Message message = new Message("server", "client", new MessageData("getMembers", "/consumer/tree"), "获取商会成员");
-        message.getData().setData(result);
-        return message;
+        msg.getData().setData(result.getData());
+
+
+        return msg;
     }
 
     /**
@@ -270,7 +271,7 @@ public class ConsumerTreeController {
         Object dataMsg = msg.getData().getData();
         JSONObject jsonObject = JsonUtil.parseJsonToObj(JsonUtil.parseObjToJson(dataMsg), JSONObject.class);
         String username = jsonObject.getString("username");
-        String playerId = "";
+        String playerId = jsonObject.getString("playerId");
         BigDecimal amount = jsonObject.getBigDecimal("amount");
         if (StringUtils.isNotBlank(playerId)) {
             playerId = jsonObject.getString("playerId");
@@ -283,7 +284,7 @@ public class ConsumerTreeController {
         Message message = new Message("server", "client", new MessageData("setAutoSend", "/consumer/tree"), "设置自动发货成功");
         PlayerAccount account = accountService.getPlayerAccountByPlayerId(playerId);
 
-        if (account.getAccMt().compareTo(amount) < 0) {
+        if (account.getAccMtAvailable().compareTo(amount) < 0) {
             message.setDesc("备货额度不足，设置失败");
             return message;
         }
@@ -306,16 +307,10 @@ public class ConsumerTreeController {
     public Message sendOrder(@RequestBody Message msg) {
         Object dataMsg = msg.getData().getData();
         JSONObject jsonObject = JsonUtil.parseJsonToObj(JsonUtil.parseObjToJson(dataMsg), JSONObject.class);
-        String username = jsonObject.getString("username");
-        String playerId = "";
-        if (StringUtils.isNotBlank(playerId)) {
-            playerId = jsonObject.getString("playerId");
-        } else {
-            Player player = (Player) playerService.getPlayerByAccount(username).getData();
+        //String username = jsonObject.getString("username");
+        String playerId = jsonObject.getString("playerId");
 
-            playerId = player.getPlayerId();
-        }
-        List<String> orders = (List<String>) jsonObject.get("orders");
+        List<String> orders = (List<String>) jsonObject.getJSONArray("orders").toJavaList(String.class);//.get("orders");
 
         //@RequestParam("playerId")String playerId,@RequestParam("orders") List<String> orders
         Result result = treeService.sendOrder(playerId, orders);
@@ -336,7 +331,7 @@ public class ConsumerTreeController {
      * @param msg
      * @return
      */
-    @RequestMapping("/tree/create/order")
+    @RequestMapping("/tree/createOrder")
     public Message createOrder(@RequestBody Message msg) {
         Object dataMsg = msg.getData().getData();
         JSONObject jsonObject = JsonUtil.parseJsonToObj(JsonUtil.parseObjToJson(dataMsg), JSONObject.class);
@@ -347,7 +342,7 @@ public class ConsumerTreeController {
         Result result =  treeService.createOrder(playerId,amount);
 
         msg.getData().setCode(result.getCode());
-        msg.getData().setData(null);
+        msg.getData().setData(result.getData());
         return msg;
     }
 
@@ -366,6 +361,26 @@ public class ConsumerTreeController {
         String confirmPass = jsonObject.getString("confirmPass");
 
         Result result =  treeService.checkOrderPass(playerId,confirmPass);
+
+        msg.getData().setCode(result.getCode());
+        msg.getData().setData(null);
+        return msg;
+    }
+
+    /**
+     * 订单列表
+     *
+     * @param msg
+     * @return
+     */
+    @RequestMapping("/tree/get/orderList")
+    public Message getOrderList(@RequestBody Message msg) {
+        Object dataMsg = msg.getData().getData();
+        JSONObject jsonObject = JsonUtil.parseJsonToObj(JsonUtil.parseObjToJson(dataMsg), JSONObject.class);
+        String playerId = jsonObject.getString("playerId");
+
+
+        Result result =  treeService.getOrderList(playerId);
 
         msg.getData().setCode(result.getCode());
         msg.getData().setData(null);

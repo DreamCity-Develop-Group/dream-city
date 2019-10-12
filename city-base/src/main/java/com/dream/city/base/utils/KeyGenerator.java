@@ -1,6 +1,7 @@
 package com.dream.city.base.utils;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Random;
 import java.util.UUID;
 
@@ -23,7 +24,7 @@ public class KeyGenerator {
 	private static Random random = new Random();
 
 	/**
-	 * 获取随机字符串用于微信配置
+	 * 获取随机字符串用于配置
 	 *
 	 * @return
 	 */
@@ -37,6 +38,13 @@ public class KeyGenerator {
 
 	public static String getUUID() {
 		return UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
+	}
+
+	public static String generateOrderID() {
+		SimpleDateFormat formats = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+		String oId = formats.format(new Date());
+		return oId;
+
 	}
 
 	/**

@@ -1,9 +1,9 @@
 server:
-  port: 8888
+  port: 9999
 spring:
   application:
     name: city-server
-    port: 9999
+    port: 8888
   profiles:
     active: dev
 
