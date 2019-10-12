@@ -329,4 +329,49 @@ public class ConsumerTreeController {
         }
     }
 
+
+    /**
+     * 订单创建
+     *
+     * @param msg
+     * @return
+     */
+    @RequestMapping("/tree/create/order")
+    public Message createOrder(@RequestBody Message msg) {
+        Object dataMsg = msg.getData().getData();
+        JSONObject jsonObject = JsonUtil.parseJsonToObj(JsonUtil.parseObjToJson(dataMsg), JSONObject.class);
+        String username = jsonObject.getString("username");
+        String playerId = jsonObject.getString("playerId");
+        BigDecimal amount = jsonObject.getBigDecimal("amount");
+
+        Result result =  treeService.createOrder(playerId,amount);
+
+        msg.getData().setCode(result.getCode());
+        msg.getData().setData(null);
+        return msg;
+    }
+
+
+    /**
+     * 验证订单支付密码
+     *
+     * @param msg
+     * @return
+     */
+    @RequestMapping("/tree/check/orderPass")
+    public Message checkOrderPass(@RequestBody Message msg) {
+        Object dataMsg = msg.getData().getData();
+        JSONObject jsonObject = JsonUtil.parseJsonToObj(JsonUtil.parseObjToJson(dataMsg), JSONObject.class);
+        String playerId = jsonObject.getString("playerId");
+        String confirmPass = jsonObject.getString("confirmPass");
+
+        Result result =  treeService.checkOrderPass(playerId,confirmPass);
+
+        msg.getData().setCode(result.getCode());
+        msg.getData().setData(null);
+        return msg;
+    }
+
+
+
 }

@@ -3,7 +3,6 @@ package com.dream.city.base.model.enu;
 /**
  * 改用 InvestStatus
  */
-@Deprecated
 public enum OrderState {
     CANCEL(0,"取消"),
 
@@ -22,6 +21,8 @@ public enum OrderState {
     RECEIVED(7,"已收货"),
 
     CLOSE(8,"关闭"),
+
+    FINISHED(9,"完成"),
 
     INVALID(-1,"作废");
 

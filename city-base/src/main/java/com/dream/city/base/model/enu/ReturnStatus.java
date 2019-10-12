@@ -7,7 +7,10 @@ import lombok.Data;
  */
 public enum ReturnStatus {
     SUCCESS(200,"成功"),
-    CLOSE(512,"已关闭"),
+    NOT_ENOUGH(210,"USDT额度不足，请去充值"),
+    NOT_ENOUGH_PARENT(211,"上级USDT额度不足"),
+    NOT_FINISHED(311,"未完成"),
+    CLOSE(513,"已关闭"),
     INVALID(-1,"不可用"),
     ACCOUNT_PASS_REQUIRED(401,"请输入用户名和密码"),
     ERROR_PHONE(402,"请输入正确的手机号码"),
@@ -28,6 +31,9 @@ public enum ReturnStatus {
     WAITE_OPT(200,"操作成功，请耐心等待审核"),
     RETRY_OPT(511,"操作失败，请重试"),
     NEXT_OPT(512,"请完成下一步设置"),
+    ERROR_PASS(514,"密码错误"),
+    NOTSET_PASS(515,"密码未设置"),
+
 
     UPGRADE_TIP(666,"恭喜升级成功"),
     MT_MISS_BUY_TIP(602,"错过购买兑换处理提示"),

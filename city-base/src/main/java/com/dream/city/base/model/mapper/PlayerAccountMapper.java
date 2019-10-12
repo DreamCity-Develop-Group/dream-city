@@ -108,10 +108,14 @@ public interface PlayerAccountMapper {
             "<foreach collection=\"accounts\" item=\"item\" separator=\";\">" +
             " UPDATE" +
             " `player_account`" +
-            " SET acc_usdt = #{item.accUsdt, jdbcType=VARCHAR}, " +
-            "  acc_usdt_available = #{item.accUsdtAvailable, jdbcType=VARCHAR}, " +
+            " SET acc_usdt = #{item.accUsdt}, " +
+            "  acc_usdt_freeze = #{item.accUsdtFreeze}, " +
+            "  acc_usdt_available = #{item.accUsdtAvailable}, " +
+            "  acc_mt = #{item.accMt}, " +
+            "  acc_mt_freeze = #{item.accMtFreeze}, " +
+            "  acc_mt_available = #{item.accMtAvailable}, " +
             "  WHERE 1=1 " +
-            "  AND message_player_id = #{item.accPlayerId, jdbcType=VARCHAR} " +
+            "  AND message_player_id = #{item.accPlayerId} " +
             "</foreach>" +
             "</script>"})
 

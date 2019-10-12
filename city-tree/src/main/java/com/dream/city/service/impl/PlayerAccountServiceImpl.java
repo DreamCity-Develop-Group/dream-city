@@ -3,14 +3,18 @@ package com.dream.city.service.impl;
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.Player;
 import com.dream.city.base.model.entity.PlayerAccount;
+import com.dream.city.base.model.enu.ReturnStatus;
 import com.dream.city.base.model.mapper.PlayerAccountMapper;
 import com.dream.city.base.model.mapper.PlayerMapper;
+import com.dream.city.base.utils.RedisUtils;
 import com.dream.city.service.PlayerAccountService;
+import com.dream.city.service.PlayerService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * @author Wvv
@@ -19,8 +23,9 @@ import java.math.BigDecimal;
 public class PlayerAccountServiceImpl implements PlayerAccountService {
     @Autowired
     private PlayerAccountMapper playerAccountMapper;
+
     @Autowired
-    private PlayerMapper playerMapper;
+    PlayerService playerService;
 
     @Override
     public BigDecimal getPlayerAccountUSDTAvailble(String playerId) {
@@ -36,14 +41,14 @@ public class PlayerAccountServiceImpl implements PlayerAccountService {
 
     @Override
     public Result checkPayPass(String playerId, String payPass) {
-        Player player = playerMapper.getPlayer(playerId);
+        Player player = playerService.getPlayer(playerId);
         if (StringUtils.isBlank(player.getPlayerTradePass())){
-            return new Result(false,"支付密码尚未设置，请设置密码",500);
+            return Result.result(false,"支付密码尚未设置，请设置密码", ReturnStatus.NOTSET_PASS.getStatus());
         }
         if (player.getPlayerTradePass().equals(payPass)){
-            return new Result(true,"支付密码验证通过",200);
+            return Result.result(true,"支付密码验证通过",ReturnStatus.SUCCESS.getStatus());
         }else {
-            return new Result(false,"支付密码不正确",500);
+            return Result.result(false,"支付密码不正确",ReturnStatus.ERROR_PASS.getStatus());
         }
 
     }
@@ -65,12 +70,12 @@ public class PlayerAccountServiceImpl implements PlayerAccountService {
 
     @Override
     public void updatePlayerLevel(String playerId,Integer level){
-        playerMapper.updatePlayerLevel(playerId,level);
+        playerService.updatePlayerLevel(playerId,level);
     }
 
     @Override
     public Player getPlayerByPlayerId(String playerId) {
-        return playerMapper.getPlayer(playerId);
+        return playerService.getPlayer(playerId);
     }
 
     @Override
@@ -83,6 +88,21 @@ public class PlayerAccountServiceImpl implements PlayerAccountService {
 
         int num = playerAccountMapper.updatePlayerAccount(playerAccount);
         return Result.result(num>0);
+    }
+
+    @Override
+    public void subtractAmount(BigDecimal orderPayAmount, String playerId) {
+        playerAccountMapper.subtractAmount(orderPayAmount,playerId);
+    }
+
+    @Override
+    public void updateBuyerAccount(List<PlayerAccount> accounts) {
+        playerAccountMapper.updateBuyerAccount(accounts);
+    }
+
+    @Override
+    public void updatePlayerAccounts(List<PlayerAccount> accounts) {
+        playerAccountMapper.updatePlayerAccounts(accounts);
     }
 
 

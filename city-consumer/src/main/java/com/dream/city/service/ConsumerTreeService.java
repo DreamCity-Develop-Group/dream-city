@@ -59,4 +59,9 @@ public interface ConsumerTreeService {
     @RequestMapping("/tree/set/autoSend")
     Result setAutoSend(@RequestParam("playerId")String playerId);
 
+    @RequestMapping("/sales/player/buy/mt")
+    Result createOrder(@RequestParam("playerId")String playerId, @RequestParam("amount")BigDecimal amount);
+
+    @RequestMapping("/sales//player/check/pass")
+    Result checkOrderPass(@RequestParam("playerId")String playerId, @RequestParam("confirmPass")String confirmPass);
 }

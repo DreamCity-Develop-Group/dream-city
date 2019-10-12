@@ -3,6 +3,7 @@ package com.dream.city.controller;
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.PlayerAccount;
 import com.dream.city.base.model.entity.SalesOrder;
+import com.dream.city.base.model.enu.ReturnStatus;
 import com.dream.city.service.PlayerAccountService;
 import com.dream.city.service.SalesOrderService;
 import org.apache.commons.lang.StringUtils;
@@ -24,6 +25,8 @@ public class SalesOrderController {
     private SalesOrderService salesOrderService;
     @Autowired
     private PlayerAccountService accountService;
+    @Autowired
+    private PlayerAccountService playerAccountService;
 
 
     /**
@@ -70,6 +73,19 @@ public class SalesOrderController {
         }
         //支付比率 USDT 和 MT
         BigDecimal rate = salesOrderService.getUsdtToMtRate();
+
+        //如果额度不足
+        PlayerAccount playerAccount = playerAccountService.getPlayerAccount(playerId);
+        BigDecimal payUsdt = buyAmount.multiply(rate);
+        if (playerAccount.getAccUsdtAvailable().compareTo(payUsdt)<0){
+            return Result.result(false, ReturnStatus.NOT_ENOUGH.getDesc(),ReturnStatus.NOT_ENOUGH.getStatus());
+        }
+
+        SalesOrder salesOrder = salesOrderService.getBuyerNoPayOrder(playerId);
+        if (salesOrder!=null){
+            return Result.result(false,ReturnStatus.NOT_FINISHED.getDesc(),ReturnStatus.NOT_FINISHED.getStatus());
+        }
+
         return salesOrderService.buyMtCreate(buyAmount,rate,playerId);
 
     }
@@ -80,15 +96,15 @@ public class SalesOrderController {
      * @param playerId
      * @return
      */
-    @RequestMapping("/check/tradePass")
-    public Result playerBuyMtFinish(@RequestParam("payPass")String payPass,@RequestParam("playerId")String playerId,@RequestParam("orderId")String orderId){
+    @RequestMapping("/player/check/pass")
+    public Result playerBuyMtFinish(@RequestParam("playerId")String playerId,@RequestParam("confirmPass")String confirmPass){
         //找出待支付订单
-        SalesOrder  salesOrder = salesOrderService.getSalesOrder(orderId);
+        SalesOrder  salesOrder = salesOrderService.getBuyerNoPayOrder(playerId);
         //验证支付密码
-        Result result = accountService.checkPayPass(playerId,payPass);
+        Result result = accountService.checkPayPass(playerId,confirmPass);
         //完成支付
-        if (result.getCode() == 200 && result.getSuccess()){
-            return salesOrderService.buyMtFinish(playerId,orderId);
+        if (result.getSuccess()){
+            return salesOrderService.buyMtFinish(playerId,confirmPass);
         }else {
             return result;
         }

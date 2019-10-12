@@ -6,6 +6,7 @@ import com.dream.city.base.model.entity.Player;
 import com.dream.city.base.model.entity.PlayerAccount;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * @author Wvv
@@ -25,4 +26,10 @@ public interface PlayerAccountService {
     Player getPlayerByPlayerId(String playerId);
 
     Result lockUstdAmount(String playerId, BigDecimal amount);
+
+    void subtractAmount(BigDecimal orderPayAmount, String playerId);
+
+    void updateBuyerAccount(List<PlayerAccount> accounts);
+
+    void updatePlayerAccounts(List<PlayerAccount> accounts);
 }

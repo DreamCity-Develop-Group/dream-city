@@ -19,9 +19,11 @@ public interface SalesOrderService {
 
     List<SalesOrder> selectSalesBuyerOrder(String playerId);
 
+    SalesOrder getBuyerNoPayOrder(String playerId);
+
     Result buyMtCreate(BigDecimal buyAmount, BigDecimal rate, String playerId);
 
-    Result buyMtFinish(String playerId, String orderId);
+    Result buyMtFinish(String playerId, String pass);
 
     BigDecimal getUsdtToMtRate();
 

@@ -86,4 +86,7 @@ public interface SalesOrderMapper {
     @Select("select * from `sales_order` where 1=1 and order_state = #{state} limit 1 ")
     @ResultMap("BaseSalesOrderResultMap")
     List<SalesOrder> getSalesOrdersByState(int state);
+
+    @Select("select * from `sales_order` where 1=1 and order_state = '2' and order_player_buyer = #{playerId} limit 1 ")
+    SalesOrder getBuyerNoPayOrder(String playerId);
 }
