@@ -188,7 +188,7 @@
       <if test="tradeAccId != null" >
         trade_acc_id = #{tradeAccId,jdbcType=INTEGER},
       </if>
-      <if test="tradePlayerId != null" >
+      <if test="tradePlayerId != null and tradePlayerId != ''" >
         trade_player_id = #{tradePlayerId,jdbcType=VARCHAR},
       </if>
       <if test="tradeOrderId != null" >
@@ -197,10 +197,10 @@
       <if test="tradeAmount != null" >
         trade_amount = #{tradeAmount,jdbcType=DECIMAL},
       </if>
-      <if test="tradeType != null" >
+      <if test="tradeType != null and tradeType != ''" >
         trade_type = #{tradeType,jdbcType=VARCHAR},
       </if>
-      <if test="tradeStatus != null" >
+      <if test="tradeStatus != null and tradeStatus != ''" >
         trade_status = #{tradeStatus,jdbcType=VARCHAR},
       </if>
       <if test="personalTax != null" >
@@ -212,7 +212,7 @@
       <if test="inOutStatus != null" >
         in_out = #{inOutStatus,jdbcType=VARCHAR},
       </if>
-      <if test="tradeDesc != null" >
+      <if test="tradeDesc != null and tradeDesc != ''" >
         trade_desc = #{tradeDesc,jdbcType=VARCHAR},
       </if>
       update_time = now(),
