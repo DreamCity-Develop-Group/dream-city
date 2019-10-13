@@ -68,5 +68,16 @@ public class PlayerAccountReq implements Serializable {
     /** mt冻结金额 */
     private BigDecimal accMtFreeze;
 
+    private BigDecimal personalTax;
+
+    private BigDecimal enterpriseTax;
+
+    private String tradeStatus;
+    private Integer tradeId;
+    /** 审核id */
+    private Integer verifyId;
+    private String tradeDetailType;
+    /** 交易审核时间 */
+    private Date verifyTime;
 
 }

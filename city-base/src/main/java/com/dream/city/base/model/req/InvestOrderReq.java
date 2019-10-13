@@ -15,59 +15,59 @@ import java.util.Date;
 @Data
 public class InvestOrderReq implements Serializable {
 
+    private Integer id;
+
     /**
      * 订单id
      */
     private Integer orderId;
-
-    /** 项目ID */
-    private Integer investId;
-
     /** 投资金额 */
     private BigDecimal orderAmount;
-
-    /** 金额类型：mt，usdt */
-    private String amountType;
-
-    /** 名称 */
-    private String inName;
-
-    /** 玩家ID */
-    private String payerId;
-
     /** 订单状态 */
     private String orderState;
-
+    private String orderName;
+    private String orderNum;
     /** 订单是否复投 */
     private Integer orderRepeat;
 
+
+
+    /** 名称 */
+    private String inName;
+    /** 项目ID */
+    private Integer investId;
     /** 限额 */
-    private Float inLimit;
-
-    /** 开始时间 */
-    private Date inStart;
-
-    /** 税金 */
-    private Double inTax;
-
+    private BigDecimal inLimit;
+    /** 个人所得税 */
+    private BigDecimal personalInTax;
+    /** 企业所得税 */
+    private BigDecimal enterpriseIntax;
     /** 收益倍数 */
     private String inEarning;
-
+    /** 开始时间 */
+    private Date inStart;
     /** 投资结束时间 */
     private Date inEnd;
 
-    /**  */
-    private Date orderStartTime;
 
-    /**  */
+
+    /** 玩家ID */
+    private String payerId;
+    /** 玩家Name */
+    private String payerName;
+
+
+    private String verifyStatus;
+
+
+    /** 金额类型：mt，usdt */
+    private String amountType;
+    private Date orderStartTime;
     private Date orderEndTime;
 
 
-    /** 订单id */
-    private Integer id;
 
 
-    /** 玩家Name */
-    private String payerName;
+
 
 }

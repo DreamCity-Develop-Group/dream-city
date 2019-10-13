@@ -19,46 +19,72 @@
   </sql>
 
 
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.dream.city.base.model.entity.InvestOrder" >
-    select 
-    <include refid="Base_Column_List" />
-    from invest_order
+  <select id="selectByPrimaryKey" resultType="com.dream.city.base.model.resp.InvestOrderResp"
+          parameterType="java.lang.Integer" >
+    select o.order_id orderId, o.order_invest_id investId, o.order_payer_id payerId, o.order_amount orderAmount,
+      o.order_state orderState, o.order_repeat orderRepeat,
+      o.order_name orderName,o.order_num orderNum,o.create_time createTime, o.update_time updateTime,
+      (SELECT i.in_name FROM city_invest i WHERE i.in_id=o.order_invest_id) inName,
+      (SELECT i.in_earning FROM city_invest i WHERE i.in_id=o.order_invest_id) inEarning,
+      (SELECT i.in_personal_tax FROM city_invest i WHERE i.in_id = o.order_invest_id) personalInTax,
+      (SELECT i.in_enterprise_tax FROM city_invest i WHERE i.in_id = o.order_invest_id) enterpriseIntax,
+      (SELECT p.player_name FROM city_player p WHERE p.player_id=o.order_payer_id) playerName,
+      (SELECT v.verify_status FROM trade_verify v WHERE v.verify_order_id=o.order_id ORDER BY update_time DESC LIMIT 1) verifyStatus,
+      (SELECT v.verify_desc FROM trade_verify v WHERE v.verify_order_id=o.order_id ORDER BY update_time DESC LIMIT 1) verifyDesc
+    from invest_order o
     where order_id = #{orderId,jdbcType=INTEGER}
   </select>
 
 
-  <select id="getInvestOrders" resultMap="BaseResultMap" parameterType="com.dream.city.base.model.entity.InvestOrder" >
-    select
-    <include refid="Base_Column_List" />
-    from invest_order
+  <select id="getInvestOrders" resultType="com.dream.city.base.model.resp.InvestOrderResp"
+          parameterType="com.dream.city.base.model.req.InvestOrderReq" >
+    SELECT a.* FROM (
+      select o.order_id orderId, o.order_invest_id investId, o.order_payer_id payerId, o.order_amount orderAmount,
+        o.order_state orderState, o.order_num orderNum, o.order_repeat orderRepeat,
+        o.order_name orderName,o.create_time createTime, o.update_time updateTime,
+        (SELECT i.in_name FROM city_invest i WHERE i.in_id=o.order_invest_id) inName,
+        (SELECT i.in_earning FROM city_invest i WHERE i.in_id=o.order_invest_id) inEarning,
+        (SELECT i.in_personal_tax FROM city_invest i WHERE i.in_id = o.order_invest_id) personalInTax,
+        (SELECT i.in_enterprise_tax FROM city_invest i WHERE i.in_id = o.order_invest_id) enterpriseIntax,
+        (SELECT p.player_name FROM city_player p WHERE p.player_id=o.order_payer_id) playerName,
+        (SELECT v.verify_status FROM trade_verify v WHERE v.verify_order_id=o.order_id ORDER BY update_time DESC LIMIT 1) verifyStatus,
+        (SELECT v.verify_desc FROM trade_verify v WHERE v.verify_order_id=o.order_id ORDER BY update_time DESC LIMIT 1) verifyDesc
+    from invest_order o
+    ) a
     <where>
       1=1
       <if test="orderId !=null">
-        and  order_id = #{orderId,jdbcType=INTEGER}
+        and  a.orderId = #{orderId,jdbcType=INTEGER}
       </if>
-      <if test="orderInvestId !=null">
-        and  order_invest_id = #{orderInvestId,jdbcType=INTEGER}
+      <if test="investId !=null">
+        and  a.investId = #{investId,jdbcType=INTEGER}
       </if>
-      <if test="orderPayerId !=null and orderPayerId !=''">
-        and  order_payer_id = #{orderPayerId,jdbcType=VARCHAR}
+      <if test="verifyStatus !=null and verifyStatus !=''">
+        and  a.verifyStatus = #{verifyStatus,jdbcType=VARCHAR}
       </if>
-      <if test="orderName !=null and orderName !=''">
-        and  order_name = #{orderName,jdbcType=VARCHAR}
+      <if test="payerId !=null and payerId !=''">
+        and  a.payerId = #{payerId,jdbcType=VARCHAR}
+      </if>
+      <!--<if test="orderName !=null and orderName !=''">
+        and  a.orderName = #{orderName,jdbcType=VARCHAR}
       </if>
       <if test="orderNum !=null and orderNum !=''">
-        and  order_num = #{orderNum,jdbcType=VARCHAR}
-      </if>
+        and  a.orderNum = #{orderNum,jdbcType=VARCHAR}
+      </if>-->
       <if test="orderState !=null and orderState !=''">
-        and  order_state = #{orderState,jdbcType=VARCHAR}
+        and  a.orderState = #{orderState,jdbcType=VARCHAR}
+      </if>
+      <if test="inName !=null and inName !=''">
+        and  a.inName = #{inName,jdbcType=VARCHAR}
       </if>
       <if test="orderAmount !=null">
-        and  order_amount = #{orderAmount,jdbcType=DECIMAL}
+        and  a.orderAmount = #{orderAmount,jdbcType=DECIMAL}
       </if>
       <if test="orderRepeat !=null">
-        and  order_state = #{orderRepeat,jdbcType=TINYINT}
+        and  a.orderRepeat = #{orderRepeat,jdbcType=TINYINT}
       </if>
     </where>
-    order by update_time
+    order by a.updateTime desc
   </select>
 
 
@@ -83,7 +109,7 @@
   </delete>
 
 
-  <insert id="insertSelective" useGeneratedKeys="true" keyProperty="orderId" parameterType="com.dream.city.base.model.entity.InvestOrder" >
+  <insert id="insertSelective" useGeneratedKeys="true" keyProperty="orderId" keyColumn="order_id"  parameterType="com.dream.city.base.model.entity.InvestOrder" >
     insert into invest_order
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="orderId != null" >

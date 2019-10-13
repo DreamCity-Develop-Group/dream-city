@@ -6,11 +6,15 @@ package com.dream.city.base.model.enu;
 public enum TradeType {
 
     INVEST("INVEST","USDT投资"),
-    BUY_MT("BUY_MT","购买MT"),
     INVEST_EARNINGS("INVEST_EARNINGS","投资收益"),
-    TRANSFER("TRANSFER","转账"),
+
+    BUY_MT("BUY_MT","购买MT"),
+
     RECHARGE("RECHARGE","充值"),
-    WITHDRAW("WITHDRAW","提现");
+    TRANSFER("TRANSFER","转账"),
+    WITHDRAW("WITHDRAW","提现"),
+
+    RECEIVABLES("RECEIVABLES","平台账户进账");
 
     private String code;
     private String desc;

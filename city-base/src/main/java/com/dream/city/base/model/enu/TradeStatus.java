@@ -6,6 +6,7 @@ package com.dream.city.base.model.enu;
 public enum TradeStatus {
 
     FREEZE("FREEZE","冻结"),
+    UNFREEZE("UNFREEZE","解冻"),
     OUT("OUT","已出账"),
     IN("IN","已入账");
 

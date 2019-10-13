@@ -53,10 +53,5 @@ public class PlayerTradeResp implements Serializable {
      */
     private String isWithdrew;
 
-    /**
-     * 转账所得税
-     */
-    private BigDecimal transferTax;
-
 
 }

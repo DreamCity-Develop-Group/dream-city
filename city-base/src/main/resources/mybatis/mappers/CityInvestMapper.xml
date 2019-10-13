@@ -7,7 +7,8 @@
     <result column="in_img" property="inImg" jdbcType="VARCHAR" />
     <result column="in_limit" property="inLimit" jdbcType="DECIMAL" />
     <result column="in_start" property="inStart" jdbcType="TIMESTAMP" />
-    <result column="in_tax" property="inTax" jdbcType="REAL" />
+    <result column="in_personal_tax" property="inPersonalTax" jdbcType="REAL" />
+    <result column="in_enterprise_tax" property="inEnterpriseTax" jdbcType="REAL" />
     <result column="in_earning" property="inEarning" jdbcType="TINYINT" />
     <result column="in_end" property="inEnd" jdbcType="TIMESTAMP" />
     <result column="is_valid" property="isValid" jdbcType="CHAR" />
@@ -15,7 +16,7 @@
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <sql id="Base_Column_List" >
-    in_id, in_name, in_limit, in_start, in_tax, in_earning, in_end,DATE_FORMAT(create_time,'%Y-%m-%d %h:%m:%s') create_time, DATE_FORMAT(update_time,'%Y-%m-%d %h:%m:%s') update_time,is_valid,in_img
+    in_id, in_name, in_limit, in_start, in_personal_tax, in_enterprise_tax, in_earning, in_end,DATE_FORMAT(create_time,'%Y-%m-%d %h:%m:%s') create_time, DATE_FORMAT(update_time,'%Y-%m-%d %h:%m:%s') update_time,is_valid,in_img
   </sql>
 
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.dream.city.base.model.entity.CityInvest" >
@@ -76,8 +77,11 @@
       <if test="inStart != null" >
         in_start,
       </if>
-      <if test="inTax != null" >
-        in_tax,
+      <if test="inPersonalTax != null" >
+        in_personal_tax,
+      </if>
+      <if test="inEnterpriseTax != null" >
+        in_enterprise_tax,
       </if>
       <if test="inEarning != null" >
         in_earning,
@@ -103,8 +107,11 @@
       <if test="inStart != null" >
         #{inStart,jdbcType=TIMESTAMP},
       </if>
-      <if test="inTax != null" >
-        #{inTax,jdbcType=REAL},
+      <if test="inPersonalTax != null" >
+        #{inPersonalTax,jdbcType=REAL},
+      </if>
+      <if test="inEnterpriseTax != null" >
+        #{inEnterpriseTax,jdbcType=REAL},
       </if>
       <if test="inEarning != null" >
         #{inEarning,jdbcType=TINYINT},
@@ -130,8 +137,11 @@
       <if test="inStart != null" >
         in_start = #{inStart,jdbcType=TIMESTAMP},
       </if>
-      <if test="inTax != null" >
-        in_tax = #{inTax,jdbcType=REAL},
+      <if test="inPersonalTax != null" >
+        in_personal_tax = #{inPersonalTax,jdbcType=REAL},
+      </if>
+      <if test="inEnterpriseTax != null" >
+        in_enterprise_tax = #{inEnterpriseTax,jdbcType=REAL},
       </if>
       <if test="inEarning != null" >
         in_earning = #{inEarning,jdbcType=TINYINT},

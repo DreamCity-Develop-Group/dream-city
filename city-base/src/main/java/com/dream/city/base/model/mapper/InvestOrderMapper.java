@@ -2,6 +2,8 @@ package com.dream.city.base.model.mapper;
 
 
 import com.dream.city.base.model.entity.InvestOrder;
+import com.dream.city.base.model.req.InvestOrderReq;
+import com.dream.city.base.model.resp.InvestOrderResp;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -14,18 +16,15 @@ public interface InvestOrderMapper {
 
     Integer deleteByPrimaryKey(Integer orderId);
 
-    InvestOrder insertSelective(InvestOrder record);
+    Integer insertSelective(InvestOrder record);
 
-    InvestOrder selectByPrimaryKey(InvestOrder record);
+    InvestOrderResp selectByPrimaryKey(Integer orderId);
 
     Integer updateByPrimaryKeySelective(InvestOrder record);
 
-    List<InvestOrder> getInvestOrders(InvestOrder record);
+    List<InvestOrderResp> getInvestOrders(InvestOrderReq record);
 
     int countOrdersByPayerIdInvestId(InvestOrder record);
-
-
-    InvestOrder selectByPrimaryKey(Integer orderId);
 
     Integer updateOrderStateById(InvestOrder record);
 

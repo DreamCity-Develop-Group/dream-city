@@ -35,7 +35,7 @@
     <result column="personal_tax" property="personalTax" jdbcType="DECIMAL" />
     <result column="enterprise_tax" property="enterpriseTax" jdbcType="DECIMAL" />
     <result column="player_name" property="playerName" jdbcType="VARCHAR" />
-    <result column="verify_emp_id" property="verifyEmpId" jdbcType="VARCHAR" />
+    <result column="verify_user_id" property="verifyEmpId" jdbcType="VARCHAR" />
     <result column="user_name" property="verifyUserName" jdbcType="VARCHAR" />
     <result column="verify_status" property="verifyStatus" jdbcType="VARCHAR" />
     <result column="verify_time" property="verifyTime" jdbcType="TIMESTAMP" />
@@ -54,7 +54,7 @@
   <select id="getTradeDetailList" resultMap="BaseResultMapExT" parameterType="com.dream.city.base.model.req.PlayerTradeReq" >
     SELECT d.id detail_id, d.trade_id, d.verify_id, d.order_id, d.player_id, d.trade_detail_type, d.trade_amount, d.verify_time, d.descr detail_descr, d.create_time detail_time,
       t.personal_tax,t.enterprise_tax,t.trade_type,t.trade_status,p.player_name,
-      (SELECT u.name FROM user u,trade_verify v WHERE d.verify_id=v.verify_id and v.verify_emp_id= u.id) user_name,
+      (SELECT u.name FROM user u,trade_verify v WHERE d.verify_id=v.verify_id and v.verify_user_id= u.id) user_name,
       (SELECT v.verify_status FROM trade_verify v WHERE d.verify_id = v.verify_id) verify_status,
       (SELECT v.create_time FROM trade_verify v WHERE d.verify_id = v.verify_id) verify_time,
       (SELECT o.order_name FROM invest_order o WHERE d.order_id=o.order_id) order_name,
@@ -110,7 +110,7 @@
   </delete>
 
 
-  <insert id="insertSelective" parameterType="com.dream.city.base.model.entity.TradeDetail" >
+  <insert id="insertSelective" useGeneratedKeys="true" keyProperty="id" keyColumn="id" parameterType="com.dream.city.base.model.entity.TradeDetail" >
     insert into trade_detail
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
