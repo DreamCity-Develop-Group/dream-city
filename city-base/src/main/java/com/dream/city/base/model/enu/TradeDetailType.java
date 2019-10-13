@@ -1,13 +1,9 @@
 package com.dream.city.base.model.enu;
 
 /**
-* 交易明细类型
- * （充值:recharge,usdt投资收益:usdt_earnings,mt投资收益:mt_earnings,
- * usdt投资税金:usdt_invest_tax,mt投资税金:mt_invest_tax,个人所得税:personal_tax,企业所得税:enterprise_tax,
- * 转账冻结:transfer_freeze,提现冻结:withdraw_freeze,购买mt冻结:buy_mt_freeze,usdt投资冻结:usdt_invest_freeze,
- * mt投资冻结:mt_inves_freeze,转账审核通过扣款:transfer_verify,提现审核通过扣款:withdraw_verify,usdt投资审核通过扣款:usdt_invest_verify
- * 转账所得税:transfer_tax
- * */
+ * 交易明细类型
+ *
+ */
 public enum TradeDetailType {
 
     RECHARGE("RECHARGE","充值"),
@@ -30,9 +26,13 @@ public enum TradeDetailType {
     TRANSFER_TAX("TRANSFER_TAX","转账所得税"),
 
     WITHDRAW_FREEZE("WITHDRAW_FREEZE","提现冻结"),
-    WITHDRAW_VERIFY("WITHDRAW_VERIFY","提现审核通过扣款");
+    WITHDRAW_VERIFY("WITHDRAW_VERIFY","提现审核通过扣款"),
+    WITHDRAW_TAX("WITHDRAW_TAX","提现所得税"),
 
-
+    RECEIVABLES_TRANSFER_TAX("RECEIVABLES_TRANSFER_TAX","平台账户转账所得税进账"),
+    RECEIVABLES_WITHDRAW_TAX("RECEIVABLES_WITHDRAW_TAX","平台账户提现所得税进账"),
+    RECEIVABLES_INVEST_USDT("RECEIVABLES_INVEST_USDT","平台账户USDT投资进账"),
+    RECEIVABLES_INVEST_TAX("RECEIVABLES_INVEST_TAX","平台账户USDT投资税金进账");
 
     private String code;
     private String desc;

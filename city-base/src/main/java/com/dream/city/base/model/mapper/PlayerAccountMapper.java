@@ -62,6 +62,7 @@ public interface PlayerAccountMapper {
      * @return
      */
     List<PlayerAccount> getPlatformAccounts(PlayerAccountReq record);
+
     List<PlayerAccount> getPlayerAccountList(PlayerAccount record);
     /**
      *  玩家的资金账户

@@ -7,6 +7,11 @@ import java.io.Serializable;
 @Data
 public class VerifyReq implements Serializable {
 
+    /**
+     * 投资项目ID
+     */
+    private Integer investId;
+
     /** 交易id(交易记录表) */
     private Integer tradeId;
 

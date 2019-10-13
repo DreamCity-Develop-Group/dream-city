@@ -171,10 +171,7 @@
         <include refid="Base_Column_List"/>
         from player_account
         <where>
-            and acc_id in(#{platformAccIds,jdbcType=VARCHAR})
-            <if test="accPlayerId != null and accPlayerId != '' ">
-                and acc_player_id = #{accPlayerId,jdbcType=VARCHAR}
-            </if>
+            acc_player_id in(${platformAccIds})
         </where>
         order by create_time desc
     </select>
