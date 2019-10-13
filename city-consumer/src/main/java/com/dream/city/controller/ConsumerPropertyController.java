@@ -39,7 +39,7 @@ public class ConsumerPropertyController {
      * @param msg
      * @return
      */
-    @ApiOperation(value = "查询物业", notes = "查询物业", response = Message.class)
+    @ApiOperation(value = "查询物业", httpMethod = "POST", notes = "查询物业", response = Message.class)
     @RequestMapping("/getProperty")
     public Message getProperty(@RequestBody Message msg){
         logger.info("查询物业", JSONObject.toJSONString(msg));
@@ -57,7 +57,7 @@ public class ConsumerPropertyController {
      * @param msg
      * @return
      */
-    @ApiOperation(value = "物业列表", notes = "物业列表", response = Message.class)
+    @ApiOperation(value = "物业列表", httpMethod = "POST", notes = "物业列表", response = Message.class)
     @RequestMapping("/getPropertyLsit")
     public Message getPropertyLsit(@RequestBody Message msg){
         logger.info("物业列表", JSONObject.toJSONString(msg));

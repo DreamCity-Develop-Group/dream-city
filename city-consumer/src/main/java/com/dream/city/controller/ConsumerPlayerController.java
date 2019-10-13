@@ -45,7 +45,7 @@ public class ConsumerPlayerController {
     @Autowired
     private RedisUtils redisUtils;
     @Autowired
-    AuthService authService;
+    ConsumerAuthService authService;
     @Autowired
     private ConsumerTreeService treeService;
     //用户平台账户
@@ -68,7 +68,7 @@ public class ConsumerPlayerController {
      * @param msg
      * @return
      */
-    @ApiOperation(value = "修改玩家头像", notes = "修改玩家头像，参数：username,imgUrl", response = Message.class)
+    @ApiOperation(value = "修改玩家头像", httpMethod = "POST", notes = "修改玩家头像，参数：username,imgUrl", response = Message.class)
     @RequestMapping("/updatePlayerHeadImg")
     public Message updatePlayerHeadImg(@RequestBody Message msg) {
         log.info("修改玩家头像", JSONObject.toJSONString(msg));
@@ -88,7 +88,7 @@ public class ConsumerPlayerController {
 
 
     @RequestMapping("/searchFriend")
-    @ApiOperation(value = "换一批广场玩家列表", notes = "换一批广场玩家列表", response = Message.class)
+    @ApiOperation(value = "换一批广场玩家列表", httpMethod = "POST", notes = "换一批广场玩家列表", response = Message.class)
     public Message searchfriend(@RequestBody Message msg) {
         log.info("广场玩家列表 换一批", JSONObject.toJSONString(msg));
 
@@ -120,7 +120,7 @@ public class ConsumerPlayerController {
      * @param msg
      * @return
      */
-    @ApiOperation(value = "获取认证码", notes = "获取认证码", response = Message.class)
+    @ApiOperation(value = "获取认证码", httpMethod = "POST", notes = "获取认证码", response = Message.class)
     @RequestMapping("/getCode")
     public Message getCode(@RequestBody Message msg) {
         log.info("获取认证码", JSONObject.toJSONString(msg));
@@ -149,7 +149,7 @@ public class ConsumerPlayerController {
      * @param msg
      * @return
      */
-    @ApiOperation(value = "获取当前用户", notes = "获取当前用户", response = Message.class)
+    @ApiOperation(value = "获取当前用户", httpMethod = "POST", notes = "获取当前用户", response = Message.class)
     @RequestMapping("/get/user")
     public Message getUser(@RequestBody Message msg) {
         log.info("获取用户", JSONObject.toJSONString(msg));
@@ -167,7 +167,7 @@ public class ConsumerPlayerController {
      * @param msg
      * @return
      */
-    @ApiOperation(value = "广场玩家列表", notes = "广场玩家列表", response = Message.class)
+    @ApiOperation(value = "广场玩家列表", httpMethod = "POST", notes = "广场玩家列表", response = Message.class)
     @RequestMapping("/squareFriends")
     public Message squareFriends(@RequestBody Message msg) {
         log.info("广场玩家列表", JSONObject.toJSONString(msg));
@@ -209,7 +209,7 @@ public class ConsumerPlayerController {
      * @param msg
      * @return
      */
-    @ApiOperation(value = "忘记密码", notes = "忘记密码", response = Message.class)
+    @ApiOperation(value = "忘记密码", httpMethod = "POST", notes = "忘记密码", response = Message.class)
     @RequestMapping("/pwforget")
     public Message pwforget(@RequestBody Message msg) {
         log.info("忘记密码", JSONObject.toJSONString(msg));
@@ -230,7 +230,7 @@ public class ConsumerPlayerController {
      * @param msg
      * @return
      */
-    @ApiOperation(value = "修改密码", notes = "修改密码", response = Message.class)
+    @ApiOperation(value = "修改密码", httpMethod = "POST", notes = "修改密码", response = Message.class)
     @RequestMapping("/expw")
     public Message resetLoginPwd(@RequestBody Message msg) {
         log.info("修改密码", JSONObject.toJSONString(msg));
@@ -253,7 +253,7 @@ public class ConsumerPlayerController {
      * @param msg
      * @return
      */
-    @ApiOperation(value = "设置、修改交易密码", notes = "修改交易密码，没有交易密码的设置交易密码，有交易密码的修改交易密码", response = Message.class)
+    @ApiOperation(value = "设置、修改交易密码", httpMethod = "POST", notes = "修改交易密码，没有交易密码的设置交易密码，有交易密码的修改交易密码", response = Message.class)
     @RequestMapping("/expwshop")
     public Message expwshop(@RequestBody Message msg) {
         log.info("修改交易密码", JSONObject.toJSONString(msg));
@@ -310,7 +310,7 @@ public class ConsumerPlayerController {
      *                }
      * @return
      */
-    @ApiOperation(value = "用户注册", notes = "用户注册", response = Message.class)
+    @ApiOperation(value = "用户注册", httpMethod = "POST", notes = "用户注册", response = Message.class)
     @RequestMapping("/reg")
     public Message reg(@RequestBody Message message) {
         long start = System.currentTimeMillis();
@@ -498,7 +498,7 @@ public class ConsumerPlayerController {
      * @param msg
      * @return
      */
-    @ApiOperation(value = "密码登录", notes = "密码登录", response = Message.class)
+    @ApiOperation(value = "密码登录", httpMethod = "POST", notes = "密码登录", response = Message.class)
     @RequestMapping("/login")
     public Message login(@RequestBody Message msg) {
         log.info("密码登录", JSONObject.toJSONString(msg));
@@ -554,7 +554,7 @@ public class ConsumerPlayerController {
      * @param msg
      * @return
      */
-    @ApiOperation(value = "验证码登录", notes = "验证码登录", response = Message.class)
+    @ApiOperation(value = "验证码登录", httpMethod = "POST", notes = "验证码登录", response = Message.class)
     @RequestMapping("/codeLogin")
     public Message codeLogin(@RequestBody Message msg) {
         log.info("验证码登录", JSONObject.toJSONString(msg));
@@ -607,7 +607,7 @@ public class ConsumerPlayerController {
      * @param msg
      * @return
      */
-    @ApiOperation(value = "登出", notes = "登出", response = Message.class)
+    @ApiOperation(value = "登出", httpMethod = "POST", notes = "登出", response = Message.class)
     @RequestMapping("/exit")
     public Message exit(@RequestBody Message msg) {
         log.info("登出", JSONObject.toJSONString(msg));

@@ -1,6 +1,5 @@
 package com.dream.city.service.impl;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.dream.city.base.model.Message;
 import com.dream.city.base.model.MessageData;
@@ -11,13 +10,12 @@ import com.dream.city.base.model.enu.RuleKey;
 import com.dream.city.base.utils.JsonUtil;
 import com.dream.city.base.utils.RedisKeys;
 import com.dream.city.base.utils.RedisUtils;
+import com.dream.city.service.ConsumerRuleService;
+import com.dream.city.service.ConsumerSalesService;
 import com.dream.city.service.ConsumerTreeService;
 import com.dream.city.service.PusherService;
-import com.dream.city.service.RuleService;
-import com.dream.city.service.SalesService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.connection.RedisKeyCommands;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -32,9 +30,9 @@ public class PusherServer implements PusherService {
     @Autowired
     ConsumerTreeService treeService;
     @Autowired
-    SalesService salesService;
+    ConsumerSalesService salesService;
     @Autowired
-    RuleService ruleService;
+    ConsumerRuleService consumerRuleService;
 
 
     @Async
@@ -74,7 +72,7 @@ public class PusherServer implements PusherService {
                 //取出超时的请求
                 Result numOverTimeRet = salesService.getSalesNumOverTime(player.getPlayerId());
                 //取出规则次数
-                Result numRules = ruleService.getRuleItem(RuleKey.SALES_OVERTIME.getKey());
+                Result numRules = consumerRuleService.getRuleItem(RuleKey.SALES_OVERTIME.getKey());
 
 
 

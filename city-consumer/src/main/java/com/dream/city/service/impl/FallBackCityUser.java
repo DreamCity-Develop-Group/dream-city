@@ -1,14 +1,14 @@
 package com.dream.city.service.impl;
 
 import com.dream.city.base.model.Message;
-import com.dream.city.service.CityUserService;
+import com.dream.city.service.ConsumerCityUserService;
 import org.springframework.stereotype.Component;
 
 /**
  * @author Wvv
  */
 @Component
-public class FallBackCityUser implements CityUserService {
+public class FallBackCityUser implements ConsumerCityUserService {
     @Override
     public String userIndex(String str) {
         return "error";

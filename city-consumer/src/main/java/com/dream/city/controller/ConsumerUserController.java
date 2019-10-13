@@ -1,7 +1,7 @@
 package com.dream.city.controller;
 
+import com.dream.city.service.ConsumerCityUserService;
 import com.dream.city.service.ConsumerMessageService;
-import com.dream.city.service.CityUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ConsumerUserController {
 
     @Autowired
-    CityUserService cityUserService;
+    ConsumerCityUserService consumerCityUserService;
 
     @Autowired
     ConsumerMessageService messageService;

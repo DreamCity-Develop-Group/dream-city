@@ -34,7 +34,7 @@ public class ConsumerGameSettingController {
     @Autowired
     private RedisUtils redisUtils;
 
-    @ApiOperation(value = "游戏设置", notes = "游戏音效，背景音效设置", response = Message.class)
+    @ApiOperation(value = "游戏设置", httpMethod = "POST", notes = "游戏音效，背景音效设置", response = Message.class)
     @RequestMapping("/voice")
     public Object voice(@RequestBody Message msg){
         logger.info("游戏设置", JSONObject.toJSONString(msg));

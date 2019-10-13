@@ -2,6 +2,7 @@ package com.dream.city.service;
 
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.PlayerAccount;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +23,7 @@ public interface ConsumerAccountService {
      * @param record
      * @return
      */
+    @ApiOperation(value = "获取玩家账户", httpMethod = "POST", notes = "t入参username", response = Result.class)
     @RequestMapping("/getPlayerAccount")
     Result getPlayerAccount(@RequestBody PlayerAccount record);
     /**
@@ -29,6 +31,7 @@ public interface ConsumerAccountService {
      * @param playerId
      * @return
      */
+    @ApiOperation(value = "获取玩家账户", httpMethod = "POST", notes = "t入参username", response = Result.class)
     @RequestMapping("/getByPlayerId")
     PlayerAccount getPlayerAccountByPlayerId(@RequestParam("playerId")String playerId);
     /**
@@ -36,6 +39,7 @@ public interface ConsumerAccountService {
      * @param record
      * @return
      */
+    @ApiOperation(value = "玩家账户列表", httpMethod = "POST", notes = "t入参username", response = Result.class)
     @RequestMapping("/getPlayerAccountList")
     Result getPlayerAccountList(@RequestBody PlayerAccount record);
 
@@ -44,7 +48,8 @@ public interface ConsumerAccountService {
      * @param record
      * @return
      */
-    /*@RequestMapping("/createPlayerAccount")
+    /*@ApiOperation(value = "获取玩家账户", httpMethod = "POST", notes = "t入参username", response = Message.class)
+    @RequestMapping("/createPlayerAccount")
     Result createPlayerAccount(@RequestBody PlayerAccount record);*/
 
     /**
@@ -52,6 +57,7 @@ public interface ConsumerAccountService {
      * @param record
      * @return
      */
+    @ApiOperation(value = "更新玩家账户", httpMethod = "POST", notes = "t入参username", response = Result.class)
     @RequestMapping("/updatePlayerAccount")
     Result updatePlayerAccount(@RequestBody PlayerAccount record);
 

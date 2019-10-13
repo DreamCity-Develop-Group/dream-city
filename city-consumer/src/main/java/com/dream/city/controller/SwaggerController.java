@@ -21,7 +21,7 @@ public class SwaggerController {
     private static Logger logger = LoggerFactory.getLogger(SwaggerController.class);
 
 
-    @ApiOperation(value = "查询车辆接口", notes = "此接口描述xxxxxxxxxxxxx<br/>xxxxxxx<br>值得庆幸的是这儿支持html标签<hr/>", response = String.class)
+    @ApiOperation(value = "查询车辆接口", httpMethod = "POST", notes = "此接口描述xxxxxxxxxxxxx<br/>xxxxxxx<br>值得庆幸的是这儿支持html标签<hr/>", response = String.class)
     @ApiImplicitParams({
             @ApiImplicitParam(name = "vno", value = "车牌", required = false,
                     dataType = "string", paramType = "query", defaultValue = "辽A12345"),
@@ -56,7 +56,7 @@ public class SwaggerController {
     }
 
 
-    @ApiOperation(value = "根据车牌查询车辆", notes = "这种类型的查询是精确查询,其结果只有一条数据", response = String.class)
+    @ApiOperation(value = "根据车牌查询车辆", httpMethod = "POST", notes = "这种类型的查询是精确查询,其结果只有一条数据", response = String.class)
     @ApiImplicitParams({
             @ApiImplicitParam(name = "vno", value = "车牌", required = false,
                     dataType = "string", paramType = "path", defaultValue = "辽A12345")
@@ -81,7 +81,7 @@ public class SwaggerController {
         return map;
     }
 
-    @ApiOperation(value = "车辆位置查询接口", notes = "根据车牌查询车辆位置信息", response = String.class)
+    @ApiOperation(value = "车辆位置查询接口", httpMethod = "POST", notes = "根据车牌查询车辆位置信息", response = String.class)
     @ApiImplicitParams({
             @ApiImplicitParam(name = "vno", value = "车牌", required = false,
                     dataType = "string", paramType = "path", defaultValue = "辽A12345")
@@ -106,7 +106,7 @@ public class SwaggerController {
     }
 
 
-    @ApiOperation(value = "根据车辆id查询", notes = "精确查询,最常规的方式,支持POST和GET方式", response = String.class)
+    @ApiOperation(value = "根据车辆id查询", httpMethod = "POST", notes = "精确查询,最常规的方式,支持POST和GET方式", response = String.class)
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "id", required = false,
                     dataType = "string", paramType = "path", defaultValue = "12344444")
@@ -131,7 +131,7 @@ public class SwaggerController {
         return map;
     }
 
-    @ApiOperation(value = "根据车辆id查询", notes = "精确查询,最常规的方式,支持POST和GET方式", response = String.class)
+    @ApiOperation(value = "根据车辆id查询", httpMethod = "POST", notes = "精确查询,最常规的方式,支持POST和GET方式", response = String.class)
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "id", required = false,
                     dataType = "string", paramType = "path", defaultValue = "12344444")
@@ -157,7 +157,7 @@ public class SwaggerController {
     }
 
 
-    @ApiOperation(value = "网点挂靠", notes = "嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻", response = String.class)
+    @ApiOperation(value = "网点挂靠", httpMethod = "POST", notes = "嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻嘻", response = String.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successful — 请求已完成"),
             @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),

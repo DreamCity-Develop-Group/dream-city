@@ -20,7 +20,7 @@ import java.math.BigDecimal;
 import java.util.*;
 import java.util.logging.Level;
 
-@Api(value = "API-Consumer Main Default Page", description = "主页数据接口")
+@Api(value = "API-Consumer Main Default Page", tags = "主页数据接口")
 @RestController
 @Slf4j
 @RequestMapping("/consumer/main")
@@ -43,11 +43,11 @@ public class DefaultController {
     @Autowired
     ConsumerPropertyService propertyService;
     @Autowired
-    SalesService salesService;
+    ConsumerSalesService salesService;
 
 
 
-    @ApiOperation(value = "主页数据接口Player", notes = "此接口描述xxxxxxxxxxxxx<br/>xxxxxxx<br>值得庆幸的是这儿支持html标签<hr/>", response = Result.class)
+    @ApiOperation(value = "主页数据接口Player", httpMethod = "POST", notes = "此接口描述xxxxxxxxxxxxx<br/>xxxxxxx<br>值得庆幸的是这儿支持html标签<hr/>", response = Result.class)
     @ApiImplicitParams({
             @ApiImplicitParam(name = "player", value = "玩家",
                     required = true, dataType = "Player",

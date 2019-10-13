@@ -53,7 +53,7 @@ public class ConsumerTradeController {
      * @param msg
      * @return
      */
-    @ApiOperation(value = "根据tradeId获取投资记录",notes = "t参数:tradeId", response = Message.class)
+    @ApiOperation(value = "根据tradeId获取投资记录",httpMethod = "POST", notes = "t参数:tradeId", response = Message.class)
     @RequestMapping("/trade/getPlayerTradeById")
     public Message getPlayerTradeById(@RequestBody Message msg){
         logger.info("根据tradeId获取投资记录", JSONObject.toJSONString(msg));
@@ -74,7 +74,7 @@ public class ConsumerTradeController {
      * @param msg
      * @return
      */
-    @ApiOperation(value = "获取投资记录",notes = "t可选参数:tradeId,playerId,username,nick,tradeType", response = Message.class)
+    @ApiOperation(value = "获取投资记录",httpMethod = "POST", notes = "t可选参数:tradeId,playerId,username,nick,tradeType", response = Message.class)
     @RequestMapping("/trade/getPlayerTrade")
     public Message getPlayerTrade(@RequestBody Message msg){
         logger.info("获取投资记录", JSONObject.toJSONString(msg));
@@ -106,7 +106,7 @@ public class ConsumerTradeController {
      * @param msg
      * @return
      */
-    @ApiOperation(value = "获取投资记录列表",notes = "t可选参数:tradeId,playerId,username,nick,tradeType", response = Message.class)
+    @ApiOperation(value = "获取投资记录列表",httpMethod = "POST", notes = "t可选参数:tradeId,playerId,username,nick,tradeType", response = Message.class)
     @RequestMapping("/trade/getPlayerTradeList")
     public Message getPlayerTradeList(@RequestBody Message msg){
         logger.info("用户下单", JSONObject.toJSONString(msg));
@@ -145,7 +145,7 @@ public class ConsumerTradeController {
      * @return
      */
     @RequestMapping("/trade/recharge")
-    @ApiOperation(value = "玩家充值",notes = "t参数:playerId,username,nick,accUsdt,accMt", response = Message.class)
+    @ApiOperation(value = "玩家充值",httpMethod = "POST", notes = "t参数:playerId,username,nick,accUsdt,accMt", response = Message.class)
     public Message playerRecharge(@RequestBody Message msg){
         logger.info("玩家充值", JSONObject.toJSONString(msg));
 
@@ -189,7 +189,7 @@ public class ConsumerTradeController {
      * @return
      */
     @RequestMapping("/trade/playerWithdraw")
-    @ApiOperation(value = "玩家提现",notes = "t参数:playerId,username,nick,accUsdt,accMt", response = Message.class)
+    @ApiOperation(value = "玩家提现",httpMethod = "POST", notes = "t参数:playerId,username,nick,accUsdt,accMt", response = Message.class)
     public Message playerWithdraw(@RequestBody Message msg){
         logger.info("玩家提现", JSONObject.toJSONString(msg));
 
@@ -232,7 +232,7 @@ public class ConsumerTradeController {
      * 玩家转账
      * @return
      */
-    @ApiOperation(value = "玩家转账",notes = "t参数:playerId,username,nick,accUsdt,accMt", response = Message.class)
+    @ApiOperation(value = "玩家转账",httpMethod = "POST", notes = "t参数:playerId,username,nick,accUsdt,accMt", response = Message.class)
     @RequestMapping("/trade/transfer")
     public Message playerTransfer(@RequestBody Message msg){
         logger.info("玩家转账", JSONObject.toJSONString(msg));

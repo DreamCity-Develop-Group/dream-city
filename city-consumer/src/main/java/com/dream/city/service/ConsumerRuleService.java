@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  */
 @FeignClient(value = "city-tree", fallback = SalesServiceImpl.class)
 //@RequestMapping("/rule")
-public interface RuleService {
+public interface ConsumerRuleService {
 
     @RequestMapping("/rule/get/item")
     Result getRuleItem(@RequestParam("ruleKey") String ruleKey);

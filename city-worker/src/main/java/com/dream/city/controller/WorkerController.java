@@ -1,5 +1,6 @@
 package com.dream.city.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.dream.city.base.model.Message;
 import com.dream.city.base.model.Result;
 import com.dream.city.base.utils.JsonUtil;
@@ -33,27 +34,27 @@ public class WorkerController {
 
         Object msgData = message.getData().getData();
         String map = JsonUtil.parseObjToJson(msgData);
-        Map dataMap = JsonUtil.parseJsonToObj(map, Map.class);
+        JSONObject dataMap = JsonUtil.parseJsonToObj(map, JSONObject.class);
 
         if (dataMap != null){
             int jobTime = 5;
             if(dataMap.containsKey("jobTime")) {
-                jobTime = Integer.parseInt(dataMap.get("jobTime").toString());
+                jobTime = dataMap.getInteger("jobTime");
             }
 
             int jobTimes = 5;
             if(dataMap.containsKey("jobTimes")) {
-                jobTimes = Integer.parseInt(dataMap.get("jobTimes").toString());
+                jobTimes = dataMap.getInteger("jobTimes");
             }
             String jobGroup = "jobGroupDefault";
             if(dataMap.containsKey("jobGroup")){
-                jobGroup =dataMap.get("jobGroup").toString();
+                jobGroup =dataMap.getString("jobGroup");
             }else if (StringUtils.isNotBlank(message.getData().getModel())){
                 jobGroup = message.getData().getModel();
             }
             String jobName = "jobNameDefault";
             if(dataMap.containsKey("jobGroup")){
-                jobName = dataMap.get("jobGroup").toString();
+                jobName = dataMap.getString("jobGroup");
             }else if (StringUtils.isNotBlank(message.getData().getType())) {
                 jobName = message.getData().getType();
             }

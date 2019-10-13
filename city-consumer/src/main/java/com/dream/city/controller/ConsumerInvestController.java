@@ -37,7 +37,7 @@ public class ConsumerInvestController {
      * @param msg
      * @return
      */
-    @ApiOperation(value = "预约投资",notes = "t可选参数:investId,orderAmount,username,amountType", response = Message.class)
+    @ApiOperation(value = "预约投资",httpMethod = "POST", notes = "t可选参数:investId,orderAmount,username,amountType", response = Message.class)
     @RequestMapping("/playerInvest")
     public Message playerInvest(@RequestBody Message msg){
         logger.info("预约投资", JSONObject.toJSONString(msg));
@@ -50,7 +50,7 @@ public class ConsumerInvestController {
      * @param msg
      * @return
      */
-    @ApiOperation(value = "投资",notes = "t可选参数:investId,orderAmount,username,amountType", response = Message.class)
+    @ApiOperation(value = "投资",httpMethod = "POST", notes = "t可选参数:investId,orderAmount,username,amountType", response = Message.class)
     @RequestMapping("/playerInvesting")
     public Message playerInvesting(@RequestBody Message msg){
         logger.info("投资", JSONObject.toJSONString(msg));
@@ -63,7 +63,7 @@ public class ConsumerInvestController {
      * @param msg
      * @return
      */
-    @ApiOperation(value = "根据投资id查询订单",notes = "t可选参数:investId,username", response = Message.class)
+    @ApiOperation(value = "根据投资id查询订单",httpMethod = "POST", notes = "t可选参数:investId,username", response = Message.class)
     @RequestMapping("/getInvest")
     public Message getInvest(@RequestBody Message msg){
         logger.info("查询订单", JSONObject.toJSONString(msg));

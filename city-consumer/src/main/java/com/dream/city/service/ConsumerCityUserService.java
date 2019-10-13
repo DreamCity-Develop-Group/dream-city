@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @author Wvv
  */
 @FeignClient(value = "city-user", fallback = FallBackCityUser.class)
-public interface CityUserService {
+public interface ConsumerCityUserService {
     //city-user服务中方法的映射路径
 
     @RequestMapping("/user/index/{str}")

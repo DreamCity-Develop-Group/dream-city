@@ -41,7 +41,7 @@ public class ConsumerFriendsController {
      * @param msg
      * @return
      */
-    @ApiOperation(value = "好友主页", notes = "好友主页", response = Message.class)
+    @ApiOperation(value = "好友主页", httpMethod = "POST", notes = "好友主页", response = Message.class)
     @RequestMapping("/friendHomePage")
     public Message friendHomePage(@RequestBody Message msg){
         logger.info("好友主页", JSONObject.toJSONString(msg));
@@ -51,7 +51,7 @@ public class ConsumerFriendsController {
 
 
     @RequestMapping("/addFriend")
-    @ApiOperation(value = "添加好友", notes = "添加好友", response = Message.class)
+    @ApiOperation(value = "添加好友", httpMethod = "POST", notes = "添加好友", response = Message.class)
     public Message addFriend(@RequestBody Message msg){
         logger.info("添加好友", JSONObject.toJSONString(msg));
         Map map = getPlayerIdOrFriendId(msg);
@@ -64,7 +64,7 @@ public class ConsumerFriendsController {
         return message;
     }
 
-    @ApiOperation(value = "通过好友", notes = "通过好友", response = Message.class)
+    @ApiOperation(value = "通过好友", httpMethod = "POST", notes = "通过好友", response = Message.class)
     @RequestMapping("/agreeApply")
     public Message agreeApply(@RequestBody Message msg){
         logger.info("通过好友", JSONObject.toJSONString(msg));
@@ -85,7 +85,7 @@ public class ConsumerFriendsController {
         return message;
     }
 
-    @ApiOperation(value = "获取好友列表", notes = "获取好友列表", response = Message.class)
+    @ApiOperation(value = "获取好友列表", httpMethod = "POST", notes = "获取好友列表", response = Message.class)
     @RequestMapping("/friendList")
     public Message friendList(@RequestBody Message msg){
         logger.info("获取好友列表", JSONObject.toJSONString(msg));
@@ -107,7 +107,7 @@ public class ConsumerFriendsController {
         return message;
     }
 
-    @ApiOperation(value = "获取好友申请列表", notes = "获取好友申请列表", response = Message.class)
+    @ApiOperation(value = "获取好友申请列表", httpMethod = "POST", notes = "获取好友申请列表", response = Message.class)
     @RequestMapping("/applyFriend")
     public Message applyFriend(@RequestBody Message msg){
         logger.info("获取好友申请列表", JSONObject.toJSONString(msg));

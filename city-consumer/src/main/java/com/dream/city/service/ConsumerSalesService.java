@@ -17,7 +17,7 @@ import java.math.BigDecimal;
  */
 @FeignClient(value = "city-tree", fallback = SalesServiceImpl.class)
 //@RequestMapping("/sales")
-public interface SalesService {
+public interface ConsumerSalesService {
 
     @RequestMapping("/sales/get/sales/num")
     Result getSalesNum(@RequestParam("playerId")String playerId);

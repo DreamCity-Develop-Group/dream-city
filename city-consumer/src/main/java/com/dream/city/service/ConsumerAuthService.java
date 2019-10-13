@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @author Wvv
  */
 @FeignClient(value = "city-auth", fallback = FallBackCityUser.class)
-public interface AuthService {
+public interface ConsumerAuthService {
 
     /**
      * 用户登录

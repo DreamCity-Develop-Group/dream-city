@@ -6,6 +6,7 @@ import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.PlayerEarning;
 import com.dream.city.base.utils.DataUtils;
 import com.dream.city.service.ConsumerEarningService;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,7 @@ public class ConsumerEarningController {
      * @param msg
      * @return
      */
+    @ApiOperation(value = "查询提现规则", httpMethod = "POST", notes = "t入参username", response = Message.class)
     @RequestMapping("/getEarning")
     public Message getEarning(@RequestBody Message msg){
         PlayerEarning earning = DataUtils.getEarningFromJsonReq(msg);
@@ -48,6 +50,7 @@ public class ConsumerEarningController {
      * @param msg
      * @return
      */
+    @ApiOperation(value = "查询提现规则列表", httpMethod = "POST", notes = "t入参username", response = Message.class)
     @RequestMapping("/getEarningList")
     public Message getEarningList(@RequestBody Message msg){
         PlayerEarning earning = DataUtils.getEarningFromJsonReq(msg);
@@ -63,7 +66,8 @@ public class ConsumerEarningController {
      * @param msg
      * @return
      */
-    /*@RequestMapping("/deleteEarningById")
+    /*@ApiOperation(value = "删除提现规则", httpMethod = "POST", notes = "t入参username", response = Message.class)
+    @RequestMapping("/deleteEarningById")
     public Message deleteEarningById(@RequestBody Message msg){
         PlayerEarning earning = DataUtils.getEarningFromJsonReq(msg);
         Result result = earningService.deleteEarningById(earning.getEarnId());
@@ -81,7 +85,8 @@ public class ConsumerEarningController {
      * @param msg
      * @return
      */
-    /*@RequestMapping("/insertEarning")
+    /*@ApiOperation(value = "新增提现规则", httpMethod = "POST", notes = "t入参username", response = Message.class)
+    @RequestMapping("/insertEarning")
     public Message insertEarning(@RequestBody Message msg){
         PlayerEarning earning = DataUtils.getEarningFromJsonReq(msg);
         Result result = earningService.insertEarning(earning);
@@ -97,7 +102,8 @@ public class ConsumerEarningController {
      * @param msg
      * @return
      */
-    /*@RequestMapping("/updateEarningById")
+    /*@ApiOperation(value = "更新提现规则", httpMethod = "POST", notes = "t入参username", response = Message.class)
+    @RequestMapping("/updateEarningById")
     public Message updateEarningById(@RequestBody Message msg){
         PlayerEarning earning = DataUtils.getEarningFromJsonReq(msg);
         Result result = earningService.updateEarningById(earning);

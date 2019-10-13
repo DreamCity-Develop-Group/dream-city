@@ -1,14 +1,14 @@
 package com.dream.city.service.impl;
 
 import com.dream.city.base.model.Result;
-import com.dream.city.service.SalesService;
+import com.dream.city.service.ConsumerSalesService;
 import org.springframework.stereotype.Component;
 
 /**
  * @author Wvv
  */
 @Component
-public class SalesServiceImpl implements SalesService {
+public class SalesServiceImpl implements ConsumerSalesService {
 
     @Override
     public Result getSalesNum(String playerId) {

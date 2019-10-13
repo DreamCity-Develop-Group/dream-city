@@ -44,7 +44,7 @@ public class ConsumerAccountController {
      * @param msg
      * @return
      */
-    @ApiOperation(value = "获取玩家账户", notes = "t入参username", response = Message.class)
+    @ApiOperation(value = "获取玩家账户", httpMethod = "POST", notes = "t入参username", response = Message.class)
     @RequestMapping("/getPlayerAccount")
     public Message getPlayerAccount(@RequestBody Message msg){
         logger.info("添加好友", JSONObject.toJSONString(msg));

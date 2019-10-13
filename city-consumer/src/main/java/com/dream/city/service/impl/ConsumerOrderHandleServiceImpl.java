@@ -50,7 +50,7 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
         CityInvest invest = getInvestByIdOrinName(orderReq.getInvestId(),orderReq.getInName());
         BigDecimal inTax = invest.getInPersonalTax();
         orderReq.setOrderAmount(invest.getInLimit());
-        orderReq.setInTax(Double.parseDouble(String.valueOf(invest.getInPersonalTax())));
+        orderReq.setPersonalInTax(invest.getInPersonalTax());
         //获取当前时间  后改为数据库时间 TODO
         Date investTime = new Date();
 

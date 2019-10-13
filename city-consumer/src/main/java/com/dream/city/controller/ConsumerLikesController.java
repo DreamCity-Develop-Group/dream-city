@@ -45,7 +45,7 @@ public class ConsumerLikesController {
      * @param msg
      * @return
      */
-    @ApiOperation(value = "当天是否可以点赞", notes = "当天是否可以点赞（好友）", response = Message.class)
+    @ApiOperation(value = "当天是否可以点赞", httpMethod = "POST", notes = "当天是否可以点赞（好友）", response = Message.class)
     @RequestMapping("/canLikePlayerToday")
     public Message canLikePlayerToday(@RequestBody Message msg){
         logger.info("点赞", JSONObject.toJSONString(msg));
@@ -70,7 +70,7 @@ public class ConsumerLikesController {
      * @param msg
      * @return
      */
-    @ApiOperation(value = "当天是否可以点赞", notes = "当天是否可以点赞（投资）", response = Message.class)
+    @ApiOperation(value = "当天是否可以点赞", httpMethod = "POST", notes = "当天是否可以点赞（投资）", response = Message.class)
     @RequestMapping("/canLikeInvestToday")
     public Message canLikeInvestToday(@RequestBody Message msg){
         logger.info("点赞", JSONObject.toJSONString(msg));
@@ -94,7 +94,7 @@ public class ConsumerLikesController {
      * @param msg
      * @return
      */
-    @ApiOperation(value = "点赞", notes = "点赞", response = Message.class)
+    @ApiOperation(value = "点赞", httpMethod = "POST", notes = "点赞", response = Message.class)
     @RequestMapping("/likefriend")
     public Message playerLike(@RequestBody Message msg){
         logger.info("点赞", JSONObject.toJSONString(msg));
@@ -135,7 +135,7 @@ public class ConsumerLikesController {
      * @param msg
      * @return
      */
-    @ApiOperation(value = "玩家被点赞总数", notes = "玩家被点赞总数", response = Message.class)
+    @ApiOperation(value = "玩家被点赞总数", httpMethod = "POST", notes = "玩家被点赞总数", response = Message.class)
     @RequestMapping("/likesCount")
     public Message playerLikesCount(@RequestBody Message msg){
         logger.info("获取玩家点赞总数，{}",msg);
@@ -156,7 +156,7 @@ public class ConsumerLikesController {
      * @param msg
      * @return
      */
-    @ApiOperation(value = "点赞项目", notes = "点赞项目", response = Message.class)
+    @ApiOperation(value = "点赞项目", httpMethod = "POST", notes = "点赞项目", response = Message.class)
     @RequestMapping("/likesList")
     public Message playerLikesList(@RequestBody Message msg) {
         logger.info("获取点赞项目，{}", msg);

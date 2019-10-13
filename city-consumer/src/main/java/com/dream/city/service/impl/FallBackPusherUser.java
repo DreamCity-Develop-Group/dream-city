@@ -1,41 +1,23 @@
 package com.dream.city.service.impl;
 
 import com.dream.city.base.model.Message;
-import com.dream.city.service.CityUserService;
+import com.dream.city.base.model.Result;
+import com.dream.city.service.ConsumerPusherService;
 import org.springframework.stereotype.Component;
 
 /**
  * @author Wvv
  */
 @Component
-public class FallBackPusherUser implements CityUserService {
-    @Override
-    public String userIndex(String str) {
-        return "error";
-    }
+public class FallBackPusherUser implements ConsumerPusherService {
 
     @Override
-    public String users(String id) {
-        return "error id";
-    }
-
-    @Override
-    public String reg(Message message) {
+    public Result jobPush(Message message) {
         return null;
     }
 
     @Override
-    public String login(Message message) {
-        return null;
-    }
-
-    @Override
-    public String quit(Message message) {
-        return null;
-    }
-
-    @Override
-    public String reset(Message message) {
+    public Result noticePush(Message message) {
         return null;
     }
 }
