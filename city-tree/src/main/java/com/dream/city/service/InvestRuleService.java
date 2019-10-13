@@ -18,4 +18,6 @@ public interface InvestRuleService {
     RuleItem getRuleItemByFlag(String itemFlag);
 
     List<InvestRule> getRulesByItem(Integer itemId);
+
+    BigDecimal getLevelRuleRate(String playerId, Integer level);
 }

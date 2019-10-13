@@ -245,6 +245,7 @@ public class RedisUtils {
         try {
             if (time > 0) {
                 stringRedisTemplate.expire(key, time, TimeUnit.SECONDS);
+                redisTemplate.expire(key,time,TimeUnit.SECONDS);
             }
             return true;
         } catch (Exception e) {

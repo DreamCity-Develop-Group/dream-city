@@ -80,6 +80,11 @@ public class FallBackPlayer implements ConsumerPlayerService {
     }
 
     @Override
+    public Player getPlayerByPlayerId(String playerId) {
+        return null;
+    }
+
+    @Override
     public Result getPlayerByAccount(String account) {
         return null;
     }

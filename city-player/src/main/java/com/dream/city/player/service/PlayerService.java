@@ -63,6 +63,7 @@ public interface PlayerService {
      */
     PlayerGrade getPlayerGradeByPlayerId(String playerId);
 
+    Player getPlayerByPlayerId(String playerId);
 
 
 }

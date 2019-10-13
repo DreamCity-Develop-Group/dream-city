@@ -181,6 +181,7 @@ public class WebSocketServer {
                 String ping = msgArray[0];
                 String account = msgArray[1];
                 String heartBeat = "ping";
+                String tokenBeat = "token";
 
                 if (heartBeat.equals(ping)) {
                     System.out.println("心跳消息接收...");
@@ -199,6 +200,27 @@ public class WebSocketServer {
                     }
                     sendMessage("success");
                     return;
+                }
+
+                if(tokenBeat.equals(ping)){
+                    Message replay = new Message(
+                            "server",
+                            WebSocketServer.this.clientId,
+                            new MessageData(
+                                    "tokenCheck",
+                                    "messageCenter",
+                                    ReturnStatus.SUCCESS.getStatus()
+                            ),
+                            "服务端消息中心同步通知",
+                            String.valueOf(System.currentTimeMillis())
+                    );
+
+                    String tokenStr = "token_" + account;
+                    String token = redisUtils.getStr(tokenStr);
+
+                    if (StringUtils.isNotBlank(token)) {
+                        sendInfo(replay);
+                    }
                 }
             } else {
 

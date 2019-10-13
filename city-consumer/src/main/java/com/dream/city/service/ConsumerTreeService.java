@@ -2,6 +2,7 @@ package com.dream.city.service;
 
 import com.dream.city.base.model.Message;
 import com.dream.city.base.model.Result;
+import com.dream.city.base.model.entity.RelationTree;
 import com.dream.city.service.impl.FallBackPusherUser;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,7 +35,8 @@ public interface ConsumerTreeService {
      */
     @RequestMapping("/tree/get/tree")
     Result getTree(@RequestParam("playerId")String playerId);
-
+    @RequestMapping("/tree/get/relationTree")
+    RelationTree getRelationTree(String playerId);
     /**
      * 获取投资许可
      *
@@ -44,6 +46,8 @@ public interface ConsumerTreeService {
     @RequestMapping("/tree/invest/allowed")
     Result getInvestAllowed(@RequestParam("playerId")String playerId);
 
+
+
     @RequestMapping("/tree/invest/join")
     Result joinInvestAllow(@RequestParam("playerId")String playerId, @RequestParam("amount")BigDecimal amount);
 
@@ -51,12 +55,12 @@ public interface ConsumerTreeService {
     Result getMembers(@RequestParam("playerId")String playerId, @RequestParam("level")Integer level);
 
     @RequestMapping("/tree/get/salesOrder")
-    Result getSalesOrder(String playerId);
+    Result getSalesOrder(@RequestParam("playerId")String playerId,@RequestParam("page")Integer page);
 
     @RequestMapping("/tree/player/seller/send")
     Result sendOrder(@RequestParam("playerId")String playerId,@RequestParam("orders") List<String> orders);
 
-    @RequestMapping("/tree/set/autoSend")
+    @RequestMapping("/sales/set/autoSend")
     Result setAutoSend(@RequestParam("playerId")String playerId);
 
     @RequestMapping("/sales/player/buy/mt")
@@ -66,5 +70,7 @@ public interface ConsumerTreeService {
     Result checkOrderPass(@RequestParam("playerId")String playerId, @RequestParam("confirmPass")String confirmPass);
 
     @RequestMapping("/sales/get/salesOrder")
-    Result getOrderList(@RequestParam("playerId") String playerId);
+    Result getOrderList(@RequestParam("playerId") String playerId,@RequestParam("page")Integer page);
+
+
 }

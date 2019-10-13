@@ -15,6 +15,30 @@ import java.util.List;
 @Mapper
 @Repository
 public interface PlayerAccountMapper {
+    Integer deleteByPrimaryKey(Integer accId);
+    Integer insertSelective(PlayerAccount record);
+    PlayerAccount updateByPrimaryKey(Integer accId);
+    void updateByPrimaryKeySelective(PlayerAccount account);
+    void insert(PlayerAccount account);
+    PlayerAccount selectByPrimaryKey(Integer accId);
+    /**
+     * 获取平台账户
+     * @param record
+     * @return
+     */
+    List<PlayerAccount> getPlatformAccounts(PlayerAccount record);
+
+    Integer updateByPlayerId(PlayerAccount record);
+
+
+    /**
+     * 获取平台账户
+     * @param record
+     * @return
+     */
+    List<PlayerAccount> getPlatformAccounts(PlayerAccountReq record);
+    List<PlayerAccount> getPlayerAccountList(PlayerAccount record);
+
 
     @Results(id = "BaseCityAccountResultMap", value = {
             @Result(property = "accId", column = "acc_id", id = true),
@@ -33,36 +57,13 @@ public interface PlayerAccountMapper {
 
     })
     @Select("select * from player_account where 1=1 and  acc_player_id = #{playerId} limit 1 ")
-    PlayerAccount getAccountByPlayerId(String playerId);
+     PlayerAccount getAccountByPlayerId(String playerId);
 
     @Select("select acc_id accId, from player_account where 1=1 and acc_id=#{accId}")
     PlayerAccount findPlayerAccount(int accid);
 
-    Integer deleteByPrimaryKey(Integer accId);
-    Integer insertSelective(PlayerAccount record);
-    PlayerAccount updateByPrimaryKey(Integer accId);
-    void updateByPrimaryKeySelective(PlayerAccount account);
-    void insert(PlayerAccount account);
-    PlayerAccount selectByPrimaryKey(Integer accId);
 
 
-    /**
-     * 获取平台账户
-     * @param record
-     * @return
-     */
-    List<PlayerAccount> getPlatformAccounts(PlayerAccount record);
-
-    Integer updateByPlayerId(PlayerAccount record);
-
-
-    /**
-     * 获取平台账户
-     * @param record
-     * @return
-     */
-    List<PlayerAccount> getPlatformAccounts(PlayerAccountReq record);
-    List<PlayerAccount> getPlayerAccountList(PlayerAccount record);
     /**
      *  玩家的资金账户
      * @param playerId
@@ -87,17 +88,6 @@ public interface PlayerAccountMapper {
     @Insert("insert into `player_account`(acc_id,acc_player_id,acc_addr)value(0,#{playerId},#{address})")
     void createAccount(@Param("playerId")String playerId,@Param("address")String address);
 
-    @Update({"<script>" +
-            "<foreach collection=\"accounts\" item=\"item\" separator=\";\">" +
-            " UPDATE" +
-            " `player_account`" +
-            " SET acc_usdt = #{item.accUsdt, jdbcType=VARCHAR}, " +
-            "  acc_usdt_available = #{item.accUsdtAvailable, jdbcType=VARCHAR}, " +
-            "  WHERE 1=1 " +
-            "  AND message_player_id = #{item.accPlayerId, jdbcType=VARCHAR} " +
-            "</foreach>" +
-            "</script>"})
-    void updateBuyerAccount(@Param("accounts") List<PlayerAccount> accounts);
 
     @Select("select * from player_account where 1=1 and  acc_player_id = #{playerId}")
     @ResultMap("BaseCityAccountResultMap")
@@ -113,15 +103,25 @@ public interface PlayerAccountMapper {
             "  acc_usdt_available = #{item.accUsdtAvailable}, " +
             "  acc_mt = #{item.accMt}, " +
             "  acc_mt_freeze = #{item.accMtFreeze}, " +
-            "  acc_mt_available = #{item.accMtAvailable}, " +
+            "  acc_mt_available = #{item.accMtAvailable}  " +
             "  WHERE 1=1 " +
-            "  AND message_player_id = #{item.accPlayerId} " +
+            "  AND acc_player_id = #{item.accPlayerId} " +
             "</foreach>" +
             "</script>"})
 
     void updatePlayerAccounts(@Param("accounts") List<PlayerAccount> accounts);
 
 
-    @Update("update player_account set acc_usdt = #{accUsdt} ,acc_usdt_available=#{accUsdtAvailable} where 1=1 and acc_player_id=#{accPlayerId}")
+    @Update({" UPDATE" +
+            " `player_account`" +
+            "  SET acc_usdt = #{accUsdt}, " +
+            "  acc_usdt_freeze = #{accUsdtFreeze}, " +
+            "  acc_usdt_available = #{accUsdtAvailable}, " +
+
+            "  acc_mt = #{accMt}, " +
+            "  acc_mt_freeze = #{accMtFreeze}, " +
+            "  acc_mt_available = #{accMtAvailable}  " +
+            "  WHERE 1=1 " +
+            "  AND acc_player_id = #{accPlayerId} "})
     int updatePlayerAccount(PlayerAccount payAmount);
 }

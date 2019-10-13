@@ -40,4 +40,6 @@ public interface RelationTreeService {
     boolean hasParent(String playerId);
 
     RelationTree getTreeByPlayerId(String playerId);
+
+    void closeAutoSend(RelationTree tree);
 }

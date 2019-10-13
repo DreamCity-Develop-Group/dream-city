@@ -69,8 +69,9 @@ public class AuthServiceImpl implements AuthService {
             //redisTemplate.opsForValue().set("token_"+username,token);
             //redisUtils.set("token_"+username,token);
             //redisTemplate.expire("token_"+username,30, TimeUnit.MINUTES);
-            //redisUtils.expire("token_"+username,30,TimeUnit.MINUTES);
-            redisUtils.set("token_"+username,token,1800);
+            //
+            redisUtils.set("token_"+username,token);
+            redisUtils.expire("token_"+username,30);
             return token;
         } catch (IllegalArgumentException | UnsupportedEncodingException e) {
             e.printStackTrace();

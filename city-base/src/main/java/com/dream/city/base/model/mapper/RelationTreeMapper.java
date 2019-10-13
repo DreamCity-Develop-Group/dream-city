@@ -54,7 +54,7 @@ public interface RelationTreeMapper {
     @Select("select * from city_tree where 1=1 limit 0,10")
     List<RelationTree> getTrees();
 
-    @Update(" update city_tree set tree_parent_id=#{treeParentId},tree_player_id=#{treePlayerId},tree_relation=#{treeRelation},send_auto=#{sendAuto},tree_level=#{treeLevel} where tree_id = #{treeId}")
+    @Update(" update city_tree set tree_parent_id=#{treeParentId},tree_player_id=#{treePlayerId},tree_relation=#{treeRelation},send_auto=#{sendAuto},tree_level=#{treeLevel} where 1=1 and tree_id = #{treeId}")
     void updateTree(RelationTree tree);
 
     /**
@@ -99,4 +99,5 @@ public interface RelationTreeMapper {
             "from city_tree where 1=1 and tree_player_id=#{playerId}")
     //@ResultMap("treeBaseMap")
     RelationTree getTreeByPlayerId(String playerId);
+
 }

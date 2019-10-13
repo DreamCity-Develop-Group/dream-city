@@ -281,7 +281,7 @@ public class PlayerController {
     @RequestMapping("/quit")
     public Result quit(@RequestParam("playerId")String playerId){
         log.info("用户退出，playerId:{}",playerId);
-        Result result = new Result(Boolean.TRUE,"退出成功",CityGlobal.ResultCode.success.getStatus());
+        Result result = Result.result(Boolean.TRUE,"退出成功",CityGlobal.ResultCode.success.getStatus());
         // 用户是否存在
         Player player = new Player();
         player.setPlayerId(playerId);
@@ -307,7 +307,7 @@ public class PlayerController {
     public Result quitAccount(@RequestParam("account")String account){
         log.info("用户退出，account:{}",account);
         Player playerByAccount = playerService.getPlayerByAccount(account);
-        Result result = new Result(Boolean.TRUE,"退出成功",CityGlobal.ResultCode.success.getStatus());
+        Result result = Result.result(Boolean.TRUE,"退出成功",CityGlobal.ResultCode.success.getStatus());
         // 用户是否存在
         Player player = new Player();
         String playerId = playerByAccount.getPlayerId();
@@ -450,6 +450,14 @@ public class PlayerController {
         //Result<Player>result = new Result<>(true,);
         Result result = Result.result(true,"获取玩家",200,player);
         return result;
+    }
+
+    @RequestMapping("/getPlayerByPlayerId")
+    public Player getPlayerByPlayerId(@RequestParam("playerId")String playerId){
+        Player player = playerService.getPlayerByPlayerId(playerId);
+
+
+        return player;
     }
 
     @RequestMapping("/getPlayerByAccount")

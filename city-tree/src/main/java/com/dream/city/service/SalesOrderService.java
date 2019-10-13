@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface SalesOrderService {
 
-    List<SalesOrder> selectSalesOrder(String playerId);
+    List<SalesOrder> selectSalesOrder(String playerId,Integer start,Integer size);
 
     List<SalesOrder> selectSalesOrderUnSend(String playerId);
 

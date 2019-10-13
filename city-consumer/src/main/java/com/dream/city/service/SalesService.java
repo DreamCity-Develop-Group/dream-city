@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.math.BigDecimal;
+
 /**
  * @author Wvv
  */
@@ -22,4 +24,7 @@ public interface SalesService {
 
     @RequestMapping("/sales/get/sales/overtime")
     Result getSalesNumOverTime(@RequestParam("playerId")String playerId);
+
+    @RequestMapping("/sales/get/sales/rate")
+    Result getUsdtToMtRate(@RequestParam("playerId")String playerId);
 }

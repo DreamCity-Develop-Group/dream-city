@@ -287,6 +287,11 @@ public class RelationTreeServiceImpl implements RelationTreeService {
         return treeMapper.getTreeByPlayerId(playerId);
     }
 
+    @Override
+    public void closeAutoSend(RelationTree tree) {
+        treeMapper.updateTree(tree);
+    }
+
     /**
      * 获取以上9级的父结点
      *

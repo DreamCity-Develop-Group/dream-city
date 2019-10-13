@@ -5,11 +5,8 @@ import com.dream.city.base.model.entity.Player;
 import com.dream.city.base.model.entity.PlayerAccount;
 import com.dream.city.base.model.entity.RelationTree;
 import com.dream.city.base.model.entity.SalesOrder;
-import com.dream.city.base.model.enu.InvestStatus;
 import com.dream.city.base.model.enu.OrderState;
 import com.dream.city.base.model.enu.ReturnStatus;
-import com.dream.city.base.model.mapper.RelationTreeMapper;
-import com.dream.city.base.model.mapper.PlayerAccountMapper;
 import com.dream.city.base.model.mapper.SalesOrderMapper;
 import com.dream.city.base.utils.KeyGenerator;
 import com.dream.city.service.PlayerAccountService;
@@ -20,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -43,8 +41,8 @@ public class SalesOrderServiceImpl implements SalesOrderService {
     private PlayerAccountService playerAccountService;
 
     @Override
-    public List<SalesOrder> selectSalesOrder(String playerId) {
-        return salesOrderMapper.selectSalesSellerOrder(playerId);
+    public List<SalesOrder> selectSalesOrder(String playerId,Integer start,Integer size) {
+        return salesOrderMapper.selectSalesSellerOrder(playerId,start,size);
     }
 
     @Override
@@ -70,7 +68,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
     @Override
     public List<SalesOrder> selectSalesSellerOrder(String playerId) {
 
-        return salesOrderMapper.selectSalesSellerOrder(playerId);
+        return salesOrderMapper.selectSalesSellerOrders(playerId);
     }
 
     @Override
@@ -80,7 +78,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
 
     @Override
     public SalesOrder getBuyerNoPayOrder(String playerId) {
-        List<SalesOrder> orders = salesOrderMapper.selectPlayerSalesOrdersByState(playerId,OrderState.CREATE.getStatus());
+        List<SalesOrder> orders = salesOrderMapper.selectPlayerSalesOrdersByState(playerId,OrderState.PAID.getStatus());
         if (orders.size()>0){
             return orders.get(0);
         }
@@ -99,81 +97,94 @@ public class SalesOrderServiceImpl implements SalesOrderService {
      * @param playerId
      * @return
      */
+    @Transactional
     @Override
     public Result buyMtCreate(BigDecimal buyAmount, BigDecimal rate, String playerId) {
         //判断是否有足够的支付USDT:剩余额度
-        PlayerAccount playerAccount = playerAccountService.getPlayerAccount(playerId);
-        if (playerAccount.getAccUsdtAvailable().compareTo(buyAmount.multiply(new BigDecimal(0.1))) < 0) {
+        //TODO 买家
+        PlayerAccount buyerAccount = playerAccountService.getPlayerAccount(playerId);
+        if (buyerAccount.getAccUsdtAvailable().compareTo(buyAmount.multiply(new BigDecimal(0.1))) < 0) {
             return new Result(false, "USDT剩余可用额度不足", ReturnStatus.NOT_ENOUGH.getStatus());
         }
-        //找出上家
-        RelationTree tree = treeService.getTreeByPlayerId(playerId);
-        String parentId = tree.getTreeParentId();
-
-        //生成订单
-        SalesOrder order = new SalesOrder();
-        String orderId = KeyGenerator.generateOrderID();
-        order.setId(0);
-        order.setOrderId(orderId);
-        order.setCreateTime(new Timestamp(System.currentTimeMillis()));
-        order.setOrderId(new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()));
-        order.setOrderBuyType("MT");
-        order.setOrderPayType("USDT");
-
         //支付usdt额度
         BigDecimal usdtPay = buyAmount.multiply(rate);
-        order.setOrderPayAmount(usdtPay);
-        order.setOrderPlayerBuyer(playerId);
-        order.setOrderPlayerSeller(parentId);
-        order.setOrderState(OrderState.CREATE.getStatus());
-        order.setOrderAmount(buyAmount);
-        salesOrderMapper.createSalesOrder(order);
 
-        //todo 如果上家设置了自动发货并且有足够额度，直接购买成功
-        if (StringUtils.isNotBlank(tree.getSendAuto()) && tree.getSendAuto().equals("1")) {
-            //上级额度不足
-            PlayerAccount account = playerAccountService.getPlayerAccount(parentId);
-            if (account.getAccMtAvailable().compareTo(buyAmount) < 0) {
-                /*return Result.result(
-                        false,
-                        ReturnStatus.NOT_ENOUGH_PARENT.getDesc(),
-                        ReturnStatus.NOT_ENOUGH_PARENT.getStatus(),
-                        null
-                );*/
-                log.info("上级玩家额度不足");
-            } else {
+        //TODO 锁定买家的USDT
+        buyerAccount.setAccUsdtAvailable(buyerAccount.getAccUsdtAvailable().subtract(usdtPay));
+        buyerAccount.setAccUsdtFreeze(buyerAccount.getAccUsdtFreeze().add(usdtPay));
+        int buyerAccountUp = playerAccountService.updatePlayerAccount(buyerAccount);
+        if (buyerAccountUp>0){
+            //找出上家的playerId=>parentId
+            RelationTree tree = treeService.getTreeByPlayerId(playerId);
+            String parentId = tree.getTreeParentId();
 
-                /**
-                 *TODO 锁定买家卖家数据，但是不更新订单状态
-                 */
-                List<PlayerAccount> accounts = new ArrayList<>();
-                //增加买家MT额度
-
-                //冻结买家USDT额度
-                playerAccount.setAccUsdtAvailable(playerAccount.getAccUsdtAvailable().subtract(usdtPay));
-                playerAccount.setAccUsdtFreeze(playerAccount.getAccUsdtFreeze().add(usdtPay));
-                accounts.add(playerAccount);
-                //////////////////////////////////////////////////////////////////////////////////////
-
-                PlayerAccount playerAccount1 = playerAccountService.getPlayerAccount(parentId);
-                //增加卖家USDT额度
-                //playerAccount.setAccUsdt(playerAccount.getAccUsdt().add(usdtPay));
-                //playerAccount.setAccUsdtAvailable(playerAccount.getAccUsdtAvailable().add(usdtPay));
-                //冻结卖家MT额度
-                playerAccount1.setAccMtAvailable(playerAccount1.getAccMtAvailable().subtract(buyAmount));
-                playerAccount1.setAccMtFreeze(playerAccount1.getAccMtFreeze().add(buyAmount));
-                accounts.add(playerAccount1);
+            //生成订单
+            SalesOrder order = new SalesOrder();
+            String orderId = KeyGenerator.generateOrderID();
+            order.setId(0);
+            order.setOrderId(orderId);
+            order.setCreateTime(new Timestamp(System.currentTimeMillis()));
+            order.setOrderId(new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()));
+            order.setOrderBuyType("MT");
+            order.setOrderPayType("USDT");
 
 
-                playerAccountService.updatePlayerAccounts(accounts);
+            order.setOrderPayAmount(usdtPay);
+            order.setOrderPlayerBuyer(playerId);
+            order.setOrderPlayerSeller(parentId);
+            order.setOrderState(OrderState.CREATE.getStatus());
+            order.setOrderAmount(buyAmount);
+            //改变订单状态==》[TODO 订单新建状态]
+            int insertSalesOrder = salesOrderMapper.createSalesOrder(order);
+
+            if (insertSalesOrder>0){
+                //TODO 自动发货
+                if (StringUtils.isNotBlank(tree.getSendAuto()) && tree.getSendAuto().equals("1")){
+                    //TODO 卖家
+                    PlayerAccount sellerAccount = playerAccountService.getPlayerAccount(parentId);
+                    if (sellerAccount.getAccMtAvailable().compareTo(buyAmount)<0){
+                        //TODO 关闭卖家自动发货功能
+                        tree.setSendAuto("0");
+                        treeService.closeAutoSend(tree);
+                        log.info("卖家[]由于MT备货额度不足被关闭自动发货功能！");
+                    }else{
+                        //锁定卖家MT
+                        sellerAccount.setAccMtAvailable(sellerAccount.getAccMtAvailable().subtract(buyAmount));
+                        sellerAccount.setAccMtFreeze(sellerAccount.getAccMtFreeze().add(buyAmount));
+                        int lock = playerAccountService.updatePlayerAccount(sellerAccount);
+                        if (lock>0){
+                            //改变订单状态==》[TODO 订单待支付]
+                            order.setOrderState(OrderState.PAID.getStatus());
+                            int finish = salesOrderMapper.updateSalesOrder(order);
+
+                            /*if (finish>0){
+                                //更新卖家和买家数据
+                                List<PlayerAccount> accounts = new ArrayList<>();
+                                buyerAccount.setAccMt(buyerAccount.getAccMt().add(buyAmount));
+                                buyerAccount.setAccMtAvailable(buyerAccount.getAccMtAvailable().add(buyAmount));
+                                buyerAccount.setAccUsdtFreeze(buyerAccount.getAccUsdtFreeze().subtract(usdtPay));
+                                accounts.add(buyerAccount);
+
+                                sellerAccount.setAccUsdt(sellerAccount.getAccUsdt().add(usdtPay));
+                                sellerAccount.setAccUsdtAvailable(sellerAccount.getAccUsdtAvailable().add(usdtPay));
+                                sellerAccount.setAccMtFreeze(sellerAccount.getAccMtFreeze().subtract(buyAmount));
+                                accounts.add(sellerAccount);
+
+                                playerAccountService.updatePlayerAccounts(accounts);
+
+                            }*/
+                            return new Result(true, "下单成功", ReturnStatus.SUCCESS.getStatus(), order);
+                        }
+                    }
+                }
+
+                return Result.result(false,"购买失败",ReturnStatus.ERROR.getStatus());
             }
 
+            return Result.result(false,"购买失败",ReturnStatus.ERROR.getStatus());
+        }else{
+            return Result.result(false,"购买失败",ReturnStatus.ERROR.getStatus());
         }
-
-        //todo 由任务管理去完成相应的业务逻辑
-
-
-        return new Result(true, "下单成功", ReturnStatus.SUCCESS.getStatus(), order);
     }
 
     /**
@@ -185,16 +196,20 @@ public class SalesOrderServiceImpl implements SalesOrderService {
      * @param pass
      * @return
      */
+    @Transactional
     @Override
     public Result buyMtFinish(String playerId, String pass) {
         Player player = playerService.getPlayer(playerId);
         if (player != null) {
+            //没有密码或密码为空
             if (StringUtils.isBlank(pass)) {
                 return Result.result(false, ReturnStatus.ERROR_PASS.getDesc(), ReturnStatus.ERROR_PASS.getStatus());
             }
+            //未设置密码
             if (StringUtils.isBlank(player.getPlayerTradePass())) {
                 return Result.result(false, ReturnStatus.NOTSET_PASS.getDesc(), ReturnStatus.NOTSET_PASS.getStatus());
             }
+            //密码不符合
             if (!pass.equals(player.getPlayerTradePass())) {
                 return Result.result(false,
                         ReturnStatus.ERROR_PASS.getDesc(),
@@ -203,47 +218,59 @@ public class SalesOrderServiceImpl implements SalesOrderService {
         }
         //找出订单，更新状态
         SalesOrder order = this.getBuyerNoPayOrder(playerId);
-        if (order != null && OrderState.PAY.equals(order.getOrderState())) {
+        if (order != null && OrderState.CREATE.getStatus()==Integer.valueOf(order.getOrderState())) {
             //找出上家
             RelationTree tree = treeService.getTreeByPlayerId(playerId);
             String parentId = tree.getTreeParentId();
 
-
-            List<PlayerAccount> accounts = new ArrayList<>();
-
-            //增加买家MT额度
-            PlayerAccount playerAccount1 = playerAccountService.getPlayerAccount(playerId);
-            playerAccount1.setAccMt(playerAccount1.getAccMt().add(order.getOrderAmount()));
-            playerAccount1.setAccMtAvailable(playerAccount1.getAccMtAvailable().add(order.getOrderAmount()));
-            //扣除买家USDT额度
-            playerAccount1.setAccUsdt(playerAccount1.getAccUsdt().subtract(order.getOrderPayAmount()));
-            playerAccount1.setAccUsdtFreeze(playerAccount1.getAccUsdtFreeze().subtract(order.getOrderPayAmount()));
-
-            accounts.add(playerAccount1);
-
-            PlayerAccount playerAccount = playerAccountService.getPlayerAccount(parentId);
-            //增加卖家USDT额度
-            playerAccount.setAccUsdt(playerAccount.getAccUsdt().add(order.getOrderPayAmount()));
-            playerAccount.setAccUsdtAvailable(playerAccount.getAccUsdtAvailable().add(order.getOrderPayAmount()));
-            //扣除卖家USDT额度
-            playerAccount.setAccMt(playerAccount.getAccMt().subtract(order.getOrderAmount()));
-            playerAccount.setAccMtFreeze(playerAccount.getAccMtFreeze().subtract(order.getOrderAmount()));
-
-            accounts.add(playerAccount);
-
-            playerAccountService.updatePlayerAccounts(accounts);
+            if (StringUtils.isNotBlank(tree.getSendAuto()) && tree.getSendAuto().equals("1")){
+                //改变订单状态==》[TODO 完成状态]
+                order.setOrderState(OrderState.FINISHED.getStatus());
+                //order.setUpdateTime(Timestamp.valueOf(new SimpleDateFormat("yyyy-mm-dd hh:mm:ss").format(new Date())));
+                order.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+                int up = salesOrderMapper.updateSalesOrder(order);
+                if (up>0){
+                    List<PlayerAccount> accounts = new ArrayList<>();
 
 
-            //改变订单状态
-            order.setOrderState(OrderState.FINISHED.getStatus());
-            order.setUpdateTime(Timestamp.valueOf(new SimpleDateFormat("yMd Hms").format(new Date())));
-            salesOrderMapper.updateSalesOrder(order);
+                    PlayerAccount buyerAccount = playerAccountService.getPlayerAccount(playerId);
+                    //增加买家MT额度
+                    buyerAccount.setAccMt(buyerAccount.getAccMt().add(order.getOrderAmount()));
+                    buyerAccount.setAccMtAvailable(buyerAccount.getAccMtAvailable().add(order.getOrderAmount()));
+                    //扣除买家USDT额度
+                    buyerAccount.setAccUsdt(buyerAccount.getAccUsdt().subtract(order.getOrderPayAmount()));
+                    buyerAccount.setAccUsdtFreeze(buyerAccount.getAccUsdtFreeze().subtract(order.getOrderPayAmount()));
 
-            //TODO 订单支付成功
-            return new Result(true, "订单已支付成功", 200);
+                    accounts.add(buyerAccount);
+
+                    PlayerAccount sellerAccount = playerAccountService.getPlayerAccount(parentId);
+                    //增加卖家USDT额度
+                    sellerAccount.setAccUsdt(sellerAccount.getAccUsdt().add(order.getOrderPayAmount()));
+                    sellerAccount.setAccUsdtAvailable(sellerAccount.getAccUsdtAvailable().add(order.getOrderPayAmount()));
+                    //扣除卖家USDT额度
+                    sellerAccount.setAccMt(sellerAccount.getAccMt().subtract(order.getOrderAmount()));
+                    sellerAccount.setAccMtFreeze(sellerAccount.getAccMtFreeze().subtract(order.getOrderAmount()));
+
+                    accounts.add(sellerAccount);
+
+                    playerAccountService.updatePlayerAccounts(accounts);
+
+                    //TODO 订单支付成功
+                    return Result.result(true, "订单已支付成功", ReturnStatus.SUCCESS.getStatus());
+                }
+            }else{
+                //TODO 订单支付成功,等发货
+                //改变订单状态 =>[TODO 已支付]
+                order.setOrderState(OrderState.PAY.getStatus());
+                //order.setUpdateTime(Timestamp.valueOf(new SimpleDateFormat("yyyy-mm-dd hh:mm:ss").format(new Date())));
+                order.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+                int up = salesOrderMapper.updateSalesOrder(order);
+                return Result.result(true, "订单已支付成功", ReturnStatus.SUCCESS.getStatus());
+            }
         } else {
-            return new Result(false, "订单已经支付或被取消", 500);
+            return Result.result(false, "订单已经支付或被取消", ReturnStatus.ERROR.getStatus());
         }
+        return Result.result(false, "验证失败", ReturnStatus.SET_FAILED.getStatus());
     }
 
     @Override
@@ -261,7 +288,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
             accounts.add(account);
         }
         salesOrderMapper.sendOrderMt(orders);
-        playerAccountService.updateBuyerAccount(accounts);
+        playerAccountService.updatePlayerAccounts(accounts);
         return new Result(true, "发货成功", 200);
     }
 

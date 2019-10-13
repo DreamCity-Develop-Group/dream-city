@@ -5,10 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.dream.city.base.model.Message;
 import com.dream.city.base.model.MessageData;
 import com.dream.city.base.model.Result;
-import com.dream.city.base.model.entity.Notice;
-import com.dream.city.base.model.entity.Player;
-import com.dream.city.base.model.entity.PlayerAccount;
-import com.dream.city.base.model.entity.RelationTree;
+import com.dream.city.base.model.entity.*;
 import com.dream.city.base.model.enu.ReturnStatus;
 import com.dream.city.base.utils.JsonUtil;
 import com.dream.city.base.utils.RedisUtils;
@@ -19,7 +16,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.*;
+import java.util.logging.Level;
 
 @Api(value = "API-Consumer Main Default Page", description = "主页数据接口")
 @RestController
@@ -41,6 +40,10 @@ public class DefaultController {
     ConsumerNoticeServiceImpl noticeService;
     @Autowired
     PusherService pusherService;
+    @Autowired
+    ConsumerPropertyService propertyService;
+    @Autowired
+    SalesService salesService;
 
 
 
@@ -59,22 +62,20 @@ public class DefaultController {
     )
     @RequestMapping(value = "/default", method = RequestMethod.POST)
     public Message enterMainPage(@RequestBody Message message) {
-        Object userData = message.getData().getData();
-        Player player;
-        Message ret = new Message();
-        ret.setSource(message.getTarget());
-        ret.setTarget(message.getSource());
-        ret.setCreatetime(String.valueOf(System.currentTimeMillis()));
-        MessageData msgData = new MessageData(message.getData().getType(), message.getData().getModel());
+        Object dataMsg = message.getData().getData();
+        JSONObject jsonObject = JsonUtil.parseJsonToObj(JsonUtil.parseObjToJson(dataMsg), JSONObject.class);
 
-        Map user = JsonUtil.parseJsonToObj(JsonUtil.parseObjToJson(userData), Map.class);
-        String name = user.get("username").toString();
-        Result result = playerService.getPlayerByAccount(name);
-        String json = JsonUtil.parseObjToJson(result.getData());
-        player = JsonUtil.parseJsonToObj(json, Player.class);
-        Result treeResult = treeService.getTree(player.getPlayerId());
-        String treeJson = JsonUtil.parseObjToJson(treeResult.getData());
-        RelationTree tree = JsonUtil.parseJsonToObj(treeJson, RelationTree.class);
+
+        String username = jsonObject.getString("username");
+        String playerId = jsonObject.getString("playerId");
+
+
+
+        Player player = playerService.getPlayerByPlayerId(playerId);
+
+
+        RelationTree tree = treeService.getRelationTree(player.getPlayerId());
+        int level = tree.getTreeLevel()==null?0:tree.getTreeLevel();
         //是否已经加入商会
         int commerce = 0;
         if (tree != null){
@@ -107,6 +108,9 @@ public class DefaultController {
         account.put("usdt", playerAccount.getAccUsdtAvailable());
         account.put("mt", playerAccount.getAccMtAvailable());
         account.put("address",playerAccount.getAccAddr());
+        //InvestOrder investOrder = propertyService.getInvests(player.getPlayerId());
+        Result result1 = salesService.getUsdtToMtRate(player.getPlayerId());
+        BigDecimal rate = new BigDecimal(result1.getData().toString()).setScale(3);
 
         Map<String, Object> data = new Hashtable<>();
 
@@ -122,14 +126,20 @@ public class DefaultController {
         data.put("messages", messages);
         //商会准入
         data.put("commerce", commerce);
+        data.put("level", level);
+        //data.put("invest",invests);
+        data.put("rate",rate);
 
-        msgData.setData(data);
-        ret.setData(msgData);
+
+        message.getData().setData(data);
+        message.setDesc("主页数据汇总");
+        message.setCode(ReturnStatus.SUCCESS.getStatus());
+
         //弹出收到兑换请求提示窗口
         pusherService.receive(player,1);
         //弹出收到兑换请求错过提示窗口
         pusherService.receive(player,2);
-        return ret;
+        return message;
     }
 
 }

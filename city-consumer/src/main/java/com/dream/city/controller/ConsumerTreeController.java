@@ -243,21 +243,25 @@ public class ConsumerTreeController {
         Object dataMsg = msg.getData().getData();
         JSONObject jsonObject = JsonUtil.parseJsonToObj(JsonUtil.parseObjToJson(dataMsg), JSONObject.class);
         String username = jsonObject.getString("username");
-
-        String playerId = "";
-        if (StringUtils.isNotBlank(playerId)) {
-            playerId = jsonObject.getString("playerId");
-        } else {
-            Player player = (Player) playerService.getPlayerByAccount(username).getData();
-
-            playerId = player.getPlayerId();
+        Integer page = jsonObject.getInteger("page");
+        String playerId = jsonObject.getString("playerId");
+        if (StringUtils.isBlank(playerId) ){
+            msg.getData().setCode(ReturnStatus.ERROR.getStatus());
+            msg.setDesc("获取MT交易订单失败");
+            return msg;
         }
-        //@RequestParam("playerId")String playerId
-        Result result = treeService.getSalesOrder(playerId);
-        Message message = new Message("server", "client", new MessageData("getSalesOrder", "/consumer/tree"), "获取MT交易订单");
-        message.getData().setData(result.getData());
+        if (page == 0){
+            page =1;
+        }
 
-        return message;
+        Result result = treeService.getOrderList(playerId,page);
+        Map data = new HashMap();
+        data.put("page",page);
+        data.put("list",result.getData());
+        msg.getData().setCode(result.getCode());
+        msg.setDesc(result.getMsg());
+        msg.getData().setData(data);
+        return msg;
     }
 
     /**
@@ -364,26 +368,7 @@ public class ConsumerTreeController {
 
         msg.getData().setCode(result.getCode());
         msg.getData().setData(null);
-        return msg;
-    }
-
-    /**
-     * 订单列表
-     *
-     * @param msg
-     * @return
-     */
-    @RequestMapping("/tree/get/orderList")
-    public Message getOrderList(@RequestBody Message msg) {
-        Object dataMsg = msg.getData().getData();
-        JSONObject jsonObject = JsonUtil.parseJsonToObj(JsonUtil.parseObjToJson(dataMsg), JSONObject.class);
-        String playerId = jsonObject.getString("playerId");
-
-
-        Result result =  treeService.getOrderList(playerId);
-
-        msg.getData().setCode(result.getCode());
-        msg.getData().setData(null);
+        msg.setDesc(result.getMsg());
         return msg;
     }
 

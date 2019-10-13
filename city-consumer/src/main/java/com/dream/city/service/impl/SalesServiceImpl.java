@@ -19,4 +19,9 @@ public class SalesServiceImpl implements SalesService {
     public Result getSalesNumOverTime(String playerId) {
         return null;
     }
+
+    @Override
+    public Result getUsdtToMtRate(String playerId) {
+        return null;
+    }
 }

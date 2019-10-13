@@ -241,5 +241,10 @@ public class PlayerServiceImpl implements PlayerService {
         return gradeMapper.getPlayerGradeByPlayerId(record);
     }
 
+    @Override
+    public Player getPlayerByPlayerId(String playerId) {
+        return playerMapper.getPlayer(playerId);
+    }
+
 
 }

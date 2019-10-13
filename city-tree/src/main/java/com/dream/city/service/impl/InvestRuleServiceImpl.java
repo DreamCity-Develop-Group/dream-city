@@ -8,6 +8,7 @@ import com.dream.city.service.InvestRuleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -30,5 +31,18 @@ public class InvestRuleServiceImpl implements InvestRuleService {
     @Override
     public List<InvestRule> getRulesByItem(Integer itemId) {
         return investRuleMapper.getRulesByItem(itemId);
+    }
+
+    @Override
+    public BigDecimal getLevelRuleRate(String playerId, Integer level) {
+        RuleItem ruleItem =  investRuleItemMapper.getRuleItemByFlag("PlAYER_LEVEL");
+        List<InvestRule> rules = investRuleMapper.getRulesByItem(ruleItem.getItemId());
+        BigDecimal rate = new BigDecimal(1.00);
+        for (InvestRule rule : rules){
+            if (rule.getRuleLevel() == level){
+                rate = rule.getRuleRatePre();
+            }
+        }
+        return rate;
     }
 }

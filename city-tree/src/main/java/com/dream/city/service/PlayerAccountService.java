@@ -29,7 +29,8 @@ public interface PlayerAccountService {
 
     void subtractAmount(BigDecimal orderPayAmount, String playerId);
 
-    void updateBuyerAccount(List<PlayerAccount> accounts);
-
     void updatePlayerAccounts(List<PlayerAccount> accounts);
+
+    int updatePlayerAccount(PlayerAccount account);
+
 }

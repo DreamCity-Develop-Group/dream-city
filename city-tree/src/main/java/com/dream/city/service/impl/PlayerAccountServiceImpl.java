@@ -55,11 +55,7 @@ public class PlayerAccountServiceImpl implements PlayerAccountService {
 
     @Override
     public PlayerAccount getPlayerAccount(String playerId){
-        //return  playerAccountMapper.getPlayerAccount(playerId);
-        //return playerAccountMapper.getPlayerAccountByPlayerId(playerId);
-        //PlayerAccount account = playerAccountMapper.getPlayerAccount(playerId);
         PlayerAccount account = playerAccountMapper.getAccountByPlayerId(playerId);
-        //return playerAccountMapper.findPlayerAccount(1);
         return account;
     }
 
@@ -96,8 +92,8 @@ public class PlayerAccountServiceImpl implements PlayerAccountService {
     }
 
     @Override
-    public void updateBuyerAccount(List<PlayerAccount> accounts) {
-        playerAccountMapper.updateBuyerAccount(accounts);
+    public int updatePlayerAccount(PlayerAccount account) {
+        return playerAccountMapper.updatePlayerAccount(account);
     }
 
     @Override

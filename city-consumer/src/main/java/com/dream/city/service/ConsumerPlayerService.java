@@ -109,6 +109,9 @@ public interface ConsumerPlayerService {
     @RequestMapping("/player/getPlayerByInvite")
     Result getPlayerByInvite(@RequestParam String invite);
 
+    @RequestMapping("/player/getPlayerByPlayerId")
+    Player getPlayerByPlayerId(@RequestParam String playerId);
+
     @RequestMapping("/player/getPlayerByAccount")
     Result getPlayerByAccount(@RequestParam String account);
 

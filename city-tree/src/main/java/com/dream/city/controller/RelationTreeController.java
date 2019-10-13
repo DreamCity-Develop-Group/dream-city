@@ -53,6 +53,19 @@ public class RelationTreeController {
     }
 
     /**
+     * 根据玩家ID查找关系
+     *
+     * @param playerId
+     * @return
+     */
+    @RequestMapping("/get/relationTree")
+    public RelationTree getRelationTree(@RequestParam("playerId") String playerId) {
+        RelationTree tree = relationTreeService.getTreeByPlayerId(playerId);
+
+        return tree;
+    }
+
+    /**
      * 添加玩家关系
      *
      * @param parentId
@@ -154,6 +167,12 @@ public class RelationTreeController {
         return Result.result(false,"玩家账户开设失败",200,null);
     }
 
+    /**
+     * 自动发货功能
+     *
+     * @param playerId
+     * @return
+     */
     @RequestMapping("/set/autoSend")
     public Result setAutoSend(@RequestParam("playerId")String playerId){
         RelationTree tree = relationTreeService.getTreeByPlayerId(playerId);
@@ -164,7 +183,6 @@ public class RelationTreeController {
 
         return Result.result(true);
     }
-
 
 
 
