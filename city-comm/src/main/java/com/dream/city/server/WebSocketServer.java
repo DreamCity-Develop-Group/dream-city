@@ -20,10 +20,7 @@ import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 
@@ -149,7 +146,7 @@ public class WebSocketServer {
     public void onClose() {
         //从set中删除
         webSocketSet.remove(this);
-        redisUtils.del("clientID-" + this.username);
+        redisUtils.del(RedisKeys.PLAYER_ONLINE_STATE_KEY + this.username);
         //在线数减1
         subOnlineCount();
         log.info("有一连接[" + this.username + "]关闭！当前在线人数为" + getOnlineCount());
@@ -202,7 +199,7 @@ public class WebSocketServer {
                     sendMessage("success");
                     return;
                 }
-
+                //Token检测
                 if(tokenBeat.equals(ping)){
                     Message replay = new Message(
                             "server",
@@ -221,6 +218,9 @@ public class WebSocketServer {
 
                     if (StringUtils.isNotBlank(token)) {
                         sendInfo(replay);
+                    }else{
+                        log.info("token无效");
+                        return;
                     }
                 }
             } else {
@@ -248,17 +248,29 @@ public class WebSocketServer {
                 }
 
                 if (null != msg.getData().getData()) {
-                    Map data = JsonUtil.parseJsonToObj(msg.getData().getData().toString(), Map.class);
-                    String tokenStr = "token_" + data.get("username");
+                    JSONObject data = JsonUtil.parseJsonToObj(msg.getData().getData().toString(), JSONObject.class);
+                    String tokenStr = "token_" + data.getString("username");
                     String token = redisUtils.getStr(tokenStr);
-
+                    //设置识别名称
                     if (StringUtils.isNotBlank(token)) {
-                        redisUtils.set("clientID-" + data.get("username").toString(), this.clientId, 60);
+                        redisUtils.set(RedisKeys.PLAYER_ONLINE_STATE_KEY + data.get("username").toString(), this.clientId, 60);
                         for (WebSocketServer webSocketServer : webSocketSet) {
                             if (webSocketServer.clientId.equals(this.clientId)) {
                                 webSocketServer.username = data.get("username").toString();
                                 break;
                             }
+                        }
+                        //检测是否重复登录
+                        if("login".equals(msg.getData().getType())|| "codeLogin".equals(msg.getData().getType())){
+                            //将已经上线的客户端强制下线
+                            //取出clientId
+                            String client = redisUtils.getStr(RedisKeys.PLAYER_ONLINE_STATE_KEY + data.get("username").toString());
+                            replay.getData().setCode(ReturnStatus.RELOGIN_OPT.getStatus());
+                            replay.setDesc(ReturnStatus.RELOGIN_OPT.getDesc());
+                            replay.setTarget(client);
+
+                            sendInfo(replay);
+                            redisUtils.delete(tokenStr);
                         }
                     }else {
                         HashSet<String> set = new HashSet<>();
@@ -272,6 +284,7 @@ public class WebSocketServer {
                         set.add("exit");
                         if (set.contains(msg.getData().getType())){
                             log.info("Access method is Ok! ");
+                            //逻辑继续
                         }else{
                             //TODO TOKEN 无效通知
                             replay.getData().setType("token");
@@ -281,24 +294,6 @@ public class WebSocketServer {
                             return;
                         }
 
-                    }
-                    String strT = "";
-                    if (msg.getData().getData() instanceof String) {
-                        strT = (String) msg.getData().getData();
-                    } else if (msg.getData().getData() instanceof Integer) {
-                        Integer intT = (Integer) msg.getData().getData();
-                        if (null != intT) {
-                            strT = String.valueOf(intT);
-                        }
-
-                    } else if (msg.getData().getData() instanceof JSONObject) {
-                        JSONObject jsonObjectT = (JSONObject) msg.getData().getData();
-                        if (null != jsonObjectT) {
-                            strT = String.valueOf(jsonObjectT);
-                        }
-                        if ("{}".equals(strT)) {
-                            strT = null;
-                        }
                     }
 
                     //请求网关的restful接口，将数据发送给客户端

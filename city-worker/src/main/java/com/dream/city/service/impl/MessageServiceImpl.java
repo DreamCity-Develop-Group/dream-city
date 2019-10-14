@@ -4,6 +4,7 @@ import com.dream.city.base.model.Message;
 import com.dream.city.base.model.MessageData;
 import com.dream.city.base.utils.HttpClientUtil;
 import com.dream.city.base.utils.JsonUtil;
+import com.dream.city.base.utils.RedisKeys;
 import com.dream.city.base.utils.RedisUtils;
 import com.dream.city.service.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,7 @@ public class MessageServiceImpl implements MessageService {
         msg.setCreatetime(String.valueOf(System.currentTimeMillis()));
         msg.setDesc("后台任务："+data.get("jobGroupName")+"["+data.get("jobName")+"]发起推送到["+clientId+"]！");
         msg.setSource("worker");
-        String cId = redisUtils.get("clientID-"+data.get("username")).get();
+        String cId = redisUtils.get(RedisKeys.PLAYER_ONLINE_STATE_KEY+data.get("username")).get();
         msg.setTarget(cId);
         msg.setData(new MessageData("job/push","consumer",data.get("data")));
         //Message message = JsonUtil.parseJsonToObj(data.toString(),Message.class);

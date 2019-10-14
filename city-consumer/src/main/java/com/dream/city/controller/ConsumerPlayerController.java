@@ -364,6 +364,18 @@ public class ConsumerPlayerController {
                 messageData.setCode(ReturnStatus.ERROR_INVITE.getStatus());
                 msg.setData(messageData);
                 return msg;
+            }else {
+                String player = JsonUtil.parseObjToJson(consumerPlayerService.getPlayerByInvite(invite).getData());
+                JSONObject playerJson = JsonUtil.parseJsonToObj(player,JSONObject.class);
+                if (!playerJson.getString("isValid").equals("1")){
+                    msg.setDesc("邀请码暂不可用");
+                    msg.setCreatetime(String.valueOf(System.currentTimeMillis()));
+                    MessageData messageData = message.getData();
+
+                    messageData.setCode(ReturnStatus.ERROR_RECEIVED.getStatus());
+                    msg.setData(messageData);
+                    return msg;
+                }
             }
         }
 

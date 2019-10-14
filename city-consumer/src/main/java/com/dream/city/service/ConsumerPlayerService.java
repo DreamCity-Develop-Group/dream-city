@@ -5,6 +5,7 @@ import com.dream.city.base.model.Page;
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.Player;
 import com.dream.city.base.model.entity.PlayerExt;
+import com.dream.city.base.model.enu.ReturnStatus;
 import com.dream.city.service.impl.FallBackPlayer;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -49,6 +50,10 @@ public interface ConsumerPlayerService {
 
     /**
      * 用户登录
+     *
+     *
+     * @param jsonReq
+     * @return
      */
     @RequestMapping("/player/login")
     Result login(@RequestBody String jsonReq);
@@ -63,10 +68,18 @@ public interface ConsumerPlayerService {
 
     /**
      * 用户退出
+     * @param playerId
+     * @return
      */
     @RequestMapping("/player/quit")
     Result quit(@RequestParam("playerId") String playerId);
 
+    /**
+     * 退出账号
+     *
+     * @param account
+     * @return
+     */
     @RequestMapping("/player/quitAccount")
     Result quitAccount(@RequestParam("account") String account);
 
@@ -75,7 +88,8 @@ public interface ConsumerPlayerService {
      * 用户忘记密码重置
      */
     @RequestMapping("/player/forgetPwd")
-    Result forgetPwd(@RequestParam("username") String username,@RequestParam("newpw") String newpw);
+    Result forgetPwd(@RequestParam("username") String username,
+                     @RequestParam("newpw") String newpw);
 
 
 
@@ -100,24 +114,57 @@ public interface ConsumerPlayerService {
 
 
     /**
-     *
+     * 根据玩家名称查找玩家
      * @return
      */
     @RequestMapping("/player/getPlayerByName")
     Result<String> getPlayerByName(@RequestBody String jsonReq);
 
+    /**
+     * 根据玩家邀请码查找玩家
+     * @param invite
+     * @return
+     */
     @RequestMapping("/player/getPlayerByInvite")
     Result getPlayerByInvite(@RequestParam String invite);
 
+    /**
+     * 根据玩家ID查找玩家
+     * @param playerId
+     * @return
+     */
     @RequestMapping("/player/getPlayerByPlayerId")
     Player getPlayerByPlayerId(@RequestParam String playerId);
 
+    /**
+     * 根据用户账户查找玩家
+     * @param account
+     * @return
+     */
     @RequestMapping("/player/getPlayerByAccount")
     Result getPlayerByAccount(@RequestParam String account);
 
+    /**
+     * 检验邀请码
+     * @param invite
+     * @return
+     */
     @RequestMapping("/player/checkInvite")
     Result checkPlayerInvite(@RequestParam String invite);
 
+    /**
+     * 设置交易密码
+     * @param player
+     * @return
+     */
     @RequestMapping("/player/setTradePassword")
     Result setTradePassword(@RequestBody Player player);
+
+
+    /**
+     * 更新玩家
+     * @param player
+     */
+    @RequestMapping("/player/updatePlayer")
+    void updatePlayer(@RequestBody Player player);
 }

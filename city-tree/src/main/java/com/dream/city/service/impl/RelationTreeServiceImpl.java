@@ -13,6 +13,7 @@ import com.dream.city.base.model.entity.RuleItem;
 import com.dream.city.base.model.enu.ReturnStatus;
 import com.dream.city.base.model.mapper.RelationTreeMapper;
 import com.dream.city.base.utils.JsonUtil;
+import com.dream.city.base.utils.RedisKeys;
 import com.dream.city.base.utils.RedisUtils;
 import com.dream.city.service.InvestRuleService;
 import com.dream.city.service.PlayerAccountService;
@@ -105,7 +106,7 @@ public class RelationTreeServiceImpl implements RelationTreeService {
                 );
 
                 Player playerTo = playerAccountService.getPlayerByPlayerId(parentTree.getTreePlayerId());
-                String clientId =  redisUtils.get("clientID-"+playerTo.getPlayerName()).get();
+                String clientId =  redisUtils.get(RedisKeys.PLAYER_ONLINE_STATE_KEY+playerTo.getPlayerName()).get();
 
                 message.setTarget(clientId);
                 message.getData().setCode(ReturnStatus.UPGRADE_TIP.getStatus());

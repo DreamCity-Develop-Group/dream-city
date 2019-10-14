@@ -175,7 +175,13 @@ public class ConsumerTreeController {
                 account.setAccUsdtFreeze(account.getAccUsdtFreeze().subtract(amount));
 
                 Result updateAcc  = accountService.updatePlayerAccount(account);
+
                 if (updateAcc.getSuccess()){
+                    //设置推荐二维码生效，即用户可用状态
+                    Player player1 = playerService.getPlayerByPlayerId(playerId);
+                    player1.setIsValid("1");
+                    playerService.updatePlayer(player1);
+
                     message.getData().setCode(ReturnStatus.SUCCESS.getStatus());
                     message.setDesc("加入成功，可以投资运营");
                 }else {
