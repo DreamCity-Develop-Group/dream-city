@@ -64,7 +64,9 @@ public class InvestController {
             //1、修改账户
             PlayerAccount account = accountService.getPlayerAccount(playerId);
             BigDecimal taxTotal = earning.getEarnEnterpriseTax().add(earning.getEarnPersonalTax());
+
             BigDecimal earnTotal = earning.getEarnCurrent().subtract(taxTotal);
+
             account.setAccUsdt(account.getAccUsdt().add(earnTotal));
             account.setAccUsdtAvailable(account.getAccUsdtAvailable().add(earnTotal));
             //2、添加累计收益记录

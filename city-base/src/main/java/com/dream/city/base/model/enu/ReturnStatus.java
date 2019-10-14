@@ -6,6 +6,7 @@ import lombok.Data;
  * @author Wvv
  */
 public enum ReturnStatus {
+
     SUCCESS(200,"成功"),
     NOT_ENOUGH(210,"USDT额度不足，请去充值"),
     NOT_ENOUGH_PARENT(211,"上级USDT额度不足"),
@@ -38,7 +39,11 @@ public enum ReturnStatus {
 
     UPGRADE_TIP(666,"恭喜升级成功"),
     MT_MISS_BUY_TIP(602,"错过购买兑换处理提示"),
-    MT_BUY_TIP(601,"购买兑换请求提示");
+    MT_BUY_TIP(601,"购买兑换请求提示"),
+
+    INVEST_SUBSCRIBED(701,"预约中"),
+    INVEST_MANAGEMENT(702,"经营中"),
+    INVEST_EXTRACT(703,"可提取");
 
     /**
      * 成员变量

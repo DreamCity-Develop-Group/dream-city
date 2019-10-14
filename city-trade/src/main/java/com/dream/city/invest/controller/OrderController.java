@@ -2,6 +2,7 @@ package com.dream.city.invest.controller;
 
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.InvestOrder;
+import com.dream.city.base.model.enu.ReturnStatus;
 import com.dream.city.base.model.req.InvestOrderReq;
 import com.dream.city.base.model.resp.InvestOrderResp;
 import com.dream.city.invest.service.OrderService;
@@ -42,7 +43,7 @@ public class OrderController {
             desc = "预约投资成功";
             success = Boolean.TRUE;
         }
-        return new Result<>(success,desc,investOrder);
+        return new Result<InvestOrder>(success,desc, ReturnStatus.INVEST_SUBSCRIBED.getStatus(),investOrder);
     }
 
     /**

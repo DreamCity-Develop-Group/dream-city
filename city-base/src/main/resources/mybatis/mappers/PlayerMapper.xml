@@ -20,8 +20,15 @@
 
   <select id="getPlayerById" parameterType="com.dream.city.base.model.entity.Player"
           resultType="com.dream.city.base.model.resp.PlayerResp">
-    SELECT p.id, p.player_id playerId,p.player_name playerName,p.player_nick playerNick, p.player_level playerLevel,
-    p.is_valid isValid, DATE_FORMAT(p.create_time,"%Y-%m-%d %h:%m:%s") createTime,
+    SELECT p.id,
+    p.player_id playerId,
+    p.player_name playerName,
+    p.player_nick playerNick,
+    p.player_level playerLevel,
+    p.is_valid isValid,
+    p.player_pass playerPass,
+    p.player_trade_pass playerTradePass,
+    DATE_FORMAT(p.create_time,"%Y-%m-%d %h:%m:%s") createTime,
     (SELECT e.imgurl FROM player_ext e WHERE p.player_id=e.player_id) imgurl
     from city_player p
     where 1=1

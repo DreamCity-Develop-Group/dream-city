@@ -93,8 +93,15 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
         }
 
         //生成订单
+        Map<String,Object> result = new HashMap<>();
         Result<InvestOrder> orderResult = this.orderCreate(invest.getInId(),orderReq.getPayerId(),orderRepeat,desc);
         InvestOrder order = orderResult.getData();
+        result.put("state",orderResult.getCode());
+        if (order != null){
+            result.put("investId",order.getOrderInvestId());
+        }else {
+            result.put("investId","");
+        }
 
         //投资扣减用户账户金额
         Map<String,String> updatePlayerAccountResult = null;
@@ -114,7 +121,7 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
             desc = orderResult.getMsg();
         }
 
-        //用户交易流水
+        //用户交易
         Result<PlayerTrade> playerTradeResult = null;
         PlayerTrade trade = null;
         if (updatePlayerAccountResult != null && updatePlayerAccountSuccess && updatePlayerAccountDate > 0){
@@ -164,7 +171,7 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
         }
 
         msg.setDesc(desc);
-        msg.getData().setData(success);
+        msg.getData().setData(result);
         return msg;
     }
 
