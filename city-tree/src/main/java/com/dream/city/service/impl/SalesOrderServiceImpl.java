@@ -176,6 +176,10 @@ public class SalesOrderServiceImpl implements SalesOrderService {
                             return new Result(true, "下单成功", ReturnStatus.SUCCESS.getStatus(), order);
                         }
                     }
+                }else{
+                    order.setOrderState(OrderState.PAID.getStatus());
+                    int finish = salesOrderMapper.updateSalesOrder(order);
+                    return Result.result(false,"提交购买订单成功",ReturnStatus.SUCCESS.getStatus());
                 }
 
                 return Result.result(false,"购买失败",ReturnStatus.ERROR.getStatus());
@@ -218,7 +222,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
         }
         //找出订单，更新状态
         SalesOrder order = this.getBuyerNoPayOrder(playerId);
-        if (order != null && OrderState.CREATE.getStatus()==Integer.valueOf(order.getOrderState())) {
+        if (order != null && OrderState.PAID.getStatus()==Integer.valueOf(order.getOrderState())) {
             //找出上家
             RelationTree tree = treeService.getTreeByPlayerId(playerId);
             String parentId = tree.getTreeParentId();

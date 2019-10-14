@@ -1,13 +1,8 @@
 package com.dream.city.service.impl;
 
-import com.dream.city.base.model.entity.InvestAllow;
-import com.dream.city.base.model.entity.PlayerAccount;
-import com.dream.city.base.model.entity.PlayerAccountLog;
-import com.dream.city.base.model.entity.RelationTree;
+import com.dream.city.base.model.entity.*;
 import com.dream.city.base.model.enu.ReturnStatus;
-import com.dream.city.base.model.mapper.InvestAllowMapper;
-import com.dream.city.base.model.mapper.PlayerAccountLogMapper;
-import com.dream.city.base.model.mapper.PlayerAccountMapper;
+import com.dream.city.base.model.mapper.*;
 import com.dream.city.service.InvestAllowService;
 import io.swagger.models.Model;
 import io.swagger.models.auth.In;
@@ -35,6 +30,12 @@ public class InvestServiceImpl implements InvestAllowService {
 
     @Autowired
     PlayerAccountLogMapper accountLogMapper;
+
+    @Autowired
+    InvestOrderMapper investOrderMapper;
+
+    @Autowired
+    PlayerEarningMapper earningMapper;
 
     @Override
     public InvestAllow getInvestAllowByPlayerId(String playerId) {
@@ -103,6 +104,20 @@ public class InvestServiceImpl implements InvestAllowService {
             accountMapper.updatePlayerAccount(accountPlayer);
         }
 
+    }
+
+    @Override
+    public PlayerEarning investCollectEarning(String playerId, Integer investId) {
+        PlayerEarning earning = new PlayerEarning();
+        earning.setEarnInvestId(investId);
+        earning.setEarnPlayerId(playerId);
+        PlayerEarning earn = earningMapper.getPlayerEarning(earning);
+        return earn;
+    }
+
+    @Override
+    public void updateEarning(PlayerEarning earning) {
+        earningMapper.updateByPrimaryKeySelective(earning);
     }
 
     private boolean addAccountLog(PlayerAccount account, BigDecimal amount) {

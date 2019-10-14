@@ -3,7 +3,9 @@ package com.dream.city.service.impl;
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.Player;
 import com.dream.city.base.model.entity.PlayerAccount;
+import com.dream.city.base.model.entity.PlayerAccountLog;
 import com.dream.city.base.model.enu.ReturnStatus;
+import com.dream.city.base.model.mapper.PlayerAccountLogMapper;
 import com.dream.city.base.model.mapper.PlayerAccountMapper;
 import com.dream.city.base.model.mapper.PlayerMapper;
 import com.dream.city.base.utils.RedisUtils;
@@ -23,6 +25,9 @@ import java.util.List;
 public class PlayerAccountServiceImpl implements PlayerAccountService {
     @Autowired
     private PlayerAccountMapper playerAccountMapper;
+
+    @Autowired
+    private PlayerAccountLogMapper playerAccountLogMapper;
 
     @Autowired
     PlayerService playerService;
@@ -99,6 +104,11 @@ public class PlayerAccountServiceImpl implements PlayerAccountService {
     @Override
     public void updatePlayerAccounts(List<PlayerAccount> accounts) {
         playerAccountMapper.updatePlayerAccounts(accounts);
+    }
+
+    @Override
+    public void addAccountLog(PlayerAccountLog accountLog) {
+        playerAccountLogMapper.insert(accountLog);
     }
 
 

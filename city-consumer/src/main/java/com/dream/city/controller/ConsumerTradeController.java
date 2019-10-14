@@ -11,6 +11,7 @@ import com.dream.city.base.model.req.PlayerTradeReq;
 import com.dream.city.base.model.resp.PlayerResp;
 import com.dream.city.base.model.resp.PlayerTradeResp;
 import com.dream.city.base.utils.DataUtils;
+import com.dream.city.base.utils.JsonUtil;
 import com.dream.city.service.ConsumerCommonsService;
 import com.dream.city.service.ConsumerTradeService;
 import io.swagger.annotations.Api;
@@ -21,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
@@ -269,6 +271,19 @@ public class ConsumerTradeController {
         msg.getData().setData(resultMap);
         msg.setDesc(tradeResult.getMsg());
         return msg;
+    }
+
+    @RequestMapping("/trade/invest/collect/earning")
+    public Message investCollectEarning(@RequestBody Message message){
+        Object dataMsg = message.getData().getData();
+        JSONObject jsonObject = JsonUtil.parseJsonToObj(JsonUtil.parseObjToJson(dataMsg), JSONObject.class);
+        String playerId = jsonObject.getString("playerId");
+        int investId = jsonObject.getInteger("investId");
+
+        Result result = tradeService.investCollectEarning(playerId,investId);
+
+        message.getData().setCode(result.getCode());
+        return message;
     }
 
 

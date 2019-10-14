@@ -1,5 +1,6 @@
 package com.dream.city.service;
 
+import com.dream.city.base.model.Message;
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.PlayerTrade;
 import com.dream.city.base.model.req.PlayerAccountReq;
@@ -78,6 +79,6 @@ public interface ConsumerTradeService {
     @RequestMapping("/playerTransfer")
     Result playerTransfer(@RequestBody PlayerAccountReq record);
 
-
-
+    @RequestMapping("/investCollectEarning")
+    Result investCollectEarning(@RequestParam("playerId") String playerId, @RequestParam("investId") int investId);
 }

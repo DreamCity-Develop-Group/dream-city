@@ -4,6 +4,7 @@ package com.dream.city.service;
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.Player;
 import com.dream.city.base.model.entity.PlayerAccount;
+import com.dream.city.base.model.entity.PlayerAccountLog;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.List;
  * @author Wvv
  */
 public interface PlayerAccountService {
+
     BigDecimal getPlayerAccountUSDTAvailble(String playerId);
     BigDecimal getPlayerAccountMTAvailble(String playerId);
 
@@ -33,4 +35,5 @@ public interface PlayerAccountService {
 
     int updatePlayerAccount(PlayerAccount account);
 
+    void addAccountLog(PlayerAccountLog accountLog);
 }

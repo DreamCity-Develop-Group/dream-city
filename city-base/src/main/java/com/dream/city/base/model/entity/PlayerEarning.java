@@ -40,9 +40,9 @@ public class PlayerEarning implements Serializable {
     private BigDecimal earnEnterpriseTax;
 
     /**
-     * 是否已经可以提取
+     * 是否已经可以提取 状态：0投资中1可提取2有掉落3提取完成
      */
-    private String isWithdrew;
+    private Integer isWithdrew;
 
     private Date createTime;
     private Date updateTime;

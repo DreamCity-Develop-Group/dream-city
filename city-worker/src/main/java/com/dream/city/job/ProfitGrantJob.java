@@ -237,7 +237,7 @@ public class ProfitGrantJob extends QuartzJobBean {
             earning.setEarnCurrent(everyOneProfit);
             earning.setEarnPersonalTax(cityInvest.getInPersonalTax());
             earning.setEarnEnterpriseTax(cityInvest.getInEnterpriseTax());
-            earning.setIsWithdrew("0");
+            earning.setIsWithdrew(0);
             earning.setCreateTime(new Date());
             earning.setUpdateTime(new Date());
             playerEarningService.add(earning);
@@ -254,7 +254,7 @@ public class ProfitGrantJob extends QuartzJobBean {
                 isNotCanWithdraw = false;
                 subProfit = fullProfit.subtract(current);
                 playerEarning.setEarnCurrent(current.add(subProfit));
-                playerEarning.setIsWithdrew("true");//设置为可提取状态
+                playerEarning.setIsWithdrew(2);//设置为可提取状态
             }else{
                 playerEarning.setEarnCurrent(current.add(everyOneProfit));
             }

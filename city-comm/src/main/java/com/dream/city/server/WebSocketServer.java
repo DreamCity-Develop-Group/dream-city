@@ -21,6 +21,7 @@ import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -260,8 +261,17 @@ public class WebSocketServer {
                             }
                         }
                     }else {
-                        if(msg.getData().getType().equals("login") || msg.getData().getType().equals("codeLogin")){
-
+                        HashSet<String> set = new HashSet<>();
+                        set.add("login");
+                        set.add("codeLogin");
+                        set.add("reg");
+                        set.add("getCode");
+                        set.add("jobPush");
+                        set.add("createWorker");
+                        set.add("pwforget");
+                        set.add("exit");
+                        if (set.contains(msg.getData().getType())){
+                            log.info("Access method is Ok! ");
                         }else{
                             //TODO TOKEN 无效通知
                             replay.getData().setType("token");
