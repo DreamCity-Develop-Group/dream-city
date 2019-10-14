@@ -2,6 +2,8 @@ package com.dream.city.invest.controller;
 
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.InvestOrder;
+import com.dream.city.base.model.req.InvestOrderReq;
+import com.dream.city.base.model.resp.InvestOrderResp;
 import com.dream.city.invest.service.OrderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,11 +70,11 @@ public class OrderController {
      * @return
      */
     @RequestMapping("/getOrderById/{orderId}")
-    public Result<InvestOrder> getInvestOrderById(@PathVariable Integer orderId) {
+    public Result<InvestOrderResp> getInvestOrderById(@PathVariable Integer orderId) {
         logger.info("查询投资，orderId:{}", orderId);
         InvestOrder order = new InvestOrder();
 
-        InvestOrder investOrder = orderService.getInvestOrderById(order);
+        InvestOrderResp investOrder = orderService.getInvestOrderById(order);
         String desc = "查询投资失败";
         boolean success = Boolean.FALSE;
         if (investOrder != null){
@@ -128,12 +130,12 @@ public class OrderController {
      * @return
      */
     @RequestMapping("/getOrders")
-    public Result<List<InvestOrder>> getInvestOrders(@RequestBody InvestOrder order) {
+    public Result<List<InvestOrderResp>> getInvestOrders(@RequestBody InvestOrderReq order) {
         logger.info("投资订单列表，{}", order);
 
         String desc = "投资订单列表失败";
         boolean success = Boolean.FALSE;
-        List<InvestOrder> data = null;
+        List<InvestOrderResp> data = null;
         try {
             data = orderService.getInvestOrderList(order);
             desc = "投资订单列表成功";

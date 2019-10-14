@@ -1,6 +1,8 @@
 package com.dream.city.invest.service;
 
 import com.dream.city.base.model.entity.InvestOrder;
+import com.dream.city.base.model.req.InvestOrderReq;
+import com.dream.city.base.model.resp.InvestOrderResp;
 
 import java.util.List;
 
@@ -45,14 +47,14 @@ public interface OrderService {
      * @param record
      * @return
      */
-    InvestOrder getInvestOrderById(InvestOrder record);
+    InvestOrderResp getInvestOrderById(InvestOrder record);
 
     /**
      * 投资订单列表
      * @param record
      * @return
      */
-    List<InvestOrder> getInvestOrderList(InvestOrder record);
+    List<InvestOrderResp> getInvestOrderList(InvestOrderReq record);
 
     /**
      * 投资数量

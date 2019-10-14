@@ -3,6 +3,8 @@ package com.dream.city.invest.service.impl;
 import com.dream.city.base.model.entity.InvestOrder;
 import com.dream.city.base.model.enu.InvestStatus;
 import com.dream.city.base.model.mapper.InvestOrderMapper;
+import com.dream.city.base.model.req.InvestOrderReq;
+import com.dream.city.base.model.resp.InvestOrderResp;
 import com.dream.city.invest.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,7 +22,8 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public InvestOrder insertInvestOrder(InvestOrder record) {
-        return orderMapper.insertSelective(record);
+        Integer integer = orderMapper.insertSelective(record);
+        return integer==null?null:record;
     }
 
     @Override
@@ -47,15 +50,15 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public InvestOrder getInvestOrderById(InvestOrder record) {
+    public InvestOrderResp getInvestOrderById(InvestOrder record) {
         if (record.getOrderId() == null){
             return null;
         }
-        return orderMapper.selectByPrimaryKey(record);
+        return orderMapper.selectByPrimaryKey(record.getOrderId());
     }
 
     @Override
-    public List<InvestOrder> getInvestOrderList(InvestOrder record) {
+    public List<InvestOrderResp> getInvestOrderList(InvestOrderReq record) {
         return orderMapper.getInvestOrders(record);
     }
 
