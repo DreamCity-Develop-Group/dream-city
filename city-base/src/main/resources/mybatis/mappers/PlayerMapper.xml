@@ -18,10 +18,12 @@
     is_valid,DATE_FORMAT(create_time,'%Y-%m-%d %h:%m:%s') create_time, DATE_FORMAT(update_time,'%Y-%m-%d %h:%m:%s') update_time
   </sql>
 
-  <select id="getPlayerById" parameterType="com.dream.city.base.model.entity.Player" resultType="com.dream.city.base.model.resp.PlayerResp">
-    select  p.id, p.player_id playerId, p.player_name playerName, p.player_nick playerNick, p.player_pass playerPass,
-    p.player_trade_pass playerTradePass, p.player_invite playerInvite, p.is_valid isValid,e.imgurl
-    from city_player p inner join player_ext e on p.player_id=e.player_id
+  <select id="getPlayerById" parameterType="com.dream.city.base.model.entity.Player"
+          resultType="com.dream.city.base.model.resp.PlayerResp">
+    SELECT p.id, p.player_id playerId,p.player_name playerName,p.player_nick playerNick, p.player_level playerLevel,
+    p.is_valid isValid, DATE_FORMAT(p.create_time,"%Y-%m-%d %h:%m:%s") createTime,
+    (SELECT e.imgurl FROM player_ext e WHERE p.player_id=e.player_id) imgurl
+    from city_player p
     where 1=1
     <if test="playerId != null and playerId != ''">
     and p.player_id = #{playerId,jdbcType=VARCHAR}
@@ -57,11 +59,12 @@
   </select>
 
   <select id="getPlayerList" parameterType="com.dream.city.base.model.entity.Player" resultType="com.dream.city.base.model.resp.PlayerResp">
-    SELECT p.id, p.player_id playerId,p.player_name playerName,p.player_nick playerNick,
-    p.player_level playerLevel, p.is_valid isValid, e.imgurl, DATE_FORMAT(p.create_time,"%Y-%m-%d %h:%m:%s") createTime
-    from city_player p INNER JOIN player_ext e ON p.player_id=e.player_id
+    SELECT p.id, p.player_id playerId,p.player_name playerName,p.player_nick playerNick, p.player_level playerLevel,
+      p.is_valid isValid, DATE_FORMAT(p.create_time,"%Y-%m-%d %h:%m:%s") createTime,
+      (SELECT e.imgurl FROM player_ext e WHERE p.player_id=e.player_id) imgurl
+    from city_player p
     <where>
-      p.player_id=e.player_id
+      1=1
       <if test="playerName != null and playerName != ''">
         and p.player_name like '%${playerName}%'
       </if>

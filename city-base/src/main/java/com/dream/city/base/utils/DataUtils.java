@@ -221,13 +221,15 @@ public class DataUtils {
      * @return
      */
     public static <T> T getData(Object data, Class<T> clazz) {
-        String jsonString = JSONObject.toJSONString(data);
+        Object json = JSON.toJSON(data);
+        String jsonString = JSONObject.toJSONString(json);
         return JSONObject.parseObject(jsonString, clazz);
     }
 
 
     public static <T> T toJavaObject(Object data, Class<T> clazz) {
-        String jsonString = JSON.toJSONStringWithDateFormat(data,DateUtils.DATE_FORMAT_DEFAULT);
+        Object json = JSON.toJSON(data);
+        String jsonString = JSON.toJSONStringWithDateFormat(json,DateUtils.DATE_FORMAT_DEFAULT);
         return JSON.toJavaObject(JSON.parseObject(jsonString),clazz);
     }
 
