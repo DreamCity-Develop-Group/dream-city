@@ -583,4 +583,5 @@ public class RedisUtils {
         Long id = redisTemplate.opsForZSet().remove("ONLINE_PLAYERS",playerName);
         return id>0;
     }
+
 }
