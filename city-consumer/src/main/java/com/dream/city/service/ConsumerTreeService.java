@@ -35,6 +35,7 @@ public interface ConsumerTreeService {
      */
     @RequestMapping("/tree/get/tree")
     Result getTree(@RequestParam("playerId")String playerId);
+
     @RequestMapping("/tree/get/relationTree")
     RelationTree getRelationTree(String playerId);
     /**
