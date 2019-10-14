@@ -32,7 +32,7 @@ public class OrderServiceImpl implements OrderService {
         record.setOrderId(orderId);
         record.setOrderState(InvestStatus.MANAGEMENT.name());
         Integer integer = orderMapper.updateByPrimaryKeySelective(record);
-        return integer ==null?0:integer;
+        return (integer ==null || integer == 0)?0:integer;
     }
 
     @Override
