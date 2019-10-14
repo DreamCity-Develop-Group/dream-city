@@ -34,3 +34,8 @@ mybatis:
   mapper-locations: classpath:/mybatis/mappers/*.xml
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+sms:
+  account:
+  url:
+  appKey:

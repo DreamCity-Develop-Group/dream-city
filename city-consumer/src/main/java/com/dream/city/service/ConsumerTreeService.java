@@ -37,7 +37,7 @@ public interface ConsumerTreeService {
     Result getTree(@RequestParam("playerId")String playerId);
 
     @RequestMapping("/tree/get/relationTree")
-    RelationTree getRelationTree(String playerId);
+    RelationTree getRelationTree(@RequestParam("playerId")String playerId);
     /**
      * 获取投资许可
      *
