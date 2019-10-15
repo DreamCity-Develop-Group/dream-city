@@ -28,6 +28,8 @@ public interface InvestOrderMapper {
 
     Integer updateOrderStateById(InvestOrder record);
 
+    InvestOrder getOrderByPlayerIdInvestId(InvestOrder record);
+
 
     @Results(id = "BaseInvestOrderResultMap", value = {
             @Result(property = "orderId", column = "order_id", id = true),

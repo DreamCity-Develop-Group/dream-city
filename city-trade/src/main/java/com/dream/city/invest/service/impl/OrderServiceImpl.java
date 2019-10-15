@@ -20,6 +20,7 @@ public class OrderServiceImpl implements OrderService {
 
 
 
+
     @Override
     public InvestOrder insertInvestOrder(InvestOrder record) {
         Integer integer = orderMapper.insertSelective(record);
@@ -50,11 +51,19 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public InvestOrderResp getInvestOrderById(InvestOrder record) {
-        if (record.getOrderId() == null){
+    public InvestOrderResp getInvestOrderById(Integer orderId) {
+        if (orderId == null){
             return null;
         }
-        return orderMapper.selectByPrimaryKey(record.getOrderId());
+        return orderMapper.selectByPrimaryKey(orderId);
+    }
+
+    @Override
+    public InvestOrder getOrderByPlayerIdInvestId(String playerId, Integer investId) {
+        InvestOrder record = new InvestOrder();
+        record.setOrderPayerId(playerId);
+        record.setOrderInvestId(investId);
+        return orderMapper.getOrderByPlayerIdInvestId(record);
     }
 
     @Override

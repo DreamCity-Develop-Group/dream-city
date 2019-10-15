@@ -5,6 +5,7 @@ import com.dream.city.base.model.mapper.PlayerEarningMapper;
 import com.dream.city.invest.service.EarningService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -45,6 +46,7 @@ public class EarningServiceImpl implements EarningService {
     }
 
     @Override
+    @Transactional
     public int updateEarningById(PlayerEarning record) {
         Integer i = earningMapper.updateByPrimaryKeySelective(record);
         return i == null? 0: i;

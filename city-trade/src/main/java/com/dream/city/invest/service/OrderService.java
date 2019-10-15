@@ -44,10 +44,12 @@ public interface OrderService {
 
     /**
      * 查询投资订单
-     * @param record
+     * @param orderId
      * @return
      */
-    InvestOrderResp getInvestOrderById(InvestOrder record);
+    InvestOrderResp getInvestOrderById(Integer orderId);
+
+    InvestOrder getOrderByPlayerIdInvestId(String playerId,Integer investId);
 
     /**
      * 投资订单列表

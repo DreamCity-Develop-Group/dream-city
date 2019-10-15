@@ -79,9 +79,7 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
         /*if (orderReq.getOrderAmount().compareTo(invest.getInLimit())>0){
             desc = "超过项目投资限额，投资限额为：" + invest.getInLimit();
         }*/
-        PlayerAccount getPlayerAccount = new PlayerAccount();
-        getPlayerAccount.setAccPlayerId(player.getPlayerId());
-        Result<PlayerAccount> playerAccountResult = accountService.getPlayerAccount(getPlayerAccount);
+        Result<PlayerAccount> playerAccountResult = accountService.getPlayerAccount(player.getPlayerId());
         PlayerAccount playerAccount = DataUtils.toJavaObject(playerAccountResult.getData(),PlayerAccount.class);
         //5USDT不足
         if (invest.getInLimit().compareTo(playerAccount.getAccUsdtAvailable()) > 0){

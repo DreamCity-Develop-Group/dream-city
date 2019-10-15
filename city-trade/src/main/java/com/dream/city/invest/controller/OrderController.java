@@ -73,9 +73,7 @@ public class OrderController {
     @RequestMapping("/getOrderById/{orderId}")
     public Result<InvestOrderResp> getInvestOrderById(@PathVariable Integer orderId) {
         logger.info("查询投资，orderId:{}", orderId);
-        InvestOrder order = new InvestOrder();
-
-        InvestOrderResp investOrder = orderService.getInvestOrderById(order);
+        InvestOrderResp investOrder = orderService.getInvestOrderById(orderId);
         String desc = "查询投资失败";
         boolean success = Boolean.FALSE;
         if (investOrder != null){

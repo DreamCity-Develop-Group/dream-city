@@ -105,9 +105,7 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
         try {
             String verifyStatus = VerifyStatus.WAIT.name();
             //获取转账账户信息
-            PlayerAccount accountOut = new PlayerAccount();
-            accountOut.setAccPlayerId(recordOut.getAccPlayerId());
-            PlayerAccount playerAccountOut = accountService.getPlayerAccount(accountOut);
+            PlayerAccount playerAccountOut = accountService.getPlayerAccount(recordOut.getAccPlayerId());
             recordOut.setAccId(playerAccountOut.getAccId());
 
             //转账账户 出账
@@ -122,9 +120,7 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
                 if (success){
                     msg = "玩家内部转账成功";
                     //获取转入账户信息
-                    PlayerAccount accountIn = new PlayerAccount();
-                    accountIn.setAccPlayerId(recordOut.getFriendId());
-                    PlayerAccount playerAccountIn = accountService.getPlayerAccount(accountIn);
+                    PlayerAccount playerAccountIn = accountService.getPlayerAccount(recordOut.getFriendId());
                     //内部转账 立即到账 转入账户入账
                     PlayerAccountReq recordIn = new PlayerAccountReq();
                     recordIn.setAccId(playerAccountIn.getAccId());
@@ -178,9 +174,7 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
         boolean success = Boolean.FALSE;
         String tradeType = null;
         String desc = "失败！";
-        PlayerAccount getPlayerAccountReq = new PlayerAccount();
-        getPlayerAccountReq.setAccPlayerId(record.getAccPlayerId());
-        PlayerAccount getPlayerAccount = accountService.getPlayerAccount(getPlayerAccountReq);
+        PlayerAccount getPlayerAccount = accountService.getPlayerAccount(record.getAccPlayerId());
 
         //更新PlayerAccount参数
         PlayerAccount accountUpdate = new PlayerAccount();

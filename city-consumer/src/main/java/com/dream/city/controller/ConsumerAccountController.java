@@ -84,9 +84,7 @@ public class ConsumerAccountController {
             player = commonsService.getPlayerByUserName(msg);
         }
 
-        PlayerAccount record = new PlayerAccount();
-        record.setAccPlayerId(playerId);
-        Result<PlayerAccount> playerAccountResult = accountService.getPlayerAccount(record);
+        Result<PlayerAccount> playerAccountResult = accountService.getPlayerAccount(playerId);
         PlayerAccount account = JsonUtil.parseJsonToObj(JsonUtil.parseObjToJson(playerAccountResult.getData()), PlayerAccount.class);
         Map data = new HashMap();
         data.put("total_income",new BigDecimal(0));

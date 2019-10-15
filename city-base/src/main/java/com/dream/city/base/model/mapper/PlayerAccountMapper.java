@@ -18,8 +18,8 @@ public interface PlayerAccountMapper {
     Integer deleteByPrimaryKey(Integer accId);
     Integer insertSelective(PlayerAccount record);
     PlayerAccount updateByPrimaryKey(Integer accId);
-    void updateByPrimaryKeySelective(PlayerAccount account);
-    void insert(PlayerAccount account);
+    Integer updateByPrimaryKeySelective(PlayerAccount account);
+    Integer insert(PlayerAccount account);
     PlayerAccount selectByPrimaryKey(Integer accId);
     /**
      * 获取平台账户

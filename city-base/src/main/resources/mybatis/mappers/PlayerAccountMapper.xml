@@ -119,7 +119,7 @@
     <update id="updateByPrimaryKeySelective" parameterType="com.dream.city.base.model.entity.PlayerAccount">
         update player_account
         <set>
-            <if test="accPlayerId != null">
+            <if test="accPlayerId != null and accPlayerId != ''">
                 acc_player_id = #{accPlayerId,jdbcType=VARCHAR},
             </if>
             <if test="accUsdt != null">
@@ -139,12 +139,6 @@
             </if>
             <if test="accMtFreeze != null">
                 acc_mt_freeze = #{accMtFreeze,jdbcType=DECIMAL},
-            </if>
-            <if test="createTime != null">
-                create_time = #{createTime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="updateTime != null">
-                update_time = #{updateTime,jdbcType=TIMESTAMP},
             </if>
         </set>
         where acc_id = #{accId,jdbcType=INTEGER}

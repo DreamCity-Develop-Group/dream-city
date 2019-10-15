@@ -19,6 +19,25 @@
   </sql>
 
 
+  <select id="getOrderByPlayerIdInvestId" resultMap="BaseResultMap" parameterType="com.dream.city.base.model.entity.InvestOrder" >
+    select  <include refid="Base_Column_List" />
+    from invest_order
+    where 1=1
+    <if test="orderId !=null">
+      order_id = #{orderId,jdbcType=INTEGER}
+    </if>
+    <if test="orderInvestId !=null">
+      and  order_invest_id = #{orderInvestId,jdbcType=INTEGER}
+    </if>
+    <if test="orderState !=null and orderState !=''">
+      and  order_state = #{orderState,jdbcType=VARCHAR}
+    </if>
+    <if test="orderPayerId !=null and orderPayerId !=''">
+      and  order_payer_id = #{orderPayerId,jdbcType=VARCHAR}
+    </if>
+    order by update_time desc limit 1
+  </select>
+
   <select id="selectByPrimaryKey" resultType="com.dream.city.base.model.resp.InvestOrderResp"
           parameterType="java.lang.Integer" >
     select o.order_id orderId, o.order_invest_id investId, o.order_payer_id payerId, o.order_amount orderAmount,

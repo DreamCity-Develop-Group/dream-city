@@ -1,6 +1,8 @@
 package com.dream.city.invest.service.impl;
 
 import com.dream.city.base.model.entity.PlayerAccount;
+import com.dream.city.base.model.entity.PlayerAccountLog;
+import com.dream.city.base.model.mapper.PlayerAccountLogMapper;
 import com.dream.city.base.model.req.PlayerAccountReq;
 import com.dream.city.base.model.mapper.PlayerAccountMapper;
 import com.dream.city.invest.service.AccountService;
@@ -18,8 +20,9 @@ public class AccountServiceImpl implements AccountService {
     @Value("${dreamcity.platform.account.accIds}")
     String platformAccIds;
     @Autowired
-    PlayerAccountMapper accountMapper;
-
+    private PlayerAccountMapper accountMapper;
+    @Autowired
+    private PlayerAccountLogMapper playerAccountLogMapper;
 
 
     @Override
@@ -30,15 +33,11 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public PlayerAccount getPlayerAccount(PlayerAccount record) {
-        if (record.getAccId() == null && StringUtils.isBlank(record.getAccPlayerId())){
+    public PlayerAccount getPlayerAccount(String playerId) {
+        if (StringUtils.isBlank(playerId)){
             return null;
         }
-/*        PlayerAccountReq accountReq = new PlayerAccountReq();
-        accountReq.setAccId(record.getAccId());
-        accountReq.setAccPlayerId(record.getAccPlayerId());
-        accountReq.setPlatformAccIds(platformAccIds);*/
-        return accountMapper.getPlayerAccount(record.getAccPlayerId());
+        return accountMapper.getPlayerAccount(playerId);
     }
 
     @Override
@@ -51,6 +50,12 @@ public class AccountServiceImpl implements AccountService {
     public int updatePlayerAccount(PlayerAccount record) {
         accountMapper.updatePlayerAccount(record);
         return 1;
+    }
+
+    @Override
+    public int updatePlayerAccountById(PlayerAccount record) {
+        Integer integer = accountMapper.updateByPrimaryKeySelective(record);
+        return integer == null?0:integer;
     }
 
 
@@ -67,5 +72,10 @@ public class AccountServiceImpl implements AccountService {
         return accountMapper.getPlayerAccountByPlayerId(playerId);
     }
 
+    @Override
+    public int addAccountLog(PlayerAccountLog accountLog) {
+        Integer integer = playerAccountLogMapper.insert(accountLog);
+        return integer == null?0:integer;
+    }
 
 }

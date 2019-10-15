@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 提现规则设置
@@ -55,5 +56,14 @@ public interface ConsumerEarningService {
      */
     @RequestMapping("/updateEarningById")
     Result updateEarningById(@RequestBody PlayerEarning record);
+
+    /**
+     * 投资提取
+     *
+     * @param playerId
+     * @return
+     */
+    @RequestMapping("/extract")
+    Result<Map<String,Object>> extract(@RequestParam("playerId")String playerId, @RequestParam("investId")Integer investId);
 
 }

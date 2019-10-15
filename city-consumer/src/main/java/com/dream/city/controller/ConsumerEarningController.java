@@ -1,10 +1,12 @@
 package com.dream.city.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.dream.city.base.model.Message;
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.PlayerEarning;
 import com.dream.city.base.utils.DataUtils;
+import com.dream.city.base.utils.JsonUtil;
 import com.dream.city.service.ConsumerEarningService;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
@@ -28,6 +30,27 @@ public class ConsumerEarningController {
 
     @Autowired
     private ConsumerEarningService earningService;
+
+
+    /**
+     * 投资提取
+     * @param msg
+     * @return
+     */
+    @ApiOperation(value = "投资提取", httpMethod = "POST", notes = "t入参playerId,investId", response = Message.class)
+    @RequestMapping("/extract")
+    public Message extract(@RequestBody Message msg){
+        Object dataMsg = msg.getData().getData();
+        JSONObject jsonObject = JsonUtil.parseJsonToObj(JsonUtil.parseObjToJson(dataMsg), JSONObject.class);
+        String playerId = jsonObject.getString("playerId");
+        Integer investId = Integer.parseInt(jsonObject.getString("investId"));
+
+        Result<Map<String,Object>> result = earningService.extract(playerId,investId);
+        msg.setCode(result.getCode());
+        msg.setDesc(result.getMsg());
+        msg.getData().setData(result.getData());
+        return msg;
+    }
 
 
     /**

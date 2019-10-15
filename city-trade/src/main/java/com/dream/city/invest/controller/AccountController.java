@@ -8,10 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -53,17 +50,17 @@ public class AccountController {
 
     /**
      * 获取玩家账户
-     * @param record
+     * @param playerId
      * @return
      */
-    @RequestMapping("/getPlayerAccount")
-    public Result<PlayerAccount> getPlayerAccount(@RequestBody PlayerAccount record){
-        logger.info("获取玩家账户，{}", record);
+    @RequestMapping("/getPlayerAccount/{playerId}")
+    public Result<PlayerAccount> getPlayerAccount(@PathVariable("playerId") String playerId){
+        logger.info("获取玩家账户，{}", playerId);
         String desc = "获取玩家账户成功";
         PlayerAccount account = null;
         boolean b = Boolean.TRUE;
         try {
-            account = accountService.getPlayerAccount(record);
+            account = accountService.getPlayerAccount(playerId);
         }catch (Exception e){
             desc = "获取玩家账户失败";
             b = Boolean.FALSE;

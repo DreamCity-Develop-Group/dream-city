@@ -30,7 +30,7 @@ public interface PlayerAccountLogMapper {
     PlayerAccountLog selectByPrimaryKey(Integer accId);
 
     @Insert("insert into player_account_log values(#{id},#{accId},#{playerId},#{address},#{amountMt},#{amountUsdt},#{type},#{desc},#{createTime})")
-    void insert(PlayerAccountLog account);
+    Integer insert(PlayerAccountLog account);
     /**
      *  玩家的资金账户
      * @param playerId
