@@ -260,6 +260,7 @@ public class EarningController {
                         result.put("personTax",earning.getEarnPersonalTax());
                         result.put("enterpriseTax",earning.getEarnEnterpriseTax());
                         result.put("quotaTax",earning.getEarnQuotaTax());
+                        result.put("state",ReturnStatus.INVEST_SUBSCRIBE.getCode());
                     }else {
                         msg = "添加账户记录失败";
                     }
