@@ -25,7 +25,7 @@ public interface ConsumerAccountService {
      */
     @ApiOperation(value = "获取玩家账户", httpMethod = "POST", notes = "t入参username", response = Result.class)
     @RequestMapping("/getPlayerAccount")
-    Result getPlayerAccount(@RequestBody PlayerAccount record);
+    Result<PlayerAccount> getPlayerAccount(@RequestBody PlayerAccount record);
     /**
      * 获取玩家账户
      * @param playerId
@@ -41,7 +41,7 @@ public interface ConsumerAccountService {
      */
     @ApiOperation(value = "玩家账户列表", httpMethod = "POST", notes = "t入参username", response = Result.class)
     @RequestMapping("/getPlayerAccountList")
-    Result getPlayerAccountList(@RequestBody PlayerAccount record);
+    Result<List<PlayerAccount>> getPlayerAccountList(@RequestBody PlayerAccount record);
 
     /**
      * 新增玩家账户

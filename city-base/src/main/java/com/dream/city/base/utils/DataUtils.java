@@ -108,6 +108,7 @@ public class DataUtils {
         String amountType = map.containsKey("amountType")?String.valueOf(map.get("amountType")):null;
         String inName = map.containsKey("inName")?String.valueOf(map.get("inName")):null;
         String payerId = map.containsKey("payerId")?String.valueOf(map.get("payerId")):null;
+        String payerName = map.containsKey("username")?String.valueOf(map.get("username")):null;
         String orderState = map.containsKey("orderState")?String.valueOf(map.get("orderState")):null;
         Integer orderRepeat = map.containsKey("orderRepeat")?Integer.parseInt(String.valueOf(map.get("orderRepeat"))):0;
 
@@ -118,6 +119,7 @@ public class DataUtils {
         result.setOrderAmount(orderAmount);
         result.setAmountType(amountType);
         result.setPayerId(payerId);
+        result.setPayerName(payerName);
         result.setOrderRepeat(orderRepeat);
         result.setOrderState(orderState);
         return result;

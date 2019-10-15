@@ -7,8 +7,8 @@
     <result column="in_img" property="inImg" jdbcType="VARCHAR" />
     <result column="in_limit" property="inLimit" jdbcType="DECIMAL" />
     <result column="in_start" property="inStart" jdbcType="TIMESTAMP" />
-    <result column="in_personal_tax" property="inPersonalTax" jdbcType="REAL" />
-    <result column="in_enterprise_tax" property="inEnterpriseTax" jdbcType="REAL" />
+    <result column="in_personal_tax" property="inPersonalTax" jdbcType="DECIMAL" />
+    <result column="in_enterprise_tax" property="inEnterpriseTax" jdbcType="DECIMAL" />
     <result column="in_earning" property="inEarning" jdbcType="TINYINT" />
     <result column="in_end" property="inEnd" jdbcType="TIMESTAMP" />
     <result column="is_valid" property="isValid" jdbcType="CHAR" />
@@ -19,7 +19,18 @@
     in_id, in_name, in_limit, in_start, in_personal_tax, in_enterprise_tax, in_earning, in_end,DATE_FORMAT(create_time,'%Y-%m-%d %h:%m:%s') create_time, DATE_FORMAT(update_time,'%Y-%m-%d %h:%m:%s') update_time,is_valid,in_img
   </sql>
 
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.dream.city.base.model.entity.CityInvest" >
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    from city_invest
+    <where>
+      in_id = #{inId,jdbcType=INTEGER}
+
+    </where>
+  </select>
+
+
+  <select id="selectCityInvest" resultMap="BaseResultMap" parameterType="com.dream.city.base.model.entity.CityInvest" >
     select 
     <include refid="Base_Column_List" />
     from city_invest
@@ -28,7 +39,7 @@
       <if test="inId !=null">
         and in_id = #{inId,jdbcType=INTEGER}
       </if>
-      <if test="inName !=null">
+      <if test="inName !=null and inName !=''">
         and in_name = #{inName,jdbcType=VARCHAR}
       </if>
 

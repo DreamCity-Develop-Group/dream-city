@@ -46,7 +46,8 @@ public enum ReturnStatus {
     MT_MISS_BUY_TIP(602,"错过购买兑换处理提示"),
     MT_BUY_TIP(601,"购买兑换请求提示"),
 
-    INVEST_SUBSCRIBED(701,"预约中"),
+    INVEST_SUBSCRIBE(700,"预约"),
+    INVEST_SUBSCRIBED(701,"已预约"),
     INVEST_MANAGEMENT(702,"经营中"),
     INVEST_EXTRACT(703,"可提取"),
 

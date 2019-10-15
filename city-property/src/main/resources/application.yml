@@ -21,8 +21,10 @@ eureka:
 
 #datasource
 mybatis:
-  type-aliases-package: com.dream.city.domain.mapper
-  mapper-locations: classpath:/mappers/*.xml
+  type-aliases-package: com.dream.city.base.model.mapper
+  mapper-locations: classpath:/mybatis/mappers/*.xml
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 
 

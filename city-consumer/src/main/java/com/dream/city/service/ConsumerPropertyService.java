@@ -12,41 +12,40 @@ import java.util.List;
  * 物业/投资项
  */
 @FeignClient(value = "city-property")
-@RequestMapping("/property")
 public interface ConsumerPropertyService {
 
     /**
      * 新建物业
-     * @param record
+     * @param invest
      * @return
      */
-    @RequestMapping("/insertInvest")
-    Result<Integer> insertInvest(@RequestBody CityInvest record);
+    @RequestMapping("/property/insertInvest")
+    Result<Integer> insertInvest(@RequestBody CityInvest invest);
 
 
     /**
      * 查询物业
-     * @param record
+     * @param invest
      * @return
      */
-    @RequestMapping("/getInvestByIdOrName")
-    Result<CityInvest> getInvestByIdOrName(@RequestBody CityInvest record);
+    @RequestMapping("/property/getInvestByIdOrName")
+    Result<CityInvest> getInvestByIdOrName(@RequestBody CityInvest invest);
 
     /**
      * 更新物业
-     * @param record
+     * @param invest
      * @return
      */
-    @RequestMapping("/updateInvest")
-    Result<Integer> updateInvest(@RequestBody CityInvest record);
+    @RequestMapping("/property/updateInvest")
+    Result<Integer> updateInvest(@RequestBody CityInvest invest);
 
     /**
      * 物业列表
-     * @param record
+     * @param invest
      * @return
      */
-    @RequestMapping("/getInvestLsit")
-    Result<List<CityInvest>> getInvestLsit(@RequestBody CityInvest record);
+    @RequestMapping("/property/getInvestLsit")
+    Result<List<CityInvest>> getInvestLsit(@RequestBody CityInvest invest);
 
 
 

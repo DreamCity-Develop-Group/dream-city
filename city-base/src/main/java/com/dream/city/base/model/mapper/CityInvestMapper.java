@@ -3,6 +3,7 @@ package com.dream.city.base.model.mapper;
 
 import com.dream.city.base.model.entity.CityInvest;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -17,7 +18,9 @@ public interface CityInvestMapper {
 
     Integer insertSelective(CityInvest record);
 
-    CityInvest selectByPrimaryKey(CityInvest record);
+    CityInvest selectByPrimaryKey(@Param("inId") Integer inId);
+
+    CityInvest selectCityInvest(CityInvest record);
 
     List<CityInvest> getInvestLsit(CityInvest record);
 

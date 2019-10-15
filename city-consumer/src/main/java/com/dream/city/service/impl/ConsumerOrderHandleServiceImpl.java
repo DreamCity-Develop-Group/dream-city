@@ -45,10 +45,9 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
     public Message playerInvest(Message msg) {
         logger.info("预约投资:{}",msg);
         InvestOrderReq orderReq = DataUtils.getInvestOrderReqFromMessage(msg);
-
+        PlayerResp player = commonsService.getPlayerByStrUserName(orderReq.getPayerName());
         //获取项目数据
         CityInvest invest = getInvestByIdOrinName(orderReq.getInvestId(),orderReq.getInName());
-        BigDecimal inTax = invest.getInPersonalTax();
         orderReq.setOrderAmount(invest.getInLimit());
         orderReq.setPersonalInTax(invest.getInPersonalTax());
         //获取当前时间  后改为数据库时间 TODO
@@ -61,7 +60,7 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
         int orderRepeat = 0;
         InvestOrder getOrdersReq = new InvestOrder();
         getOrdersReq.setOrderInvestId(orderReq.getInvestId());
-        getOrdersReq.setOrderPayerId(orderReq.getPayerId());
+        getOrdersReq.setOrderPayerId(player.getPlayerId());
         Result<List<InvestOrder>> getOrdersResult = orderService.getOrders(getOrdersReq);
         List<InvestOrder> orderList= getOrdersResult.getData();
         if (orderList != null && orderList.size() > 0){
@@ -80,9 +79,9 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
             desc = "超过项目投资限额，投资限额为：" + invest.getInLimit();
         }*/
         PlayerAccount getPlayerAccount = new PlayerAccount();
-        getPlayerAccount.setAccPlayerId(orderReq.getPayerId());
+        getPlayerAccount.setAccPlayerId(player.getPlayerId());
         Result<PlayerAccount> playerAccountResult = accountService.getPlayerAccount(getPlayerAccount);
-        PlayerAccount playerAccount = playerAccountResult.getData();
+        PlayerAccount playerAccount = DataUtils.toJavaObject(playerAccountResult.getData(),PlayerAccount.class);
         //5USDT不足
         if (invest.getInLimit().compareTo(playerAccount.getAccUsdtAvailable()) > 0){
             desc = "USDT不足";
@@ -94,7 +93,7 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
 
         //生成订单
         Map<String,Object> result = new HashMap<>();
-        Result<InvestOrder> orderResult = this.orderCreate(invest.getInId(),orderReq.getPayerId(),orderRepeat,desc);
+        Result<InvestOrder> orderResult = this.orderCreate(invest.getInId(),player.getPlayerId(),orderRepeat,desc);
         InvestOrder order = orderResult.getData();
         result.put("state",orderResult.getCode());
         if (order != null){
@@ -104,70 +103,50 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
         }
 
         //投资扣减用户账户金额
-        Map<String,String> updatePlayerAccountResult = null;
-        boolean updatePlayerAccountSuccess = Boolean.FALSE;
-        int updatePlayerAccountDate = 0;
-        String updatePlayerAccountMsg = "";
-        String amountType = "";
+        Result<PlayerTrade>  updatePlayerAccountResult = null;
+        //String amountType = "";
         String tradeAmountType = TradeType.INVEST.getCode();
         if (order != null && order.getOrderId() != null){
-            success = Boolean.TRUE;
-            updatePlayerAccountResult = this.deductPlayerAccountAmount(orderReq,playerAccount,tradeAmountType,inTax);
-            amountType = updatePlayerAccountResult.get("amountType");
-            updatePlayerAccountDate = Integer.parseInt(updatePlayerAccountResult.get("data"));
-            updatePlayerAccountSuccess = Boolean.parseBoolean(updatePlayerAccountResult.get("success"));
-            updatePlayerAccountMsg = updatePlayerAccountResult.get("msg");
+            updatePlayerAccountResult = this.deductPlayerAccountAmount(orderReq,playerAccount,tradeAmountType,invest);
+            success = updatePlayerAccountResult.getSuccess();
+            desc = updatePlayerAccountResult.getMsg();
         }else {
+            success = orderResult.getSuccess();
             desc = orderResult.getMsg();
         }
 
         //用户交易
         Result<PlayerTrade> playerTradeResult = null;
         PlayerTrade trade = null;
-        if (updatePlayerAccountResult != null && updatePlayerAccountSuccess && updatePlayerAccountDate > 0){
-            success = Boolean.TRUE;
-            playerTradeResult = this.createPlayerTrade(orderReq.getPayerId(), order.getOrderId(),
-                    invest.getInLimit(), amountType, tradeAmountType);
+        if (updatePlayerAccountResult.getSuccess()){
+            trade = updatePlayerAccountResult.getData();
+            trade.setTradePlayerId(player.getPlayerId());
+            trade.setTradeOrderId(order.getOrderId());
+            trade.setTradeDesc("预约投资");
+            playerTradeResult = tradeService.insertPlayerTrade(trade);
             trade = playerTradeResult.getData();
-        }else {
-            desc = updatePlayerAccountMsg;
-            success = Boolean.FALSE;
+            success = playerTradeResult.getSuccess();
+            desc = playerTradeResult.getMsg();
+        }
+
+        //交易流水
+        if (playerTradeResult.getSuccess()){
+            //TODO
+
         }
 
         Result<Integer> tradeVerifyResult = null;
-        Map<String, String> deductTaxMap = null;
-        if (playerTradeResult != null && playerTradeResult.getSuccess() && trade != null){
-            success = Boolean.TRUE;
-            //冻结税金 从账户冻结，提取成功后直接扣除税金
-            tradeAmountType = TradeType.INVEST.getCode();
-            deductTaxMap = this.deductPlayerAccountAmount(orderReq,playerAccount,tradeAmountType, inTax);
-
+        if (playerTradeResult.getSuccess()){
             //生成投资待审核
             tradeVerifyResult = this.createTradeVerify(trade);
-        }else {
-            desc = playerTradeResult.getMsg();
-            success = Boolean.FALSE;
+
         }
-        if (tradeVerifyResult == null || !tradeVerifyResult.getSuccess() || tradeVerifyResult.getData() == null
-                || (tradeVerifyResult.getData() != null && tradeVerifyResult.getData() < 1)){
+
+        if (tradeVerifyResult == null || !tradeVerifyResult.getSuccess()){
             desc = tradeVerifyResult.getMsg();
             success = Boolean.FALSE;
         }else {
             success = Boolean.TRUE;
-        }
-
-        //扣税金流水
-        amountType = deductTaxMap.get("amountType");
-        updatePlayerAccountDate = Integer.parseInt(deductTaxMap.get("data"));
-        updatePlayerAccountSuccess = Boolean.parseBoolean(deductTaxMap.get("success"));
-        if (deductTaxMap != null && updatePlayerAccountSuccess && updatePlayerAccountDate > 0){
-            Result<PlayerTrade> playerTradeTaxResult = this.createPlayerTrade(orderReq.getPayerId(), order.getOrderId(),
-                    BigDecimal.valueOf(Double.parseDouble(String.valueOf(invest.getInPersonalTax()))), amountType, tradeAmountType);
-            if (playerTradeTaxResult != null && playerTradeTaxResult.getSuccess() && playerTradeTaxResult.getData() != null) {
-                success = Boolean.TRUE;
-            }else {
-                success = Boolean.FALSE;
-            }
         }
 
         msg.setDesc(desc);
@@ -233,7 +212,7 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
      * @return
      */
     private Result<InvestOrder> orderCreate(Integer investId,String orderPayerId,int orderRepeat,String desc){
-        Result<InvestOrder> orderResult = null;
+        Result<InvestOrder> orderResult = new Result();
         if (StringUtils.isEmpty(desc)){
             InvestOrder recordReq =new InvestOrder();
             recordReq.setOrderInvestId(investId);
@@ -253,7 +232,7 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
      * @param orderReq
      * @return
      */
-    private Map<String,String> deductPlayerAccountAmount(InvestOrderReq orderReq,PlayerAccount playerAccount,String tradeAmountType,BigDecimal inTax){
+    private Result<PlayerTrade> deductPlayerAccountAmount(InvestOrderReq orderReq,PlayerAccount playerAccount,String tradeAmountType,CityInvest invest){
         String amountType = AmountType.USDT.name();
         String msg = "";
         BigDecimal mtAvailable = playerAccount.getAccMtAvailable();
@@ -264,12 +243,12 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
             msg = "USDT不足";
         }
         //是否可扣税金
+        BigDecimal inTax = invest.getInPersonalTax().add(invest.getInEnterpriseTax());
         if (inTax.compareTo(mtAvailable) > 0){
             msg = "MT不足";
         }
 
-        String success = "";
-        String data = "";
+        boolean success = Boolean.FALSE;
         if (StringUtils.isBlank(msg)){
             playerAccount.setAccId(playerAccount.getAccId());
             playerAccount.setAccPlayerId(playerAccount.getAccPlayerId());
@@ -277,8 +256,7 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
             if (StringUtils.isBlank(tradeAmountType)){
                 tradeAmountType = TradeType.INVEST.getCode();
             }
-            if (tradeAmountType.equalsIgnoreCase(TradeType.INVEST.getCode())
-                    && orderReq.getAmountType().equalsIgnoreCase(AmountType.USDT.name())){
+            if (tradeAmountType.equalsIgnoreCase(TradeType.INVEST.getCode())){
                 amountType = AmountType.USDT.name();
                 //投资冻结USDT
                 playerAccount.setAccUsdt(playerAccount.getAccUsdt().subtract(orderReq.getOrderAmount()));
@@ -292,27 +270,27 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
 
             //updatePlayerAccount TODO
             Result<Integer> updatePlayerAccountResult = accountService.updatePlayerAccount(playerAccount);
-            success = String.valueOf(updatePlayerAccountResult.getSuccess());
-            data = String.valueOf(updatePlayerAccountResult.getData());
+            success = updatePlayerAccountResult.getSuccess();
 
-            if (tradeAmountType.equalsIgnoreCase(TradeType.INVEST.getCode()) && Boolean.parseBoolean(success)
-                    && Integer.parseInt(data) > 0){
+            if (tradeAmountType.equalsIgnoreCase(TradeType.INVEST.getCode()) && success
+                    && updatePlayerAccountResult.getData() > 0){
                 msg = "投资预约成功！";
-                success = String.valueOf(Boolean.TRUE);
+                success = Boolean.TRUE;
             }else {
                 msg = "投资预约失败！";
-                success = String.valueOf(Boolean.FALSE);
+                success = Boolean.FALSE;
             }
         }
 
-        Map<String,String> result = new HashMap<>();
-        result.put("amountType",amountType);
-        result.put("tradeAmountType",tradeAmountType);
-        result.put("mtAvailable",String.valueOf(mtAvailable));
-        result.put("data",data);
-        result.put("msg",msg);
-        result.put("success",success);
-        return result;
+        PlayerTrade trade = new PlayerTrade();
+        trade.setTradeType(tradeAmountType);
+        trade.setTradeAmount(orderReq.getOrderAmount());
+        trade.setPersonalTax(invest.getInPersonalTax());
+        trade.setEnterpriseTax(invest.getInEnterpriseTax());
+        trade.setInOutStatus(AmountDynType.OUT.getCode());
+        trade.setTradeStatus(TradeStatus.FREEZE.getCode());
+
+        return new Result<>(success,msg,trade);
     }
 
     /**
@@ -323,12 +301,11 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
      * @param amountType
      * @return
      */
-    private Result<PlayerTrade> createPlayerTrade(String playerId,Integer orderId, BigDecimal tradeAmount,String amountType,String tradeType){
+    private Result<PlayerTrade> createPlayerTrade(String playerId,Integer orderId, BigDecimal tradeAmount,String amountType,String tradeType,String tradeStatus){
         PlayerTrade insertPlayerTradeReq = new PlayerTrade();
         insertPlayerTradeReq.setTradeOrderId(orderId);
         insertPlayerTradeReq.setTradeAmount(tradeAmount);
         insertPlayerTradeReq.setTradeType(tradeType);
-        insertPlayerTradeReq.setTradeType(AmountDynType.OUT.name());
         insertPlayerTradeReq.setTradePlayerId(playerId);
         insertPlayerTradeReq.setTradeDesc("玩家投资"+amountType);
         return tradeService.insertPlayerTrade(insertPlayerTradeReq);
@@ -341,9 +318,9 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
      */
     private Result<Integer> createTradeVerify(PlayerTrade trade){
         TradeVerify insertTradeVerifyReq = new TradeVerify();
+        insertTradeVerifyReq.setVerifyOrderId(trade.getTradeOrderId());
         insertTradeVerifyReq.setVerifyTradeId(trade.getTradeId());
         insertTradeVerifyReq.setVerifyStatus(VerifyStatus.WAIT.name());
-        //insertTradeVerifyReq.setVerifyEmpId();//审核人id TODO
         insertTradeVerifyReq.setVerifyDesc(VerifyStatus.WAIT.getDesc());
         return verifyService.insertTradeVerify(insertTradeVerifyReq);
     }
