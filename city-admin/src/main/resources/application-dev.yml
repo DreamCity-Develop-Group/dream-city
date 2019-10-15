@@ -9,6 +9,8 @@ spring:
       hibernate:
         ddl-auto: update #ddl-auto:设为update表示每次都不会重新建表
       show-sql: true
+
+
   cache:
     type: redis
   redis:
@@ -28,6 +30,15 @@ spring:
     loadbalancer:
       retry:
         enabled: true
+
+  devtools:
+    restart:
+      #添加那个目录的文件需要restart
+      additional-paths: src/main/java
+      #排除那个目录的文件不需要restart
+      exclude: static/**
+
+
 
 #注册密码salt
 dreamcity:

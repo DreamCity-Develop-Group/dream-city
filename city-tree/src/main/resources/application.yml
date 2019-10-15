@@ -19,3 +19,13 @@ eureka:
   client:
     service-url:
       defaultZone: http://${eureka.instance.hostname}:8888/eureka/, http://${eureka.instance.hostname}:9999/eureka/
+
+
+
+mybatis:
+  type-aliases-package: com.dream.city.base.model.mapper
+  mapper-locations: classpath:/mybatis/mappers/*.xml
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+

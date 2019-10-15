@@ -10,11 +10,6 @@ spring:
     port: 6379
     password: 123456
 
-mybatis:
-  type-aliases-package: com.dream.city.base.model.mapper
-  mapper-locations: classpath:/mybatis/mappers/*.xml
-  configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 auth:
   secret: oKKLJOoasdl
