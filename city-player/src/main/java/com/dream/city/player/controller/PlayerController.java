@@ -177,10 +177,8 @@ public class PlayerController {
                 }
                 // 密码
                 String redisKey = RedisKeys.LOGIN_USER_TOKEN + username;
-                if (!redisUtils.hasKey(redisKey)) {
-                    if (!playerExists.getPlayerPass().equals(userpass)){
-                        tip.append(CityGlobal.Constant.USER_PWD_ERROR);
-                    }
+                if (!redisUtils.hasKey(redisKey) && !playerExists.getPlayerPass().equals(userpass)) {
+                    tip.append(CityGlobal.Constant.USER_PWD_ERROR);
                 }
                 if (StringUtils.isBlank(tip.toString())) {
                     tip.append(CityGlobal.Constant.LOGIN_SUCCESS);

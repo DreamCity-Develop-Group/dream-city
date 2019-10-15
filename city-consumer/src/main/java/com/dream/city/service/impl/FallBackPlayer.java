@@ -99,5 +99,10 @@ public class FallBackPlayer implements ConsumerPlayerService {
         return null;
     }
 
+    @Override
+    public void updatePlayer(Player player) {
+
+    }
+
 
 }

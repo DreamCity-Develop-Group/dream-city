@@ -2,10 +2,12 @@ package com.dream.city.service;
 
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.PlayerTrade;
+import com.dream.city.base.model.entity.TradeDetail;
 import com.dream.city.base.model.req.PlayerAccountReq;
 import com.dream.city.base.model.req.PlayerTradeReq;
 import com.dream.city.base.model.resp.PlayerTradeResp;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -80,4 +82,40 @@ public interface ConsumerTradeService {
 
     @RequestMapping("/investCollectEarning")
     Result investCollectEarning(@RequestParam("playerId") String playerId, @RequestParam("investId") int investId);
+
+
+
+
+    /**
+     * 新增交易明细
+     * @param record
+     * @return
+     */
+    @RequestMapping("/insertTradeDetail")
+    Result<Integer> insertTradeDetail(@RequestBody TradeDetail record);
+
+
+
+    /**
+     * 根据id获取交易明细
+     * @param id
+     * @return
+     */
+    @RequestMapping("/getTradeDetailById/{id}")
+    Result<TradeDetail> getTradeDetailById(@PathVariable("id") Integer id);
+
+
+
+
+    /**
+     * 获取交易明细列表
+     * @param record
+     * @return
+     */
+    @RequestMapping("/getTradeDetailList")
+    Result<List<PlayerTradeResp>> getTradeDetailList(@RequestBody PlayerTradeReq record);
+
+
+
+
 }

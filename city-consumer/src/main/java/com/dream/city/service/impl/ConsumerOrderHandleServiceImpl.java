@@ -7,6 +7,7 @@ import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.*;
 import com.dream.city.base.model.enu.*;
 import com.dream.city.base.model.req.InvestOrderReq;
+import com.dream.city.base.model.resp.InvestOrderResp;
 import com.dream.city.base.model.resp.PlayerResp;
 import com.dream.city.base.utils.DataUtils;
 import com.dream.city.service.*;
@@ -58,11 +59,11 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
         //校验项目投资规则
         //1是否复投
         int orderRepeat = 0;
-        InvestOrder getOrdersReq = new InvestOrder();
-        getOrdersReq.setOrderInvestId(orderReq.getInvestId());
-        getOrdersReq.setOrderPayerId(player.getPlayerId());
-        Result<List<InvestOrder>> getOrdersResult = orderService.getOrders(getOrdersReq);
-        List<InvestOrder> orderList= getOrdersResult.getData();
+        InvestOrderReq getOrdersReq = new InvestOrderReq();
+        getOrdersReq.setOrderId(orderReq.getInvestId());
+        getOrdersReq.setPayerId(player.getPlayerId());
+        Result<List<InvestOrderResp>> getOrdersResult = orderService.getOrders(getOrdersReq);
+        List<InvestOrderResp> orderList= getOrdersResult.getData();
         if (orderList != null && orderList.size() > 0){
             orderRepeat = 1;
         }
@@ -122,17 +123,35 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
             trade = updatePlayerAccountResult.getData();
             trade.setTradePlayerId(player.getPlayerId());
             trade.setTradeOrderId(order.getOrderId());
+            trade.setTradeAccId(playerAccount.getAccId());
             trade.setTradeDesc("预约投资");
             playerTradeResult = tradeService.insertPlayerTrade(trade);
             trade = playerTradeResult.getData();
             success = playerTradeResult.getSuccess();
             desc = playerTradeResult.getMsg();
         }
-
         //交易流水
         if (playerTradeResult.getSuccess()){
-            //TODO
-
+            TradeDetail tradeDetail = new TradeDetail();
+            tradeDetail.setTradeId(trade.getTradeId());
+            tradeDetail.setOrderId(order.getOrderId());
+            tradeDetail.setPlayerId(player.getPlayerId());
+            //投资金额
+            tradeDetail.setTradeAmount(trade.getTradeAmount());
+            tradeDetail.setTradeDetailType(TradeDetailType.USDT_INVEST_FREEZE.getCode());
+            tradeService.insertTradeDetail(tradeDetail);
+            //个人所得税
+            if (trade.getPersonalTax().compareTo(BigDecimal.ZERO) > 0) {
+                tradeDetail.setTradeAmount(trade.getPersonalTax());
+                tradeDetail.setTradeDetailType(TradeDetailType.MT_INVEST_PERSONAL_TAX.getCode());
+                tradeService.insertTradeDetail(tradeDetail);
+            }
+            //企业所得税
+            if (trade.getEnterpriseTax().compareTo(BigDecimal.ZERO) > 0) {
+                tradeDetail.setTradeAmount(trade.getEnterpriseTax());
+                tradeDetail.setTradeDetailType(TradeDetailType.MT_INVEST_ENTERPRISE_TAX.getCode());
+                tradeService.insertTradeDetail(tradeDetail);
+            }
         }
 
         Result<Integer> tradeVerifyResult = null;
@@ -143,9 +162,9 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
         }
 
         if (tradeVerifyResult == null || !tradeVerifyResult.getSuccess()){
-            desc = tradeVerifyResult.getMsg();
             success = Boolean.FALSE;
         }else {
+            msg.getData().setCode(ReturnStatus.SUCCESS.getStatus());
             success = Boolean.TRUE;
         }
 
@@ -363,23 +382,23 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
     }
 
     private Message getPlayerOrFriendOrders(Message msg,InvestOrderReq orderReq,PlayerResp player){
-        InvestOrder record = new InvestOrder();
-        record.setOrderId(orderReq.getOrderId());
-        record.setOrderInvestId(orderReq.getInvestId());
-        record.setOrderPayerId(player.getPlayerId());
-        record.setOrderState(orderReq.getOrderState());
-        record.setOrderRepeat(orderReq.getOrderRepeat());
-        Result<List<InvestOrder>> ordersResult = orderService.getOrders(record);
+        InvestOrderReq getOrdersReq = new InvestOrderReq();
+        getOrdersReq.setOrderId(orderReq.getInvestId());
+        getOrdersReq.setPayerId(player.getPlayerId());
+        getOrdersReq.setInvestId(orderReq.getInvestId());
+        getOrdersReq.setOrderState(orderReq.getOrderState());
+        getOrdersReq.setOrderRepeat(orderReq.getOrderRepeat());
+        Result<List<InvestOrderResp>> ordersResult = orderService.getOrders(getOrdersReq);
 
-        List<InvestOrder> orderList = ordersResult.getData();
+        List<InvestOrderResp> orderList = ordersResult.getData();
         List<Map> list = new ArrayList<>();
         if (!CollectionUtils.isEmpty(orderList)){
             Map<String,Object> map = null;
             CityInvest getInvest = null;
-            for (InvestOrder order: orderList){
+            for (InvestOrderResp order: orderList){
                 map = new HashMap<>();
                 getInvest = new CityInvest();
-                getInvest.setInId(order.getOrderInvestId());
+                getInvest.setInId(order.getOrderId());
                 Result<CityInvest> investResult = propertyService.getInvestByIdOrName(getInvest);
                 CityInvest invest = investResult.getData();
 
