@@ -29,6 +29,17 @@ spring:
         max-idle: 300
         min-idle: 1
 
+
+eureka:
+  instance:
+    hostname: localhost
+    instance-id: ${spring.application.name}
+  client:
+    service-url:
+      defaultZone: http://${eureka.instance.hostname}:8888/eureka/,http://${eureka.instance.hostname}:9999/eureka/
+
+
+
 #平台账户id，多个，都号隔开来自player_account表
 dreamcity:
   platform:

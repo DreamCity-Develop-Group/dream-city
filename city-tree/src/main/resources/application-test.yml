@@ -1,9 +1,4 @@
 spring:
-  #  cache:
-  #    type: ehcache
-  #    ehcache:
-  #      config: classpath:ehcache.xml
-
   cache:
     type: redis
   redis:
@@ -39,6 +34,17 @@ spring:
     tomcat:
       max-active: 20
       max-wait: 60000
+
+
+#eureka
+eureka:
+  instance:
+    hostname: 103.107.237.198
+    instance-id: ${spring.application.name}
+  client:
+    service-url:
+      defaultZone: http://${eureka.instance.hostname}:8888/eureka/, http://${eureka.instance.hostname}:9999/eureka/
+
 
 
 #平台账户id，多个，都号隔开来自player_account表

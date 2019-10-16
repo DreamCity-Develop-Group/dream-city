@@ -39,3 +39,23 @@ mybatis:
   mapper-locations: classpath:/mybatis/mappers/*.xml
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+
+
+
+eureka:
+  instance:
+    hostname: localhost
+    instance-id: ${spring.application.name}
+  client:
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname}:8888/eureka/,http://${eureka.instance.hostname}:9999/eureka/
+
+
+
+
+
+
+
+
+

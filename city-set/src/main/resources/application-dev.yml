@@ -31,4 +31,13 @@ spring:
 
 
 
+eureka:
+  instance:
+    hostname: localhost
+    instance-id: ${spring.application.name}
+  client:
+    service-url:
+      defaultZone: http://${eureka.instance.hostname}:8888/eureka/,http://${eureka.instance.hostname}:9999/eureka/
+
+
 

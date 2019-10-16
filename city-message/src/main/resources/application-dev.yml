@@ -28,6 +28,16 @@ spring:
         max-idle: 300
         min-idle: 1
 
+eureka:
+  instance:
+    hostname: localhost
+    instance-id: ${spring.application.name}
+  client:
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname}:8888/eureka/,http://${eureka.instance.hostname}:9999/eureka/
+
+
+
 #datasource
 mybatis:
   type-aliases-package: com.dream.city.base.model.mapper

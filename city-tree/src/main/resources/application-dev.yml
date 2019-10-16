@@ -11,8 +11,21 @@ spring:
     password: 123456
 
 
+#eureka
+eureka:
+  instance:
+    hostname: localhost
+    instance-id: ${spring.application.name}
+  client:
+    service-url:
+      defaultZone: http://${eureka.instance.hostname}:8888/eureka/, http://${eureka.instance.hostname}:9999/eureka/
+
+
+
 auth:
   secret: oKKLJOoasdl
 
 platform:
   account: 4E2EE556055042AB80E3D164E51DDD1A
+
+

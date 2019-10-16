@@ -1,0 +1,13 @@
+eureka:
+  server:
+    enable-self-preservation: false
+    eviction-interval-timer-in-ms: 10000
+  instance:
+    hostname: 103.107.237.198
+    instance-id: ${spring.application.name}
+  client:
+    registerWithEurUeka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname}:${spring.application.port}/eureka/
+

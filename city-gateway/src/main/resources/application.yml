@@ -4,14 +4,10 @@ server:
     context-path: /
 spring:
   profiles:
-    active: dev
+    active: test
   application:
     name: city-gateway
-  redis:
-    host: 127.0.0.1
-    port: 6379
-    database: 0
-    password: 123456
+
   main:
     allow-bean-definition-overriding: true
 
@@ -26,11 +22,3 @@ zuul:
     connect-timeout-millis: 60000
 
 
-
-eureka:
-  instance:
-    hostname: localhost
-    instance-id: ${spring.application.name}
-  client:
-    serviceUrl:
-      defaultZone: http://${eureka.instance.hostname}:8888/eureka/,http://${eureka.instance.hostname}:9999/eureka/

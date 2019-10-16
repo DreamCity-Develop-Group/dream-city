@@ -1,14 +1,14 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://localhost:3306/dreamcity?serverTimezone=UTC&useUnicode=true&characterEncoding=UTF-8&transformedBitIsBoolean=true&autoReconnect=true&failOverReadOnly=false&allowMultiQueries=true&useSSL=false
+      url: jdbc:mysql://103.107.237.198:3306/dreamcity?serverTimezone=UTC&useUnicode=true&characterEncoding=UTF-8&transformedBitIsBoolean=true&autoReconnect=true&failOverReadOnly=false&allowMultiQueries=true&useSSL=false
       username: dreamcity
       password: Root@123
 
   cache:
     type: redis
   redis:
-    host: localhost
+    host: 103.107.237.198
     port: 6379
     database: 0
     password: 123456
@@ -20,6 +20,16 @@ spring:
         max-wait: -1
         max-idle: 300
         min-idle: 1
+
+
+eureka:
+  instance:
+    hostname: 103.107.237.198
+    instance-id: ${spring.application.name}
+  client:
+    service-url:
+      defaultZone: http://${eureka.instance.hostname}:8888/eureka/,http://${eureka.instance.hostname}:9999/eureka/
+
 
 
 #平台账户id，多个，都号隔开来自player_account表

@@ -10,15 +10,8 @@ spring:
   main:
     allow-bean-definition-overriding: true
   profiles:
-    active: dev
+    active: test
 
-eureka:
-  instance:
-    hostname: localhost
-    instance-id: ${spring.application.name}
-  client:
-    service-url:
-      defaultZone: http://${eureka.instance.hostname}:8888/eureka/,http://${eureka.instance.hostname}:9999/eureka/
 
 # 打印日志
 logging:

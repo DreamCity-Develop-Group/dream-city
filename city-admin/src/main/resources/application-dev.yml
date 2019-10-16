@@ -48,6 +48,13 @@ dreamcity:
 
 
 eureka:
+  instance:
+    hostname: localhost
+    instance-id: ${spring.application.name}
   client:
     eureka-server-read-timeout-seconds: 10
     eureka-connection-idle-timeout-seconds: 5
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname}:8888/eureka/,http://${eureka.instance.hostname}:9999/eureka/
+
+

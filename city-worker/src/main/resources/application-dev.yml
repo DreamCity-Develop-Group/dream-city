@@ -23,6 +23,14 @@ spring:
       #排除那个目录的文件不需要restart
       exclude: static/**
 
+eureka:
+  instance:
+    hostname: localhost
+    instance-id: ${spring.application.name}
+  client:
+    service-url:
+      defaultZone: http://${eureka.instance.hostname}:8888/eureka/,http://${eureka.instance.hostname}:9999/eureka/
+
 
 worker:
   channel:

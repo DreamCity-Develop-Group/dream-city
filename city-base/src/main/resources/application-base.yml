@@ -1,20 +1,6 @@
-#server:
-#  port: 8090
 spring:
-#  application:
-#    name: city-player
-#  profiles:
-#    active: dev
   main:
     allow-bean-definition-overriding: true
-
-eureka:
-  instance:
-    hostname: localhost
-    instance-id: ${spring.application.name}
-  client:
-    service-url:
-      defaultZone: http://${eureka.instance.hostname}:8888/eureka/,http://${eureka.instance.hostname}:9999/eureka/
 
 
 #datasource

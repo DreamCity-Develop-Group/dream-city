@@ -24,7 +24,6 @@ spring:
       exclude: static/**
 
   datasource:
-    type: com.alibaba.druid.pool.DruidDataSource
     url: jdbc:mysql://103.107.237.198:3306/dreamcity?serverTimezone=UTC&useUnicode=true&characterEncoding=UTF-8&transformedBitIsBoolean=true&autoReconnect=true&failOverReadOnly=false&allowMultiQueries=true&useSSL=false
     username: dreamcity
     password: Root@123
@@ -37,15 +36,15 @@ spring:
       max-wait: 60000
 
 
+
 eureka:
   instance:
     hostname: 103.107.237.198
     instance-id: ${spring.application.name}
   client:
-    eureka-server-read-timeout-seconds: 10
-    eureka-connection-idle-timeout-seconds: 5
     serviceUrl:
       defaultZone: http://${eureka.instance.hostname}:8888/eureka/,http://${eureka.instance.hostname}:9999/eureka/
+
 
 
 #平台账户id，多个，都号隔开来自player_account表
@@ -54,3 +53,11 @@ dreamcity:
   register:
     password:
       salt: DREAM_CITY_890@#$%
+
+  #平台账户id，多个，都号隔开来自player_account表
+  platform:
+    account:
+      accIds: 4E2EE556055042AB80E3D164E51DDD1A
+
+
+
