@@ -9,6 +9,7 @@ import com.dream.city.base.model.entity.TradeVerify;
 import com.dream.city.base.model.enu.*;
 import com.dream.city.base.model.req.PlayerAccountReq;
 import com.dream.city.invest.service.*;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 @Service
 public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
@@ -24,22 +26,20 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    AccountService accountService;
+    private AccountService accountService;
     @Autowired
-    PlayerTradeService tradeService;
+    private PlayerTradeService tradeService;
     @Autowired
-    TradeVerifyService verifyService;
+    private TradeVerifyService verifyService;
     @Autowired
-    EarningService earningService;
-    @Autowired
-    TradeDetailService tradeDetailService;
+    private TradeDetailService tradeDetailService;
 
     @Value("${player.withdraw.mt.tax:5}")
-    BigDecimal withdrawTax;
+    private BigDecimal withdrawTax;
     @Value("${player.transfer.mt.tax:5}")
-    BigDecimal transferTax;
+    private BigDecimal transferTax;
     @Value("${player.inside.transfer.verify:true}")
-    Boolean transferVerify;
+    private Boolean transferVerify;
 
 
     @Override
@@ -80,17 +80,6 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
         return new Result<>(success,msg,success);
     }
 
-    private void createTradeDetail(String playerId,Integer tradeId,BigDecimal tradeAmount,Integer orderId,Integer verifyId,String tradeDetailType,String descr){
-        TradeDetail tradeDetail = new TradeDetail();
-        tradeDetail.setTradeId(tradeId);
-        tradeDetail.setTradeAmount(tradeAmount);
-        tradeDetail.setDescr(descr);
-        tradeDetail.setPlayerId(playerId);
-        tradeDetail.setTradeDetailType(tradeDetailType);
-        tradeDetail.setOrderId(orderId);
-        tradeDetail.setVerifyId(verifyId);
-        tradeDetailService.insert(tradeDetail);
-    }
 
 
     @Override
@@ -248,6 +237,23 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
         return Boolean.TRUE;
     }
 
+
+    private void createTradeDetail(String playerId,Integer tradeId,BigDecimal tradeAmount,Integer orderId,Integer verifyId,String tradeDetailType,String descr){
+        TradeDetail tradeDetail = new TradeDetail();
+        tradeDetail.setTradeId(tradeId);
+        tradeDetail.setTradeAmount(tradeAmount);
+        tradeDetail.setDescr(descr);
+        tradeDetail.setPlayerId(playerId);
+        tradeDetail.setTradeDetailType(tradeDetailType);
+        tradeDetail.setOrderId(orderId);
+        if (verifyId != null){
+            tradeDetail.setVerifyId(verifyId);
+            tradeDetail.setVerifyTime(new Date());
+        }
+        tradeDetailService.insert(tradeDetail);
+    }
+
+
     /**
      * 更新账户数据
      * 充值、提现、转账
@@ -403,7 +409,7 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
         if (insertPlayerTrade != null){
             success = Boolean.TRUE;
         }
-        return new Result(success,desc,insertPlayerTrade);
+        return new Result<>(success,desc,insertPlayerTrade);
     }
 
 

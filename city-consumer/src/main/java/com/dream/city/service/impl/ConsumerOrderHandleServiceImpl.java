@@ -141,12 +141,24 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
             success = playerTradeResult.getSuccess();
             desc = playerTradeResult.getMsg();
         }
+
+        Result<TradeVerify> tradeVerifyResult = null;
+        if (playerTradeResult != null && playerTradeResult.getSuccess()){
+            //生成投资待审核
+            tradeVerifyResult = this.createTradeVerify(trade);
+
+        }
+
         //交易流水
         if (playerTradeResult != null && playerTradeResult.getSuccess()){
             TradeDetail tradeDetail = new TradeDetail();
             tradeDetail.setTradeId(trade.getTradeId());
             tradeDetail.setOrderId(order.getOrderId());
             tradeDetail.setPlayerId(player.getPlayerId());
+            if (tradeVerifyResult != null && tradeVerifyResult.getData().getVerifyId() != null){
+                tradeDetail.setVerifyId(tradeVerifyResult.getData().getVerifyId());
+                tradeDetail.setVerifyTime(new Date());
+            }
             //投资金额
             tradeDetail.setTradeAmount(trade.getTradeAmount());
             tradeDetail.setTradeDetailType(TradeDetailType.USDT_INVEST_FREEZE.getCode());
@@ -163,25 +175,17 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
                 tradeDetail.setTradeDetailType(TradeDetailType.MT_INVEST_ENTERPRISE_TAX.getCode());
                 tradeService.insertTradeDetail(tradeDetail);
             }
-        }
 
-        Result<TradeVerify> tradeVerifyResult = null;
-        if (playerTradeResult != null && playerTradeResult.getSuccess()){
-            //生成投资待审核
-            tradeVerifyResult = this.createTradeVerify(trade);
-
-        }
-
-        if (tradeVerifyResult == null || !tradeVerifyResult.getSuccess()){
-            success = Boolean.FALSE;
-            desc = "预约投资失败";
-        }else {
-            msg.getData().setCode(ReturnStatus.SUCCESS.getStatus());
             success = Boolean.TRUE;
             desc = "预约投资成功";
+            msg.getData().setCode(ReturnStatus.SUCCESS.getStatus());
             result.put("usdtFreeze",trade.getTradeAmount());
             result.put("mtFreeze",invest.getInPersonalTax().add(invest.getInEnterpriseTax()).add(invest.getInQuotaTax()));
             result.put("state ",ReturnStatus.INVEST_SUBSCRIBED.getCode());
+        }else {
+            success = Boolean.FALSE;
+            desc = "预约投资失败";
+            msg.getData().setCode(ReturnStatus.ERROR.getStatus());
         }
 
         msg.setDesc(desc);
