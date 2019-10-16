@@ -2,6 +2,7 @@ package com.dream.city.invest.controller;
 
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.PlayerAccount;
+import com.dream.city.base.model.enu.ReturnStatus;
 import com.dream.city.base.model.req.PlayerAccountReq;
 import com.dream.city.invest.service.AccountService;
 import org.slf4j.Logger;
@@ -130,14 +131,16 @@ public class AccountController {
         String desc = "更新玩家账户成功";
         boolean b = Boolean.TRUE;
         try {
-            i = accountService.updatePlayerAccount(record);
+            i = accountService.updatePlayerAccountById(record);
         }catch (Exception e){
             desc = "更新玩家账户失败";
             b = Boolean.FALSE;
             logger.error("更新玩家账户异常",e);
         }
-        Result<Integer> result = new Result<>(b,desc,i);
-        return result;
+        if (i > 0){
+            return new Result<>(b,desc, ReturnStatus.SUCCESS.getStatus(),i);
+        }
+        return new Result<>(b,desc,ReturnStatus.ERROR.getStatus(),i);
     }
 
 

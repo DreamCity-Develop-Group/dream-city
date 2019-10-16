@@ -130,7 +130,7 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
         //用户交易
         Result<PlayerTrade> playerTradeResult = null;
         PlayerTrade trade = null;
-        if (updatePlayerAccountResult.getSuccess()){
+        if (updatePlayerAccountResult != null && updatePlayerAccountResult.getSuccess()){
             trade = updatePlayerAccountResult.getData();
             trade.setTradePlayerId(player.getPlayerId());
             trade.setTradeOrderId(order.getOrderId());
@@ -142,7 +142,7 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
             desc = playerTradeResult.getMsg();
         }
         //交易流水
-        if (playerTradeResult.getSuccess()){
+        if (playerTradeResult != null && playerTradeResult.getSuccess()){
             TradeDetail tradeDetail = new TradeDetail();
             tradeDetail.setTradeId(trade.getTradeId());
             tradeDetail.setOrderId(order.getOrderId());
@@ -166,7 +166,7 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
         }
 
         Result<Integer> tradeVerifyResult = null;
-        if (playerTradeResult.getSuccess()){
+        if (playerTradeResult != null && playerTradeResult.getSuccess()){
             //生成投资待审核
             tradeVerifyResult = this.createTradeVerify(trade);
 
@@ -174,9 +174,11 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
 
         if (tradeVerifyResult == null || !tradeVerifyResult.getSuccess()){
             success = Boolean.FALSE;
+            desc = "预约投资失败";
         }else {
             msg.getData().setCode(ReturnStatus.SUCCESS.getStatus());
             success = Boolean.TRUE;
+            desc = "预约投资成功";
             result.put("usdtFreeze",trade.getTradeAmount());
             result.put("mtFreeze",invest.getInPersonalTax().add(invest.getInEnterpriseTax()).add(invest.getInQuotaTax()));
             result.put("state ",ReturnStatus.INVEST_SUBSCRIBED.getCode());
@@ -303,10 +305,9 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
 
             //updatePlayerAccount TODO
             Result<Integer> updatePlayerAccountResult = accountService.updatePlayerAccount(playerAccount);
-            success = updatePlayerAccountResult.getSuccess();
 
-            if (tradeAmountType.equalsIgnoreCase(TradeType.INVEST.getCode()) && success
-                    && updatePlayerAccountResult.getData() > 0){
+            if (tradeAmountType.equalsIgnoreCase(TradeType.INVEST.getCode()) && updatePlayerAccountResult != null && updatePlayerAccountResult.getSuccess()
+                     && updatePlayerAccountResult.getData() > 0){
                 msg = "投资预约成功！";
                 success = Boolean.TRUE;
             }else {
