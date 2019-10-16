@@ -45,3 +45,7 @@ eureka:
       defaultZone: http://${eureka.instance.hostname}:8888/eureka/,http://${eureka.instance.hostname}:9999/eureka/
 
 
+sms:
+  account:
+  url:
+  appKey:

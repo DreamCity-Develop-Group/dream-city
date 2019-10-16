@@ -42,3 +42,11 @@ eureka:
   client:
     service-url:
       defaultZone: http://${eureka.instance.hostname}:8888/eureka/,http://${eureka.instance.hostname}:9999/eureka/
+
+
+worker:
+  channel:
+    topics: topic1,topic2,topic3
+
+
+tasks: "{listenerAdapterLogin: 'listenerAdapterLogin', listenerAdapterPlatTrans: 'listenerAdapterPlatTrans', listenerAdapterServerPush: 'listenerAdapterServerPush'}"

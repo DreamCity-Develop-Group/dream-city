@@ -22,3 +22,10 @@ zuul:
     connect-timeout-millis: 60000
 
 
+#datasource
+mybatis:
+  type-aliases-package: com.dream.city.base.model.mapper
+  mapper-locations: classpath:/mybatis/mappers/*.xml
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
