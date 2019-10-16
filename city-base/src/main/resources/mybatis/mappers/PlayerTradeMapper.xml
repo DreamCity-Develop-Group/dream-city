@@ -9,6 +9,7 @@
     <result column="trade_amount" property="tradeAmount" jdbcType="DECIMAL" />
     <result column="personal_tax" property="personalTax" jdbcType="DECIMAL" />
     <result column="enterprise_tax" property="enterpriseTax" jdbcType="DECIMAL" />
+    <result column="quota_tax" property="quotaTax" jdbcType="DECIMAL" />
     <result column="trade_type" property="tradeType" jdbcType="VARCHAR" />
     <result column="trade_status" property="tradeStatus" jdbcType="VARCHAR" />
     <result column="in_out" property="inOutStatus" jdbcType="VARCHAR" />
@@ -18,13 +19,13 @@
   </resultMap>
 
   <sql id="Base_Column_List" >
-    trade_id, trade_acc_id, trade_player_id, trade_order_id, trade_amount, trade_type, personal_tax,enterprise_tax,in_out,
+    trade_id, trade_acc_id, trade_player_id, trade_order_id, trade_amount, trade_type, personal_tax,enterprise_tax,in_out,quota_tax,
     trade_desc,DATE_FORMAT(create_time,'%Y-%m-%d %h:%m:%s') create_time, DATE_FORMAT(update_time,'%Y-%m-%d %h:%m:%s') update_time
   </sql>
 
   <select id="getPlayerTradeById" resultType="com.dream.city.base.model.resp.PlayerTradeResp" parameterType="java.lang.Integer" >
     SELECT t.trade_id tradeId, t.trade_acc_id tradeAccId, t.trade_player_id playerId, t.trade_order_id tradeOrderId, t.trade_amount tradeAmount, t.trade_type tradeType,t.in_out inOutStatus,
-        t.trade_desc tradeDesc,t.create_time createTime, t.update_time updateTime,p.player_name playerName,p.player_nick playerNick,
+        t.trade_desc tradeDesc,t.create_time createTime, t.update_time updateTime,p.player_name playerName,p.player_nick playerNick,t.quota_tax,
         t.personal_tax personalTax,t.enterprise_tax enterpriseTax,t.trade_status tradeStatus,
         (SELECT v1.verify_status FROM trade_verify v1 WHERE t.trade_id = v1.verify_trade_id ORDER BY v1.create_time DESC LIMIT 1) verifyStatus,
         (SELECT e1.earn_max FROM player_earning e1,invest_order o WHERE t.trade_player_id = e1.earn_player_id AND e1.earn_invest_id=o.order_id and o.order_id = t.trade_order_id) earnMax,
@@ -65,7 +66,7 @@
   <select id="getPlayerTradeList" resultType="com.dream.city.base.model.resp.PlayerTradeResp" parameterType="com.dream.city.base.model.req.PlayerTradeReq" >
     SELECT * FROM (
       SELECT t.trade_id tradeId, t.trade_acc_id tradeAccId, t.trade_player_id playerId, t.trade_order_id tradeOrderId, t.trade_amount tradeAmount, t.trade_type tradeType,t.in_out inOutStatus,
-        t.trade_desc tradeDesc,t.create_time createTime, t.update_time updateTime,p.player_name playerName,p.player_nick playerNick,
+        t.trade_desc tradeDesc,t.create_time createTime, t.update_time updateTime,p.player_name playerName,p.player_nick playerNick,t.quota_tax,
         t.personal_tax personalTax,t.enterprise_tax enterpriseTax,t.trade_status tradeStatus,
         (SELECT v1.verify_status FROM trade_verify v1 WHERE t.trade_id = v1.verify_trade_id ORDER BY v1.create_time DESC LIMIT 1) verifyStatus,
         (SELECT e1.earn_max FROM player_earning e1,invest_order o WHERE t.trade_player_id = e1.earn_player_id AND e1.earn_invest_id=o.order_id and o.order_id = t.trade_order_id) earnMax,
@@ -133,6 +134,9 @@
       <if test="enterpriseTax != null" >
         enterprise_tax,
       </if>
+      <if test="quotaTax != null" >
+        quota_tax,
+      </if>
       <if test="inOutStatus != null" >
         in_out,
       </if>
@@ -170,6 +174,9 @@
       <if test="enterpriseTax != null" >
         #{enterpriseTax,jdbcType=DECIMAL},
       </if>
+      <if test="quotaTax != null" >
+        #{quotaTax,jdbcType=DECIMAL},
+      </if>
       <if test="inOutStatus != null" >
         #{inOutStatus,jdbcType=VARCHAR},
       </if>
@@ -183,29 +190,11 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.dream.city.base.model.entity.PlayerTrade" >
     update player_trade
     <set >
-      <if test="tradeAccId != null" >
-        trade_acc_id = #{tradeAccId,jdbcType=INTEGER},
-      </if>
-      <if test="tradePlayerId != null and tradePlayerId != ''" >
-        trade_player_id = #{tradePlayerId,jdbcType=VARCHAR},
-      </if>
-      <if test="tradeOrderId != null" >
-        trade_order_id = #{tradeOrderId,jdbcType=INTEGER},
-      </if>
-      <if test="tradeAmount != null" >
-        trade_amount = #{tradeAmount,jdbcType=DECIMAL},
-      </if>
       <if test="tradeType != null and tradeType != ''" >
         trade_type = #{tradeType,jdbcType=VARCHAR},
       </if>
       <if test="tradeStatus != null and tradeStatus != ''" >
         trade_status = #{tradeStatus,jdbcType=VARCHAR},
-      </if>
-      <if test="personalTax != null" >
-        personal_tax = #{personalTax,jdbcType=DECIMAL},
-      </if>
-      <if test="enterpriseTax != null" >
-        enterprise_tax = #{enterpriseTax,jdbcType=DECIMAL},
       </if>
       <if test="inOutStatus != null" >
         in_out = #{inOutStatus,jdbcType=VARCHAR},

@@ -9,13 +9,15 @@
     <result column="player_id" property="playerId" jdbcType="VARCHAR" />
     <result column="trade_detail_type" property="tradeDetailType" jdbcType="VARCHAR" />
     <result column="trade_amount" property="tradeAmount" jdbcType="DECIMAL" />
+    <result column="usdt_surplus" property="usdtSurplus" jdbcType="DECIMAL" />
+    <result column="mt_surplus" property="mtSurplus" jdbcType="DECIMAL" />
     <result column="verify_time" property="verifyTime" jdbcType="TIMESTAMP" />
     <result column="descr" property="descr" jdbcType="VARCHAR" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
   </resultMap>
 
   <sql id="Base_Column_List" >
-    id, trade_id, verify_id, order_id, player_id, trade_detail_type, trade_amount, verify_time,
+    id, trade_id, verify_id, order_id, player_id, trade_detail_type, trade_amount, verify_time,usdt_surplus,mt_surplus,
     descr, create_time
   </sql>
 
@@ -32,6 +34,8 @@
     <result column="trade_detail_type" property="tradeDetailType" jdbcType="VARCHAR" />
     <result column="trade_status" property="tradeStatus" jdbcType="VARCHAR" />
     <result column="trade_amount" property="tradeAmount" jdbcType="DECIMAL" />
+    <result column="trade_amount" property="tradeAmount" jdbcType="DECIMAL" />
+    <result column="usdt_surplus" property="usdtSurplus" jdbcType="DECIMAL" />
     <result column="personal_tax" property="personalTax" jdbcType="DECIMAL" />
     <result column="enterprise_tax" property="enterpriseTax" jdbcType="DECIMAL" />
     <result column="player_name" property="playerName" jdbcType="VARCHAR" />
@@ -47,12 +51,12 @@
   </resultMap>
 
   <sql id="Base_Column_List_Ext" >
-    d.id detail_id, d.trade_id, d.verify_id, d.order_id, d.player_id, d.trade_detail_type, d.trade_amount, d.verify_time, d.descr detail_descr, d.create_time detail_time,
+    d.id detail_id, d.trade_id, d.verify_id, d.order_id, d.player_id, d.trade_detail_type, d.trade_amount, d.verify_time, d.descr detail_descr, d.create_time detail_time,d.usdt_surplus,d.mt_surplus,
     t.personal_tax,t.enterprise_tax,t.trade_type,t.trade_status,p.player_name,u.name user_name,v.verify_status,v.verify_desc,v.create_time verify_time,o.order_id,o.order_name,o.order_num
   </sql>
 
   <select id="getTradeDetailList" resultMap="BaseResultMapExT" parameterType="com.dream.city.base.model.req.PlayerTradeReq" >
-    SELECT d.id detail_id, d.trade_id, d.verify_id, d.order_id, d.player_id, d.trade_detail_type, d.trade_amount, d.verify_time, d.descr detail_descr, d.create_time detail_time,
+    SELECT d.id detail_id, d.trade_id, d.verify_id, d.order_id, d.player_id, d.trade_detail_type, d.trade_amount, d.verify_time, d.descr detail_descr, d.create_time detail_time,d.usdt_surplus,d.mt_surplus,
       t.personal_tax,t.enterprise_tax,t.trade_type,t.trade_status,p.player_name,
       (SELECT u.name FROM user u,trade_verify v WHERE d.verify_id=v.verify_id and v.verify_user_id= u.id) user_name,
       (SELECT v.verify_status FROM trade_verify v WHERE d.verify_id = v.verify_id) verify_status,
@@ -140,6 +144,12 @@
       <if test="tradeAmount != null" >
         trade_amount,
       </if>
+      <if test="usdtSurplus != null" >
+        usdt_surplus,
+      </if>
+      <if test="mtSurplus != null" >
+        mt_surplus,
+      </if>
       <if test="verifyTime != null" >
         verify_time,
       </if>
@@ -170,6 +180,12 @@
       <if test="tradeAmount != null" >
         #{tradeAmount,jdbcType=DECIMAL},
       </if>
+      <if test="usdtSurplus != null" >
+        #{usdtSurplus,jdbcType=DECIMAL},
+      </if>
+      <if test="mtSurplus != null" >
+        #{mtSurplus,jdbcType=DECIMAL},
+      </if>
       <if test="verifyTime != null" >
         #{verifyTime,jdbcType=TIMESTAMP},
       </if>
@@ -183,23 +199,8 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.dream.city.base.model.entity.TradeDetail" >
     update trade_detail
     <set >
-      <if test="tradeId != null" >
-        trade_id = #{tradeId,jdbcType=INTEGER},
-      </if>
-      <if test="verifyId != null" >
-        verify_id = #{verifyId,jdbcType=INTEGER},
-      </if>
-      <if test="orderId != null" >
-        order_id = #{orderId,jdbcType=INTEGER},
-      </if>
-      <if test="playerId != null" >
-        player_id = #{playerId,jdbcType=VARCHAR},
-      </if>
       <if test="tradeDetailType != null" >
         trade_detail_type = #{tradeDetailType,jdbcType=VARCHAR},
-      </if>
-      <if test="tradeAmount != null" >
-        trade_amount = #{tradeAmount,jdbcType=DECIMAL},
       </if>
       <if test="verifyTime != null" >
         verify_time = #{verifyTime,jdbcType=TIMESTAMP},

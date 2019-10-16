@@ -387,11 +387,11 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
             tradeReq.setTradeStatus(TradeStatus.IN.getCode());
             tradeReq.setInOutStatus(AmountDynType.IN.getCode());
         }else if (TradeType.WITHDRAW.getCode().equalsIgnoreCase(record.getTradeType())){
-            tradeReq.setInQuotaTax(withdrawTax);
+            tradeReq.setQuotaTax(withdrawTax);
             tradeReq.setTradeStatus(TradeStatus.FREEZE.getCode());
             tradeReq.setInOutStatus(AmountDynType.OUT.getCode());
         }else if (TradeType.TRANSFER_FROM.getCode().equalsIgnoreCase(record.getTradeType())){
-            tradeReq.setInQuotaTax(transferTax);
+            tradeReq.setQuotaTax(transferTax);
             tradeReq.setInOutStatus(AmountDynType.OUT.getCode());
             if (transferVerify) {
                 tradeReq.setTradeStatus(TradeStatus.FREEZE.getCode());

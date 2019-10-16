@@ -179,7 +179,7 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
             }
             //定额得税
             if (trade.getEnterpriseTax().compareTo(BigDecimal.ZERO) > 0) {
-                tradeDetail.setTradeAmount(trade.getInQuotaTax());
+                tradeDetail.setTradeAmount(trade.getQuotaTax());
                 tradeDetail.setTradeDetailType(TradeDetailType.MT_INVEST_QUOTA_TAX.getCode());
                 tradeService.insertTradeDetail(tradeDetail);
             }
@@ -336,7 +336,7 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
         trade.setTradeAmount(orderReq.getOrderAmount());
         trade.setPersonalTax(invest.getInPersonalTax());
         trade.setEnterpriseTax(invest.getInEnterpriseTax());
-        trade.setInQuotaTax(invest.getInQuotaTax());
+        trade.setQuotaTax(invest.getInQuotaTax());
         trade.setInOutStatus(AmountDynType.OUT.getCode());
         trade.setTradeStatus(TradeStatus.FREEZE.getCode());
 

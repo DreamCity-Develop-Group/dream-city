@@ -34,6 +34,8 @@ public class TradeDetail implements Serializable {
 
         /** 交易金额 */
         private BigDecimal tradeAmount;
+        private BigDecimal usdtSurplus;
+        private BigDecimal mtSurplus;
 
         /** 交易审核时间 */
         private Date verifyTime;
