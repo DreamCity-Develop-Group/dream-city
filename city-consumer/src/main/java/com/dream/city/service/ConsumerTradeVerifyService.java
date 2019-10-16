@@ -21,7 +21,7 @@ public interface ConsumerTradeVerifyService {
      * @return
      */
     @RequestMapping("/insertTradeVerify")
-    Result insertTradeVerify(@RequestBody TradeVerify record);
+    Result<TradeVerify> insertTradeVerify(@RequestBody TradeVerify record);
 
     /**
      * 审核

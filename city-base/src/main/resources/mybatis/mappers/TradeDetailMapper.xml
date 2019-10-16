@@ -67,8 +67,14 @@
     <if test="tradeId != null" >
       and d.trade_id= #{tradeId,jdbcType=INTEGER}
     </if>
+    <if test="playerId != null and playerId != ''" >
+      and d.player_id= #{playerId,jdbcType=VARCHAR}
+    </if>
     <if test="playerName != null and playerName != ''" >
       and p.player_name= #{playerName,jdbcType=VARCHAR}
+    </if>
+    <if test="playerNick != null and playerNick != ''" >
+      and p.player_nick= #{playerNick,jdbcType=VARCHAR}
     </if>
     <if test="verifyStatus != null and verifyStatus != ''" >
       and v.verify_status= #{verifyStatus,jdbcType=VARCHAR}

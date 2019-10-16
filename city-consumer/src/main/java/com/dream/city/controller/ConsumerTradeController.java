@@ -22,10 +22,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -48,6 +46,24 @@ public class ConsumerTradeController {
     private ConsumerCommonsService commonsService;
 
 
+
+    /**
+     * 根据用户id获取交易明细
+     * @param msg
+     * @return
+     */
+    @ApiOperation(value = "根据用户id获取交易明细",httpMethod = "POST", notes = "t参数:playerId", response = Message.class)
+    @RequestMapping("/trade/getTradeDetailList")
+    public Message getTradeDetailList(@RequestBody Message msg){
+        logger.info("根据tradeId获取投资记录", JSONObject.toJSONString(msg));
+        PlayerAccountReq accountReq = DataUtils.getPlayerAccountReqFromMessage(msg);
+        PlayerTradeReq tradeReq = new PlayerTradeReq();
+        tradeReq.setPlayerId(accountReq.getAccPlayerId());
+        Result<List<PlayerTradeResp>> tradeResult = tradeService.getTradeDetailList(tradeReq);
+        msg.getData().setData(tradeResult);
+        msg.setDesc("根据用户id获取交易明细");
+        return msg;
+    }
 
 
     /**
@@ -111,7 +127,7 @@ public class ConsumerTradeController {
     @ApiOperation(value = "获取投资记录列表",httpMethod = "POST", notes = "t可选参数:tradeId,playerId,username,nick,tradeType", response = Message.class)
     @RequestMapping("/trade/getPlayerTradeList")
     public Message getPlayerTradeList(@RequestBody Message msg){
-        logger.info("用户下单", JSONObject.toJSONString(msg));
+        logger.info("获取投资记录列表", JSONObject.toJSONString(msg));
 
         PlayerAccountReq accountReq = DataUtils.getPlayerAccountReqFromMessage(msg);
         String playerId = accountReq.getAccPlayerId();

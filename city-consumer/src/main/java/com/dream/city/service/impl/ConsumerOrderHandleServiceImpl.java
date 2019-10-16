@@ -10,6 +10,7 @@ import com.dream.city.base.model.req.InvestOrderReq;
 import com.dream.city.base.model.resp.InvestOrderResp;
 import com.dream.city.base.model.resp.PlayerResp;
 import com.dream.city.base.utils.DataUtils;
+import com.dream.city.base.utils.KeyGenerator;
 import com.dream.city.service.*;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -105,10 +106,10 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
         result.put("investId","");
         result.put("usdtFreeze",BigDecimal.ZERO);
         result.put("mtFreeze",BigDecimal.ZERO);
-        result.put("state ",ReturnStatus.INVEST_SUBSCRIBE.getCode());
+        result.put("state",ReturnStatus.INVEST_SUBSCRIBE.getStatus());
 
         //生成订单
-        Result<InvestOrder> orderResult = this.orderCreate(invest.getInId(),player.getPlayerId(),orderRepeat,desc);
+        Result<InvestOrder> orderResult = this.orderCreate(invest,player.getPlayerId(),orderRepeat,desc);
         InvestOrder order = orderResult.getData();
         if (order != null){
             result.put("investId",order.getOrderInvestId());
@@ -141,12 +142,25 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
             success = playerTradeResult.getSuccess();
             desc = playerTradeResult.getMsg();
         }
+
+        Result<TradeVerify> tradeVerifyResult = null;
+        if (playerTradeResult != null && playerTradeResult.getSuccess()){
+            //生成投资待审核
+            tradeVerifyResult = this.createTradeVerify(trade);
+
+        }
+
         //交易流水
         if (playerTradeResult != null && playerTradeResult.getSuccess()){
             TradeDetail tradeDetail = new TradeDetail();
             tradeDetail.setTradeId(trade.getTradeId());
             tradeDetail.setOrderId(order.getOrderId());
             tradeDetail.setPlayerId(player.getPlayerId());
+            if (tradeVerifyResult != null && tradeVerifyResult.getData() != null
+                    && tradeVerifyResult.getData().getVerifyId() != null){
+                tradeDetail.setVerifyId(tradeVerifyResult.getData().getVerifyId());
+                tradeDetail.setVerifyTime(new Date());
+            }
             //投资金额
             tradeDetail.setTradeAmount(trade.getTradeAmount());
             tradeDetail.setTradeDetailType(TradeDetailType.USDT_INVEST_FREEZE.getCode());
@@ -163,25 +177,23 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
                 tradeDetail.setTradeDetailType(TradeDetailType.MT_INVEST_ENTERPRISE_TAX.getCode());
                 tradeService.insertTradeDetail(tradeDetail);
             }
-        }
+            //定额得税
+            if (trade.getEnterpriseTax().compareTo(BigDecimal.ZERO) > 0) {
+                tradeDetail.setTradeAmount(trade.getInQuotaTax());
+                tradeDetail.setTradeDetailType(TradeDetailType.MT_INVEST_QUOTA_TAX.getCode());
+                tradeService.insertTradeDetail(tradeDetail);
+            }
 
-        Result<Integer> tradeVerifyResult = null;
-        if (playerTradeResult != null && playerTradeResult.getSuccess()){
-            //生成投资待审核
-            tradeVerifyResult = this.createTradeVerify(trade);
-
-        }
-
-        if (tradeVerifyResult == null || !tradeVerifyResult.getSuccess()){
-            success = Boolean.FALSE;
-            desc = "预约投资失败";
-        }else {
-            msg.getData().setCode(ReturnStatus.SUCCESS.getStatus());
             success = Boolean.TRUE;
             desc = "预约投资成功";
+            msg.getData().setCode(ReturnStatus.SUCCESS.getStatus());
             result.put("usdtFreeze",trade.getTradeAmount());
             result.put("mtFreeze",invest.getInPersonalTax().add(invest.getInEnterpriseTax()).add(invest.getInQuotaTax()));
-            result.put("state ",ReturnStatus.INVEST_SUBSCRIBED.getCode());
+            result.put("state",ReturnStatus.INVEST_SUBSCRIBED.getStatus());
+        }else {
+            success = Boolean.FALSE;
+            desc = "预约投资失败";
+            msg.getData().setCode(ReturnStatus.ERROR.getStatus());
         }
 
         msg.setDesc(desc);
@@ -241,20 +253,23 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
 
     /**
      * 生成订单
-     * @param investId
+     * @param invest
      * @param orderPayerId
      * @param desc
      * @return
      */
-    private Result<InvestOrder> orderCreate(Integer investId,String orderPayerId,int orderRepeat,String desc){
+    private Result<InvestOrder> orderCreate(CityInvest invest,String orderPayerId,int orderRepeat,String desc){
         Result<InvestOrder> orderResult = new Result<>();
         if (StringUtils.isEmpty(desc)){
             InvestOrder recordReq =new InvestOrder();
-            recordReq.setOrderInvestId(investId);
+            recordReq.setOrderInvestId(invest.getInId());
             recordReq.setOrderPayerId(orderPayerId);
-            //预约
-            recordReq.setOrderState(InvestStatus.SUBSCRIBE.name());
+            //已预约
+            recordReq.setOrderState(InvestStatus.SUBSCRIBED.name());
             recordReq.setOrderRepeat(orderRepeat);
+            recordReq.setOrderAmount(invest.getInLimit());
+            recordReq.setOrderName(invest.getInName());
+            recordReq.setOrderNum(KeyGenerator.getUUID());
             orderResult = orderService.insertOrder(recordReq);
         }
         return orderResult;
@@ -351,7 +366,7 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
      * @param trade
      * @return
      */
-    private Result<Integer> createTradeVerify(PlayerTrade trade){
+    private Result<TradeVerify> createTradeVerify(PlayerTrade trade){
         TradeVerify insertTradeVerifyReq = new TradeVerify();
         insertTradeVerifyReq.setVerifyOrderId(trade.getTradeOrderId());
         insertTradeVerifyReq.setVerifyTradeId(trade.getTradeId());

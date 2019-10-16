@@ -11,7 +11,11 @@ public enum TradeType {
     BUY_MT("BUY_MT","购买MT"),
 
     RECHARGE("RECHARGE","充值"),
+
     TRANSFER("TRANSFER","转账"),
+    TRANSFER_FROM("TRANSFER_FROM","转账转出"),
+    TRANSFER_TO("TRANSFER_TO","转账转入"),
+
     WITHDRAW("WITHDRAW","提现"),
 
     RECEIVABLES("RECEIVABLES","平台账户进账");

@@ -29,11 +29,11 @@ public class TradeVerifyController {
      * @return
      */
     @RequestMapping("/insertTradeVerify")
-    public Result insertTradeVerify(@RequestBody TradeVerify record){
+    public Result<TradeVerify> insertTradeVerify(@RequestBody TradeVerify record){
         logger.info("新增审核记录，{}", record);
         boolean success = Boolean.FALSE;
         String desc = "新增投资记录失败";
-        Integer resultDate = 0;
+        TradeVerify resultDate = null;
         try {
             resultDate = verifyService.insertTradeVerify(record);
             desc = "新增审核成功";
@@ -42,7 +42,7 @@ public class TradeVerifyController {
             desc = "新增审核异常";
             logger.error(desc,e);
         }
-        return new Result<Integer>(success,desc,resultDate);
+        return new Result<>(success,desc,resultDate);
     }
 
     /**
