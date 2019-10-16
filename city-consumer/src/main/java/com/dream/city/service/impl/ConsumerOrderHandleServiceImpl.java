@@ -175,6 +175,12 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
                 tradeDetail.setTradeDetailType(TradeDetailType.MT_INVEST_ENTERPRISE_TAX.getCode());
                 tradeService.insertTradeDetail(tradeDetail);
             }
+            //定额得税
+            if (trade.getEnterpriseTax().compareTo(BigDecimal.ZERO) > 0) {
+                tradeDetail.setTradeAmount(trade.getInQuotaTax());
+                tradeDetail.setTradeDetailType(TradeDetailType.MT_INVEST_QUOTA_TAX.getCode());
+                tradeService.insertTradeDetail(tradeDetail);
+            }
 
             success = Boolean.TRUE;
             desc = "预约投资成功";
