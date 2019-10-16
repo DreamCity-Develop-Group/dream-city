@@ -1,6 +1,7 @@
 package com.dream.city.service.impl;
 
 import com.dream.city.base.model.Result;
+import com.dream.city.base.model.enu.ReturnStatus;
 import com.dream.city.base.utils.RedisUtils;
 import com.dream.city.service.ConsumerCodeService;
 import org.apache.commons.lang.StringUtils;
@@ -24,15 +25,15 @@ public class ConsumerCodeServiceImpl implements ConsumerCodeService {
 
             if(redisCode.equals(code)){
                 msg = "验证成功";
-                retCode = 200;
+                retCode = ReturnStatus.SUCCESS.getStatus();
             }else {
                 msg = "验证码不正确";
-                retCode = 500;
+                retCode = ReturnStatus.ERROR_CODE.getStatus();
             }
 
         }else {
             msg = "验证码已过期";
-            retCode = 501;
+            retCode = ReturnStatus.CODE_EXPIRED.getStatus();
         }
 
         return new Result(retCode,msg);

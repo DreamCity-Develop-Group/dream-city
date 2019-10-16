@@ -13,23 +13,24 @@ import org.springframework.web.bind.annotation.RequestParam;
 @FeignClient(value = "city-tree", fallback = FallBackCityUser.class)
 public interface ConsumerPlayerAccountService {
 
-    /**
-     * 用户账户添加
-     */
-    @RequestMapping("/tree/account/create")
-    Result createAccount(@RequestParam("playerId") String playerId,@RequestParam("address")String address);
+	/**
+	 * 用户账户添加
+	 */
+	@RequestMapping("/tree/account/create")
+	Result createAccount(@RequestParam("playerId") String playerId,@RequestParam("address")String address);
 
 
     /*@RequestMapping("/tree/get/{username}")
     String createAccount(@PathVariable("username") String username);*/
 
-    /**
-     * 获取玩家账户
-     * @param playerId
-     * @return
-     */
-    @RequestMapping("/tree/get/account")
-    PlayerAccount getPlayerAccount(@RequestParam("playerId")String playerId);
+	/**
+	 * 获取玩家账户
+	 * @param playerId
+	 * @return
+	 */
+	@RequestMapping("/tree/get/account")
+	PlayerAccount getPlayerAccount(@RequestParam("playerId")String playerId);
 
-
+    @RequestMapping("/tree/create/account")
+    Result createBlockChainAccount(String username);
 }

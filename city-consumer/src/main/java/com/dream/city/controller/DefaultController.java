@@ -44,6 +44,9 @@ public class DefaultController {
     ConsumerPropertyService propertyService;
     @Autowired
     ConsumerSalesService salesService;
+    @Autowired
+    ConsumerPlayerBlockChainService playerBlockChainService;
+    
 
 
 
@@ -69,16 +72,15 @@ public class DefaultController {
         String username = jsonObject.getString("username");
         String playerId = jsonObject.getString("playerId");
 
-
-
         Player player = playerService.getPlayerByPlayerId(playerId);
 
 
         RelationTree tree = treeService.getRelationTree(player.getPlayerId());
-        int level = tree.getTreeLevel()==null?0:tree.getTreeLevel();
+        int level = 0;
         //是否已经加入商会
         int commerce = 0;
         if (tree != null){
+            level = tree.getTreeLevel()==null?0:tree.getTreeLevel();
             Result allowed = treeService.getInvestAllowed(player.getPlayerId());
 
             commerce = 1;
@@ -105,9 +107,17 @@ public class DefaultController {
         PlayerAccount playerAccount = playerAccountService.getPlayerAccount(player.getPlayerId());
 
         Map<String, Object> account = new HashMap<>();
-        account.put("usdt", playerAccount.getAccUsdtAvailable());
-        account.put("mt", playerAccount.getAccMtAvailable());
-        account.put("address",playerAccount.getAccAddr());
+        if(playerAccount != null) {
+            account.put("usdt", playerAccount.getAccUsdtAvailable());
+            account.put("mt", playerAccount.getAccMtAvailable());
+            account.put("address", playerAccount.getAccAddr());
+        }else{
+            account.put("usdt", new BigDecimal(0));
+            account.put("mt", new BigDecimal(0));
+            account.put("address", "");
+            Result accRet = playerBlockChainService.createBlockChainAccount(username);
+            playerAccountService.createAccount(playerId,accRet.getData().toString());
+        }
         //InvestOrder investOrder = propertyService.getInvests(player.getPlayerId());
         Result result1 = salesService.getUsdtToMtRate(player.getPlayerId());
         BigDecimal rate = new BigDecimal(result1.getData().toString()).setScale(3);

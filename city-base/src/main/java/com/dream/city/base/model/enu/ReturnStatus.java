@@ -8,11 +8,13 @@ import lombok.Data;
 public enum ReturnStatus {
 
     SUCCESS(200,"成功"),
+
     NOT_ENOUGH(210,"USDT额度不足，请去充值"),
     NOT_ENOUGH_PARENT(211,"上级USDT额度不足"),
     TOKEN_EXPIRED(212,"TOKEN过期"),
 
     RELOGIN_OPT(301,"重复登录"),
+    FAILED(303,"失败"),
     NOT_FINISHED(311,"未完成"),
 
 

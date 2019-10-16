@@ -79,7 +79,7 @@ public class ConsumerPlayerController {
         record.setImgurl(jsonReq.getImgUrl());
         Result<Boolean> result = consumerPlayerService.updatePlayerHeadImg(record);
 
-        MessageData messageData = new MessageData(msg.getData().getType(), msg.getData().getModel(),result.getCode());
+        MessageData messageData = new MessageData(msg.getData().getType(), msg.getData().getModel(), result.getCode());
         messageData.setData(result.getData());
         Message message = new Message(msg.getSource(), msg.getTarget(), messageData);
         message.setDesc(result.getMsg());
@@ -157,7 +157,7 @@ public class ConsumerPlayerController {
         String id = map.get("id").toString();
         Result player = consumerPlayerService.getPlayer(id);
 
-        return Message.generateMessage(msg,player);
+        return Message.generateMessage(msg, player);
     }
 
 
@@ -318,32 +318,30 @@ public class ConsumerPlayerController {
         log.info("用户注册", JSONObject.toJSONString(message));
         UserReq userReq = DataUtils.getUserReq(message);
         String jsonReq = JSON.toJSONString(userReq);
-        Message msg = new Message();
-        msg.setSource(message.getTarget());
-        msg.setTarget("server");
+        Message msg = new Message(
+                message.getTarget(),
+                "server",
+                new MessageData(message.getData().getType(), message.getData().getModel())
+        );
+
 
         if (null == message.getData() || null == message.getData().getData()) {
             msg.setDesc("参数错误或不能识别");
             msg.setCreatetime(String.valueOf(System.currentTimeMillis()));
-            MessageData messageData = message.getData();
-
-            messageData.setCode(ReturnStatus.ERROR.getStatus());
-            msg.setData(messageData);
+            msg.getData().setCode(ReturnStatus.ERROR.getStatus());
             return msg;
         }
-        MessageData data = new MessageData(message.getData().getType(), message.getData().getModel());
-        String jsonData = JsonUtil.parseObjToJson(message.getData().getData());
 
+        String jsonData = JsonUtil.parseObjToJson(message.getData().getData());
         JSONObject jsonObject = JSON.parseObject(jsonData);
         String account = jsonObject.getString("username");
         String code = jsonObject.getString("code");
         String invite = jsonObject.getString("invite");
-        if (StringUtils.isBlank(account) || StringUtils.isBlank(code) ) {
+        //参数判断
+        if (StringUtils.isBlank(account) || StringUtils.isBlank(code)) {
             msg.setDesc("参数值不能为空");
             msg.setCreatetime(String.valueOf(System.currentTimeMillis()));
-            MessageData messageData = message.getData();
-            messageData.setCode(ReturnStatus.ACCOUNT_PASS_REQUIRED.getStatus());
-            msg.setData(message.getData());
+            msg.getData().setCode(ReturnStatus.ACCOUNT_PASS_REQUIRED.getStatus());
             return msg;
         }
         /*todo************************************************************/
@@ -354,36 +352,29 @@ public class ConsumerPlayerController {
         /*todo************************************************************/
         // TODO [[邀请码验证]]
         /*todo************************************************************/
-        if (StringUtils.isNotBlank(invite)){
+        if (StringUtils.isNotBlank(invite)) {
             Result retInvite = consumerPlayerService.checkPlayerInvite(invite);
-            if (!retInvite.getSuccess()){
+            if (!retInvite.getSuccess()) {
                 msg.setDesc("邀请码错误");
                 msg.setCreatetime(String.valueOf(System.currentTimeMillis()));
-                MessageData messageData = message.getData();
-
-                messageData.setCode(ReturnStatus.ERROR_INVITE.getStatus());
-                msg.setData(messageData);
+                msg.getData().setCode(ReturnStatus.ERROR_INVITE.getStatus());
                 return msg;
-            }else {
+            } else {
                 String player = JsonUtil.parseObjToJson(consumerPlayerService.getPlayerByInvite(invite).getData());
-                JSONObject playerJson = JsonUtil.parseJsonToObj(player,JSONObject.class);
-                if (!playerJson.getString("isValid").equals("1")){
+                JSONObject playerJson = JsonUtil.parseJsonToObj(player, JSONObject.class);
+                if (!playerJson.getString("isValid").equals("1")) {
                     msg.setDesc("邀请码暂不可用");
                     msg.setCreatetime(String.valueOf(System.currentTimeMillis()));
-                    MessageData messageData = message.getData();
-
-                    messageData.setCode(ReturnStatus.ERROR_RECEIVED.getStatus());
-                    msg.setData(messageData);
+                    msg.getData().setCode(ReturnStatus.ERROR_RECEIVED.getStatus());
                     return msg;
                 }
             }
         }
 
-        String descT = CityGlobal.Constant.REG_FAIL;
+        String desc = CityGlobal.Constant.REG_FAIL;
         Result<JSONObject> reg = null;
         //验证成功
         if (ret.getSuccess()) {
-
             /*todo************************************************************/
             // TODO [[插入玩家信息]]
             /*todo************************************************************/
@@ -409,11 +400,32 @@ public class ConsumerPlayerController {
                 // TODO [[todo 2、创建用户USDT钱包账户]]
                 /*todo************************************************************/
                 Result accRet = playerBlockChainService.createBlockChainAccount(username);
-                String address = accRet.getData().toString();
-                if (!StringUtils.isBlank(address)) {
-                    Result create = playerAccountService.createAccount(playerId, address);
-                    if (create.getSuccess()) {
-                        log.info("玩家账户创建成功");
+                if (accRet.getSuccess()){
+                    String address = accRet.getData().toString();
+                    log.info("玩家账户地址：[" + address + "]创建成功");
+                    if (!StringUtils.isBlank(address)) {
+                        Result create = playerAccountService.createAccount(playerId, address);
+                        if (create.getSuccess()) {
+                            log.info("玩家账户创建成功");
+                        }else{
+                            log.info("玩家账户创建失败，重试一次");
+                            create = playerAccountService.createAccount(playerId, address);
+                        }
+                    }
+                }else{
+                    log.info("玩家账户创建不成功，重试一次");
+                    accRet = playerBlockChainService.createBlockChainAccount(username);
+                    if (accRet.getSuccess()){
+                        String address = accRet.getData().toString();
+                        log.info("玩家账户地址：[" + address + "]创建成功");
+                        if (!StringUtils.isBlank(address)) {
+                            Result create = playerAccountService.createAccount(playerId, address);
+                            if (create.getSuccess()) {
+                                log.info("玩家账户创建成功");
+                            }
+                        }
+                    }else{
+                        log.info("玩家账户创建不成功");
                     }
                 }
 
@@ -432,7 +444,7 @@ public class ConsumerPlayerController {
                         log.info("商会关系创建完成");
                     }
                     //创建好友关系 待同意
-                    Result<Boolean> addFriend = friendsService.addFriend(playerId, parentId,invite);
+                    Result<Boolean> addFriend = friendsService.addFriend(playerId, parentId, invite);
 
                     if (addFriend.getSuccess()) {
                         log.info("添加默认好友关系成功");
@@ -444,34 +456,25 @@ public class ConsumerPlayerController {
                 String regSuccess = CityGlobal.Constant.REG_SUCCESS;
 
                 /*todo************************************************************/
-                // TODO [[登录或注册成功后保存token]]
+                // TODO [[登录或注册成功后保存token，并且不用再次登录可进入程序]]
                 /*todo************************************************************/
                 String token = saveToken(userReq.getUsername());
-                /*
-                MessageData messageData = message.getData();
-                dataInner.put("token", token);
-                dataInner.put("desc", CityGlobal.Constant.REG_SUCCESS);
-                */
-                data.setCode(ReturnStatus.SUCCESS.getStatus());
-                msg.setData(data);
                 msg.setDesc(regSuccess);
+                msg.getData().setCode(ReturnStatus.SUCCESS.getStatus());
+                msg.getData().setData(token);
                 end = System.currentTimeMillis();
                 return msg;
             } else {
-                MessageData messageData = message.getData();
-                messageData.setCode(reg.getCode());
-
-                msg.setData(messageData);
+                msg.getData().setCode(reg.getCode());
                 msg.setDesc(reg.getMsg());
                 end = System.currentTimeMillis();
                 return msg;
             }
+        }else{
+            msg.getData().setCode(ret.getCode());
+            msg.setDesc(ret.getMsg());
+            return msg;
         }
-        end = System.currentTimeMillis();
-        msg.setData(message.getData());
-        msg.setDesc(ret.getMsg());
-        log.info("spend:"+(end-start));
-        return msg;
     }
 
 
@@ -526,12 +529,12 @@ public class ConsumerPlayerController {
             String playerId = result.getData().toString();
             desc = CityGlobal.Constant.LOGIN_SUCCESS;
             Result playerRet = consumerPlayerService.getPlayer(playerId);
-            Player player = JsonUtil.parseJsonToObj(playerRet.getData().toString(),Player.class);
+            Player player = JsonUtil.parseJsonToObj(playerRet.getData().toString(), Player.class);
             String token = saveToken(userReq.getUsername());
             data.put("token", token);
-            data.put("playerId",playerId);
-            data.put("id",player.getId().toString());
-            data.put("playerName",player.getPlayerName());
+            data.put("playerId", playerId);
+            data.put("id", player.getId().toString());
+            data.put("playerName", player.getPlayerName());
         }
         MessageData msgData = new MessageData(
                 msg.getData().getType(),
@@ -594,12 +597,12 @@ public class ConsumerPlayerController {
                 String playerId = idlog.getData().toString();
 
                 Result playerRet = consumerPlayerService.getPlayer(playerId);
-                Player player = JsonUtil.parseJsonToObj(playerRet.getData().toString(),Player.class);
+                Player player = JsonUtil.parseJsonToObj(playerRet.getData().toString(), Player.class);
                 String token = saveToken(userReq.getUsername());
                 ret.put("token", token);
-                ret.put("playerId",playerId);
-                ret.put("id",player.getId().toString());
-                ret.put("playerName",player.getPlayerName());
+                ret.put("playerId", playerId);
+                ret.put("id", player.getId().toString());
+                ret.put("playerName", player.getPlayerName());
             } else {
                 log.info("验证码登录失败");
             }
@@ -627,9 +630,9 @@ public class ConsumerPlayerController {
         String account = jsonReq.getUsername();
         String playerId = jsonReq.getPlayerId();
         Result result = Result.result(false);
-        if (StringUtils.isNotBlank(playerId)){
+        if (StringUtils.isNotBlank(playerId)) {
             result = consumerPlayerService.quit(playerId);
-        }else{
+        } else {
             result = consumerPlayerService.quitAccount(account);
         }
 
@@ -645,9 +648,9 @@ public class ConsumerPlayerController {
 
         //删除在线用户
         boolean ret = redisUtils.rmOnlinePlayer(account);
-        if (!ret){
+        if (!ret) {
             ret = redisUtils.rmOnlinePlayer(account);
-            if (!ret){
+            if (!ret) {
                 ret = redisUtils.rmOnlinePlayer(account);
             }
         }

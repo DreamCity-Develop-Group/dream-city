@@ -1,5 +1,6 @@
 package com.dream.city.base.model;
 
+import com.dream.city.base.model.enu.ReturnStatus;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -164,7 +165,7 @@ public class Result<T> {
     }
 
     public static void main(String[] args) {
-        Result result = Result.result(true,"tesst",200);
+        Result result = Result.result(true,"tesst", ReturnStatus.SUCCESS.getStatus());
         if (result.getSuccess()){
             System.out.println("true");
         }

@@ -4,6 +4,7 @@ import com.dream.city.base.model.Message;
 import com.dream.city.base.model.MessageData;
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.AuthCode;
+import com.dream.city.base.model.enu.ReturnStatus;
 import com.dream.city.base.utils.RedisKeys;
 import com.dream.city.base.utils.RedisUtils;
 import com.dream.city.service.CodeService;
@@ -104,6 +105,7 @@ public class ValiCodeController {
         String redisKey = RedisKeys.REDIS_KEY_VALIDCODE + account;
         if (redisUtils.hasKey(redisKey)) {
             redisCode = redisUtils.getStr(redisKey);
+            logger.info("用户验证码："+redisCode);
             if (!StringUtils.isEmpty(code) && !StringUtils.isEmpty(redisCode) &&
                     redisCode.equalsIgnoreCase(code)) {
                 ret = Boolean.TRUE;
@@ -123,13 +125,13 @@ public class ValiCodeController {
                 redisUtils.delete(redisKey);
 
                 if(result.getSuccess()){
-                    return Result.result(true, "验证成功！", 200);
+                    return Result.result(true, "更新验证码状态成功！", ReturnStatus.SUCCESS.getStatus());
                 }
             }
 
-            return Result.result(true, "验证失败！", 200);
+            return Result.result(false, "验证成功！", ReturnStatus.SUCCESS.getStatus());
         } else {
-            return Result.result(true, "验证失败！", 200);
+            return Result.result(false, "验证失败！", ReturnStatus.CODE_EXPIRED.getStatus());
         }
     }
 
@@ -152,22 +154,24 @@ public class ValiCodeController {
         Map map = (Map) message.getData().getData();
         boolean insertCode = Boolean.FALSE;
         if (null != map && map.containsKey("username")) {
-            insertCode = coderService.insertCode((String) map.get("username"), code);
+            String account = (String) map.get("username");
+            insertCode = coderService.insertCode(account, code);
             if (insertCode) {
                 msg.getData().setData(code);
                 logger.info("############################## 用户[{}]获取认证码: {}", (String) map.get("username"), code);
 
                 try {
                     //保存10分钟
-                    redisUtils.set(RedisKeys.REDIS_KEY_VALIDCODE + message.getSource(), code, 600);
-                    return Result.result(true,"获取验证码成功",200,code);
+                    redisUtils.set(RedisKeys.REDIS_KEY_VALIDCODE + account, code);
+                    redisUtils.expire(RedisKeys.REDIS_KEY_VALIDCODE + account,600);
+                    return Result.result(true,"获取验证码成功",ReturnStatus.SUCCESS.getStatus(),code);
                 } catch (Exception e) {
                     logger.error("getCode Exception !", e);
                 }
             }
-            return Result.result(false,"获取验证码失败",200,null);
+            return Result.result(false,"获取验证码失败",ReturnStatus.FAILED.getStatus(),null);
         }else{
-            return Result.result(false,"账号/手机号不能为空",500,null);
+            return Result.result(false,"账号/手机号不能为空",ReturnStatus.INVALID.getStatus(),null);
         }
     }
 

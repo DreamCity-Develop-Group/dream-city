@@ -71,13 +71,13 @@ public class PlayerController {
         String tip = "";
         if(StringUtils.isBlank(playerName) || StringUtils.isBlank(playerPass)){
             tip=  "用户名或密码为空";
-            return Result.result(false,tip,500,null);
+            return Result.result(false,tip,ReturnStatus.INVALID.getStatus(),null);
         }
         // 用户是否存在
         PlayerResp playerExistByName = playerService.getPlayerByName(playerName,null);
         if (playerExistByName != null){
             tip = "["+ playerName +"]" + CityGlobal.Constant.REG_USER_EXIT + ",请直接登录！";
-            return Result.result(false,tip,500,null);
+            return Result.result(false,tip,ReturnStatus.ACCOUNT_EXISTS.getStatus(),null);
         }
         if (StringUtils.isBlank(nick)){
             nick = playerName;
@@ -86,7 +86,7 @@ public class PlayerController {
         PlayerResp playerExistByNick = playerService.getPlayerByName(null,nick);
         if (playerExistByNick != null){
             tip = "["+ nick +"]" + CityGlobal.Constant.REG_USER_NICK_EXIST;
-            return Result.result(false,tip,500,null);
+            return Result.result(false,tip,ReturnStatus.ACCOUNT_EXISTS.getStatus(),null);
         }
 
         /*if(StringUtils.isBlank(code)){
@@ -128,7 +128,7 @@ public class PlayerController {
                 // 登录成功保存redis
                 loginToRedis(playerInsert);
 
-                return Result.result(true,tip,200,playerInsert);
+                return Result.result(true,tip,ReturnStatus.SUCCESS.getStatus(),playerInsert);
             }
         }else {
             tip="注册失败";
