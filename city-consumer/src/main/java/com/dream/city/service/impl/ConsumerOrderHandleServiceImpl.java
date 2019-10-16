@@ -155,7 +155,8 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
             tradeDetail.setTradeId(trade.getTradeId());
             tradeDetail.setOrderId(order.getOrderId());
             tradeDetail.setPlayerId(player.getPlayerId());
-            if (tradeVerifyResult != null && tradeVerifyResult.getData().getVerifyId() != null){
+            if (tradeVerifyResult != null && tradeVerifyResult.getData() != null
+                    && tradeVerifyResult.getData().getVerifyId() != null){
                 tradeDetail.setVerifyId(tradeVerifyResult.getData().getVerifyId());
                 tradeDetail.setVerifyTime(new Date());
             }
