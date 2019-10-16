@@ -459,9 +459,11 @@ public class ConsumerPlayerController {
                 // TODO [[登录或注册成功后保存token，并且不用再次登录可进入程序]]
                 /*todo************************************************************/
                 String token = saveToken(userReq.getUsername());
+                Map map = new HashMap();
+                map.put("token",token);
                 msg.setDesc(regSuccess);
                 msg.getData().setCode(ReturnStatus.SUCCESS.getStatus());
-                msg.getData().setData(token);
+                msg.getData().setData(map);
                 end = System.currentTimeMillis();
                 return msg;
             } else {
