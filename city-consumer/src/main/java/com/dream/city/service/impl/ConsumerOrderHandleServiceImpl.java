@@ -264,7 +264,7 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
             recordReq.setOrderInvestId(investId);
             recordReq.setOrderPayerId(orderPayerId);
             //预约
-            recordReq.setOrderState(InvestStatus.SUBSCRIBE.name());
+            recordReq.setOrderState(InvestStatus.SUBSCRIBED.name());
             recordReq.setOrderRepeat(orderRepeat);
             orderResult = orderService.insertOrder(recordReq);
         }
