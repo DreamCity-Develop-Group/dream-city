@@ -10,6 +10,7 @@ import com.dream.city.base.model.req.InvestOrderReq;
 import com.dream.city.base.model.resp.InvestOrderResp;
 import com.dream.city.base.model.resp.PlayerResp;
 import com.dream.city.base.utils.DataUtils;
+import com.dream.city.base.utils.KeyGenerator;
 import com.dream.city.service.*;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -108,7 +109,7 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
         result.put("state",ReturnStatus.INVEST_SUBSCRIBE.getStatus());
 
         //生成订单
-        Result<InvestOrder> orderResult = this.orderCreate(invest.getInId(),player.getPlayerId(),orderRepeat,desc);
+        Result<InvestOrder> orderResult = this.orderCreate(invest,player.getPlayerId(),orderRepeat,desc);
         InvestOrder order = orderResult.getData();
         if (order != null){
             result.put("investId",order.getOrderInvestId());
@@ -252,20 +253,23 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
 
     /**
      * 生成订单
-     * @param investId
+     * @param invest
      * @param orderPayerId
      * @param desc
      * @return
      */
-    private Result<InvestOrder> orderCreate(Integer investId,String orderPayerId,int orderRepeat,String desc){
+    private Result<InvestOrder> orderCreate(CityInvest invest,String orderPayerId,int orderRepeat,String desc){
         Result<InvestOrder> orderResult = new Result<>();
         if (StringUtils.isEmpty(desc)){
             InvestOrder recordReq =new InvestOrder();
-            recordReq.setOrderInvestId(investId);
+            recordReq.setOrderInvestId(invest.getInId());
             recordReq.setOrderPayerId(orderPayerId);
-            //预约
+            //已预约
             recordReq.setOrderState(InvestStatus.SUBSCRIBED.name());
             recordReq.setOrderRepeat(orderRepeat);
+            recordReq.setOrderAmount(invest.getInLimit());
+            recordReq.setOrderName(invest.getInName());
+            recordReq.setOrderNum(KeyGenerator.getUUID());
             orderResult = orderService.insertOrder(recordReq);
         }
         return orderResult;
