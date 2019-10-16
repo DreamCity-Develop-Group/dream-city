@@ -15,7 +15,15 @@ CREATE TABLE `city_auth_code` (
   KEY `index_code` (`code`) USING BTREE,
   KEY `index_phone` (`phone`) USING BTREE,
   KEY `index_user_id` (`valid`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=121 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='认证码';
+) ENGINE=InnoDB AUTO_INCREMENT=125 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='认证码';
+
+-- ----------------------------
+-- Records of city_auth_code
+-- ----------------------------
+INSERT INTO `city_auth_code` VALUES ('121', '73193', '17076613584', 'false', '2019-10-16 08:10:31');
+INSERT INTO `city_auth_code` VALUES ('122', '314231', '17076613584', null, '2019-10-16 08:09:21');
+INSERT INTO `city_auth_code` VALUES ('123', '877798', '13601234561', null, '2019-10-16 09:17:22');
+INSERT INTO `city_auth_code` VALUES ('124', '630762', '13601234561', null, '2019-10-16 09:18:27');
 
 -- ----------------------------
 -- Table structure for city_dictionary
@@ -31,13 +39,16 @@ CREATE TABLE `city_dictionary` (
   `create_time` datetime DEFAULT NULL,
   `update_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='字典（配置项）';
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COMMENT='字典（配置项）';
 
 -- ----------------------------
 -- Records of city_dictionary
 -- ----------------------------
 INSERT INTO `city_dictionary` VALUES ('1', '平台账户id', 'platform.account.accIds', '4E2EE556055042AB80E3D164E51DDD1A', '1', '平台账户id，多个，都号隔开来自player_account表', null, null);
 INSERT INTO `city_dictionary` VALUES ('2', '注册密码salt', 'register.password.salt', 'DREAM_CITY_890@#$%', '1', '注册密码salt', null, null);
+INSERT INTO `city_dictionary` VALUES ('3', '提现税金', 'player.withdraw.mt.tax', '5', '1', '玩家提现税金', null, null);
+INSERT INTO `city_dictionary` VALUES ('4', '转账税金', 'player.transfer.mt.tax', '5', '1', '玩家转账税金', null, null);
+INSERT INTO `city_dictionary` VALUES ('5', '内部转账审核', 'player.inside.transfer.verify', 'true', '1', '玩家内部转账审核是否要审核，默认要审核', null, null);
 
 -- ----------------------------
 -- Table structure for city_file
@@ -93,8 +104,8 @@ CREATE TABLE `city_invest` (
   `in_type` int(4) unsigned DEFAULT NULL COMMENT '物业类型',
   `in_limit` decimal(20,4) unsigned DEFAULT '0.0000' COMMENT '限额',
   `in_start` datetime DEFAULT NULL COMMENT '开始时间',
-  `in_personal_tax` decimal(20,4) unsigned zerofill DEFAULT '0.0000' COMMENT '个人税金',
-  `in_enterprise_tax` decimal(20,4) unsigned zerofill DEFAULT '0.0000' COMMENT '企业税金',
+  `in_personal_tax` decimal(20,4) unsigned zerofill DEFAULT '0000000000000000.0000' COMMENT '个人税金',
+  `in_enterprise_tax` decimal(20,4) unsigned zerofill DEFAULT '0000000000000000.0000' COMMENT '企业税金',
   `in_quota_tax` decimal(20,4) unsigned DEFAULT '0.0000' COMMENT '定额税',
   `in_earning` tinyint(4) unsigned DEFAULT '0' COMMENT '收益倍数',
   `in_end` datetime DEFAULT NULL COMMENT '投资结束时间',
@@ -108,13 +119,13 @@ CREATE TABLE `city_invest` (
 -- ----------------------------
 -- Records of city_invest
 -- ----------------------------
-INSERT INTO `city_invest` VALUES ('1', '小吃摊', '11', '30.0000', '2019-09-18 17:56:20', '0.0200', '0.0000', '0.0000', '2', '2020-01-31 17:56:50', null, 'Y', null, null);
-INSERT INTO `city_invest` VALUES ('2', '玩具摊', '21', '100.0000', '2019-10-01 21:04:25', '0.0100', '0.0000', '0.0000', '3', '2019-11-30 21:04:53', null, 'Y', null, null);
-INSERT INTO `city_invest` VALUES ('3', '酒吧', '31', '300.0000', '2019-10-01 21:04:25', '0.1000', '0.1500', '0.0000', '3', '2019-11-30 21:04:53', null, 'Y', null, null);
-INSERT INTO `city_invest` VALUES ('4', '医药公司', '41', '500.0000', '2019-10-01 21:04:25', '0.2000', '0.1000', '0.0000', '4', '2019-11-30 21:04:53', null, 'Y', null, null);
-INSERT INTO `city_invest` VALUES ('5', '电影公司', '51', '1000.0000', '2019-10-01 21:04:25', '0.2000', '0.1500', '0.0000', '4', '2019-11-30 21:04:53', null, 'Y', null, null);
-INSERT INTO `city_invest` VALUES ('6', '汽车集团', '61', '3000.0000', '2019-10-01 21:04:25', '0.1000', '0.1000', '0.0000', '5', '2019-11-30 21:04:53', null, 'Y', null, null);
-INSERT INTO `city_invest` VALUES ('7', '投资集团', '71', '5000.0000', '2019-10-01 21:04:25', '0.1000', '0.0000', '0.0000', '5', '2019-11-30 21:04:53', null, 'Y', null, null);
+INSERT INTO `city_invest` VALUES ('1', '小吃摊', '11', '30.0000', '2019-09-18 17:56:20', '0000000000000000.0200', '0000000000000000.0000', '0.0000', '2', '2020-01-31 17:56:50', null, 'Y', null, null);
+INSERT INTO `city_invest` VALUES ('2', '玩具摊', '21', '100.0000', '2019-10-01 21:04:25', '0000000000000000.0100', '0000000000000000.0000', '0.0000', '3', '2019-11-30 21:04:53', null, 'Y', null, null);
+INSERT INTO `city_invest` VALUES ('3', '酒吧', '31', '300.0000', '2019-10-01 21:04:25', '0000000000000000.1000', '0000000000000000.1500', '0.0000', '3', '2019-11-30 21:04:53', null, 'Y', null, null);
+INSERT INTO `city_invest` VALUES ('4', '医药公司', '41', '500.0000', '2019-10-01 21:04:25', '0000000000000000.2000', '0000000000000000.1000', '0.0000', '4', '2019-11-30 21:04:53', null, 'Y', null, null);
+INSERT INTO `city_invest` VALUES ('5', '电影公司', '51', '1000.0000', '2019-10-01 21:04:25', '0000000000000000.2000', '0000000000000000.1500', '0.0000', '4', '2019-11-30 21:04:53', null, 'Y', null, null);
+INSERT INTO `city_invest` VALUES ('6', '汽车集团', '61', '3000.0000', '2019-10-01 21:04:25', '0000000000000000.1000', '0000000000000000.1000', '0.0000', '5', '2019-11-30 21:04:53', null, 'Y', null, null);
+INSERT INTO `city_invest` VALUES ('7', '投资集团', '71', '5000.0000', '2019-10-01 21:04:25', '0000000000000000.1000', '0000000000000000.0000', '0.0000', '5', '2019-11-30 21:04:53', null, 'Y', null, null);
 
 -- ----------------------------
 -- Table structure for city_message
@@ -202,6 +213,83 @@ INSERT INTO `city_player` VALUES ('164', '4937E1605DF84FB4A17C31DE22BF6782', '13
 INSERT INTO `city_player` VALUES ('165', 'BFA938AFDD784CFCA4850D7330A5407F', '13022099407', '期Qi1', '9ae0147d65724f72f74804af4aac6f13', null, 'f0f479', null, '1', '2019-10-15 16:39:38', null);
 INSERT INTO `city_player` VALUES ('166', '7D09619AC1054CF1B8380F6ED098F797', '15918833191', '步入', 'e10adc3949ba59abbe56e057f20f883e', null, 'd0e9d8', null, '1', '2019-10-15 22:52:23', null);
 
+-- ----------------------------
+-- Table structure for city_player_ext
+-- ----------------------------
+DROP TABLE IF EXISTS `city_player_ext`;
+CREATE TABLE `city_player_ext` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `player_id` varchar(64) CHARACTER SET utf8 NOT NULL COMMENT '用户id',
+  `friendlink` varchar(255) CHARACTER SET utf8 DEFAULT NULL COMMENT '主页入口',
+  `imgurl` varchar(255) CHARACTER SET utf8 DEFAULT NULL COMMENT '头像地址',
+  `create_date` datetime DEFAULT NULL,
+  `update_date` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `index_player_id` (`player_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='用户扩展表（玩家）';
+
+-- ----------------------------
+-- Records of city_player_ext
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for city_player_grade
+-- ----------------------------
+DROP TABLE IF EXISTS `city_player_grade`;
+CREATE TABLE `city_player_grade` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `player_id` varchar(64) CHARACTER SET utf8 NOT NULL COMMENT '玩家id',
+  `grade` varchar(10) CHARACTER SET utf8 NOT NULL DEFAULT '' COMMENT '玩家等级',
+  `integral` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '积分',
+  `create_date` datetime DEFAULT NULL,
+  `update_date` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  KEY `index_player_id` (`player_id`) USING BTREE,
+  KEY `index_grade` (`grade`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=59 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='玩家等级(会员/商会等级)';
+
+-- ----------------------------
+-- Records of city_player_grade
+-- ----------------------------
+INSERT INTO `city_player_grade` VALUES ('43', '956540BCA48549589B70DFF89B715F81', 'L1', '0', null, null);
+INSERT INTO `city_player_grade` VALUES ('44', 'FCCDC7A84EBD47BCB63F4B1281BE527D', 'L1', '0', null, null);
+INSERT INTO `city_player_grade` VALUES ('45', 'B22BD7C3B9374473AB7133C3A4271234', 'L1', '0', null, null);
+INSERT INTO `city_player_grade` VALUES ('46', '52ABA6CE89164C8484A7F7FFF16B3670', 'L1', '0', null, null);
+INSERT INTO `city_player_grade` VALUES ('47', 'A07246C2924A415982ABE5E8C6DAD53D', 'L1', '0', null, null);
+INSERT INTO `city_player_grade` VALUES ('48', 'D6EDA06FDF654A46BC8299A05DDFF591', 'L1', '0', null, null);
+INSERT INTO `city_player_grade` VALUES ('49', '1301094B88274AF78C26D532F0C9E6E3', 'L1', '0', null, null);
+INSERT INTO `city_player_grade` VALUES ('50', '68493901879941308DFF85CB8EA3A077', 'L1', '0', null, null);
+INSERT INTO `city_player_grade` VALUES ('51', 'F3ECC5684F8C44339314ADF7768EB63B', 'L1', '0', null, null);
+INSERT INTO `city_player_grade` VALUES ('52', '7C4E0329EC64423093D84281EB8A26C3', 'L1', '0', null, null);
+INSERT INTO `city_player_grade` VALUES ('53', 'DA744E2BD88343C8B2BF7750FC7E501B', 'L1', '0', null, null);
+INSERT INTO `city_player_grade` VALUES ('54', 'B62A7E3C3259429A92130B2196F6A39A', 'L1', '0', null, null);
+INSERT INTO `city_player_grade` VALUES ('55', '3A309D33667D4B45AD30FC318F255E61', 'L1', '0', null, null);
+INSERT INTO `city_player_grade` VALUES ('56', '4937E1605DF84FB4A17C31DE22BF6782', 'L1', '0', null, null);
+INSERT INTO `city_player_grade` VALUES ('57', 'BFA938AFDD784CFCA4850D7330A5407F', 'L1', '0', null, null);
+INSERT INTO `city_player_grade` VALUES ('58', '7D09619AC1054CF1B8380F6ED098F797', 'L1', '0', null, null);
+
+-- ----------------------------
+-- Table structure for city_setting
+-- ----------------------------
+DROP TABLE IF EXISTS `city_setting`;
+CREATE TABLE `city_setting` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `player_id` varchar(64) NOT NULL COMMENT '玩家id',
+  `type` varchar(50) NOT NULL DEFAULT '' COMMENT '设置类型',
+  `val` varchar(50) NOT NULL DEFAULT '' COMMENT '设置值',
+  `status` varchar(50) DEFAULT NULL COMMENT '状态',
+  `create_date` datetime DEFAULT NULL,
+  `update_date` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  KEY `index_player_id` (`player_id`) USING BTREE,
+  KEY `index_type` (`type`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='游戏设置';
+
+-- ----------------------------
+-- Records of city_setting
+-- ----------------------------
+INSERT INTO `city_setting` VALUES ('1', '123', 'game', 'true', '1', null, '2019-09-16 08:25:39');
+INSERT INTO `city_setting` VALUES ('2', '123', 'bg', 'false', '1', null, '2019-09-16 08:26:33');
 
 -- ----------------------------
 -- Table structure for city_tree
@@ -296,11 +384,11 @@ CREATE TABLE `invest_allow` (
 -- ----------------------------
 -- Records of invest_allow
 -- ----------------------------
-INSERT INTO `invest_allow` VALUES ('10', 'D6EDA06FDF654A46BC8299A05DDFF591', '1', '10', '2019-10-11 03:10:20');
-INSERT INTO `invest_allow` VALUES ('11', 'wew32d', '1', '10', '2019-10-11 06:20:49');
-INSERT INTO `invest_allow` VALUES ('12', 'F3ECC5684F8C44339314ADF7768EB63B', '1', '10', '2019-10-11 11:47:09');
-INSERT INTO `invest_allow` VALUES ('14', 'FCCDC7A84EBD47BCB63F4B1281BE527D', '1', '10', '2019-10-11 12:42:24');
-INSERT INTO `invest_allow` VALUES ('15', 'A07246C2924A415982ABE5E8C6DAD53D', '1', '10', '2019-10-11 13:18:13');
+INSERT INTO `invest_allow` VALUES ('10', 'D6EDA06FDF654A46BC8299A05DDFF591', '1', '10.0000', '2019-10-11 03:10:20');
+INSERT INTO `invest_allow` VALUES ('11', 'wew32d', '1', '10.0000', '2019-10-11 06:20:49');
+INSERT INTO `invest_allow` VALUES ('12', 'F3ECC5684F8C44339314ADF7768EB63B', '1', '10.0000', '2019-10-11 11:47:09');
+INSERT INTO `invest_allow` VALUES ('14', 'FCCDC7A84EBD47BCB63F4B1281BE527D', '1', '10.0000', '2019-10-11 12:42:24');
+INSERT INTO `invest_allow` VALUES ('15', 'A07246C2924A415982ABE5E8C6DAD53D', '1', '10.0000', '2019-10-11 13:18:13');
 
 -- ----------------------------
 -- Table structure for invest_order
@@ -320,12 +408,21 @@ CREATE TABLE `invest_order` (
   PRIMARY KEY (`order_id`) USING BTREE,
   KEY `index_order_invest_id` (`order_invest_id`),
   KEY `index_order_payer_id` (`order_payer_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='订单（投资记录）';
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='订单（投资记录）';
 
 -- ----------------------------
 -- Records of invest_order
 -- ----------------------------
 INSERT INTO `invest_order` VALUES ('21', '3', 'D6EDA06FDF654A46BC8299A05DDFF591', null, null, '5.0000', 'SUBSCRIBE', '0', '2019-10-15 12:28:49', '2019-10-15 12:28:49');
+INSERT INTO `invest_order` VALUES ('22', '1', 'A07246C2924A415982ABE5E8C6DAD53D', null, null, '0.0000', 'SUBSCRIBE', '0', '2019-10-16 15:16:45', '2019-10-16 15:16:45');
+INSERT INTO `invest_order` VALUES ('23', '1', 'A07246C2924A415982ABE5E8C6DAD53D', null, null, '0.0000', 'SUBSCRIBE', '0', '2019-10-16 15:19:09', '2019-10-16 15:19:09');
+INSERT INTO `invest_order` VALUES ('24', '1', 'A07246C2924A415982ABE5E8C6DAD53D', null, null, '0.0000', 'SUBSCRIBE', '0', '2019-10-16 15:23:19', '2019-10-16 15:23:19');
+INSERT INTO `invest_order` VALUES ('25', '1', 'A07246C2924A415982ABE5E8C6DAD53D', null, null, '0.0000', 'SUBSCRIBE', '0', '2019-10-16 15:24:09', '2019-10-16 15:24:09');
+INSERT INTO `invest_order` VALUES ('26', '1', 'A07246C2924A415982ABE5E8C6DAD53D', null, null, '0.0000', 'SUBSCRIBE', '0', '2019-10-16 15:28:51', '2019-10-16 15:28:51');
+INSERT INTO `invest_order` VALUES ('27', '1', 'A07246C2924A415982ABE5E8C6DAD53D', null, null, '0.0000', 'SUBSCRIBE', '0', '2019-10-16 16:09:22', '2019-10-16 16:09:22');
+INSERT INTO `invest_order` VALUES ('28', '2', 'A07246C2924A415982ABE5E8C6DAD53D', null, null, '0.0000', 'SUBSCRIBE', '0', '2019-10-16 16:28:47', '2019-10-16 16:28:47');
+INSERT INTO `invest_order` VALUES ('29', '3', 'A07246C2924A415982ABE5E8C6DAD53D', null, null, '0.0000', 'SUBSCRIBE', '0', '2019-10-16 16:28:52', '2019-10-16 16:28:52');
+INSERT INTO `invest_order` VALUES ('30', '1', '52ABA6CE89164C8484A7F7FFF16B3670', null, null, '0.0000', 'SUBSCRIBE', '0', '2019-10-16 17:06:51', '2019-10-16 17:06:51');
 
 -- ----------------------------
 -- Table structure for invest_rule
@@ -340,7 +437,7 @@ CREATE TABLE `invest_rule` (
   `rule_desc` varchar(200) DEFAULT NULL COMMENT '规则描述',
   `rule_item` int(11) unsigned DEFAULT NULL COMMENT '规则项目',
   `rule_rate_pre` tinyint(4) unsigned DEFAULT '0',
-  `rule_rate` decimal(20,4) unsigned DEFAULT '0',
+  `rule_rate` decimal(20,4) unsigned DEFAULT '0.0000',
   `rule_level` decimal(20,4) unsigned DEFAULT NULL COMMENT '规则优先级别',
   `create_time` datetime DEFAULT NULL,
   `update_time` datetime DEFAULT NULL,
@@ -352,32 +449,32 @@ CREATE TABLE `invest_rule` (
 -- ----------------------------
 -- Records of invest_rule
 -- ----------------------------
-INSERT INTO `invest_rule` VALUES ('1', 'DIRECT_DIS', null, 'OPT_RATE', '直推印记分成', null, '1', null, '0.35', '1', null, null);
-INSERT INTO `invest_rule` VALUES ('2', 'INDIRECT_DIS', null, 'OPT_RATE', '间推印记分成', null, '1', null, '0.05', '2', null, null);
-INSERT INTO `invest_rule` VALUES ('3', null, null, null, '小摊预约权重', null, '2', null, '0.2', '1', null, null);
-INSERT INTO `invest_rule` VALUES ('4', null, null, null, '大厦投资', null, '3', null, '0.3', '1', null, null);
-INSERT INTO `invest_rule` VALUES ('5', 'ALL_ORDERS', 'OPT_RATE', 'OPT_RATE', '所有玩家', '订单所有玩家', '4', '1', '0.2', '1', null, null);
-INSERT INTO `invest_rule` VALUES ('6', 'TOP_MEMBERS', 'OPT_TOP', 'OPT_RATE', '会员最多', '取所有会员数量', '4', '20', '0.3', '2', null, null);
-INSERT INTO `invest_rule` VALUES ('7', 'FIRST_TIME', 'OPT_RATE', 'OPT_RATE', '第一次投资', '投资时间与计算当天时间一样', '4', '0.2', '0.5', '3', null, null);
-INSERT INTO `invest_rule` VALUES ('8', 'LIKES_GATHER', 'OPT_RATE', 'OPT_RATE', '获得点赞', '获得数量最多的', '4', '0', '0', '4', null, null);
-INSERT INTO `invest_rule` VALUES ('9', 'INVEST_LONG', 'OPT_TOP', 'OPT_RATE', '投资时长', '第一次投资时间算起', '4', '0', '0', '5', null, null);
-INSERT INTO `invest_rule` VALUES ('10', 'ORDER_OTHERS', 'OPT_RATE', 'OPT_RATE', '其他', '其他剩余的订单', '4', '0', '0', '6', null, null);
-INSERT INTO `invest_rule` VALUES ('11', 'LEVEL_ONE_START', 'OPT_RATE', 'OPT_NUM', '一星', '一级商会', '5', '0.95', '3', '1', null, null);
-INSERT INTO `invest_rule` VALUES ('12', 'LEVEL_TWO_START', 'OPT_RATE', 'OPT_NUM', '二星', '二级商会', '5', '0.9', '9', '2', null, null);
-INSERT INTO `invest_rule` VALUES ('13', 'LEVEL_THREE_START', 'OPT_RATE', 'OPT_NUM', '三星', '三级商会', '5', '0.85', '27', '3', null, null);
-INSERT INTO `invest_rule` VALUES ('14', 'LEVEL_FOUR_START', 'OPT_RATE', 'OPT_NUM', '四星', '四级商会', '5', '0.8', '81', '4', null, null);
-INSERT INTO `invest_rule` VALUES ('15', 'LEVEL_FIVE_START', 'OPT_RATE', 'OPT_NUM', '五星', '五级商会', '5', '0.75', '405', '5', null, null);
-INSERT INTO `invest_rule` VALUES ('16', 'LEVEL_SIX_START', 'OPT_RATE', 'OPT_NUM', '六星', '六级商会', '5', '0.7', '2025', '6', null, null);
-INSERT INTO `invest_rule` VALUES ('17', 'LEVEL_SEVEN_START', 'OPT_RATE', 'OPT_NUM', '七星', '七级商会', '5', '0.65', '10125', '7', null, null);
-INSERT INTO `invest_rule` VALUES ('18', 'LEVEL_EIGHT_START', 'OPT_RATE', 'OPT_NUM', '八星', '八商级会', '5', '0.6', '101250', '8', null, null);
-INSERT INTO `invest_rule` VALUES ('19', 'LEVEL_NINE_START', 'OPT_RATE', 'OPT_NUM', '九星', '九级商会', '5', '0.55', '1012500', '9', null, null);
-INSERT INTO `invest_rule` VALUES ('20', 'ALL_ORDERS', 'OPT_RATE', 'OPT_RATE', '所有玩家', '订单所有玩家', '6', '1', '0.4', '1', null, null);
-INSERT INTO `invest_rule` VALUES ('21', 'TOP_MEMBERS', 'OPT_TOP', 'OPT_RATE', '会员最多', '取所有会员数量', '6', '20', '0.2', '2', null, null);
-INSERT INTO `invest_rule` VALUES ('22', 'FIRST_TIME', 'OPT_RATE', 'OPT_RATE', '第一次投资', '投资时间与计算当天时间一样', '4', '0.2', '0.2', '3', null, null);
-INSERT INTO `invest_rule` VALUES ('23', 'LIKES_GATHER', 'OPT_TOP', 'OPT_RATE', '获得点赞', '获得数量最多的', '6', '20', '0.1', '4', null, null);
-INSERT INTO `invest_rule` VALUES ('24', 'INVEST_LONG', 'OPT_TOP', 'OPT_RATE', '投资时长', '第一次投资时间算起', '6', '10', '0.1', '5', null, null);
-INSERT INTO `invest_rule` VALUES ('25', 'ORDER_OTHERS', 'OPT_RATE', 'OPT_RATE', '其他', '其他剩余的订单', '6', '0', '0', '6', null, null);
-INSERT INTO `invest_rule` VALUES ('26', 'SALES_OVERTIME', 'OPT_NUM', 'OPT_NUM', '超时时间', '超时的时间和单位时间次数', '7', '1', '3', '1', null, null);
+INSERT INTO `invest_rule` VALUES ('1', 'DIRECT_DIS', null, 'OPT_RATE', '直推印记分成', null, '1', null, '0.3500', '1.0000', null, null);
+INSERT INTO `invest_rule` VALUES ('2', 'INDIRECT_DIS', null, 'OPT_RATE', '间推印记分成', null, '1', null, '0.0500', '2.0000', null, null);
+INSERT INTO `invest_rule` VALUES ('3', null, null, null, '小摊预约权重', null, '2', null, '0.2000', '1.0000', null, null);
+INSERT INTO `invest_rule` VALUES ('4', null, null, null, '大厦投资', null, '3', null, '0.3000', '1.0000', null, null);
+INSERT INTO `invest_rule` VALUES ('5', 'ALL_ORDERS', 'OPT_RATE', 'OPT_RATE', '所有玩家', '订单所有玩家', '4', '1', '0.2000', '1.0000', null, null);
+INSERT INTO `invest_rule` VALUES ('6', 'TOP_MEMBERS', 'OPT_TOP', 'OPT_RATE', '会员最多', '取所有会员数量', '4', '20', '0.3000', '2.0000', null, null);
+INSERT INTO `invest_rule` VALUES ('7', 'FIRST_TIME', 'OPT_RATE', 'OPT_RATE', '第一次投资', '投资时间与计算当天时间一样', '4', '0', '0.5000', '3.0000', null, null);
+INSERT INTO `invest_rule` VALUES ('8', 'LIKES_GATHER', 'OPT_RATE', 'OPT_RATE', '获得点赞', '获得数量最多的', '4', '0', '0.0000', '4.0000', null, null);
+INSERT INTO `invest_rule` VALUES ('9', 'INVEST_LONG', 'OPT_TOP', 'OPT_RATE', '投资时长', '第一次投资时间算起', '4', '0', '0.0000', '5.0000', null, null);
+INSERT INTO `invest_rule` VALUES ('10', 'ORDER_OTHERS', 'OPT_RATE', 'OPT_RATE', '其他', '其他剩余的订单', '4', '0', '0.0000', '6.0000', null, null);
+INSERT INTO `invest_rule` VALUES ('11', 'LEVEL_ONE_START', 'OPT_RATE', 'OPT_NUM', '一星', '一级商会', '5', '1', '3.0000', '1.0000', null, null);
+INSERT INTO `invest_rule` VALUES ('12', 'LEVEL_TWO_START', 'OPT_RATE', 'OPT_NUM', '二星', '二级商会', '5', '1', '9.0000', '2.0000', null, null);
+INSERT INTO `invest_rule` VALUES ('13', 'LEVEL_THREE_START', 'OPT_RATE', 'OPT_NUM', '三星', '三级商会', '5', '1', '27.0000', '3.0000', null, null);
+INSERT INTO `invest_rule` VALUES ('14', 'LEVEL_FOUR_START', 'OPT_RATE', 'OPT_NUM', '四星', '四级商会', '5', '1', '81.0000', '4.0000', null, null);
+INSERT INTO `invest_rule` VALUES ('15', 'LEVEL_FIVE_START', 'OPT_RATE', 'OPT_NUM', '五星', '五级商会', '5', '1', '405.0000', '5.0000', null, null);
+INSERT INTO `invest_rule` VALUES ('16', 'LEVEL_SIX_START', 'OPT_RATE', 'OPT_NUM', '六星', '六级商会', '5', '1', '2025.0000', '6.0000', null, null);
+INSERT INTO `invest_rule` VALUES ('17', 'LEVEL_SEVEN_START', 'OPT_RATE', 'OPT_NUM', '七星', '七级商会', '5', '1', '10125.0000', '7.0000', null, null);
+INSERT INTO `invest_rule` VALUES ('18', 'LEVEL_EIGHT_START', 'OPT_RATE', 'OPT_NUM', '八星', '八商级会', '5', '1', '101250.0000', '8.0000', null, null);
+INSERT INTO `invest_rule` VALUES ('19', 'LEVEL_NINE_START', 'OPT_RATE', 'OPT_NUM', '九星', '九级商会', '5', '1', '1012500.0000', '9.0000', null, null);
+INSERT INTO `invest_rule` VALUES ('20', 'ALL_ORDERS', 'OPT_RATE', 'OPT_RATE', '所有玩家', '订单所有玩家', '6', '1', '0.4000', '1.0000', null, null);
+INSERT INTO `invest_rule` VALUES ('21', 'TOP_MEMBERS', 'OPT_TOP', 'OPT_RATE', '会员最多', '取所有会员数量', '6', '20', '0.2000', '2.0000', null, null);
+INSERT INTO `invest_rule` VALUES ('22', 'FIRST_TIME', 'OPT_RATE', 'OPT_RATE', '第一次投资', '投资时间与计算当天时间一样', '4', '0', '0.2000', '3.0000', null, null);
+INSERT INTO `invest_rule` VALUES ('23', 'LIKES_GATHER', 'OPT_TOP', 'OPT_RATE', '获得点赞', '获得数量最多的', '6', '20', '0.1000', '4.0000', null, null);
+INSERT INTO `invest_rule` VALUES ('24', 'INVEST_LONG', 'OPT_TOP', 'OPT_RATE', '投资时长', '第一次投资时间算起', '6', '10', '0.1000', '5.0000', null, null);
+INSERT INTO `invest_rule` VALUES ('25', 'ORDER_OTHERS', 'OPT_RATE', 'OPT_RATE', '其他', '其他剩余的订单', '6', '0', '0.0000', '6.0000', null, null);
+INSERT INTO `invest_rule` VALUES ('26', 'SALES_OVERTIME', 'OPT_NUM', 'OPT_NUM', '超时时间', '超时的时间和单位时间次数', '7', '1', '3.0000', '1.0000', null, null);
 
 -- ----------------------------
 -- Table structure for likes_log
@@ -466,16 +563,16 @@ CREATE TABLE `player_account` (
 -- ----------------------------
 -- Records of player_account
 -- ----------------------------
-INSERT INTO `player_account` VALUES ('32', 'FCCDC7A84EBD47BCB63F4B1281BE527D', '8539D6814E364B1B834EFBC93DB17330', null, '93.0', '83.0', '0.0', '00000', '00000', '00000', '0.0000', null, null);
-INSERT INTO `player_account` VALUES ('33', 'B22BD7C3B9374473AB7133C3A4271234', '65AB2C93C5994934A7DA30A76F4D6B50', null, '0.0', '0.0', '0.0', '00000', '00000', '00000', '0.0000', null, null);
-INSERT INTO `player_account` VALUES ('34', '52ABA6CE89164C8484A7F7FFF16B3670', 'B424A91EF8004558B34354CA440F75B7', null, '93.0', '93.0', '0.0', '0', '1000000', '100000', '0.0000', null, null);
-INSERT INTO `player_account` VALUES ('35', 'A07246C2924A415982ABE5E8C6DAD53D', '3574E5E05A32430C8731D640C5FA2E4F', null, '65000.0', '0.0', '0', '640000.0', '170009.0', '10000.0', '0.0000', null, null);
-INSERT INTO `player_account` VALUES ('36', 'D6EDA06FDF654A46BC8299A05DDFF591', '128ECC1E2A22412C9757C19710625714', null, '9994.0', '8994.0', '550000', '9944.0', '9999.0', '1000.0', '0.0000', null, null);
-INSERT INTO `player_account` VALUES ('37', '1301094B88274AF78C26D532F0C9E6E3', 'FD3854472D1845E2B824245303403502', null, '0.0', '00000', '00000', '00000', '0', '00000', '0.0000', null, null);
-INSERT INTO `player_account` VALUES ('38', '68493901879941308DFF85CB8EA3A077', '9D11A42595FC48B6AC4F05983EAA663C', null, '0.0', '00000', '00000', '00000', '00000', '00000', '0.0000', null, null);
-INSERT INTO `player_account` VALUES ('39', 'F3ECC5684F8C44339314ADF7768EB63B', 'D799B2D185DD4774996FBA82229077C0', null, '100.0', '90.0', '00000', '00000', '00000', '00000', '0.0000', null, null);
-INSERT INTO `player_account` VALUES ('888888888', '8A2922A66F474A0DA9B10FB4BCD59BA0', '4E2EE556055042AB80E3D164E51DDD1A', null, '4.0', '3.0', '00000', '00000', '00000', '00000', '0.0000', null, null);
-INSERT INTO `player_account` VALUES ('888888889', 'B62A7E3C3259429A92130B2196F6A39A', '2559340F3754455B87B36D82C0776601', null, '0.0', '0.0', '00000', '00000', '00000', '00000', '0.0000', null, null);
+INSERT INTO `player_account` VALUES ('32', 'FCCDC7A84EBD47BCB63F4B1281BE527D', '8539D6814E364B1B834EFBC93DB17330', null, '93.0000', '83.0000', '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', null, null);
+INSERT INTO `player_account` VALUES ('33', 'B22BD7C3B9374473AB7133C3A4271234', '65AB2C93C5994934A7DA30A76F4D6B50', null, '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', null, null);
+INSERT INTO `player_account` VALUES ('34', '52ABA6CE89164C8484A7F7FFF16B3670', 'B424A91EF8004558B34354CA440F75B7', null, '63.0000', '63.0000', '30.0000', '62.9800', '999999.9800', '100000.0200', '0.0000', null, null);
+INSERT INTO `player_account` VALUES ('35', 'A07246C2924A415982ABE5E8C6DAD53D', '3574E5E05A32430C8731D640C5FA2E4F', null, '64420.0000', '9420.0000', '14580.0000', '64419.7500', '170008.6200', '10000.3800', '0.0000', null, null);
+INSERT INTO `player_account` VALUES ('36', 'D6EDA06FDF654A46BC8299A05DDFF591', '128ECC1E2A22412C9757C19710625714', null, '9994.0000', '8994.0000', '550000.0000', '9944.0000', '9999.0000', '1000.0000', '0.0000', null, null);
+INSERT INTO `player_account` VALUES ('37', '1301094B88274AF78C26D532F0C9E6E3', 'FD3854472D1845E2B824245303403502', null, '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', null, null);
+INSERT INTO `player_account` VALUES ('38', '68493901879941308DFF85CB8EA3A077', '9D11A42595FC48B6AC4F05983EAA663C', null, '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', null, null);
+INSERT INTO `player_account` VALUES ('39', 'F3ECC5684F8C44339314ADF7768EB63B', 'D799B2D185DD4774996FBA82229077C0', null, '100.0000', '90.0000', '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', null, null);
+INSERT INTO `player_account` VALUES ('888888888', '8A2922A66F474A0DA9B10FB4BCD59BA0', '4E2EE556055042AB80E3D164E51DDD1A', null, '4.0000', '3.0000', '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', null, null);
+INSERT INTO `player_account` VALUES ('888888889', 'B62A7E3C3259429A92130B2196F6A39A', '2559340F3754455B87B36D82C0776601', null, '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', null, null);
 
 -- ----------------------------
 -- Table structure for player_account_log
@@ -668,7 +765,47 @@ CREATE TABLE `player_login_log` (
   PRIMARY KEY (`id`) USING BTREE,
   KEY `index_player_id` (`player_id`) USING BTREE,
   KEY `index_imei` (`imei`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=668 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='登录日志';
+) ENGINE=InnoDB AUTO_INCREMENT=704 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='登录日志';
+
+-- ----------------------------
+-- Records of player_login_log
+-- ----------------------------
+INSERT INTO `player_login_log` VALUES ('668', 'A07246C2924A415982ABE5E8C6DAD53D', null, null, 'login', null, '2019-10-16 15:37:28');
+INSERT INTO `player_login_log` VALUES ('669', 'A07246C2924A415982ABE5E8C6DAD53D', null, null, 'login', null, '2019-10-16 16:06:06');
+INSERT INTO `player_login_log` VALUES ('670', 'A07246C2924A415982ABE5E8C6DAD53D', null, null, 'login', null, '2019-10-16 16:10:21');
+INSERT INTO `player_login_log` VALUES ('671', 'A07246C2924A415982ABE5E8C6DAD53D', null, null, 'quit', null, '2019-10-16 16:44:52');
+INSERT INTO `player_login_log` VALUES ('672', 'A07246C2924A415982ABE5E8C6DAD53D', null, null, 'login', null, '2019-10-16 16:47:36');
+INSERT INTO `player_login_log` VALUES ('673', 'A07246C2924A415982ABE5E8C6DAD53D', null, null, 'login', null, '2019-10-16 16:47:56');
+INSERT INTO `player_login_log` VALUES ('674', 'A07246C2924A415982ABE5E8C6DAD53D', null, null, 'login', null, '2019-10-16 16:47:57');
+INSERT INTO `player_login_log` VALUES ('675', 'A07246C2924A415982ABE5E8C6DAD53D', null, null, 'login', null, '2019-10-16 16:48:19');
+INSERT INTO `player_login_log` VALUES ('676', 'A07246C2924A415982ABE5E8C6DAD53D', null, null, 'login', null, '2019-10-16 16:49:29');
+INSERT INTO `player_login_log` VALUES ('677', 'A07246C2924A415982ABE5E8C6DAD53D', null, null, 'login', null, '2019-10-16 16:49:31');
+INSERT INTO `player_login_log` VALUES ('678', 'A07246C2924A415982ABE5E8C6DAD53D', null, null, 'login', null, '2019-10-16 16:49:31');
+INSERT INTO `player_login_log` VALUES ('679', 'A07246C2924A415982ABE5E8C6DAD53D', null, null, 'login', null, '2019-10-16 16:49:31');
+INSERT INTO `player_login_log` VALUES ('680', 'A07246C2924A415982ABE5E8C6DAD53D', null, null, 'login', null, '2019-10-16 16:49:32');
+INSERT INTO `player_login_log` VALUES ('681', 'A07246C2924A415982ABE5E8C6DAD53D', null, null, 'login', null, '2019-10-16 16:49:41');
+INSERT INTO `player_login_log` VALUES ('682', 'A07246C2924A415982ABE5E8C6DAD53D', null, null, 'login', null, '2019-10-16 16:49:41');
+INSERT INTO `player_login_log` VALUES ('683', 'A07246C2924A415982ABE5E8C6DAD53D', null, null, 'login', null, '2019-10-16 16:49:42');
+INSERT INTO `player_login_log` VALUES ('684', 'A07246C2924A415982ABE5E8C6DAD53D', null, null, 'login', null, '2019-10-16 16:50:24');
+INSERT INTO `player_login_log` VALUES ('685', 'A07246C2924A415982ABE5E8C6DAD53D', null, null, 'login', null, '2019-10-16 16:50:27');
+INSERT INTO `player_login_log` VALUES ('686', 'A07246C2924A415982ABE5E8C6DAD53D', null, null, 'login', null, '2019-10-16 16:50:27');
+INSERT INTO `player_login_log` VALUES ('687', 'A07246C2924A415982ABE5E8C6DAD53D', null, null, 'login', null, '2019-10-16 16:50:28');
+INSERT INTO `player_login_log` VALUES ('688', 'A07246C2924A415982ABE5E8C6DAD53D', null, null, 'login', null, '2019-10-16 16:50:28');
+INSERT INTO `player_login_log` VALUES ('689', 'A07246C2924A415982ABE5E8C6DAD53D', null, null, 'login', null, '2019-10-16 16:50:29');
+INSERT INTO `player_login_log` VALUES ('690', 'A07246C2924A415982ABE5E8C6DAD53D', null, null, 'login', null, '2019-10-16 16:50:29');
+INSERT INTO `player_login_log` VALUES ('691', 'A07246C2924A415982ABE5E8C6DAD53D', null, null, 'login', null, '2019-10-16 16:50:29');
+INSERT INTO `player_login_log` VALUES ('692', 'A07246C2924A415982ABE5E8C6DAD53D', null, null, 'login', null, '2019-10-16 16:50:29');
+INSERT INTO `player_login_log` VALUES ('693', 'A07246C2924A415982ABE5E8C6DAD53D', null, null, 'login', null, '2019-10-16 16:50:29');
+INSERT INTO `player_login_log` VALUES ('694', 'A07246C2924A415982ABE5E8C6DAD53D', null, null, 'login', null, '2019-10-16 16:50:29');
+INSERT INTO `player_login_log` VALUES ('695', '52ABA6CE89164C8484A7F7FFF16B3670', null, null, 'login', null, '2019-10-16 16:51:07');
+INSERT INTO `player_login_log` VALUES ('696', '52ABA6CE89164C8484A7F7FFF16B3670', null, null, 'quit', null, '2019-10-16 16:56:33');
+INSERT INTO `player_login_log` VALUES ('697', '52ABA6CE89164C8484A7F7FFF16B3670', null, null, 'login', null, '2019-10-16 16:57:22');
+INSERT INTO `player_login_log` VALUES ('698', 'A07246C2924A415982ABE5E8C6DAD53D', null, null, 'login', null, '2019-10-16 17:14:09');
+INSERT INTO `player_login_log` VALUES ('699', 'A07246C2924A415982ABE5E8C6DAD53D', null, null, 'login', null, '2019-10-16 17:14:17');
+INSERT INTO `player_login_log` VALUES ('700', '1301094B88274AF78C26D532F0C9E6E3', null, null, 'login', null, '2019-10-16 17:15:23');
+INSERT INTO `player_login_log` VALUES ('701', 'A07246C2924A415982ABE5E8C6DAD53D', null, null, 'login', null, '2019-10-16 17:17:03');
+INSERT INTO `player_login_log` VALUES ('702', 'A07246C2924A415982ABE5E8C6DAD53D', null, null, 'login', null, '2019-10-16 17:17:08');
+INSERT INTO `player_login_log` VALUES ('703', 'A07246C2924A415982ABE5E8C6DAD53D', null, null, 'login', null, '2019-10-16 17:18:21');
 
 -- ----------------------------
 -- Table structure for player_trade
@@ -691,7 +828,7 @@ CREATE TABLE `player_trade` (
   PRIMARY KEY (`trade_id`),
   KEY `index_trade_player_id` (`trade_player_id`),
   KEY `index_trade_order_id` (`trade_order_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8 COMMENT='交易记录表';
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8 COMMENT='交易记录表';
 
 -- ----------------------------
 -- Records of player_trade
@@ -710,6 +847,248 @@ INSERT INTO `player_trade` VALUES ('11', '36', 'D6EDA06FDF654A46BC8299A05DDFF591
 INSERT INTO `player_trade` VALUES ('12', '36', 'D6EDA06FDF654A46BC8299A05DDFF591', '21', '4.9700', '0.0000', '0.0000', 'IN', 'IN', 'INVEST_EARNINGS', '提取已入账', '2019-10-15 18:44:49', '2019-10-15 18:44:49');
 INSERT INTO `player_trade` VALUES ('13', '36', 'D6EDA06FDF654A46BC8299A05DDFF591', '21', '4.9700', '0.0000', '0.0000', 'IN', 'IN', 'INVEST_EARNINGS', '提取已入账', '2019-10-15 18:46:58', '2019-10-15 18:46:58');
 INSERT INTO `player_trade` VALUES ('14', '36', 'D6EDA06FDF654A46BC8299A05DDFF591', '21', '4.9700', '0.0000', '0.0000', 'IN', 'IN', 'INVEST_EARNINGS', '提取已入账', '2019-10-15 18:48:22', '2019-10-15 18:48:22');
+INSERT INTO `player_trade` VALUES ('15', '35', 'A07246C2924A415982ABE5E8C6DAD53D', '26', '30.0000', '0.0200', '0.0000', 'FREEZE', 'OUT', 'INVEST', '预约投资', '2019-10-16 15:29:18', '2019-10-16 15:29:18');
+INSERT INTO `player_trade` VALUES ('16', '35', 'A07246C2924A415982ABE5E8C6DAD53D', '27', '30.0000', '0.0200', '0.0000', 'FREEZE', 'OUT', 'INVEST', '预约投资', '2019-10-16 16:09:24', '2019-10-16 16:09:24');
+INSERT INTO `player_trade` VALUES ('17', '35', 'A07246C2924A415982ABE5E8C6DAD53D', '28', '100.0000', '0.0100', '0.0000', 'FREEZE', 'OUT', 'INVEST', '预约投资', '2019-10-16 16:28:47', '2019-10-16 16:28:47');
+INSERT INTO `player_trade` VALUES ('18', '35', 'A07246C2924A415982ABE5E8C6DAD53D', '29', '300.0000', '0.1000', '0.1500', 'FREEZE', 'OUT', 'INVEST', '预约投资', '2019-10-16 16:28:52', '2019-10-16 16:28:52');
+INSERT INTO `player_trade` VALUES ('19', '34', '52ABA6CE89164C8484A7F7FFF16B3670', '30', '30.0000', '0.0200', '0.0000', 'FREEZE', 'OUT', 'INVEST', '预约投资', '2019-10-16 17:06:51', '2019-10-16 17:06:51');
+
+-- ----------------------------
+-- Table structure for qrtz_blob_triggers
+-- ----------------------------
+DROP TABLE IF EXISTS `qrtz_blob_triggers`;
+CREATE TABLE `qrtz_blob_triggers` (
+  `SCHED_NAME` varchar(120) NOT NULL,
+  `TRIGGER_NAME` varchar(200) NOT NULL,
+  `TRIGGER_GROUP` varchar(200) NOT NULL,
+  `BLOB_DATA` blob,
+  PRIMARY KEY (`SCHED_NAME`,`TRIGGER_NAME`,`TRIGGER_GROUP`),
+  KEY `SCHED_NAME` (`SCHED_NAME`,`TRIGGER_NAME`,`TRIGGER_GROUP`),
+  CONSTRAINT `qrtz_blob_triggers_ibfk_1` FOREIGN KEY (`SCHED_NAME`, `TRIGGER_NAME`, `TRIGGER_GROUP`) REFERENCES `qrtz_triggers` (`SCHED_NAME`, `TRIGGER_NAME`, `TRIGGER_GROUP`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of qrtz_blob_triggers
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for qrtz_calendars
+-- ----------------------------
+DROP TABLE IF EXISTS `qrtz_calendars`;
+CREATE TABLE `qrtz_calendars` (
+  `SCHED_NAME` varchar(120) NOT NULL,
+  `CALENDAR_NAME` varchar(200) NOT NULL,
+  `CALENDAR` blob NOT NULL,
+  PRIMARY KEY (`SCHED_NAME`,`CALENDAR_NAME`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of qrtz_calendars
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for qrtz_cron_triggers
+-- ----------------------------
+DROP TABLE IF EXISTS `qrtz_cron_triggers`;
+CREATE TABLE `qrtz_cron_triggers` (
+  `SCHED_NAME` varchar(120) NOT NULL,
+  `TRIGGER_NAME` varchar(200) NOT NULL,
+  `TRIGGER_GROUP` varchar(200) NOT NULL,
+  `CRON_EXPRESSION` varchar(120) NOT NULL,
+  `TIME_ZONE_ID` varchar(80) DEFAULT NULL,
+  PRIMARY KEY (`SCHED_NAME`,`TRIGGER_NAME`,`TRIGGER_GROUP`),
+  CONSTRAINT `qrtz_cron_triggers_ibfk_1` FOREIGN KEY (`SCHED_NAME`, `TRIGGER_NAME`, `TRIGGER_GROUP`) REFERENCES `qrtz_triggers` (`SCHED_NAME`, `TRIGGER_NAME`, `TRIGGER_GROUP`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of qrtz_cron_triggers
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for qrtz_fired_triggers
+-- ----------------------------
+DROP TABLE IF EXISTS `qrtz_fired_triggers`;
+CREATE TABLE `qrtz_fired_triggers` (
+  `SCHED_NAME` varchar(120) NOT NULL,
+  `ENTRY_ID` varchar(95) NOT NULL,
+  `TRIGGER_NAME` varchar(200) NOT NULL,
+  `TRIGGER_GROUP` varchar(200) NOT NULL,
+  `INSTANCE_NAME` varchar(200) NOT NULL,
+  `FIRED_TIME` bigint(13) NOT NULL,
+  `SCHED_TIME` bigint(13) NOT NULL,
+  `PRIORITY` int(11) NOT NULL,
+  `STATE` varchar(16) NOT NULL,
+  `JOB_NAME` varchar(200) DEFAULT NULL,
+  `JOB_GROUP` varchar(200) DEFAULT NULL,
+  `IS_NONCONCURRENT` varchar(1) DEFAULT NULL,
+  `REQUESTS_RECOVERY` varchar(1) DEFAULT NULL,
+  PRIMARY KEY (`SCHED_NAME`,`ENTRY_ID`),
+  KEY `IDX_QRTZ_FT_TRIG_INST_NAME` (`SCHED_NAME`,`INSTANCE_NAME`),
+  KEY `IDX_QRTZ_FT_INST_JOB_REQ_RCVRY` (`SCHED_NAME`,`INSTANCE_NAME`,`REQUESTS_RECOVERY`),
+  KEY `IDX_QRTZ_FT_J_G` (`SCHED_NAME`,`JOB_NAME`,`JOB_GROUP`),
+  KEY `IDX_QRTZ_FT_JG` (`SCHED_NAME`,`JOB_GROUP`),
+  KEY `IDX_QRTZ_FT_T_G` (`SCHED_NAME`,`TRIGGER_NAME`,`TRIGGER_GROUP`),
+  KEY `IDX_QRTZ_FT_TG` (`SCHED_NAME`,`TRIGGER_GROUP`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of qrtz_fired_triggers
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for qrtz_job_details
+-- ----------------------------
+DROP TABLE IF EXISTS `qrtz_job_details`;
+CREATE TABLE `qrtz_job_details` (
+  `SCHED_NAME` varchar(120) NOT NULL,
+  `JOB_NAME` varchar(200) NOT NULL,
+  `JOB_GROUP` varchar(200) NOT NULL,
+  `DESCRIPTION` varchar(250) DEFAULT NULL,
+  `JOB_CLASS_NAME` varchar(250) NOT NULL,
+  `IS_DURABLE` varchar(1) NOT NULL,
+  `IS_NONCONCURRENT` varchar(1) NOT NULL,
+  `IS_UPDATE_DATA` varchar(1) NOT NULL,
+  `REQUESTS_RECOVERY` varchar(1) NOT NULL,
+  `JOB_DATA` blob,
+  PRIMARY KEY (`SCHED_NAME`,`JOB_NAME`,`JOB_GROUP`),
+  KEY `IDX_QRTZ_J_REQ_RECOVERY` (`SCHED_NAME`,`REQUESTS_RECOVERY`),
+  KEY `IDX_QRTZ_J_GRP` (`SCHED_NAME`,`JOB_GROUP`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of qrtz_job_details
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for qrtz_locks
+-- ----------------------------
+DROP TABLE IF EXISTS `qrtz_locks`;
+CREATE TABLE `qrtz_locks` (
+  `SCHED_NAME` varchar(120) NOT NULL,
+  `LOCK_NAME` varchar(40) NOT NULL,
+  PRIMARY KEY (`SCHED_NAME`,`LOCK_NAME`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of qrtz_locks
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for qrtz_paused_trigger_grps
+-- ----------------------------
+DROP TABLE IF EXISTS `qrtz_paused_trigger_grps`;
+CREATE TABLE `qrtz_paused_trigger_grps` (
+  `SCHED_NAME` varchar(120) NOT NULL,
+  `TRIGGER_GROUP` varchar(200) NOT NULL,
+  PRIMARY KEY (`SCHED_NAME`,`TRIGGER_GROUP`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of qrtz_paused_trigger_grps
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for qrtz_scheduler_state
+-- ----------------------------
+DROP TABLE IF EXISTS `qrtz_scheduler_state`;
+CREATE TABLE `qrtz_scheduler_state` (
+  `SCHED_NAME` varchar(120) NOT NULL,
+  `INSTANCE_NAME` varchar(200) NOT NULL,
+  `LAST_CHECKIN_TIME` bigint(13) NOT NULL,
+  `CHECKIN_INTERVAL` bigint(13) NOT NULL,
+  PRIMARY KEY (`SCHED_NAME`,`INSTANCE_NAME`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of qrtz_scheduler_state
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for qrtz_simple_triggers
+-- ----------------------------
+DROP TABLE IF EXISTS `qrtz_simple_triggers`;
+CREATE TABLE `qrtz_simple_triggers` (
+  `SCHED_NAME` varchar(120) NOT NULL,
+  `TRIGGER_NAME` varchar(200) NOT NULL,
+  `TRIGGER_GROUP` varchar(200) NOT NULL,
+  `REPEAT_COUNT` bigint(7) NOT NULL,
+  `REPEAT_INTERVAL` bigint(12) NOT NULL,
+  `TIMES_TRIGGERED` bigint(10) NOT NULL,
+  PRIMARY KEY (`SCHED_NAME`,`TRIGGER_NAME`,`TRIGGER_GROUP`),
+  CONSTRAINT `qrtz_simple_triggers_ibfk_1` FOREIGN KEY (`SCHED_NAME`, `TRIGGER_NAME`, `TRIGGER_GROUP`) REFERENCES `qrtz_triggers` (`SCHED_NAME`, `TRIGGER_NAME`, `TRIGGER_GROUP`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of qrtz_simple_triggers
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for qrtz_simprop_triggers
+-- ----------------------------
+DROP TABLE IF EXISTS `qrtz_simprop_triggers`;
+CREATE TABLE `qrtz_simprop_triggers` (
+  `SCHED_NAME` varchar(120) NOT NULL,
+  `TRIGGER_NAME` varchar(200) NOT NULL,
+  `TRIGGER_GROUP` varchar(200) NOT NULL,
+  `STR_PROP_1` varchar(512) DEFAULT NULL,
+  `STR_PROP_2` varchar(512) DEFAULT NULL,
+  `STR_PROP_3` varchar(512) DEFAULT NULL,
+  `INT_PROP_1` int(11) DEFAULT NULL,
+  `INT_PROP_2` int(11) DEFAULT NULL,
+  `LONG_PROP_1` bigint(20) DEFAULT NULL,
+  `LONG_PROP_2` bigint(20) DEFAULT NULL,
+  `DEC_PROP_1` decimal(13,4) DEFAULT NULL,
+  `DEC_PROP_2` decimal(13,4) DEFAULT NULL,
+  `BOOL_PROP_1` varchar(1) DEFAULT NULL,
+  `BOOL_PROP_2` varchar(1) DEFAULT NULL,
+  PRIMARY KEY (`SCHED_NAME`,`TRIGGER_NAME`,`TRIGGER_GROUP`),
+  CONSTRAINT `qrtz_simprop_triggers_ibfk_1` FOREIGN KEY (`SCHED_NAME`, `TRIGGER_NAME`, `TRIGGER_GROUP`) REFERENCES `qrtz_triggers` (`SCHED_NAME`, `TRIGGER_NAME`, `TRIGGER_GROUP`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of qrtz_simprop_triggers
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for qrtz_triggers
+-- ----------------------------
+DROP TABLE IF EXISTS `qrtz_triggers`;
+CREATE TABLE `qrtz_triggers` (
+  `SCHED_NAME` varchar(120) NOT NULL,
+  `TRIGGER_NAME` varchar(200) NOT NULL,
+  `TRIGGER_GROUP` varchar(200) NOT NULL,
+  `JOB_NAME` varchar(200) NOT NULL,
+  `JOB_GROUP` varchar(200) NOT NULL,
+  `DESCRIPTION` varchar(250) DEFAULT NULL,
+  `NEXT_FIRE_TIME` bigint(13) DEFAULT NULL,
+  `PREV_FIRE_TIME` bigint(13) DEFAULT NULL,
+  `PRIORITY` int(11) DEFAULT NULL,
+  `TRIGGER_STATE` varchar(16) NOT NULL,
+  `TRIGGER_TYPE` varchar(8) NOT NULL,
+  `START_TIME` bigint(13) NOT NULL,
+  `END_TIME` bigint(13) DEFAULT NULL,
+  `CALENDAR_NAME` varchar(200) DEFAULT NULL,
+  `MISFIRE_INSTR` smallint(2) DEFAULT NULL,
+  `JOB_DATA` blob,
+  PRIMARY KEY (`SCHED_NAME`,`TRIGGER_NAME`,`TRIGGER_GROUP`),
+  KEY `IDX_QRTZ_T_J` (`SCHED_NAME`,`JOB_NAME`,`JOB_GROUP`),
+  KEY `IDX_QRTZ_T_JG` (`SCHED_NAME`,`JOB_GROUP`),
+  KEY `IDX_QRTZ_T_C` (`SCHED_NAME`,`CALENDAR_NAME`),
+  KEY `IDX_QRTZ_T_G` (`SCHED_NAME`,`TRIGGER_GROUP`),
+  KEY `IDX_QRTZ_T_STATE` (`SCHED_NAME`,`TRIGGER_STATE`),
+  KEY `IDX_QRTZ_T_N_STATE` (`SCHED_NAME`,`TRIGGER_NAME`,`TRIGGER_GROUP`,`TRIGGER_STATE`),
+  KEY `IDX_QRTZ_T_N_G_STATE` (`SCHED_NAME`,`TRIGGER_GROUP`,`TRIGGER_STATE`),
+  KEY `IDX_QRTZ_T_NEXT_FIRE_TIME` (`SCHED_NAME`,`NEXT_FIRE_TIME`),
+  KEY `IDX_QRTZ_T_NFT_ST` (`SCHED_NAME`,`TRIGGER_STATE`,`NEXT_FIRE_TIME`),
+  KEY `IDX_QRTZ_T_NFT_MISFIRE` (`SCHED_NAME`,`MISFIRE_INSTR`,`NEXT_FIRE_TIME`),
+  KEY `IDX_QRTZ_T_NFT_ST_MISFIRE` (`SCHED_NAME`,`MISFIRE_INSTR`,`NEXT_FIRE_TIME`,`TRIGGER_STATE`),
+  KEY `IDX_QRTZ_T_NFT_ST_MISFIRE_GRP` (`SCHED_NAME`,`MISFIRE_INSTR`,`NEXT_FIRE_TIME`,`TRIGGER_GROUP`,`TRIGGER_STATE`),
+  CONSTRAINT `qrtz_triggers_ibfk_1` FOREIGN KEY (`SCHED_NAME`, `JOB_NAME`, `JOB_GROUP`) REFERENCES `qrtz_job_details` (`SCHED_NAME`, `JOB_NAME`, `JOB_GROUP`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of qrtz_triggers
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for role
@@ -824,6 +1203,38 @@ INSERT INTO `sales_order` VALUES ('77', '20191014181418', '1', 'MT', 'USDT', '1'
 INSERT INTO `sales_order` VALUES ('78', '20191014181418', '1', 'MT', 'USDT', '1', 'A07246C2924A415982ABE5E8C6DAD53D', '52ABA6CE89164C8484A7F7FFF16B3670', '2', '2019-10-14 10:14:19', null);
 
 -- ----------------------------
+-- Table structure for test_user
+-- ----------------------------
+DROP TABLE IF EXISTS `test_user`;
+CREATE TABLE `test_user` (
+  `user_id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_name` varchar(255) DEFAULT NULL,
+  `user_age` int(11) DEFAULT NULL,
+  `user_sex` varchar(25) DEFAULT NULL,
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`user_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+
+-- ----------------------------
+-- Records of test_user
+-- ----------------------------
+INSERT INTO `test_user` VALUES ('1', 'wwwww', '25', null, '2019-10-06 15:31:18', '0000-00-00 00:00:00');
+INSERT INTO `test_user` VALUES ('2', 'wsww', '15', null, '2019-10-06 15:33:32', '0000-00-00 00:00:00');
+INSERT INTO `test_user` VALUES ('3', 'wswrr', '13', null, '2019-10-06 15:31:18', '2019-10-06 15:44:57');
+INSERT INTO `test_user` VALUES ('4', 'wwwww', '25', null, '2019-10-06 15:31:18', '0000-00-00 00:00:00');
+INSERT INTO `test_user` VALUES ('5', 'wwwww', '25', null, '2019-10-06 15:31:18', '0000-00-00 00:00:00');
+INSERT INTO `test_user` VALUES ('6', 'wwwww', '25', null, '2019-10-06 15:31:18', '0000-00-00 00:00:00');
+INSERT INTO `test_user` VALUES ('7', 'wswrr', '13', null, '2019-10-06 15:31:18', '2019-10-06 15:40:18');
+INSERT INTO `test_user` VALUES ('8', 'wwwww', '25', null, '2019-10-06 15:31:18', '0000-00-00 00:00:00');
+INSERT INTO `test_user` VALUES ('9', 'wswrr', '13', null, '2019-10-06 15:34:46', '2019-10-06 15:37:54');
+INSERT INTO `test_user` VALUES ('10', 'wwws', '4', null, '2019-10-06 07:55:58', '0000-00-00 00:00:00');
+INSERT INTO `test_user` VALUES ('11', 'wwws', '4', null, '2019-10-06 16:01:32', '0000-00-00 00:00:00');
+INSERT INTO `test_user` VALUES ('12', 'wwws', '4', null, '2019-10-07 12:16:08', '0000-00-00 00:00:00');
+INSERT INTO `test_user` VALUES ('13', 'wwws', '4', null, '2019-10-07 12:16:31', '0000-00-00 00:00:00');
+INSERT INTO `test_user` VALUES ('14', 'WVv', '12', '男', '2019-10-14 11:22:23', '0000-00-00 00:00:00');
+
+-- ----------------------------
 -- Table structure for trade_detail
 -- ----------------------------
 DROP TABLE IF EXISTS `trade_detail`;
@@ -843,7 +1254,7 @@ CREATE TABLE `trade_detail` (
   KEY `index_player_id` (`player_id`),
   KEY `index_order_id` (`order_id`),
   KEY `index_verify_id` (`verify_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COMMENT='交易流水表';
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8 COMMENT='交易流水表';
 
 -- ----------------------------
 -- Records of trade_detail
@@ -854,6 +1265,17 @@ INSERT INTO `trade_detail` VALUES ('3', '11', null, '21', 'D6EDA06FDF654A46BC829
 INSERT INTO `trade_detail` VALUES ('4', '12', null, '21', 'D6EDA06FDF654A46BC8299A05DDFF591', 'USDT_EARNINGS', '4.9700', null, '投资提取,提取金额：5,个人所得税:0.0100,企业所得税：0.0200,定额税：0.0000', '2019-10-15 18:45:04');
 INSERT INTO `trade_detail` VALUES ('5', '13', null, '21', 'D6EDA06FDF654A46BC8299A05DDFF591', 'USDT_EARNINGS', '4.9700', null, '投资提取,提取金额：5,个人所得税:0.0100,企业所得税：0.0200,定额税：0.0000', '2019-10-15 18:46:58');
 INSERT INTO `trade_detail` VALUES ('6', '14', null, '21', 'D6EDA06FDF654A46BC8299A05DDFF591', 'USDT_EARNINGS', '4.9700', null, '投资提取,提取金额：5,个人所得税:0.0100,企业所得税：0.0200,定额税：0.0000', '2019-10-15 18:48:22');
+INSERT INTO `trade_detail` VALUES ('7', '15', null, '26', 'A07246C2924A415982ABE5E8C6DAD53D', 'USDT_INVEST_FREEZE', '30.0000', null, null, '2019-10-16 15:29:18');
+INSERT INTO `trade_detail` VALUES ('8', '15', null, '26', 'A07246C2924A415982ABE5E8C6DAD53D', 'MT_INVEST_PERSONAL_TAX', '0.0200', null, null, '2019-10-16 15:29:18');
+INSERT INTO `trade_detail` VALUES ('9', '16', null, '27', 'A07246C2924A415982ABE5E8C6DAD53D', 'USDT_INVEST_FREEZE', '30.0000', null, null, '2019-10-16 16:09:24');
+INSERT INTO `trade_detail` VALUES ('10', '16', null, '27', 'A07246C2924A415982ABE5E8C6DAD53D', 'MT_INVEST_PERSONAL_TAX', '0.0200', null, null, '2019-10-16 16:09:24');
+INSERT INTO `trade_detail` VALUES ('11', '17', null, '28', 'A07246C2924A415982ABE5E8C6DAD53D', 'USDT_INVEST_FREEZE', '100.0000', null, null, '2019-10-16 16:28:48');
+INSERT INTO `trade_detail` VALUES ('12', '17', null, '28', 'A07246C2924A415982ABE5E8C6DAD53D', 'MT_INVEST_PERSONAL_TAX', '0.0100', null, null, '2019-10-16 16:28:48');
+INSERT INTO `trade_detail` VALUES ('13', '18', null, '29', 'A07246C2924A415982ABE5E8C6DAD53D', 'USDT_INVEST_FREEZE', '300.0000', null, null, '2019-10-16 16:28:52');
+INSERT INTO `trade_detail` VALUES ('14', '18', null, '29', 'A07246C2924A415982ABE5E8C6DAD53D', 'MT_INVEST_PERSONAL_TAX', '0.1000', null, null, '2019-10-16 16:28:53');
+INSERT INTO `trade_detail` VALUES ('15', '18', null, '29', 'A07246C2924A415982ABE5E8C6DAD53D', 'MT_INVEST_ENTERPRISE_TAX', '0.1500', null, null, '2019-10-16 16:28:53');
+INSERT INTO `trade_detail` VALUES ('16', '19', null, '30', '52ABA6CE89164C8484A7F7FFF16B3670', 'USDT_INVEST_FREEZE', '30.0000', null, null, '2019-10-16 17:06:51');
+INSERT INTO `trade_detail` VALUES ('17', '19', null, '30', '52ABA6CE89164C8484A7F7FFF16B3670', 'MT_INVEST_PERSONAL_TAX', '0.0200', null, null, '2019-10-16 17:06:51');
 
 -- ----------------------------
 -- Table structure for trade_verify
@@ -869,7 +1291,7 @@ CREATE TABLE `trade_verify` (
   `create_time` datetime DEFAULT NULL,
   `update_time` datetime DEFAULT NULL,
   PRIMARY KEY (`verify_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8 COMMENT='交易审核表';
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8 COMMENT='交易审核表';
 
 -- ----------------------------
 -- Records of trade_verify
@@ -880,6 +1302,11 @@ INSERT INTO `trade_verify` VALUES ('8', null, '5', '18', 'WAIT', '待审核', '2
 INSERT INTO `trade_verify` VALUES ('9', null, '6', '19', 'WAIT', '待审核', '2019-10-15 12:23:40', '2019-10-15 12:23:40');
 INSERT INTO `trade_verify` VALUES ('10', null, '7', '20', 'WAIT', '待审核', '2019-10-15 12:25:22', '2019-10-15 12:25:22');
 INSERT INTO `trade_verify` VALUES ('11', null, '8', '21', 'WAIT', '待审核', '2019-10-15 12:28:49', '2019-10-15 12:28:49');
+INSERT INTO `trade_verify` VALUES ('12', null, '15', '26', 'WAIT', '待审核', '2019-10-16 15:29:18', '2019-10-16 15:29:18');
+INSERT INTO `trade_verify` VALUES ('13', null, '16', '27', 'WAIT', '待审核', '2019-10-16 16:09:25', '2019-10-16 16:09:25');
+INSERT INTO `trade_verify` VALUES ('14', null, '17', '28', 'WAIT', '待审核', '2019-10-16 16:28:48', '2019-10-16 16:28:48');
+INSERT INTO `trade_verify` VALUES ('15', null, '18', '29', 'WAIT', '待审核', '2019-10-16 16:28:53', '2019-10-16 16:28:53');
+INSERT INTO `trade_verify` VALUES ('16', null, '19', '30', 'WAIT', '待审核', '2019-10-16 17:06:51', '2019-10-16 17:06:51');
 
 -- ----------------------------
 -- Table structure for user
@@ -938,5 +1365,3 @@ INSERT INTO `user_role` VALUES ('3', '1');
 INSERT INTO `user_role` VALUES ('3', '2');
 INSERT INTO `user_role` VALUES ('4', '1');
 INSERT INTO `user_role` VALUES ('4', '7');
-
-

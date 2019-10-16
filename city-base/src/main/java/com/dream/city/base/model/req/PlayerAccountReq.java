@@ -40,6 +40,9 @@ public class PlayerAccountReq implements Serializable {
      * 交易类型（充值:recharge,转账:transfer,提现:withdraw,购买mt:buy_mt,投资invest)
      */
     private String tradeType;
+
+    /** usdt，mt */
+    private String amountType;
     /**
      * 订单id
      */
@@ -71,6 +74,7 @@ public class PlayerAccountReq implements Serializable {
     private BigDecimal personalTax;
 
     private BigDecimal enterpriseTax;
+    private BigDecimal inQuotaTax;
 
     private String tradeStatus;
     private Integer tradeId;
