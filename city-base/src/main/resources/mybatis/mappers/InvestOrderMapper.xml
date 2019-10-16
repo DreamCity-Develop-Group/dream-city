@@ -137,16 +137,16 @@
       <if test="orderInvestId != null" >
         order_invest_id,
       </if>
-      <if test="orderPayerId != null" >
+      <if test="orderPayerId != null and orderPayerId != ''" >
         order_payer_id,
       </if>
-      <if test="orderName != null" >
+      <if test="orderName != null and orderName != ''" >
         order_name,
       </if>
-      <if test="orderNum != null" >
+      <if test="orderNum != null and orderNum != ''" >
         order_num,
       </if>
-      <if test="orderState != null" >
+      <if test="orderState != null and orderState != ''" >
         order_state,
       </if>
       <if test="orderAmount != null" >
@@ -165,13 +165,16 @@
       <if test="orderInvestId != null" >
         #{orderInvestId,jdbcType=INTEGER},
       </if>
-      <if test="orderPayerId != null" >
+      <if test="orderPayerId != null and orderPayerId != ''" >
         #{orderPayerId,jdbcType=VARCHAR},
       </if>
-      <if test="orderName != null" >
+      <if test="orderName != null and orderName != ''" >
         #{orderName,jdbcType=VARCHAR},
       </if>
-      <if test="orderState != null" >
+      <if test="orderNum != null and orderNum != ''" >
+        #{orderNum,jdbcType=VARCHAR},
+      </if>
+      <if test="orderState != null and orderState != ''" >
         #{orderState,jdbcType=VARCHAR},
       </if>
       <if test="orderAmount != null" >
@@ -188,12 +191,6 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.dream.city.base.model.entity.InvestOrder" >
     update invest_order
     <set >
-      <if test="orderInvestId != null" >
-        order_invest_id = #{orderInvestId,jdbcType=INTEGER},
-      </if>
-      <if test="orderPayerId != null" >
-        order_payer_id = #{orderPayerId,jdbcType=VARCHAR},
-      </if>
       <if test="orderState != null" >
         order_state = #{orderState,jdbcType=VARCHAR},
       </if>
