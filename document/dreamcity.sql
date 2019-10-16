@@ -302,7 +302,7 @@ CREATE TABLE `city_tree` (
   `tree_relation` varchar(1000) DEFAULT NULL COMMENT '关系网络',
   `send_auto` varchar(11) DEFAULT NULL COMMENT '是 否自动发货',
   `tree_level` int(11) DEFAULT NULL COMMENT '商会等级',
-  `create_time` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `create_time` datetime DEFAULT NULL,
   PRIMARY KEY (`tree_id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=71 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 
@@ -1202,38 +1202,7 @@ CREATE TABLE `sales_order` (
 INSERT INTO `sales_order` VALUES ('77', '20191014181418', '1', 'MT', 'USDT', '1', 'A07246C2924A415982ABE5E8C6DAD53D', '52ABA6CE89164C8484A7F7FFF16B3670', '2', '2019-10-14 10:14:19', null);
 INSERT INTO `sales_order` VALUES ('78', '20191014181418', '1', 'MT', 'USDT', '1', 'A07246C2924A415982ABE5E8C6DAD53D', '52ABA6CE89164C8484A7F7FFF16B3670', '2', '2019-10-14 10:14:19', null);
 
--- ----------------------------
--- Table structure for test_user
--- ----------------------------
-DROP TABLE IF EXISTS `test_user`;
-CREATE TABLE `test_user` (
-  `user_id` int(11) NOT NULL AUTO_INCREMENT,
-  `user_name` varchar(255) DEFAULT NULL,
-  `user_age` int(11) DEFAULT NULL,
-  `user_sex` varchar(25) DEFAULT NULL,
-  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`user_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
-
--- ----------------------------
--- Records of test_user
--- ----------------------------
-INSERT INTO `test_user` VALUES ('1', 'wwwww', '25', null, '2019-10-06 15:31:18', '0000-00-00 00:00:00');
-INSERT INTO `test_user` VALUES ('2', 'wsww', '15', null, '2019-10-06 15:33:32', '0000-00-00 00:00:00');
-INSERT INTO `test_user` VALUES ('3', 'wswrr', '13', null, '2019-10-06 15:31:18', '2019-10-06 15:44:57');
-INSERT INTO `test_user` VALUES ('4', 'wwwww', '25', null, '2019-10-06 15:31:18', '0000-00-00 00:00:00');
-INSERT INTO `test_user` VALUES ('5', 'wwwww', '25', null, '2019-10-06 15:31:18', '0000-00-00 00:00:00');
-INSERT INTO `test_user` VALUES ('6', 'wwwww', '25', null, '2019-10-06 15:31:18', '0000-00-00 00:00:00');
-INSERT INTO `test_user` VALUES ('7', 'wswrr', '13', null, '2019-10-06 15:31:18', '2019-10-06 15:40:18');
-INSERT INTO `test_user` VALUES ('8', 'wwwww', '25', null, '2019-10-06 15:31:18', '0000-00-00 00:00:00');
-INSERT INTO `test_user` VALUES ('9', 'wswrr', '13', null, '2019-10-06 15:34:46', '2019-10-06 15:37:54');
-INSERT INTO `test_user` VALUES ('10', 'wwws', '4', null, '2019-10-06 07:55:58', '0000-00-00 00:00:00');
-INSERT INTO `test_user` VALUES ('11', 'wwws', '4', null, '2019-10-06 16:01:32', '0000-00-00 00:00:00');
-INSERT INTO `test_user` VALUES ('12', 'wwws', '4', null, '2019-10-07 12:16:08', '0000-00-00 00:00:00');
-INSERT INTO `test_user` VALUES ('13', 'wwws', '4', null, '2019-10-07 12:16:31', '0000-00-00 00:00:00');
-INSERT INTO `test_user` VALUES ('14', 'WVv', '12', '男', '2019-10-14 11:22:23', '0000-00-00 00:00:00');
-
+-- --
 -- ----------------------------
 -- Table structure for trade_detail
 -- ----------------------------

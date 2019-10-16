@@ -165,7 +165,7 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
             }
         }
 
-        Result<Integer> tradeVerifyResult = null;
+        Result<TradeVerify> tradeVerifyResult = null;
         if (playerTradeResult != null && playerTradeResult.getSuccess()){
             //生成投资待审核
             tradeVerifyResult = this.createTradeVerify(trade);
@@ -351,7 +351,7 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
      * @param trade
      * @return
      */
-    private Result<Integer> createTradeVerify(PlayerTrade trade){
+    private Result<TradeVerify> createTradeVerify(PlayerTrade trade){
         TradeVerify insertTradeVerifyReq = new TradeVerify();
         insertTradeVerifyReq.setVerifyOrderId(trade.getTradeOrderId());
         insertTradeVerifyReq.setVerifyTradeId(trade.getTradeId());
