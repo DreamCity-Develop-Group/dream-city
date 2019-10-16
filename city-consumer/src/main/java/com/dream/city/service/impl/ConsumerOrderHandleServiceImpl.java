@@ -105,7 +105,7 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
         result.put("investId","");
         result.put("usdtFreeze",BigDecimal.ZERO);
         result.put("mtFreeze",BigDecimal.ZERO);
-        result.put("state ",ReturnStatus.INVEST_SUBSCRIBE.getCode());
+        result.put("state",ReturnStatus.INVEST_SUBSCRIBE.getStatus());
 
         //生成订单
         Result<InvestOrder> orderResult = this.orderCreate(invest.getInId(),player.getPlayerId(),orderRepeat,desc);
@@ -187,7 +187,7 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
             msg.getData().setCode(ReturnStatus.SUCCESS.getStatus());
             result.put("usdtFreeze",trade.getTradeAmount());
             result.put("mtFreeze",invest.getInPersonalTax().add(invest.getInEnterpriseTax()).add(invest.getInQuotaTax()));
-            result.put("state ",ReturnStatus.INVEST_SUBSCRIBED.getCode());
+            result.put("state",ReturnStatus.INVEST_SUBSCRIBED.getStatus());
         }else {
             success = Boolean.FALSE;
             desc = "预约投资失败";
