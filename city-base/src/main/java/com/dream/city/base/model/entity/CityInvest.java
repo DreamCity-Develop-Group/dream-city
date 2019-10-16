@@ -30,6 +30,8 @@ public class CityInvest implements Serializable {
     private BigDecimal inPersonalTax;
     /** 税金 */
     private BigDecimal inEnterpriseTax;
+    /** 定额税 */
+    private BigDecimal inQuotaTax;
 
     /** 收益倍数 */
     private BigDecimal inEarning;
@@ -43,5 +45,7 @@ public class CityInvest implements Serializable {
     private Date createTime;
 
     private Date updateTime;
+
+    private Integer inType;
 
 }

@@ -52,7 +52,7 @@ public class InvestOrderReq implements Serializable {
 
 
     /** 玩家ID */
-    private String payerId;
+    private String playerId;
     /** 玩家Name */
     private String payerName;
 

@@ -1,6 +1,8 @@
 package com.dream.city.property.service;
 
 import com.dream.city.base.model.entity.CityInvest;
+import com.dream.city.base.model.req.CityInvestReq;
+import com.dream.city.base.model.resp.InvestResp;
 
 import java.util.List;
 
@@ -36,7 +38,7 @@ public interface InvestService {
      * @param record
      * @return
      */
-    List<CityInvest> getInvestLsit(CityInvest record);
+    List<InvestResp> getInvestLsit(CityInvestReq record);
 
 
 

@@ -175,7 +175,7 @@ public class EarningController {
         InvestOrder order = orderService.getOrderByPlayerIdInvestId(playerId,investId);
         if (order != null){
             PlayerEarning earning = earningService.getPlayerEarningByPlayerId(playerId,investId);
-            if (null != earning && earning.getEarnMax().compareTo(earning.getEarnCurrent())==0 && earning.getIsWithdrew()==1){
+            if (null != earning && earning.getEarnMax().compareTo(earning.getEarnCurrent())==0 && earning.getIsWithdrew()==2){
                 // 修改账户
                 PlayerAccount account = accountService.getPlayerAccount(playerId);
                 if (account != null){

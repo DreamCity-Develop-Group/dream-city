@@ -3,6 +3,8 @@ package com.dream.city.property.service.impl;
 
 import com.dream.city.base.model.entity.CityInvest;
 import com.dream.city.base.model.mapper.CityInvestMapper;
+import com.dream.city.base.model.req.CityInvestReq;
+import com.dream.city.base.model.resp.InvestResp;
 import com.dream.city.property.service.InvestService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +41,7 @@ public class InvestServiceImpl implements InvestService {
     }
 
     @Override
-    public List<CityInvest> getInvestLsit(CityInvest record) {
+    public List<InvestResp> getInvestLsit(CityInvestReq record) {
         return investMapper.getInvestLsit(record);
     }
 

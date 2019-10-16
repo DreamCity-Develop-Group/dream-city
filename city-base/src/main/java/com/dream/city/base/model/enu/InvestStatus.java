@@ -4,7 +4,7 @@ public enum InvestStatus {
 
     SUBSCRIBE(0,"预约"),
 
-    SUBSCRIBED(1,"预约中"),
+    SUBSCRIBED(1,"已预约"),
 
     SUBSCRIBE_PASS(2,"预约成功"),
 

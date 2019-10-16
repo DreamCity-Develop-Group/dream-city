@@ -2,6 +2,8 @@ package com.dream.city.base.model.mapper;
 
 
 import com.dream.city.base.model.entity.CityInvest;
+import com.dream.city.base.model.req.CityInvestReq;
+import com.dream.city.base.model.resp.InvestResp;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -20,9 +22,9 @@ public interface CityInvestMapper {
 
     CityInvest selectByPrimaryKey(@Param("inId") Integer inId);
 
-    CityInvest selectCityInvest(CityInvest record);
+    InvestResp selectCityInvest(CityInvestReq record);
 
-    List<CityInvest> getInvestLsit(CityInvest record);
+    List<InvestResp> getInvestLsit(CityInvestReq record);
 
     Integer updateByPrimaryKeySelective(CityInvest record);
 

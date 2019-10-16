@@ -2,6 +2,8 @@ package com.dream.city.property.controller;
 
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.CityInvest;
+import com.dream.city.base.model.req.CityInvestReq;
+import com.dream.city.base.model.resp.InvestResp;
 import com.dream.city.property.service.InvestService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -88,20 +90,19 @@ public class PropertyController {
      * @return
      */
     @RequestMapping("/getInvestLsit")
-    public Result<List<CityInvest>> getInvestLsit(@RequestBody CityInvest invest) {
+    public Result<List<InvestResp>> getInvestLsit(@RequestBody CityInvestReq invest) {
         logger.info("物业列表，{}", invest);
         boolean success = Boolean.FALSE;
         String desc = "查询物业列表失败";
-        List<CityInvest> data = null;
+        List<InvestResp> data = null;
         try {
             data = investService.getInvestLsit(invest);
             desc = "查询物业列表成功";
-            success = Boolean.FALSE;
+            success = Boolean.TRUE;
         }catch (Exception e){
             logger.error("查询物业列表异常",e);
         }
-        Result<List<CityInvest>> result = new Result<>(success,desc,data);
-        return result;
+        return new Result<>(success,desc,data);
     }
 
 

@@ -61,7 +61,7 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
         int orderRepeat = 0;
         InvestOrderReq getOrdersReq = new InvestOrderReq();
         getOrdersReq.setOrderId(orderReq.getInvestId());
-        getOrdersReq.setPayerId(player.getPlayerId());
+        getOrdersReq.setPlayerId(player.getPlayerId());
         Result<List<InvestOrderResp>> getOrdersResult = orderService.getOrders(getOrdersReq);
         List<InvestOrderResp> orderList= getOrdersResult.getData();
         if (orderList != null && orderList.size() > 0){
@@ -382,7 +382,7 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
     private Message getPlayerOrFriendOrders(Message msg,InvestOrderReq orderReq,PlayerResp player){
         InvestOrderReq getOrdersReq = new InvestOrderReq();
         getOrdersReq.setOrderId(orderReq.getInvestId());
-        getOrdersReq.setPayerId(player.getPlayerId());
+        getOrdersReq.setPlayerId(player.getPlayerId());
         getOrdersReq.setInvestId(orderReq.getInvestId());
         getOrdersReq.setOrderState(orderReq.getOrderState());
         getOrdersReq.setOrderRepeat(orderReq.getOrderRepeat());

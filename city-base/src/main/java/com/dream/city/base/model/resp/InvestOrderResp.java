@@ -47,7 +47,7 @@ public class InvestOrderResp implements Serializable {
 
 
     /** 玩家ID */
-    private String payerId;
+    private String playerId;
     private String playerName;
     private String playerNick;
 

@@ -3,12 +3,14 @@
 <mapper namespace="com.dream.city.base.model.mapper.CityInvestMapper" >
   <resultMap id="BaseResultMap" type="com.dream.city.base.model.entity.CityInvest" >
     <id column="in_id" property="inId" jdbcType="INTEGER" />
+    <id column="in_type" property="inType" jdbcType="INTEGER" />
     <result column="in_name" property="inName" jdbcType="VARCHAR" />
     <result column="in_img" property="inImg" jdbcType="VARCHAR" />
     <result column="in_limit" property="inLimit" jdbcType="DECIMAL" />
     <result column="in_start" property="inStart" jdbcType="TIMESTAMP" />
     <result column="in_personal_tax" property="inPersonalTax" jdbcType="DECIMAL" />
     <result column="in_enterprise_tax" property="inEnterpriseTax" jdbcType="DECIMAL" />
+    <result column="in_quota_tax" property="inQuotaTax" jdbcType="DECIMAL" />
     <result column="in_earning" property="inEarning" jdbcType="TINYINT" />
     <result column="in_end" property="inEnd" jdbcType="TIMESTAMP" />
     <result column="is_valid" property="isValid" jdbcType="CHAR" />
@@ -16,7 +18,8 @@
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <sql id="Base_Column_List" >
-    in_id, in_name, in_limit, in_start, in_personal_tax, in_enterprise_tax, in_earning, in_end,DATE_FORMAT(create_time,'%Y-%m-%d %h:%m:%s') create_time, DATE_FORMAT(update_time,'%Y-%m-%d %h:%m:%s') update_time,is_valid,in_img
+    in_id, in_name, in_limit, in_start, in_personal_tax, in_enterprise_tax, in_earning, in_end,in_quota_tax,in_type,
+    DATE_FORMAT(create_time,'%Y-%m-%d %h:%m:%s') create_time, DATE_FORMAT(update_time,'%Y-%m-%d %h:%m:%s') update_time,is_valid,in_img
   </sql>
 
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
@@ -30,42 +33,87 @@
   </select>
 
 
-  <select id="selectCityInvest" resultMap="BaseResultMap" parameterType="com.dream.city.base.model.entity.CityInvest" >
-    select 
-    <include refid="Base_Column_List" />
-    from city_invest
+  <resultMap id="ExtResultMap" type="com.dream.city.base.model.resp.InvestResp" >
+    <id column="in_id" property="inId" jdbcType="INTEGER" />
+    <id column="in_type" property="inType" jdbcType="INTEGER" />
+    <result column="in_name" property="inName" jdbcType="VARCHAR" />
+    <result column="in_img" property="inImg" jdbcType="VARCHAR" />
+    <result column="order_state" property="orderState" jdbcType="VARCHAR" />
+    <result column="in_limit" property="inLimit" jdbcType="DECIMAL" />
+    <result column="in_start" property="inStart" jdbcType="TIMESTAMP" />
+    <result column="in_personal_tax" property="personalInTax" jdbcType="DECIMAL" />
+    <result column="in_enterprise_tax" property="enterpriseIntax" jdbcType="DECIMAL" />
+    <result column="in_quota_tax" property="inQuotaTax" jdbcType="DECIMAL" />
+    <result column="earn_current" property="earnCurrent" jdbcType="DECIMAL" />
+    <result column="in_quota_tax" property="inQuotaTax" jdbcType="DECIMAL" />
+    <result column="in_earning" property="inEarning" jdbcType="TINYINT" />
+    <result column="is_withdrew" property="isWithdrew" jdbcType="TINYINT" />
+    <result column="in_end" property="inEnd" jdbcType="TIMESTAMP" />
+    <result column="is_valid" property="isValid" jdbcType="CHAR" />
+  </resultMap>
+  <select id="selectCityInvest" resultMap="ExtResultMap" parameterType="com.dream.city.base.model.req.CityInvestReq" >
+    select i.in_id,
+      i.in_name,
+      i.in_limit,
+      i.in_type,
+      i.in_start,
+      i.in_personal_tax,
+      i.in_enterprise_tax,
+      i.in_quota_tax,
+      i.in_earning,
+      i.in_end,
+      i.is_valid,
+      i.in_img,
+      (SELECT e.earn_current FROM player_earning e WHERE e.earn_invest_id = i.in_id AND e.earn_player_id = #{playerId,jdbcType=VARCHAR} ORDER BY e.update_time DESC LIMIT 1) earn_current,
+      (SELECT e.is_withdrew FROM player_earning e WHERE e.earn_invest_id = i.in_id AND e.earn_player_id = #{playerId,jdbcType=VARCHAR} ORDER BY e.update_time DESC LIMIT 1) is_withdrew,
+      (SELECT o.order_state FROM invest_order o WHERE o.order_invest_id =i.in_id and o.order_payer_id = #{playerId,jdbcType=VARCHAR} ORDER BY e.update_time DESC LIMIT 1) order_state
+    from city_invest i
     <where>
-      1=1
+      i.is_valid = 'Y'
       <if test="inId !=null">
-        and in_id = #{inId,jdbcType=INTEGER}
+        and i.in_id = #{inId,jdbcType=INTEGER}
       </if>
       <if test="inName !=null and inName !=''">
-        and in_name = #{inName,jdbcType=VARCHAR}
+        and i.in_name = #{inName,jdbcType=VARCHAR}
       </if>
-
     </where>
-    limit 1
+      order by i.update_time desc limit 1
   </select>
 
-  <select id="getInvestLsit" resultMap="BaseResultMap" parameterType="com.dream.city.base.model.entity.CityInvest" >
-    select
-    <include refid="Base_Column_List" />
-    from city_invest
+
+  <select id="getInvestLsit" resultMap="ExtResultMap" parameterType="com.dream.city.base.model.req.CityInvestReq" >
+    select i.in_id,
+      i.in_name,
+      i.in_limit,
+      i.in_type,
+      i.in_start,
+      i.in_personal_tax,
+      i.in_enterprise_tax,
+      i.in_quota_tax,
+      i.in_earning,
+      i.in_end,
+      i.is_valid,
+      i.in_img,
+      (SELECT e1.earn_current FROM player_earning e1 WHERE e1.earn_invest_id = i.in_id AND e1.earn_player_id = #{playerId,jdbcType=VARCHAR} ORDER BY e1.update_time DESC LIMIT 1) earn_current,
+      (SELECT e2.is_withdrew FROM player_earning e2 WHERE e2.earn_invest_id = i.in_id AND e2.earn_player_id = #{playerId,jdbcType=VARCHAR} ORDER BY e2.update_time DESC LIMIT 1) is_withdrew,
+      (SELECT o.order_state FROM invest_order o WHERE o.order_invest_id =i.in_id and o.order_payer_id = #{playerId,jdbcType=VARCHAR} ORDER BY o.update_time DESC LIMIT 1) order_state
+    from city_invest i
     <where>
-      1=1
+      i.is_valid = 'Y'
       <if test="inId !=null">
-        and in_id = #{inId,jdbcType=INTEGER}
+        and i.in_id = #{inId,jdbcType=INTEGER}
       </if>
       <if test="inName !=null and inName !=''">
-        and in_name = #{inName,jdbcType=VARCHAR}
+        and i.in_name = #{inName,jdbcType=VARCHAR}
       </if>
-      <if test="isValid !=null">
-        and is_valid = #{isValid,jdbcType=CHAR}
+      <if test="inType !=null">
+        and i.in_type = #{inType,jdbcType=INTEGER}
       </if>
-
     </where>
-
+    order by i.update_time desc
   </select>
+
+
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from city_invest
@@ -94,6 +142,9 @@
       <if test="inEnterpriseTax != null" >
         in_enterprise_tax,
       </if>
+      <if test="inQuotaTax != null" >
+        in_quota_tax,
+      </if>
       <if test="inEarning != null" >
         in_earning,
       </if>
@@ -103,7 +154,11 @@
       <if test="inImg != null" >
         in_img,
       </if>
+      <if test="inType != null" >
+        in_type,
+      </if>
       create_time,
+      update_time,
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="inId != null" >
@@ -124,6 +179,9 @@
       <if test="inEnterpriseTax != null" >
         #{inEnterpriseTax,jdbcType=REAL},
       </if>
+      <if test="inQuotaTax != null" >
+        #{inQuotaTax,jdbcType=REAL},
+      </if>
       <if test="inEarning != null" >
         #{inEarning,jdbcType=TINYINT},
       </if>
@@ -133,7 +191,11 @@
       <if test="inImg != null" >
         #{inImg,jdbcType=VARCHAR},
       </if>
-      now()
+      <if test="inType != null" >
+        #{inType,jdbcType=INTEGER},
+      </if>
+      now(),
+      now(),
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.dream.city.base.model.entity.CityInvest" >
@@ -154,6 +216,9 @@
       <if test="inEnterpriseTax != null" >
         in_enterprise_tax = #{inEnterpriseTax,jdbcType=REAL},
       </if>
+      <if test="inQuotaTax != null" >
+        in_quota_tax = #{inQuotaTax,jdbcType=REAL},
+      </if>
       <if test="inEarning != null" >
         in_earning = #{inEarning,jdbcType=TINYINT},
       </if>
@@ -165,6 +230,9 @@
       </if>
       <if test="inImg != null" >
         in_img = #{inImg,jdbcType=VARCHAR},
+      </if>
+      <if test="inType != null" >
+        in_type = #{inType,jdbcType=INTEGER},
       </if>
       update_time = now(),
     </set>

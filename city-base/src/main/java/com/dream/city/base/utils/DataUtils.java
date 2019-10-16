@@ -88,15 +88,15 @@ public class DataUtils {
         Integer inId = map.containsKey("inId")?Integer.parseInt(String.valueOf(map.get("inId"))):null;
         String inName = map.containsKey("inName")?String.valueOf(map.get("inName")):null;
         String isValid = map.containsKey("isValid")?String.valueOf(map.get("isValid")):null;
-        String payerId = map.containsKey("payerId")?String.valueOf(map.get("payerId")):null;
+        String playerId = map.containsKey("playerId")?String.valueOf(map.get("playerId")):null;
         String username = map.containsKey("username")?String.valueOf(map.get("username")):null;
 
         CityInvestReq result = new CityInvestReq();
         result.setInId(inId);
         result.setInName(inName);
         result.setIsValid(isValid);
-        result.setPayerId(payerId);
-        result.setUsername(username);
+        result.setPlayerId(playerId);
+        result.setPlayerName(username);
         return result;
     }
 
@@ -107,7 +107,7 @@ public class DataUtils {
         BigDecimal orderAmount = map.containsKey("orderAmount")?BigDecimal.valueOf(Double.valueOf(String.valueOf(map.get("orderAmount")))):BigDecimal.ZERO;
         String amountType = map.containsKey("amountType")?String.valueOf(map.get("amountType")):null;
         String inName = map.containsKey("inName")?String.valueOf(map.get("inName")):null;
-        String payerId = map.containsKey("payerId")?String.valueOf(map.get("payerId")):null;
+        String playerId = map.containsKey("playerId")?String.valueOf(map.get("playerId")):null;
         String payerName = map.containsKey("username")?String.valueOf(map.get("username")):null;
         String orderState = map.containsKey("orderState")?String.valueOf(map.get("orderState")):null;
         Integer orderRepeat = map.containsKey("orderRepeat")?Integer.parseInt(String.valueOf(map.get("orderRepeat"))):0;
@@ -118,7 +118,7 @@ public class DataUtils {
         result.setOrderId(orderId);
         result.setOrderAmount(orderAmount);
         result.setAmountType(amountType);
-        result.setPayerId(payerId);
+        result.setPlayerId(playerId);
         result.setPayerName(payerName);
         result.setOrderRepeat(orderRepeat);
         result.setOrderState(orderState);

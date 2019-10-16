@@ -1,8 +1,14 @@
 package com.dream.city.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.dream.city.base.model.Message;
+import com.dream.city.base.model.Result;
+import com.dream.city.base.model.enu.ReturnStatus;
+import com.dream.city.base.model.req.CityInvestReq;
+import com.dream.city.base.utils.DataUtils;
 import com.dream.city.service.ConsumerOrderHandleService;
+import com.dream.city.service.ConsumerPropertyHandleService;
 import com.dream.city.service.ConsumerTradeVerifyService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -12,6 +18,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -29,7 +39,8 @@ public class ConsumerInvestController {
     ConsumerOrderHandleService orderHandleService;
     @Autowired
     ConsumerTradeVerifyService verifyService;
-
+    @Autowired
+    private ConsumerPropertyHandleService investService;
 
 
     /**
@@ -70,16 +81,37 @@ public class ConsumerInvestController {
         return orderHandleService.getPlayerInvestOrderById(msg);
     }
 
+
     /**
      * 投资列表
      * @param msg
      * @return
      */
+    @ApiOperation(value = "投资列表", httpMethod = "POST", notes = "投资列表", response = Message.class)
     @RequestMapping("/getInvestList")
+    public Message getInvestList(@RequestBody Message msg){
+        logger.info("投资列表", JSONObject.toJSONString(msg));
+        CityInvestReq invest = DataUtils.getInvestFromMessage(msg);
+        Result<List<Map<String,Object>>> result = investService.getPropertyLsit(invest);
+        Map<String,Object>  dataResult = new HashMap<>();
+        dataResult.put("investList",result.getData());
+        msg.getData().setData(dataResult);
+        msg.setDesc(result.getMsg());
+        msg.setCode(result.getSuccess()? ReturnStatus.SUCCESS.getStatus():ReturnStatus.ERROR.getStatus());
+        return msg;
+    }
+
+
+    /**
+     * 投资列表
+     * @param msg
+     * @return
+     */
+    /*@RequestMapping("/getInvestList")
     public Message getInvestList(@RequestBody Message msg){
         logger.info("查询投资列表", JSONObject.toJSONString(msg));
         return orderHandleService.getPlayerInvestOrders(msg);
-    }
+    }*/
 
 
 

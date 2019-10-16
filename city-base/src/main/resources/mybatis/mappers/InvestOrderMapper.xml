@@ -40,7 +40,7 @@
 
   <select id="selectByPrimaryKey" resultType="com.dream.city.base.model.resp.InvestOrderResp"
           parameterType="java.lang.Integer" >
-    select o.order_id orderId, o.order_invest_id investId, o.order_payer_id payerId, o.order_amount orderAmount,
+    select o.order_id orderId, o.order_invest_id investId, o.order_payer_id playerId, o.order_amount orderAmount,
       o.order_state orderState, o.order_repeat orderRepeat,
       o.order_name orderName,o.order_num orderNum,o.create_time createTime, o.update_time updateTime,
       (SELECT i.in_name FROM city_invest i WHERE i.in_id=o.order_invest_id) inName,
@@ -58,7 +58,7 @@
   <select id="getInvestOrders" resultType="com.dream.city.base.model.resp.InvestOrderResp"
           parameterType="com.dream.city.base.model.req.InvestOrderReq" >
     SELECT a.* FROM (
-      select o.order_id orderId, o.order_invest_id investId, o.order_payer_id payerId, o.order_amount orderAmount,
+      select o.order_id orderId, o.order_invest_id investId, o.order_payer_id playerId, o.order_amount orderAmount,
         o.order_state orderState, o.order_num orderNum, o.order_repeat orderRepeat,
         o.order_name orderName,o.create_time createTime, o.update_time updateTime,
         (SELECT i.in_name FROM city_invest i WHERE i.in_id=o.order_invest_id) inName,
@@ -81,8 +81,8 @@
       <if test="verifyStatus !=null and verifyStatus !=''">
         and  a.verifyStatus = #{verifyStatus,jdbcType=VARCHAR}
       </if>
-      <if test="payerId !=null and payerId !=''">
-        and  a.payerId = #{payerId,jdbcType=VARCHAR}
+      <if test="playerId !=null and playerId !=''">
+        and  a.playerId = #{playerId,jdbcType=VARCHAR}
       </if>
       <!--<if test="orderName !=null and orderName !=''">
         and  a.orderName = #{orderName,jdbcType=VARCHAR}
