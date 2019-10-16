@@ -38,7 +38,8 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
     private ConsumerTradeVerifyService verifyService;
     @Autowired
     private ConsumerCommonsService commonsService;
-
+    @Autowired
+    private ConsumerPlayerService playerService;
 
 
 
@@ -46,7 +47,16 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
     public Message playerInvest(Message msg) {
         logger.info("预约投资:{}",msg);
         InvestOrderReq orderReq = DataUtils.getInvestOrderReqFromMessage(msg);
-        PlayerResp player = commonsService.getPlayerByStrUserName(orderReq.getPayerName());
+        Player player = null;
+        if (StringUtils.isNotBlank(orderReq.getPlayerId())){
+            player = playerService.getPlayerByPlayerId(orderReq.getPlayerId());
+        }
+        if (player == null && StringUtils.isNotBlank(orderReq.getPayerName())){
+            PlayerResp playerResp = commonsService.getPlayerByStrUserName(orderReq.getPayerName());
+            if (playerResp != null){
+                player = DataUtils.toJavaObject(playerResp,Player.class);
+            }
+        }
         //获取项目数据
         CityInvest invest = getInvestByIdOrinName(orderReq.getInvestId(),orderReq.getInName());
         orderReq.setOrderAmount(invest.getInLimit());
@@ -90,15 +100,18 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
             desc = "MT不足";
         }
 
-        //生成订单
+        //返回数据
         Map<String,Object> result = new HashMap<>();
+        result.put("investId","");
+        result.put("usdtFreeze",BigDecimal.ZERO);
+        result.put("mtFreeze",BigDecimal.ZERO);
+        result.put("state ",ReturnStatus.INVEST_SUBSCRIBE.getCode());
+
+        //生成订单
         Result<InvestOrder> orderResult = this.orderCreate(invest.getInId(),player.getPlayerId(),orderRepeat,desc);
         InvestOrder order = orderResult.getData();
-        result.put("state",orderResult.getCode());
         if (order != null){
             result.put("investId",order.getOrderInvestId());
-        }else {
-            result.put("investId","");
         }
 
         //投资扣减用户账户金额
@@ -164,6 +177,9 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
         }else {
             msg.getData().setCode(ReturnStatus.SUCCESS.getStatus());
             success = Boolean.TRUE;
+            result.put("usdtFreeze",trade.getTradeAmount());
+            result.put("mtFreeze",invest.getInPersonalTax().add(invest.getInEnterpriseTax()).add(invest.getInQuotaTax()));
+            result.put("state ",ReturnStatus.INVEST_SUBSCRIBED.getCode());
         }
 
         msg.setDesc(desc);
@@ -229,7 +245,7 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
      * @return
      */
     private Result<InvestOrder> orderCreate(Integer investId,String orderPayerId,int orderRepeat,String desc){
-        Result<InvestOrder> orderResult = new Result();
+        Result<InvestOrder> orderResult = new Result<>();
         if (StringUtils.isEmpty(desc)){
             InvestOrder recordReq =new InvestOrder();
             recordReq.setOrderInvestId(investId);
@@ -260,7 +276,7 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
             msg = "USDT不足";
         }
         //是否可扣税金
-        BigDecimal inTax = invest.getInPersonalTax().add(invest.getInEnterpriseTax());
+        BigDecimal inTax = invest.getInPersonalTax().add(invest.getInEnterpriseTax()).add(invest.getInQuotaTax());
         if (inTax.compareTo(mtAvailable) > 0){
             msg = "MT不足";
         }
@@ -304,6 +320,7 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
         trade.setTradeAmount(orderReq.getOrderAmount());
         trade.setPersonalTax(invest.getInPersonalTax());
         trade.setEnterpriseTax(invest.getInEnterpriseTax());
+        trade.setInQuotaTax(invest.getInQuotaTax());
         trade.setInOutStatus(AmountDynType.OUT.getCode());
         trade.setTradeStatus(TradeStatus.FREEZE.getCode());
 

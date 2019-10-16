@@ -35,7 +35,7 @@ spring:
 
 gate:
   zuul:
-    url: http://103.107.237.198:8020/consumer/v1
+    url: http://localhost:8020/consumer/v1
 
 props: #自定义的属性和值
   simpleProp: simplePropValue #单个值
@@ -56,7 +56,7 @@ props: #自定义的属性和值
 
 eureka:
   instance:
-    hostname: 103.107.237.198
+    hostname: localhost
     instance-id: ${spring.application.name}
   client:
     serviceUrl:

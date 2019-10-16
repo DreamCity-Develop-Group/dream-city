@@ -24,7 +24,7 @@ spring:
 
 eureka:
   instance:
-    hostname: 103.107.237.198
+    hostname: localhost
     instance-id: ${spring.application.name}
   client:
     service-url:

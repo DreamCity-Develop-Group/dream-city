@@ -23,6 +23,8 @@ public class PlayerTrade implements Serializable {
 
     private BigDecimal enterpriseTax;
 
+    private BigDecimal inQuotaTax;
+
     private String tradeStatus;
 
     private String inOutStatus;

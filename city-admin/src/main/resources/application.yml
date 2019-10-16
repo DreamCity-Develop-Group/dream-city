@@ -8,7 +8,7 @@ spring:
     name: city-admin
 
   profiles:
-    active: test
+    active: dev
   main:
     allow-bean-definition-overriding: true
 

@@ -6,7 +6,7 @@ spring:
   application:
     name: city-message
   profiles:
-    active: test
+    active: dev
   main:
     allow-bean-definition-overriding: true
 

@@ -261,6 +261,8 @@ public class EarningController {
                         result.put("enterpriseTax",earning.getEarnEnterpriseTax());
                         result.put("quotaTax",earning.getEarnQuotaTax());
                         result.put("state",ReturnStatus.INVEST_SUBSCRIBE.getCode());
+                        result.put("inType", 11);
+                        result.put("openState", "N");
                     }else {
                         msg = "添加账户记录失败";
                     }

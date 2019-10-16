@@ -48,7 +48,7 @@ public class ConsumerInvestController {
      * @param msg
      * @return
      */
-    @ApiOperation(value = "预约投资",httpMethod = "POST", notes = "t可选参数:investId,orderAmount,username,amountType", response = Message.class)
+    @ApiOperation(value = "预约投资",httpMethod = "POST", notes = "t参数:investId,playerId", response = Message.class)
     @RequestMapping("/playerInvest")
     public Message playerInvest(@RequestBody Message msg){
         logger.info("预约投资", JSONObject.toJSONString(msg));

@@ -43,7 +43,7 @@ public class OrderController {
             desc = "预约投资成功";
             success = Boolean.TRUE;
         }
-        return new Result<InvestOrder>(success,desc, ReturnStatus.INVEST_SUBSCRIBED.getStatus(),investOrder);
+        return new Result<InvestOrder>(success,desc, investOrder);
     }
 
     /**

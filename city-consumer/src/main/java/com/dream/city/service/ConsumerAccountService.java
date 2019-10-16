@@ -63,7 +63,7 @@ public interface ConsumerAccountService {
      */
     @ApiOperation(value = "更新玩家账户", httpMethod = "POST", notes = "t入参username", response = Result.class)
     @RequestMapping("/updatePlayerAccount")
-    Result updatePlayerAccount(@RequestBody PlayerAccount record);
+    Result<Integer> updatePlayerAccount(@RequestBody PlayerAccount record);
 
 
 
