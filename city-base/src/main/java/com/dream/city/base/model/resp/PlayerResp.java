@@ -3,7 +3,6 @@ package com.dream.city.base.model.resp;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.util.Date;
 
 @Data
 public class PlayerResp implements Serializable {
@@ -25,6 +24,7 @@ public class PlayerResp implements Serializable {
     private String playerInvite;
 
     private Integer playerLevel;
+    private Integer playerLink;
 
     private String isValid;
 
@@ -44,5 +44,7 @@ public class PlayerResp implements Serializable {
     private String updateTime;
 
     private String addfriend;
+
+    private Integer agree;
 
 }

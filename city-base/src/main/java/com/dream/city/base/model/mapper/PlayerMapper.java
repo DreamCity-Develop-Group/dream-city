@@ -19,11 +19,12 @@ public interface PlayerMapper {
 
     PlayerResp getPlayerById(Player record);
 
-    List<PlayerResp> getPlayerList(Player pageReq);
+    List<PlayerResp> getPlayerList(Player record);
 
 
-    List<PlayerResp> getPlayers(Page pageReq);
-    Integer getPlayersCount(Page pageReq);
+    List<PlayerResp> getPlayers(Player record);
+    //List<PlayerResp> getPlayers(Player record);
+    //Integer getPlayersCount(Page pageReq);
 
     /**
      * 广场玩家列表

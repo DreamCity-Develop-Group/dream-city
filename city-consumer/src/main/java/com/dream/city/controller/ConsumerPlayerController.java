@@ -14,6 +14,7 @@ import com.dream.city.base.utils.JsonUtil;
 import com.dream.city.base.utils.RedisKeys;
 import com.dream.city.base.utils.RedisUtils;
 import com.dream.city.service.*;
+import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -93,7 +94,11 @@ public class ConsumerPlayerController {
         log.info("广场玩家列表 换一批", JSONObject.toJSONString(msg));
 
         UserReq jsonReq = DataUtils.getUserReq(msg);
-        Page<String> pageReq = new Page<>();
+        Player playerReq = new Player();
+        playerReq.setPlayerId(jsonReq.getPlayerId());
+        playerReq.setPlayerName(jsonReq.getUsername());
+        Page pageReq = new Page();
+        pageReq.setCondition(playerReq);
 
         int pageNo = 1;
         String redisKey = RedisKeys.SQUARE_PLAYER_LIST_ANOTHER_BATCH + jsonReq.getUsername();
@@ -105,12 +110,10 @@ public class ConsumerPlayerController {
         }
         pageReq.setPageNum(pageNo);
 
-        Result<Map> players = consumerPlayerService.getPlayers(pageReq);
-        MessageData messageData = new MessageData(msg.getData().getType(), msg.getData().getModel());
-        messageData.setData(players.getData());
-        Message message = new Message(msg.getSource(), msg.getTarget(), messageData);
-        message.setDesc(players.getMsg());
-        return message;
+        Result<PageInfo> players = consumerPlayerService.getPlayers(pageReq);
+        msg.setDesc(players.getMsg());
+        msg.getData().setData(players.getData());
+        return msg;
     }
 
 
@@ -187,19 +190,18 @@ public class ConsumerPlayerController {
             username = playerByStrNick.getPlayerName();
             nick = playerByStrNick.getPlayerNick();
         }
-        Map<String, String> conditionMap = new HashMap<>();
-        conditionMap.put("playerId", playerId);
-        conditionMap.put("nick", nick);
-        conditionMap.put("username", username);
-        Page<Map<String, String>> pageReq = new Page<>();
-        pageReq.setCondition(conditionMap);
 
-        Result players = consumerPlayerService.getPlayers(pageReq);
+        Player playerReq = new Player();
+        playerReq.setPlayerId(playerId);
+        playerReq.setPlayerName(username);
+        playerReq.setPlayerNick(nick);
+        Page pageReq = new Page();
+        pageReq.setCondition(playerReq);
+        Result<PageInfo> players = consumerPlayerService.getPlayers(pageReq);
 
-        MessageData data = new MessageData(msg.getData().getType(), msg.getData().getModel());
-        data.setData(players.getData());
-        Message message = new Message(msg.getSource(), msg.getTarget(), data);
-        return message;
+        msg.setDesc(players.getMsg());
+        msg.getData().setData(players.getData());
+        return msg;
     }
 
 

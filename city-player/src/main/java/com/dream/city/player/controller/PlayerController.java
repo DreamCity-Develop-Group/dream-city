@@ -18,6 +18,7 @@ import com.dream.city.player.service.LoginLogServcie;
 import com.dream.city.player.service.PlayerExtService;
 import com.dream.city.player.service.PlayerHandleService;
 import com.dream.city.player.service.PlayerService;
+import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -386,14 +387,14 @@ public class PlayerController {
      * @return
      */
     @RequestMapping("/get/{playerId}")
-    public Result getPlayer(@PathVariable("playerId")String playerId){
+    public Result<JSONObject> getPlayer(@PathVariable("playerId")String playerId){
         log.info("获取玩家，playerId:{}",playerId);
         PlayerResp player = playerService.getPlayerById(playerId);
         Result result = null;
         if (player != null){
-            result = new Result(CityGlobal.ResultCode.success.getStatus(),JSONObject.toJSONString(player));
+            result = new Result<>(CityGlobal.ResultCode.success.getStatus(),JSONObject.toJSONString(player));
         }else {
-            result = new Result(CityGlobal.ResultCode.fail.getStatus(),JSONObject.toJSONString(player));
+            result = new Result<>(CityGlobal.ResultCode.fail.getStatus(),JSONObject.toJSONString(player));
         }
         return result;
     }
@@ -405,16 +406,15 @@ public class PlayerController {
      * @return
      */
     @RequestMapping("/getPlayers")
-    public Result getPlayers(@RequestBody Page pageReq){
+    public Result<PageInfo> getPlayers(@RequestBody Page pageReq){
         log.info("获取广场玩家列表，{}",pageReq);
         Result result = null;
-        Page page = null;
-
+        PageInfo<PlayerResp> page = null;
         try {
             page = playerService.getPlayers(pageReq);
-            result = new Result(CityGlobal.ResultCode.success.getStatus(),JSON.parseObject(JSON.toJSONString(page),Map.class));
+            result = new Result<>(CityGlobal.ResultCode.success.getStatus(),page);
         }catch (Exception e){
-            result = new Result(CityGlobal.ResultCode.fail.getStatus(),null);
+            result = new Result<>(CityGlobal.ResultCode.fail.getStatus(),null);
         }
 
         return result;

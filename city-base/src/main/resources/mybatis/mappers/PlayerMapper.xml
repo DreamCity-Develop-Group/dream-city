@@ -83,30 +83,33 @@
   </select>
 
 
-  <select id="getPlayers" parameterType="com.dream.city.base.model.Page" resultType="com.dream.city.base.model.resp.PlayerResp">
-    SELECT p.player_id playerId,p.player_name username,p.player_nick nick,p.create_time createTime,
-        (SELECT e1.friendlink FROM player_ext e1 WHERE e1.player_id = p.player_id) playerLink,
-        (SELECT e2.imgurl FROM player_ext e2 WHERE e2.player_id = p.player_id) imgurl,
-        (SELECT g1.grade FROM player_grade g1 WHERE g1.player_id = p.player_id) grade,
-        (SELECT g2.integral FROM player_grade g2 WHERE g2.player_id = p.player_id) integral ,f.agree
-    from city_player p LEFT JOIN player_friends f ON p.player_id=f.friend_id
-    <where> (f.agree IS NULL OR f.agree = 0)
-      <if test="condition.playerId != null and condition.playerId != ''">
-        AND p.player_id != #{condition.playerId}
+  <select id="getPlayers" parameterType="com.dream.city.base.model.entity.Player" resultType="com.dream.city.base.model.resp.PlayerResp">
+    SELECT p.id, p.player_id playerId,p.player_name playerName,p.player_nick playerNick,p.create_time createTime,
+      (SELECT e1.friendlink FROM player_ext e1 WHERE e1.player_id = p.player_id) playerLink,
+      (SELECT e2.imgurl FROM player_ext e2 WHERE e2.player_id = p.player_id) imgurl,
+      (SELECT g1.grade FROM player_grade g1 WHERE g1.player_id = p.player_id) grade,
+      (SELECT g2.integral FROM player_grade g2 WHERE g2.player_id = p.player_id) integral,
+      (SELECT IFNULL(f.agree,0) FROM player_friends f WHERE f.friend_id=p.player_id and f.player_id=#{playerId}) agree
+    from city_player p
+    <where>
+      1=1
+      <if test="playerId != null and playerId != ''">
+        AND p.player_id != #{playerId}
       </if>
-      <if test="condition.username != null and condition.username != ''">
-        AND p.player_name = #{condition.username}
+      <if test="playerName != null and playerName != ''">
+        AND p.player_name = #{playerName}
       </if>
-      <if test="condition.nick != null and condition.nick != ''">
-        AND p.player_nick = #{condition.nick}
+      <if test="playerNick != null and playerNick != ''">
+        AND p.player_nick = #{playerNick}
       </if>
     </where>
-    GROUP BY p.player_id ORDER BY p.create_time DESC limit ${start},${pageSize}
+    GROUP BY p.player_id ORDER BY p.create_time DESC
   </select>
-  <select id="getPlayersCount" parameterType="com.dream.city.base.model.Page" resultType="java.lang.Integer">
+  <!--<select id="getPlayersCount" parameterType="com.dream.city.base.model.Page" resultType="java.lang.Integer">
     SELECT COUNT(a.player_id) FROM (SELECT p.player_id
         from city_player p LEFT JOIN player_friends f ON p.player_id=f.friend_id
-        <where> (f.agree IS NULL OR f.agree = 0)
+        <where>
+          (f.agree IS NULL OR f.agree = 0)
           <if test="condition.playerId != null and condition.playerId != ''">
             AND p.player_id != #{condition.playerId}
           </if>
@@ -119,7 +122,7 @@
         </where>
         GROUP BY p.player_id
     ) a
-  </select>
+  </select>-->
 
   <select id="getSquareFriends" parameterType="com.dream.city.base.model.Page" resultType="java.util.Map">
     SELECT p.player_id playerId,p.player_name username,p.player_nick nick,p.create_time createTime,

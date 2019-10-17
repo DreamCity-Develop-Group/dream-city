@@ -7,6 +7,7 @@ import com.dream.city.base.model.entity.Player;
 import com.dream.city.base.model.entity.PlayerExt;
 import com.dream.city.base.model.enu.ReturnStatus;
 import com.dream.city.service.impl.FallBackPlayer;
+import com.github.pagehelper.PageInfo;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,7 +37,7 @@ public interface ConsumerPlayerService {
      * @return
      */
     @RequestMapping("/player/getPlayers")
-    Result getPlayers(@RequestBody Page pageReq);
+    Result<PageInfo> getPlayers(@RequestBody Page pageReq);
 
 
     /**

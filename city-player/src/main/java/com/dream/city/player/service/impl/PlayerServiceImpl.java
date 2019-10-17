@@ -8,12 +8,14 @@ import com.dream.city.base.model.entity.Friends;
 import com.dream.city.base.model.entity.PlayerGrade;
 import com.dream.city.base.model.enu.ReturnStatus;
 import com.dream.city.base.model.resp.PlayerResp;
-import com.dream.city.base.utils.DateUtils;
+import com.dream.city.base.utils.DataUtils;
 import com.dream.city.base.model.entity.Player;
 import com.dream.city.base.model.mapper.PlayerGradeMapper;
 import com.dream.city.base.model.mapper.PlayerMapper;
 import com.dream.city.player.service.FriendsService;
 import com.dream.city.player.service.PlayerService;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -154,30 +156,27 @@ public class PlayerServiceImpl implements PlayerService {
 
 
     @Override
-    public Page getPlayers(Page pageReq) {
-        Page page = new Page();
-        page.setCondition(pageReq.getCondition());
-
-        Integer count = playerMapper.getPlayersCount(pageReq);
-        List<PlayerResp> players = playerMapper.getPlayers(pageReq);
+    public PageInfo<PlayerResp> getPlayers(Page pageReq) {
+        Player playerReq = DataUtils.toJavaObject(pageReq.getCondition(),Player.class);
+        PageHelper.startPage(pageReq.getPageNum(),pageReq.getPageSize());
+        List<PlayerResp> players = playerMapper.getPlayers(playerReq);
         if (!CollectionUtils.isEmpty(players)){
-            Map<String,Object> condition = JSON.parseObject(JSON.toJSONString(pageReq.getCondition()));
             String getFriendAgree = "添加";
             for (int i=0;i<players.size();i++){
-                if (condition.containsKey("username")){
-                    getFriendAgree = this.getFriendAgree(String.valueOf(condition.get("username")),players.get(i));
+                if (StringUtils.isNotBlank(playerReq.getPlayerId())){
+                    getFriendAgree = this.getFriendAgree(playerReq.getPlayerId(),players.get(i));
                 }
                 players.get(i).setAddfriend(getFriendAgree);
+                if (players.get(i).getAgree() == null){
+                    players.get(i).setAgree(0);
+                }
             }
         }
-        page.setResult(players);
-        page.setTotal( count== null?0:count);
-
-        return page;
+        return new PageInfo<>(players);
     }
 
     private String getFriendAgree(String playerId,PlayerResp player){
-        String friendId = player.getFriendId();
+        String friendId = player.getPlayerId();
         Friends record = new Friends();
         record.setPlayerId(playerId);
         record.setFriendId(friendId);
