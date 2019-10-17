@@ -66,12 +66,12 @@ public class AuthServiceImpl implements AuthService {
                     .sign(Algorithm.HMAC256(SECRET));
 
             //设置过期时间
-            //redisTemplate.opsForValue().set("token_"+username,token);
-            //redisUtils.set("token_"+username,token);
-            //redisTemplate.expire("token_"+username,30, TimeUnit.MINUTES);
+            //redisTemplate.opsForValue().set("RedisKeys.LOGIN_USER_TOKEN"+username,token);
+            //redisUtils.set("RedisKeys.LOGIN_USER_TOKEN"+username,token);
+            //redisTemplate.expire("RedisKeys.LOGIN_USER_TOKEN"+username,30, TimeUnit.MINUTES);
             //
-            redisUtils.set("token_"+username,token);
-            redisUtils.expire("token_"+username,30);
+            redisUtils.set("RedisKeys.LOGIN_USER_TOKEN"+username,token);
+            redisUtils.expire("RedisKeys.LOGIN_USER_TOKEN"+username,30);
             return token;
         } catch (IllegalArgumentException | UnsupportedEncodingException e) {
             e.printStackTrace();

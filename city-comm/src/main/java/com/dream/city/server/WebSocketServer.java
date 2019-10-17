@@ -213,7 +213,7 @@ public class WebSocketServer {
                             String.valueOf(System.currentTimeMillis())
                     );
 
-                    String tokenStr = "token_" + account;
+                    String tokenStr = RedisKeys.LOGIN_USER_TOKEN + account;
                     String token = redisUtils.getStr(tokenStr);
 
                     if (StringUtils.isNotBlank(token)) {
@@ -249,7 +249,7 @@ public class WebSocketServer {
 
                 if (null != msg.getData().getData()) {
                     JSONObject data = JsonUtil.parseJsonToObj(msg.getData().getData().toString(), JSONObject.class);
-                    String tokenStr = "token_" + data.getString("username");
+                    String tokenStr = RedisKeys.LOGIN_USER_TOKEN + data.getString("username");
                     String token = redisUtils.getStr(tokenStr);
                     //设置识别名称
                     if (StringUtils.isNotBlank(token)) {

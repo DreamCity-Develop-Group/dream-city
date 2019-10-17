@@ -285,7 +285,7 @@ public class HttpClientServiceImpl implements HttpClientService {
                 }
                 /**TODO**********如果是登陆成功，加入在线有序列表******************************/
                 if (message.getData().getType().equals("login") || message.getData().getType().equals("codeLogin")){
-                    if (message.getData().getCode() == 200){
+                    if (message.getData().getCode() == ReturnStatus.SUCCESS.getStatus()){
                         Object dataGet = message.getData().getData();
                         String json = JsonUtil.parseObjToJson(dataGet);
                         Map map = JsonUtil.parseJsonToObj(json,Map.class);

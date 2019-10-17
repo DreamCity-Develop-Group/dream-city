@@ -5,6 +5,7 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.dream.city.base.utils.RedisKeys;
 import com.dream.city.base.utils.RedisUtils;
 import com.dream.city.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,14 +66,15 @@ public class AuthServiceImpl implements AuthService {
                     .withExpiresAt(expire)
                     .sign(Algorithm.HMAC256(SECRET));
 
-            //设置过期时间
-            //redisTemplate.opsForValue().set("token_"+username,token);
-            //redisUtils.set("token_"+username,token);
-            //redisTemplate.expire("token_"+username,30, TimeUnit.MINUTES);
 
-            redisUtils.set("token_"+username,token,1800);
-            redisUtils.expire("token_"+username,1800);
-            redisTemplate.expire("token_"+username,1800,TimeUnit.SECONDS);
+            //设置过期时间
+            //redisTemplate.opsForValue().set(RedisKeys.LOGIN_USER_TOKEN+username,token);
+            //redisUtils.set(RedisKeys.LOGIN_USER_TOKEN+username,token);
+            //redisTemplate.expire(RedisKeys.LOGIN_USER_TOKEN+username,30, TimeUnit.MINUTES);
+
+            redisUtils.set(RedisKeys.LOGIN_USER_TOKEN+username,token,1800);
+            redisUtils.expire(RedisKeys.LOGIN_USER_TOKEN+username,1800);
+            redisTemplate.expire(RedisKeys.LOGIN_USER_TOKEN+username,1800,TimeUnit.SECONDS);
             return token;
         } catch (IllegalArgumentException | UnsupportedEncodingException e) {
             e.printStackTrace();

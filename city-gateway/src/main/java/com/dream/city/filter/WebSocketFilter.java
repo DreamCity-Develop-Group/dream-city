@@ -75,10 +75,10 @@ public class WebSocketFilter extends ZuulFilter {
             context.setSendZuulResponse(false);
             context.setResponseStatusCode(707);
             return null;
-        }else{//"token_"+username
+        }else{//RedisKeys.LOGIN_USER_TOKEN+username
             String username = request.getHeader("username");
             log.info("Username:"+username);
-            String key = "token_"+username;
+            String key = RedisKeys.LOGIN_USER_TOKEN+username;
             log.error("auth Key:"+key);
             String redisKey = RedisKeys.LOGIN_USER_TOKEN + username;
             String token =  redisUtils.getStr(redisKey);
