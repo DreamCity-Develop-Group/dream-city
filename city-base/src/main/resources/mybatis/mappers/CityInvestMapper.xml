@@ -69,7 +69,8 @@
       (SELECT o.order_state FROM invest_order o WHERE o.order_invest_id =i.in_id and o.order_payer_id = #{playerId,jdbcType=VARCHAR} ORDER BY e.update_time DESC LIMIT 1) order_state
     from city_invest i
     <where>
-      i.is_valid = 'Y'
+      1=1
+      /* and i.is_valid = 'Y'*/
       <if test="inId !=null">
         and i.in_id = #{inId,jdbcType=INTEGER}
       </if>
@@ -99,7 +100,8 @@
       (SELECT o.order_state FROM invest_order o WHERE o.order_invest_id =i.in_id and o.order_payer_id = #{playerId,jdbcType=VARCHAR} ORDER BY o.update_time DESC LIMIT 1) order_state
     from city_invest i
     <where>
-      i.is_valid = 'Y'
+      1=1
+      /* and i.is_valid = 'Y'*/
       <if test="inId !=null">
         and i.in_id = #{inId,jdbcType=INTEGER}
       </if>
