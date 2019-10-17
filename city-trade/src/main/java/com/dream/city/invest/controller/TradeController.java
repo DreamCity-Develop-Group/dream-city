@@ -139,7 +139,7 @@ public class TradeController {
      * @return
      */
     @RequestMapping("/playerRecharge")
-    public Result playerRecharge(@RequestBody PlayerAccountReq record) {
+    public Result<PlayerTrade> playerRecharge(@RequestBody PlayerAccountReq record) {
         logger.info("玩家充值，{}", record);
         return tradeHandleService.playerRecharge(record);
     }
@@ -150,7 +150,7 @@ public class TradeController {
      * @return
      */
     @RequestMapping("/playerWithdraw")
-    public Result playerWithdraw(@RequestBody PlayerAccountReq record) {
+    public Result<PlayerTrade> playerWithdraw(@RequestBody PlayerAccountReq record) {
         logger.info("玩家提现，{}", record);
         return tradeHandleService.playerWithdraw(record);
     }
@@ -161,7 +161,7 @@ public class TradeController {
      * @return
      */
     @RequestMapping("/playerTransfer")
-    public Result playerTransfer(@RequestBody PlayerAccountReq record) {
+    public Result<PlayerTrade> playerTransfer(@RequestBody PlayerAccountReq record) {
         logger.info("玩家转账，{}", record);
         return tradeHandleService.playerTransfer(record);
     }

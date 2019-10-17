@@ -62,7 +62,7 @@ public interface ConsumerTradeService {
      * @return
      */
     @RequestMapping("/playerRecharge")
-    Result playerRecharge(@RequestBody PlayerAccountReq record);
+    Result<PlayerTrade>  playerRecharge(@RequestBody PlayerAccountReq record);
 
 
     /**
@@ -70,7 +70,7 @@ public interface ConsumerTradeService {
      * @return
      */
     @RequestMapping("/playerWithdraw")
-    Result playerWithdraw(@RequestBody PlayerAccountReq record);
+    Result<PlayerTrade>  playerWithdraw(@RequestBody PlayerAccountReq record);
 
 
     /**
@@ -78,7 +78,7 @@ public interface ConsumerTradeService {
      * @return
      */
     @RequestMapping("/playerTransfer")
-    Result playerTransfer(@RequestBody PlayerAccountReq record);
+    Result<PlayerTrade>  playerTransfer(@RequestBody PlayerAccountReq record);
 
     @RequestMapping("/investCollectEarning")
     Result investCollectEarning(@RequestParam("playerId") String playerId, @RequestParam("investId") int investId);

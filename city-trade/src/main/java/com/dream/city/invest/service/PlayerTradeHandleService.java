@@ -1,6 +1,7 @@
 package com.dream.city.invest.service;
 
 import com.dream.city.base.model.Result;
+import com.dream.city.base.model.entity.PlayerTrade;
 import com.dream.city.base.model.req.PlayerAccountReq;
 
 /**
@@ -13,20 +14,20 @@ public interface PlayerTradeHandleService {
      * 玩家充值
      * @return
      */
-    Result<Boolean> playerRecharge(PlayerAccountReq record);
+    Result<PlayerTrade>  playerRecharge(PlayerAccountReq record);
 
     /**
      * 玩家提现
      * @return
      */
-    Result<Boolean> playerWithdraw(PlayerAccountReq record);
+    Result<PlayerTrade>  playerWithdraw(PlayerAccountReq record);
 
 
     /**
      * 玩家转账
      * @return
      */
-    Result<Boolean> playerTransfer(PlayerAccountReq record);
+    Result<PlayerTrade>  playerTransfer(PlayerAccountReq record);
 
 
 

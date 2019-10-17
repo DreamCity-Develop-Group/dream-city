@@ -203,7 +203,7 @@ public class ConsumerTradeController {
         }
         accountReq.setAccPlayerId(playerId);
 
-        Result<PlayerTrade> tradeResult = tradeService.playerRecharge(accountReq);
+        Result<PlayerTrade>  tradeResult = tradeService.playerRecharge(accountReq);
         /*String sendMessage = "玩家充值";
         if (tradeResult.getSuccess()){
             if (accountReq.getAccMt() != null && accountReq.getAccMt().compareTo(BigDecimal.ZERO) > 0){
@@ -247,7 +247,7 @@ public class ConsumerTradeController {
         }
         accountReq.setAccPlayerId(playerId);
 
-        Result<PlayerTrade> tradeResult = tradeService.playerWithdraw(accountReq);
+        Result<PlayerTrade>  tradeResult = tradeService.playerWithdraw(accountReq);
         /*String sendMessage = "玩家提现";
         if (tradeResult.getSuccess()){
             if (accountReq.getAccMt() != null && accountReq.getAccMt().compareTo(BigDecimal.ZERO) > 0){
@@ -291,7 +291,7 @@ public class ConsumerTradeController {
         }
         accountReq.setAccPlayerId(playerId);
 
-        Result<PlayerTrade> tradeResult = tradeService.playerTransfer(accountReq);
+        Result<PlayerTrade>  tradeResult = tradeService.playerTransfer(accountReq);
         /*String sendMessage = "玩家转账";
         if (tradeResult.getSuccess()){
             if (accountReq.getAccMt() != null && accountReq.getAccMt().compareTo(BigDecimal.ZERO) > 0){
