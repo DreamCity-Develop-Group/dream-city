@@ -8,7 +8,6 @@ import com.dream.city.base.model.entity.Friends;
 import com.dream.city.base.model.entity.PlayerGrade;
 import com.dream.city.base.model.resp.PlayerResp;
 import com.dream.city.base.utils.DataUtils;
-import com.dream.city.base.utils.DateUtils;
 import com.dream.city.base.model.entity.Player;
 import com.dream.city.base.model.mapper.PlayerGradeMapper;
 import com.dream.city.base.model.mapper.PlayerMapper;
@@ -163,17 +162,20 @@ public class PlayerServiceImpl implements PlayerService {
         if (!CollectionUtils.isEmpty(players)){
             String getFriendAgree = "添加";
             for (int i=0;i<players.size();i++){
-                if (StringUtils.isNotBlank(playerReq.getPlayerName())){
-                    getFriendAgree = this.getFriendAgree(playerReq.getPlayerName(),players.get(i));
+                if (StringUtils.isNotBlank(playerReq.getPlayerId())){
+                    getFriendAgree = this.getFriendAgree(playerReq.getPlayerId(),players.get(i));
                 }
                 players.get(i).setAddfriend(getFriendAgree);
+                if (players.get(i).getAgree() == null){
+                    players.get(i).setAgree(0);
+                }
             }
         }
         return new PageInfo<>(players);
     }
 
     private String getFriendAgree(String playerId,PlayerResp player){
-        String friendId = player.getFriendId();
+        String friendId = player.getPlayerId();
         Friends record = new Friends();
         record.setPlayerId(playerId);
         record.setFriendId(friendId);

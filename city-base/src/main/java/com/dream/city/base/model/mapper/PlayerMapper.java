@@ -23,6 +23,7 @@ public interface PlayerMapper {
 
 
     List<PlayerResp> getPlayers(Player record);
+    //List<PlayerResp> getPlayers(Player record);
     //Integer getPlayersCount(Page pageReq);
 
     /**
