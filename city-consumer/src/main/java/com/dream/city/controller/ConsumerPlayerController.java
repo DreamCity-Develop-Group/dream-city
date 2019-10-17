@@ -101,7 +101,7 @@ public class ConsumerPlayerController {
         pageReq.setCondition(playerReq);
 
         int pageNo = 1;
-        String redisKey = RedisKeys.SQUARE_PLAYER_LIST_ANOTHER_BATCH + jsonReq.getUsername();
+        String redisKey = RedisKeys.SQUARE_PLAYER_LIST_ANOTHER_BATCH + jsonReq.getPlayerId();
         if (redisUtils.hasKey(redisKey)) {
             pageNo = Integer.parseInt(redisUtils.getStr(redisKey));
             pageNo = pageNo + 1;
@@ -112,6 +112,8 @@ public class ConsumerPlayerController {
 
         Result<PageInfo> players = consumerPlayerService.getPlayers(pageReq);
         msg.setDesc(players.getMsg());
+        msg.setCode(ReturnStatus.SUCCESS.getStatus());
+        msg.getData().setCode(ReturnStatus.SUCCESS.getStatus());
         msg.getData().setData(players.getData());
         return msg;
     }
@@ -201,6 +203,8 @@ public class ConsumerPlayerController {
 
         msg.setDesc(players.getMsg());
         msg.getData().setData(players.getData());
+        msg.setCode(ReturnStatus.SUCCESS.getStatus());
+        msg.getData().setCode(ReturnStatus.SUCCESS.getStatus());
         return msg;
     }
 
