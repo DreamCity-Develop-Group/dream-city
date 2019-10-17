@@ -50,12 +50,12 @@ public class ValiCodeController {
     public Result valiCode(@RequestBody Message message) {
         Map<String, String> data = (Map<String, String>) message.getData().getData();
         String code = data.get("code");
-        String phone = data.get("username");
+        String account = data.get("username");
         Message msg;
 
         boolean ret = Boolean.FALSE;
         String redisCode = null;
-        String redisKey = RedisKeys.REDIS_KEY_VALIDCODE + message.getSource();
+        String redisKey = RedisKeys.REDIS_KEY_VALIDCODE + account;
         if (redisUtils.hasKey(redisKey)) {
             redisCode = redisUtils.getStr(redisKey);
             if (!StringUtils.isEmpty(code) && !StringUtils.isEmpty(redisCode) &&
@@ -63,7 +63,7 @@ public class ValiCodeController {
                 ret = Boolean.TRUE;
             }
         } else {
-            ret = coderService.valid(phone, code);
+            ret = coderService.valid(account, code);
         }
 
         if (ret) {

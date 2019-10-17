@@ -482,33 +482,6 @@ public class ConsumerPlayerController {
     }
 
 
-    /**
-     * 校验验证码
-     *
-     * @param code
-     * @return
-     */
-    @Deprecated
-    private String checkCode(String code, String msgSource) {
-        String descMsg = null;
-        // 校验验证码
-        //验证码不能为空
-        if (StringUtils.isBlank(code)) {
-            descMsg = CityGlobal.Constant.USER_VLCODE_NULL;
-        } else {
-            String redisValidCodekey = RedisKeys.REDIS_KEY_VALIDCODE + msgSource;
-            //该验证码超时
-            if (!redisUtils.hasKey(redisValidCodekey)) {
-                descMsg = CityGlobal.Constant.USER_VLCODE_TIMEOUT;
-            }
-            String redisValidCode = String.valueOf(redisUtils.get(redisValidCodekey));
-            //验证码不正确
-            if (!code.equalsIgnoreCase(redisValidCode)) {
-                descMsg = CityGlobal.Constant.USER_VLCODE_ERROR;
-            }
-        }
-        return descMsg;
-    }
 
 
     /**
