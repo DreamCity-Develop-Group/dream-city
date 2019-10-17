@@ -247,87 +247,94 @@ public class HttpClientServiceImpl implements HttpClientService {
             log.info("Post=响应状态为:" + response.getStatusLine());
             int responseCode = response.getStatusLine().getStatusCode();
             //TODO 是否完成请求
-            if (responseEntity != null && responseCode == ReturnStatus.SUCCESS.getStatus()) {
-                log.info("Post=响应内容长度为:" + responseEntity.getContentLength());
-                log.info("Post=>内容：" + responseEntity.getContent().toString());
-                String resp = EntityUtils.toString(responseEntity);
-                log.info("Post=响应内容为:" + resp);
+            if (responseEntity != null) {
+                if (responseCode == ReturnStatus.SUCCESS.getStatus()){
+                    log.info("Post=响应内容长度为:" + responseEntity.getContentLength());
+                    log.info("Post=>内容：" + responseEntity.getContent().toString());
+                    String resp = EntityUtils.toString(responseEntity);
+                    log.info("Post=响应内容为:" + resp);
 
-                //转换请求的反馈
-                Message message = JSON.parseObject(resp, Message.class);
-                log.info("=================================message==================================");
-                log.info(message.toString());
-                log.info("===========================^^^^==message======^^^^^=====================");
-                //WebSocketServer.sendInfo(message);
-                //message.setData(new MessageData());
-                message.setSource("server");
-                message.setTarget(msg.getSource());
-                message.setDesc("响应数据回复");
-                message.setCreatetime(String.valueOf(System.currentTimeMillis()));
-
-                if(message.getData() == null) {
-                    MessageData msgData = new MessageData();
-                    msgData.setType(msg.getData().getType());
-                    msgData.setModel(msg.getData().getModel());
-                    msgData.setData(null);
-
-                    message.setData(msgData);
-                }
-
-                if (resp.contains("data")) {
-                    String json = JSON.toJSONString(JSON.parseObject(resp).get("data"));
-                    JSONObject jsonObject = JSON.parseObject(json);
-
+                    //转换请求的反馈
+                    Message message = JSON.parseObject(resp, Message.class);
                     log.info("=================================message==================================");
                     log.info(message.toString());
-                    log.info(jsonObject.getString("data"));
                     log.info("===========================^^^^==message======^^^^^=====================");
-                }
-                /**TODO**********如果是登陆成功，加入在线有序列表******************************/
-                if (message.getData().getType().equals("login") || message.getData().getType().equals("codeLogin")){
-                    if (message.getData().getCode() == ReturnStatus.SUCCESS.getStatus()){
-                        Object dataGet = message.getData().getData();
-                        String json = JsonUtil.parseObjToJson(dataGet);
-                        Map map = JsonUtil.parseJsonToObj(json,Map.class);
-                        String playerId = map.get("playerId").toString();
-                        String playerName = map.get("playerName").toString();
-                        Integer id = Integer.valueOf(map.get("id").toString());
-                        boolean success = redisUtils.addOnlinePlayer(playerName,id);
-                        if (!success){
-                            success = redisUtils.addOnlinePlayer(playerName,id);
-                            if (!success){
-                                redisUtils.addOnlinePlayer(playerName,id);
-                            }
-                        }
+                    //WebSocketServer.sendInfo(message);
+                    //message.setData(new MessageData());
+                    message.setSource("server");
+                    message.setTarget(msg.getSource());
+                    message.setDesc("响应数据回复");
+                    message.setCreatetime(String.valueOf(System.currentTimeMillis()));
+
+                    if(message.getData() == null) {
+                        MessageData msgData = new MessageData();
+                        msgData.setType(msg.getData().getType());
+                        msgData.setModel(msg.getData().getModel());
+                        msgData.setData(null);
+
+                        message.setData(msgData);
                     }
 
+                    if (resp.contains("data")) {
+                        String json = JSON.toJSONString(JSON.parseObject(resp).get("data"));
+                        JSONObject jsonObject = JSON.parseObject(json);
+
+                        log.info("=================================message==================================");
+                        log.info(message.toString());
+                        log.info(jsonObject.getString("data"));
+                        log.info("===========================^^^^==message======^^^^^=====================");
+                    }
+                    /**TODO**********如果是登陆成功，加入在线有序列表******************************/
+                    if (message.getData().getType().equals("login") || message.getData().getType().equals("codeLogin")){
+                        if (message.getData().getCode() == ReturnStatus.SUCCESS.getStatus()){
+                            Object dataGet = message.getData().getData();
+                            String json = JsonUtil.parseObjToJson(dataGet);
+                            Map map = JsonUtil.parseJsonToObj(json,Map.class);
+                            String playerId = map.get("playerId").toString();
+                            String playerName = map.get("playerName").toString();
+                            Integer id = Integer.valueOf(map.get("id").toString());
+                            boolean success = redisUtils.addOnlinePlayer(playerName,id);
+                            if (!success){
+                                success = redisUtils.addOnlinePlayer(playerName,id);
+                                if (!success){
+                                    redisUtils.addOnlinePlayer(playerName,id);
+                                }
+                            }
+                        }
+
+                    }
+                    /**TODO**********完*************************************/
+
+
+                    /**TODO**********完成请求，推送最终数据******************************/
+                    WebSocketServer.sendInfo(message);
+                    /**TODO**********完*************************************/
+                }else if (responseCode == ReturnStatus.ERROR_CODE.getStatus()){
+                    log.info("超时....");
+                }else if(responseCode == ReturnStatus.GATEWAY_TOKEN_ERROR.getStatus()){
+                    Message message = new Message();
+                    message.setSource("server");
+                    message.setTarget(msg.getSource());
+                    message.setDesc("尚未登录或登录已过期");
+                    message.setCreatetime(String.valueOf(System.currentTimeMillis()));
+                    message.setData(
+                            new MessageData(
+                                    "token",
+                                    msg.getData().getModel(),null,
+                                    ReturnStatus.TOKEN_EXPIRED.getStatus()
+                            )
+                    );
+
+                    WebSocketServer.sendInfo(message);
+                } else {
+                    /**TODO**********完成任务创建***********未完成相应请求，创建任务*******************/
+                    createWork(msg);
+                    /**TODO**********完成任务创建******************************/
                 }
-                /**TODO**********完*************************************/
 
 
-                /**TODO**********完成请求，推送最终数据******************************/
-                WebSocketServer.sendInfo(message);
-                /**TODO**********完*************************************/
-
-            }else if(responseEntity != null && responseCode == 707){
-                Message message = new Message();
-                message.setSource("server");
-                message.setTarget(msg.getSource());
-                message.setDesc("尚未登录或登录已过期");
-                message.setCreatetime(String.valueOf(System.currentTimeMillis()));
-                message.setData(
-                        new MessageData(
-                                "token",
-                                msg.getData().getModel(),null,
-                                ReturnStatus.TOKEN_EXPIRED.getStatus()
-                        )
-                );
-
-                WebSocketServer.sendInfo(message);
-            } else {
-                /**TODO**********完成任务创建***********未完成相应请求，创建任务*******************/
-                createWork(msg);
-                /**TODO**********完成任务创建******************************/
+            }else {
+                log.info("请求出错 ... ");
             }
         } catch (ParseException | IOException e) {
             e.printStackTrace();

@@ -3,6 +3,7 @@ package com.dream.city.base.utils;
 import com.alibaba.fastjson.JSONObject;
 import com.dream.city.base.model.entity.Notice;
 import com.dream.city.base.model.entity.Player;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -92,8 +93,15 @@ public class RedisUtils {
     public void setStr(String key, String value) {
         stringRedisTemplate.opsForValue().set(key, value);
     }
+
+
     public String getStr(String key){
-        return key==null? null: stringRedisTemplate.opsForValue().get(key);
+        if(StringUtils.isBlank(key)){
+            return null;
+        }
+        String value = stringRedisTemplate.opsForValue().get(key);
+
+        return value;
     }
 
 

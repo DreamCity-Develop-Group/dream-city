@@ -52,6 +52,7 @@ public enum ReturnStatus {
     INVEST_SUBSCRIBED(701,"已预约"),
     INVEST_MANAGEMENT(702,"经营中"),
     INVEST_EXTRACT(703,"可提取"),
+    GATEWAY_TOKEN_ERROR(707,"网关验证不通过"),
 
     INVALID(-1,"不可用");
     /**

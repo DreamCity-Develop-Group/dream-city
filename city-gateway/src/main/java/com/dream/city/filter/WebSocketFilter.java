@@ -1,5 +1,6 @@
 package com.dream.city.filter;
 
+import com.dream.city.base.model.enu.ReturnStatus;
 import com.dream.city.base.utils.RedisUtils;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
@@ -73,7 +74,7 @@ public class WebSocketFilter extends ZuulFilter {
             log.warn("Access token is Empty!");
 
             context.setSendZuulResponse(false);
-            context.setResponseStatusCode(707);
+            context.setResponseStatusCode(ReturnStatus.GATEWAY_TOKEN_ERROR.getStatus());
             return null;
         }else{//RedisKeys.LOGIN_USER_TOKEN+username
             String username = request.getHeader("username");
@@ -81,7 +82,7 @@ public class WebSocketFilter extends ZuulFilter {
             String key = RedisKeys.LOGIN_USER_TOKEN+username;
             log.error("auth Key:"+key);
             String redisKey = RedisKeys.LOGIN_USER_TOKEN + username;
-            String token =  redisUtils.getStr(redisKey);
+            String token =  redisUtils.get(redisKey).get();
 
             if (org.apache.commons.lang.StringUtils.isNotBlank(token) && token.equals(accessToken)){
                 log.info("Access token is Ok! ");
@@ -89,7 +90,7 @@ public class WebSocketFilter extends ZuulFilter {
             }
             log.warn("Access token is Wrong!");
             context.setSendZuulResponse(false);
-            context.setResponseStatusCode(707);
+            context.setResponseStatusCode(ReturnStatus.GATEWAY_TOKEN_ERROR.getStatus());
             return null;
         }
 

@@ -27,7 +27,7 @@ public class NoticeBroadcastServiceImpl implements NoticeBroadcastService {
         msg.setSource("worker");
         //String cId = redisUtils.get(RedisKeys.PLAYER_ONLINE_STATE_KEY+data.get("username")).get();
         msg.setTarget(clients);
-        msg.setData(new MessageData("job/push","consumer",data.get("data")));
+        msg.setData(new MessageData("jobPush","consumer",data.get("data")));
         //Message message = JsonUtil.parseJsonToObj(data.toString(),Message.class);
 
         //todo==2、发起推送===
