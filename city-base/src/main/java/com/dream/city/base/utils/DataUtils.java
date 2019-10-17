@@ -5,7 +5,6 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.dream.city.base.model.Message;
 import com.dream.city.base.model.entity.CityFile;
-import com.dream.city.base.model.entity.CityInvest;
 import com.dream.city.base.model.entity.PlayerEarning;
 import com.dream.city.base.model.req.*;
 import org.apache.commons.lang.StringUtils;
@@ -16,6 +15,81 @@ import java.util.List;
 import java.util.Map;
 
 public class DataUtils {
+
+
+
+    public static String getTradeDetailType(String code){
+        String desc = "";
+        if ("RECHARGE".equalsIgnoreCase(code)){
+            desc = "";
+        }else if ("USDT_INVEST_VERIFY".equalsIgnoreCase(code)){
+            desc = "";
+        }else if ("USDT_INVEST_FREEZE".equalsIgnoreCase(code)){
+            desc = "";
+        }else if ("USDT_EARNINGS".equalsIgnoreCase(code)){
+            desc = "";
+        }else if ("MT_INVES_FREEZE".equalsIgnoreCase(code)){
+            desc = "";
+        }else if ("MT_INVEST_PERSONAL_TAX".equalsIgnoreCase(code)){
+            desc = "";
+        }else if ("MT_INVEST_ENTERPRISE_TAX".equalsIgnoreCase(code)){
+            desc = "";
+        }else if ("MT_INVEST_QUOTA_TAX".equalsIgnoreCase(code)){
+            desc = "";
+        }else if ("MT_INVEST_PERSONAL_TAX_UNFREEZE".equalsIgnoreCase(code)){
+            desc = "";
+        }else if ("MT_INVEST_ENTERPRISE_TAX_UNFREEZE".equalsIgnoreCase(code)){
+            desc = "";
+        }else if ("MT_EARNINGS".equalsIgnoreCase(code)){
+            desc = "";
+        }else if ("BUY_MT_FREEZE".equalsIgnoreCase(code)){
+            desc = "";
+        }else if ("PERSONAL_TAX".equalsIgnoreCase(code)){
+            desc = "";
+        }else if ("ENTERPRISE_TAX".equalsIgnoreCase(code)){
+            desc = "";
+        }else if ("TRANSFER_FREEZE".equalsIgnoreCase(code)){
+            desc = "";
+        }else if ("TRANSFER_VERIFY".equalsIgnoreCase(code)){
+            desc = "";
+        }else if ("TRANSFER_TAX".equalsIgnoreCase(code)){
+            desc = "";
+        }else if ("TRANSFER_UNFREEZE_USDT".equalsIgnoreCase(code)){
+            desc = "";
+        }else if ("TRANSFER_UNFREEZE_MT".equalsIgnoreCase(code)){
+            desc = "";
+        }else if ("WITHDRAW_FREEZE".equalsIgnoreCase(code)){
+            desc = "";
+        }else if ("WITHDRAW_VERIFY".equalsIgnoreCase(code)){
+            desc = "";
+        }else if ("WITHDRAW_TAX".equalsIgnoreCase(code)){
+            desc = "";
+        }else if ("WITHDRAW_UNFREEZE_USDT".equalsIgnoreCase(code)){
+            desc = "";
+        }else if ("WITHDRAW_UNFREEZE_MT".equalsIgnoreCase(code)){
+            desc = "";
+        }else {
+            desc = code;
+        }
+        return desc;
+    }
+
+
+    public static String getTradeStatus(String code){
+        String desc = "";
+        if ("FREEZE".equalsIgnoreCase(code)){
+            desc = "冻结";
+        }else if ("UNFREEZE".equalsIgnoreCase(code)){
+            desc = "解冻";
+        }else if ("OUT".equalsIgnoreCase(code)){
+            desc = "已出账";
+        }else if ("IN".equalsIgnoreCase(code)){
+            desc = "已入账";
+        }else {
+            desc = code;
+        }
+        return desc;
+    }
 
 
     /**

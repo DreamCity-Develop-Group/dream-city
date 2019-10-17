@@ -20,11 +20,13 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -60,8 +62,26 @@ public class ConsumerTradeController {
         PlayerTradeReq tradeReq = new PlayerTradeReq();
         tradeReq.setPlayerId(accountReq.getAccPlayerId());
         Result<List<PlayerTradeResp>> tradeResult = tradeService.getTradeDetailList(tradeReq);
-        msg.getData().setData(tradeResult);
-        msg.setDesc("根据用户id获取交易明细");
+        Map<String,Object> data = new HashMap();
+        List<PlayerTradeResp> tradeDetailList = tradeResult.getData();
+        if (tradeResult != null){
+            msg.setDesc(tradeResult.getMsg());
+            if (!CollectionUtils.isEmpty(tradeResult.getData())){
+                List<Map<String,Object>> tradeDetailListResult = new ArrayList<>();
+                Map<String,Object> dataMap = new HashMap<>();
+                for(PlayerTradeResp tradeResp: tradeDetailList){
+                    dataMap.put("createTime",tradeResp.getCreateTime());
+                    dataMap.put("tradeDetailType",DataUtils.getTradeDetailType(tradeResp.getTradeDetailType()));
+                    dataMap.put("tradeAmount",tradeResp.getTradeAmount());
+                    dataMap.put("tradeStatus",DataUtils.getTradeStatus(tradeResp.getTradeStatus()));
+                    dataMap.put("usdtSurplus",tradeResp.getUsdtSurplus());
+                    dataMap.put("mtSurplus",tradeResp.getMtSurplus());
+                    tradeDetailListResult.add(dataMap);
+                }
+            }
+        }
+        data.put("tradeRecordList",tradeDetailList);
+        msg.getData().setData(data);
         return msg;
     }
 

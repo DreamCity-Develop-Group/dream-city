@@ -34,8 +34,8 @@
     <result column="trade_detail_type" property="tradeDetailType" jdbcType="VARCHAR" />
     <result column="trade_status" property="tradeStatus" jdbcType="VARCHAR" />
     <result column="trade_amount" property="tradeAmount" jdbcType="DECIMAL" />
-    <result column="trade_amount" property="tradeAmount" jdbcType="DECIMAL" />
     <result column="usdt_surplus" property="usdtSurplus" jdbcType="DECIMAL" />
+    <result column="mt_surplus" property="mtSurplus" jdbcType="DECIMAL" />
     <result column="personal_tax" property="personalTax" jdbcType="DECIMAL" />
     <result column="enterprise_tax" property="enterpriseTax" jdbcType="DECIMAL" />
     <result column="player_name" property="playerName" jdbcType="VARCHAR" />
@@ -64,7 +64,7 @@
       (SELECT o.order_name FROM invest_order o WHERE d.order_id=o.order_id) order_name,
       (SELECT o.order_num FROM invest_order o WHERE d.order_id=o.order_id) order_num
     FROM trade_detail d LEFT JOIN player_trade t ON d.trade_id = t.trade_id LEFT JOIN city_player p ON d.player_id = p.player_id
-    WHERE d.trade_id = t.trade_id and d.player_id = p.player_id
+    WHERE d.trade_id = t.trade_id and d.player_id = p.player_id and d.trade_detail_type != 'recharge'
     <if test="detailId != null" >
       and d.id = #{detailId,jdbcType=INTEGER}
     </if>
