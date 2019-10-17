@@ -121,11 +121,15 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
         }
 
         //投资扣减用户账户金额
-        Result<PlayerTrade>  updatePlayerAccountResult = null;
+        Result updatePlayerAccountResult = null;
         //String amountType = "";
         String tradeAmountType = TradeType.INVEST.getCode();
+        //交易金额
+        BigDecimal orderAmount = orderReq.getOrderAmount();
+        //总税金
+        BigDecimal inTax = invest.getInPersonalTax().add(invest.getInEnterpriseTax()).add(invest.getInQuotaTax());
         if (order != null && order.getOrderId() != null){
-            updatePlayerAccountResult = this.deductPlayerAccountAmount(orderReq,playerAccount,tradeAmountType,invest);
+            updatePlayerAccountResult = this.deductPlayerAccountAmount(orderAmount,inTax,playerAccount);
             success = updatePlayerAccountResult.getSuccess();
             desc = updatePlayerAccountResult.getMsg();
         }else {
@@ -137,10 +141,17 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
         Result<PlayerTrade> playerTradeResult = null;
         PlayerTrade trade = null;
         if (updatePlayerAccountResult != null && updatePlayerAccountResult.getSuccess()){
-            trade = updatePlayerAccountResult.getData();
+            trade = new PlayerTrade();
+            trade.setTradeType(TradeType.INVEST.getCode());
+            trade.setInOutStatus(AmountDynType.OUT.getCode());
+            trade.setTradeStatus(TradeStatus.FREEZE.getCode());
             trade.setTradePlayerId(player.getPlayerId());
             trade.setTradeOrderId(order.getOrderId());
             trade.setTradeAccId(playerAccount.getAccId());
+            trade.setTradeAmount(orderAmount);
+            trade.setPersonalTax(invest.getInPersonalTax());
+            trade.setEnterpriseTax(invest.getInEnterpriseTax());
+            trade.setQuotaTax(invest.getInQuotaTax());
             trade.setTradeDesc("预约投资");
             playerTradeResult = tradeService.insertPlayerTrade(trade);
             trade = playerTradeResult.getData();
@@ -167,24 +178,29 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
                 tradeDetail.setVerifyTime(new Date());
             }
             //投资金额
-            tradeDetail.setTradeAmount(trade.getTradeAmount());
+            tradeDetail.setTradeAmount(orderAmount);
+            tradeDetail.setUsdtSurplus(playerAccount.getAccUsdt().subtract(orderAmount));
+            tradeDetail.setMtSurplus(playerAccount.getAccMt());
             tradeDetail.setTradeDetailType(TradeDetailType.USDT_INVEST_FREEZE.getCode());
             tradeService.insertTradeDetail(tradeDetail);
             //个人所得税
             if (trade.getPersonalTax().compareTo(BigDecimal.ZERO) > 0) {
                 tradeDetail.setTradeAmount(trade.getPersonalTax());
+                tradeDetail.setMtSurplus(playerAccount.getAccMt().subtract(trade.getPersonalTax()));
                 tradeDetail.setTradeDetailType(TradeDetailType.MT_INVEST_PERSONAL_TAX.getCode());
                 tradeService.insertTradeDetail(tradeDetail);
             }
             //企业所得税
             if (trade.getEnterpriseTax().compareTo(BigDecimal.ZERO) > 0) {
                 tradeDetail.setTradeAmount(trade.getEnterpriseTax());
+                tradeDetail.setMtSurplus(playerAccount.getAccMt().subtract(trade.getEnterpriseTax().add(trade.getPersonalTax())));
                 tradeDetail.setTradeDetailType(TradeDetailType.MT_INVEST_ENTERPRISE_TAX.getCode());
                 tradeService.insertTradeDetail(tradeDetail);
             }
             //定额得税
-            if (trade.getEnterpriseTax().compareTo(BigDecimal.ZERO) > 0) {
+            if (trade.getQuotaTax().compareTo(BigDecimal.ZERO) > 0) {
                 tradeDetail.setTradeAmount(trade.getQuotaTax());
+                tradeDetail.setMtSurplus(playerAccount.getAccMt().subtract(trade.getEnterpriseTax().add(trade.getPersonalTax()).add(trade.getQuotaTax())));
                 tradeDetail.setTradeDetailType(TradeDetailType.MT_INVEST_QUOTA_TAX.getCode());
                 tradeService.insertTradeDetail(tradeDetail);
             }
@@ -284,49 +300,36 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
      * 下单用户账户扣减金额
      * 冻结金额
      * 投资只能用usdt
-     * @param orderReq
+     * @param orderAmount
      * @return
      */
-    private Result<PlayerTrade> deductPlayerAccountAmount(InvestOrderReq orderReq,PlayerAccount playerAccount,String tradeAmountType,CityInvest invest){
-        String amountType = AmountType.USDT.name();
+    private Result deductPlayerAccountAmount(BigDecimal orderAmount,BigDecimal inTax,PlayerAccount playerAccount){
         String msg = "";
-        BigDecimal mtAvailable = playerAccount.getAccMtAvailable();
         BigDecimal usdtAvailable = playerAccount.getAccUsdtAvailable();
-
+        BigDecimal mtAvailable = playerAccount.getAccMtAvailable();
         //usdt余额是否充足
-        if (orderReq.getOrderAmount().compareTo(usdtAvailable) > 0){
+        if (orderAmount.compareTo(usdtAvailable) > 0){
             msg = "USDT不足";
         }
         //是否可扣税金
-        BigDecimal inTax = invest.getInPersonalTax().add(invest.getInEnterpriseTax()).add(invest.getInQuotaTax());
         if (inTax.compareTo(mtAvailable) > 0){
             msg = "MT不足";
         }
 
         boolean success = Boolean.FALSE;
         if (StringUtils.isBlank(msg)){
-            playerAccount.setAccId(playerAccount.getAccId());
-            playerAccount.setAccPlayerId(playerAccount.getAccPlayerId());
+            //投资冻结USDT
+            playerAccount.setAccUsdt(playerAccount.getAccUsdt().subtract(orderAmount));
+            playerAccount.setAccUsdtAvailable(playerAccount.getAccUsdtAvailable().subtract(orderAmount));
+            playerAccount.setAccUsdtFreeze(playerAccount.getAccUsdtFreeze().add(orderAmount));
+            //投资冻结税金MT
+            playerAccount.setAccMt(playerAccount.getAccUsdt().subtract(inTax));
+            playerAccount.setAccMtAvailable(playerAccount.getAccMtAvailable().subtract(inTax));
+            playerAccount.setAccMtFreeze(playerAccount.getAccMtFreeze().add(inTax));
 
-            if (StringUtils.isBlank(tradeAmountType)){
-                tradeAmountType = TradeType.INVEST.getCode();
-            }
-            if (tradeAmountType.equalsIgnoreCase(TradeType.INVEST.getCode())){
-                amountType = AmountType.USDT.name();
-                //投资冻结USDT
-                playerAccount.setAccUsdt(playerAccount.getAccUsdt().subtract(orderReq.getOrderAmount()));
-                playerAccount.setAccUsdtAvailable(playerAccount.getAccUsdtAvailable().subtract(orderReq.getOrderAmount()));
-                playerAccount.setAccUsdtFreeze(playerAccount.getAccUsdtFreeze().add(orderReq.getOrderAmount()));
-                //投资冻结税金MT
-                playerAccount.setAccMt(playerAccount.getAccUsdt().subtract(inTax));
-                playerAccount.setAccMtAvailable(playerAccount.getAccMtAvailable().subtract(inTax));
-                playerAccount.setAccMtFreeze(playerAccount.getAccMtFreeze().add(inTax));
-            }
-
-            //updatePlayerAccount TODO
             Result<Integer> updatePlayerAccountResult = accountService.updatePlayerAccount(playerAccount);
 
-            if (tradeAmountType.equalsIgnoreCase(TradeType.INVEST.getCode()) && updatePlayerAccountResult != null && updatePlayerAccountResult.getSuccess()
+            if (updatePlayerAccountResult != null && updatePlayerAccountResult.getSuccess()
                      && updatePlayerAccountResult.getData() > 0){
                 msg = "投资预约成功！";
                 success = Boolean.TRUE;
@@ -336,16 +339,7 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
             }
         }
 
-        PlayerTrade trade = new PlayerTrade();
-        trade.setTradeType(tradeAmountType);
-        trade.setTradeAmount(orderReq.getOrderAmount());
-        trade.setPersonalTax(invest.getInPersonalTax());
-        trade.setEnterpriseTax(invest.getInEnterpriseTax());
-        trade.setQuotaTax(invest.getInQuotaTax());
-        trade.setInOutStatus(AmountDynType.OUT.getCode());
-        trade.setTradeStatus(TradeStatus.FREEZE.getCode());
-
-        return new Result<>(success,msg,trade);
+        return new Result<>(success,msg);
     }
 
     /**

@@ -92,6 +92,7 @@ public class ConsumerPropertyHandleServiceImpl implements ConsumerPropertyHandle
                     resultMap.put("enterpriseTax",invest.getEnterpriseIntax());
                     resultMap.put("quotaTax",invest.getInQuotaTax());
                     resultMap.put("state", status);
+                    resultMap.put("openState", invest.getIsValid());
                     resultMap.put("inType", invest.getInType());
                     resultMap.put("expectIncome", invest.getInLimit()
                             .multiply(BigDecimal.valueOf(Long.parseLong(String.valueOf(invest.getInEarning())))));
