@@ -3,7 +3,7 @@ eureka:
     enable-self-preservation: false
     eviction-interval-timer-in-ms: 10000
   instance:
-    hostname: localhost
+    hostname: 192.168.0.99
     instance-id: ${spring.application.name}
   client:
     registerWithEurUeka: true

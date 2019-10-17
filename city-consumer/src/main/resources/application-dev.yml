@@ -9,14 +9,14 @@ spring:
   datasource:
     #driver-class-name: com.mysql.jdbc.Driver
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/dreamcity?serverTimezone=UTC&useUnicode=true&characterEncoding=UTF-8&transformedBitIsBoolean=true&autoReconnect=true&failOverReadOnly=false&allowMultiQueries=true&useSSL=false
+    url: jdbc:mysql://192.168.0.99:3306/dreamcity?serverTimezone=UTC&useUnicode=true&characterEncoding=UTF-8&transformedBitIsBoolean=true&autoReconnect=true&failOverReadOnly=false&allowMultiQueries=true&useSSL=false
     username: dreamcity
     password: Root@123
 
   cache:
     type: redis
   redis:
-    host: 127.0.0.1
+    host: 192.168.0.99
     port: 6379
     database: 0
     password: 123456
@@ -48,7 +48,7 @@ dreamcity:
 
 eureka:
   instance:
-    hostname: localhost
+    hostname: 192.168.0.99
     instance-id: ${spring.application.name}
   client:
     eureka-server-read-timeout-seconds: 10

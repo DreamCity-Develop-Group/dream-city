@@ -58,6 +58,11 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
                 player = DataUtils.toJavaObject(playerResp,Player.class);
             }
         }
+        if (player == null){
+            msg.setCode(ReturnStatus.ERROR.getStatus());
+            msg.setDesc("找不到玩家账号");
+            return msg;
+        }
         //获取项目数据
         CityInvest invest = getInvestByIdOrinName(orderReq.getInvestId(),orderReq.getInName());
         orderReq.setOrderAmount(invest.getInLimit());

@@ -213,24 +213,6 @@ INSERT INTO `city_player` VALUES ('164', '4937E1605DF84FB4A17C31DE22BF6782', '13
 INSERT INTO `city_player` VALUES ('165', 'BFA938AFDD784CFCA4850D7330A5407F', '13022099407', '期Qi1', '9ae0147d65724f72f74804af4aac6f13', null, 'f0f479', null, '1', '2019-10-15 16:39:38', null);
 INSERT INTO `city_player` VALUES ('166', '7D09619AC1054CF1B8380F6ED098F797', '15918833191', '步入', 'e10adc3949ba59abbe56e057f20f883e', null, 'd0e9d8', null, '1', '2019-10-15 22:52:23', null);
 
--- ----------------------------
--- Table structure for city_player_ext
--- ----------------------------
-DROP TABLE IF EXISTS `city_player_ext`;
-CREATE TABLE `city_player_ext` (
-  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `player_id` varchar(64) CHARACTER SET utf8 NOT NULL COMMENT '用户id',
-  `friendlink` varchar(255) CHARACTER SET utf8 DEFAULT NULL COMMENT '主页入口',
-  `imgurl` varchar(255) CHARACTER SET utf8 DEFAULT NULL COMMENT '头像地址',
-  `create_date` datetime DEFAULT NULL,
-  `update_date` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE KEY `index_player_id` (`player_id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='用户扩展表（玩家）';
-
--- ----------------------------
--- Records of city_player_ext
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for city_player_grade
@@ -268,28 +250,6 @@ INSERT INTO `city_player_grade` VALUES ('56', '4937E1605DF84FB4A17C31DE22BF6782'
 INSERT INTO `city_player_grade` VALUES ('57', 'BFA938AFDD784CFCA4850D7330A5407F', 'L1', '0', null, null);
 INSERT INTO `city_player_grade` VALUES ('58', '7D09619AC1054CF1B8380F6ED098F797', 'L1', '0', null, null);
 
--- ----------------------------
--- Table structure for city_setting
--- ----------------------------
-DROP TABLE IF EXISTS `city_setting`;
-CREATE TABLE `city_setting` (
-  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `player_id` varchar(64) NOT NULL COMMENT '玩家id',
-  `type` varchar(50) NOT NULL DEFAULT '' COMMENT '设置类型',
-  `val` varchar(50) NOT NULL DEFAULT '' COMMENT '设置值',
-  `status` varchar(50) DEFAULT NULL COMMENT '状态',
-  `create_date` datetime DEFAULT NULL,
-  `update_date` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE,
-  KEY `index_player_id` (`player_id`) USING BTREE,
-  KEY `index_type` (`type`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='游戏设置';
-
--- ----------------------------
--- Records of city_setting
--- ----------------------------
-INSERT INTO `city_setting` VALUES ('1', '123', 'game', 'true', '1', null, '2019-09-16 08:25:39');
-INSERT INTO `city_setting` VALUES ('2', '123', 'bg', 'false', '1', null, '2019-09-16 08:26:33');
 
 -- ----------------------------
 -- Table structure for city_tree
@@ -350,23 +310,6 @@ CREATE TABLE `earn_income_log` (
 -- ----------------------------
 -- Records of earn_income_log
 -- ----------------------------
-
--- ----------------------------
--- Table structure for game_notice
--- ----------------------------
-DROP TABLE IF EXISTS `game_notice`;
-CREATE TABLE `game_notice` (
-  `notice_id` int(11) NOT NULL AUTO_INCREMENT,
-  `notice_content` varchar(255) DEFAULT NULL COMMENT '内容',
-  `notice_state` tinyint(4) DEFAULT NULL COMMENT '状态：1可用0不可用',
-  `createtime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`notice_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
-
--- ----------------------------
--- Records of game_notice
--- ----------------------------
-INSERT INTO `game_notice` VALUES ('1', 'asdf', '1', '2019-10-05 15:44:09');
 
 -- ----------------------------
 -- Table structure for invest_allow
@@ -583,8 +526,8 @@ CREATE TABLE `player_account_log` (
   `acc_id` int(11) NOT NULL COMMENT '交易ID号',
   `player_id` varchar(64) DEFAULT NULL COMMENT '玩家',
   `address` varchar(50) DEFAULT NULL COMMENT '地址',
-  `amount_mt` decimal(50,0) DEFAULT NULL,
-  `account_usdt` decimal(50,0) DEFAULT NULL,
+  `amount_mt` decimal(20,4) DEFAULT '0.0000',
+  `account_usdt` decimal(20,4) DEFAULT '0.0000',
   `type` varchar(50) DEFAULT NULL COMMENT '1入账2出账',
   `desc` varchar(255) DEFAULT NULL COMMENT '说明',
   `create_time` datetime DEFAULT NULL,
@@ -611,8 +554,8 @@ CREATE TABLE `player_earning` (
   `earn_max` decimal(20,4) unsigned DEFAULT '0.0000' COMMENT '最大提取额度（预计最大收益）',
   `earn_current` decimal(20,4) unsigned DEFAULT '0.0000' COMMENT '当前获得额度',
   `earn_personal_tax` decimal(20,4) unsigned DEFAULT '0.0000' COMMENT '个人税金',
-  `earn_enterprise_tax` decimal(20,4) DEFAULT NULL COMMENT '企业税金',
-  `earn_quota_tax` decimal(20,4) unsigned DEFAULT NULL COMMENT '定额税',
+  `earn_enterprise_tax` decimal(20,4) DEFAULT '0.0000' COMMENT '企业税金',
+  `earn_quota_tax` decimal(20,4) unsigned DEFAULT '0.0000' COMMENT '定额税',
   `is_withdrew` tinyint(4) DEFAULT '0' COMMENT '是否可以提取(0新增,1，收益中，2可提取，3已提取)',
   `create_time` datetime DEFAULT NULL,
   `update_time` datetime DEFAULT NULL,
@@ -853,243 +796,6 @@ INSERT INTO `player_trade` VALUES ('16', '35', 'A07246C2924A415982ABE5E8C6DAD53D
 INSERT INTO `player_trade` VALUES ('17', '35', 'A07246C2924A415982ABE5E8C6DAD53D', '28', '100.0000', '0.0100', '0.0000', 'FREEZE', 'OUT', 'INVEST', '预约投资', '2019-10-16 16:28:47', '2019-10-16 16:28:47');
 INSERT INTO `player_trade` VALUES ('18', '35', 'A07246C2924A415982ABE5E8C6DAD53D', '29', '300.0000', '0.1000', '0.1500', 'FREEZE', 'OUT', 'INVEST', '预约投资', '2019-10-16 16:28:52', '2019-10-16 16:28:52');
 INSERT INTO `player_trade` VALUES ('19', '34', '52ABA6CE89164C8484A7F7FFF16B3670', '30', '30.0000', '0.0200', '0.0000', 'FREEZE', 'OUT', 'INVEST', '预约投资', '2019-10-16 17:06:51', '2019-10-16 17:06:51');
-
--- ----------------------------
--- Table structure for qrtz_blob_triggers
--- ----------------------------
-DROP TABLE IF EXISTS `qrtz_blob_triggers`;
-CREATE TABLE `qrtz_blob_triggers` (
-  `SCHED_NAME` varchar(120) NOT NULL,
-  `TRIGGER_NAME` varchar(200) NOT NULL,
-  `TRIGGER_GROUP` varchar(200) NOT NULL,
-  `BLOB_DATA` blob,
-  PRIMARY KEY (`SCHED_NAME`,`TRIGGER_NAME`,`TRIGGER_GROUP`),
-  KEY `SCHED_NAME` (`SCHED_NAME`,`TRIGGER_NAME`,`TRIGGER_GROUP`),
-  CONSTRAINT `qrtz_blob_triggers_ibfk_1` FOREIGN KEY (`SCHED_NAME`, `TRIGGER_NAME`, `TRIGGER_GROUP`) REFERENCES `qrtz_triggers` (`SCHED_NAME`, `TRIGGER_NAME`, `TRIGGER_GROUP`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of qrtz_blob_triggers
--- ----------------------------
-
--- ----------------------------
--- Table structure for qrtz_calendars
--- ----------------------------
-DROP TABLE IF EXISTS `qrtz_calendars`;
-CREATE TABLE `qrtz_calendars` (
-  `SCHED_NAME` varchar(120) NOT NULL,
-  `CALENDAR_NAME` varchar(200) NOT NULL,
-  `CALENDAR` blob NOT NULL,
-  PRIMARY KEY (`SCHED_NAME`,`CALENDAR_NAME`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of qrtz_calendars
--- ----------------------------
-
--- ----------------------------
--- Table structure for qrtz_cron_triggers
--- ----------------------------
-DROP TABLE IF EXISTS `qrtz_cron_triggers`;
-CREATE TABLE `qrtz_cron_triggers` (
-  `SCHED_NAME` varchar(120) NOT NULL,
-  `TRIGGER_NAME` varchar(200) NOT NULL,
-  `TRIGGER_GROUP` varchar(200) NOT NULL,
-  `CRON_EXPRESSION` varchar(120) NOT NULL,
-  `TIME_ZONE_ID` varchar(80) DEFAULT NULL,
-  PRIMARY KEY (`SCHED_NAME`,`TRIGGER_NAME`,`TRIGGER_GROUP`),
-  CONSTRAINT `qrtz_cron_triggers_ibfk_1` FOREIGN KEY (`SCHED_NAME`, `TRIGGER_NAME`, `TRIGGER_GROUP`) REFERENCES `qrtz_triggers` (`SCHED_NAME`, `TRIGGER_NAME`, `TRIGGER_GROUP`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of qrtz_cron_triggers
--- ----------------------------
-
--- ----------------------------
--- Table structure for qrtz_fired_triggers
--- ----------------------------
-DROP TABLE IF EXISTS `qrtz_fired_triggers`;
-CREATE TABLE `qrtz_fired_triggers` (
-  `SCHED_NAME` varchar(120) NOT NULL,
-  `ENTRY_ID` varchar(95) NOT NULL,
-  `TRIGGER_NAME` varchar(200) NOT NULL,
-  `TRIGGER_GROUP` varchar(200) NOT NULL,
-  `INSTANCE_NAME` varchar(200) NOT NULL,
-  `FIRED_TIME` bigint(13) NOT NULL,
-  `SCHED_TIME` bigint(13) NOT NULL,
-  `PRIORITY` int(11) NOT NULL,
-  `STATE` varchar(16) NOT NULL,
-  `JOB_NAME` varchar(200) DEFAULT NULL,
-  `JOB_GROUP` varchar(200) DEFAULT NULL,
-  `IS_NONCONCURRENT` varchar(1) DEFAULT NULL,
-  `REQUESTS_RECOVERY` varchar(1) DEFAULT NULL,
-  PRIMARY KEY (`SCHED_NAME`,`ENTRY_ID`),
-  KEY `IDX_QRTZ_FT_TRIG_INST_NAME` (`SCHED_NAME`,`INSTANCE_NAME`),
-  KEY `IDX_QRTZ_FT_INST_JOB_REQ_RCVRY` (`SCHED_NAME`,`INSTANCE_NAME`,`REQUESTS_RECOVERY`),
-  KEY `IDX_QRTZ_FT_J_G` (`SCHED_NAME`,`JOB_NAME`,`JOB_GROUP`),
-  KEY `IDX_QRTZ_FT_JG` (`SCHED_NAME`,`JOB_GROUP`),
-  KEY `IDX_QRTZ_FT_T_G` (`SCHED_NAME`,`TRIGGER_NAME`,`TRIGGER_GROUP`),
-  KEY `IDX_QRTZ_FT_TG` (`SCHED_NAME`,`TRIGGER_GROUP`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of qrtz_fired_triggers
--- ----------------------------
-
--- ----------------------------
--- Table structure for qrtz_job_details
--- ----------------------------
-DROP TABLE IF EXISTS `qrtz_job_details`;
-CREATE TABLE `qrtz_job_details` (
-  `SCHED_NAME` varchar(120) NOT NULL,
-  `JOB_NAME` varchar(200) NOT NULL,
-  `JOB_GROUP` varchar(200) NOT NULL,
-  `DESCRIPTION` varchar(250) DEFAULT NULL,
-  `JOB_CLASS_NAME` varchar(250) NOT NULL,
-  `IS_DURABLE` varchar(1) NOT NULL,
-  `IS_NONCONCURRENT` varchar(1) NOT NULL,
-  `IS_UPDATE_DATA` varchar(1) NOT NULL,
-  `REQUESTS_RECOVERY` varchar(1) NOT NULL,
-  `JOB_DATA` blob,
-  PRIMARY KEY (`SCHED_NAME`,`JOB_NAME`,`JOB_GROUP`),
-  KEY `IDX_QRTZ_J_REQ_RECOVERY` (`SCHED_NAME`,`REQUESTS_RECOVERY`),
-  KEY `IDX_QRTZ_J_GRP` (`SCHED_NAME`,`JOB_GROUP`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of qrtz_job_details
--- ----------------------------
-
--- ----------------------------
--- Table structure for qrtz_locks
--- ----------------------------
-DROP TABLE IF EXISTS `qrtz_locks`;
-CREATE TABLE `qrtz_locks` (
-  `SCHED_NAME` varchar(120) NOT NULL,
-  `LOCK_NAME` varchar(40) NOT NULL,
-  PRIMARY KEY (`SCHED_NAME`,`LOCK_NAME`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of qrtz_locks
--- ----------------------------
-
--- ----------------------------
--- Table structure for qrtz_paused_trigger_grps
--- ----------------------------
-DROP TABLE IF EXISTS `qrtz_paused_trigger_grps`;
-CREATE TABLE `qrtz_paused_trigger_grps` (
-  `SCHED_NAME` varchar(120) NOT NULL,
-  `TRIGGER_GROUP` varchar(200) NOT NULL,
-  PRIMARY KEY (`SCHED_NAME`,`TRIGGER_GROUP`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of qrtz_paused_trigger_grps
--- ----------------------------
-
--- ----------------------------
--- Table structure for qrtz_scheduler_state
--- ----------------------------
-DROP TABLE IF EXISTS `qrtz_scheduler_state`;
-CREATE TABLE `qrtz_scheduler_state` (
-  `SCHED_NAME` varchar(120) NOT NULL,
-  `INSTANCE_NAME` varchar(200) NOT NULL,
-  `LAST_CHECKIN_TIME` bigint(13) NOT NULL,
-  `CHECKIN_INTERVAL` bigint(13) NOT NULL,
-  PRIMARY KEY (`SCHED_NAME`,`INSTANCE_NAME`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of qrtz_scheduler_state
--- ----------------------------
-
--- ----------------------------
--- Table structure for qrtz_simple_triggers
--- ----------------------------
-DROP TABLE IF EXISTS `qrtz_simple_triggers`;
-CREATE TABLE `qrtz_simple_triggers` (
-  `SCHED_NAME` varchar(120) NOT NULL,
-  `TRIGGER_NAME` varchar(200) NOT NULL,
-  `TRIGGER_GROUP` varchar(200) NOT NULL,
-  `REPEAT_COUNT` bigint(7) NOT NULL,
-  `REPEAT_INTERVAL` bigint(12) NOT NULL,
-  `TIMES_TRIGGERED` bigint(10) NOT NULL,
-  PRIMARY KEY (`SCHED_NAME`,`TRIGGER_NAME`,`TRIGGER_GROUP`),
-  CONSTRAINT `qrtz_simple_triggers_ibfk_1` FOREIGN KEY (`SCHED_NAME`, `TRIGGER_NAME`, `TRIGGER_GROUP`) REFERENCES `qrtz_triggers` (`SCHED_NAME`, `TRIGGER_NAME`, `TRIGGER_GROUP`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of qrtz_simple_triggers
--- ----------------------------
-
--- ----------------------------
--- Table structure for qrtz_simprop_triggers
--- ----------------------------
-DROP TABLE IF EXISTS `qrtz_simprop_triggers`;
-CREATE TABLE `qrtz_simprop_triggers` (
-  `SCHED_NAME` varchar(120) NOT NULL,
-  `TRIGGER_NAME` varchar(200) NOT NULL,
-  `TRIGGER_GROUP` varchar(200) NOT NULL,
-  `STR_PROP_1` varchar(512) DEFAULT NULL,
-  `STR_PROP_2` varchar(512) DEFAULT NULL,
-  `STR_PROP_3` varchar(512) DEFAULT NULL,
-  `INT_PROP_1` int(11) DEFAULT NULL,
-  `INT_PROP_2` int(11) DEFAULT NULL,
-  `LONG_PROP_1` bigint(20) DEFAULT NULL,
-  `LONG_PROP_2` bigint(20) DEFAULT NULL,
-  `DEC_PROP_1` decimal(13,4) DEFAULT NULL,
-  `DEC_PROP_2` decimal(13,4) DEFAULT NULL,
-  `BOOL_PROP_1` varchar(1) DEFAULT NULL,
-  `BOOL_PROP_2` varchar(1) DEFAULT NULL,
-  PRIMARY KEY (`SCHED_NAME`,`TRIGGER_NAME`,`TRIGGER_GROUP`),
-  CONSTRAINT `qrtz_simprop_triggers_ibfk_1` FOREIGN KEY (`SCHED_NAME`, `TRIGGER_NAME`, `TRIGGER_GROUP`) REFERENCES `qrtz_triggers` (`SCHED_NAME`, `TRIGGER_NAME`, `TRIGGER_GROUP`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of qrtz_simprop_triggers
--- ----------------------------
-
--- ----------------------------
--- Table structure for qrtz_triggers
--- ----------------------------
-DROP TABLE IF EXISTS `qrtz_triggers`;
-CREATE TABLE `qrtz_triggers` (
-  `SCHED_NAME` varchar(120) NOT NULL,
-  `TRIGGER_NAME` varchar(200) NOT NULL,
-  `TRIGGER_GROUP` varchar(200) NOT NULL,
-  `JOB_NAME` varchar(200) NOT NULL,
-  `JOB_GROUP` varchar(200) NOT NULL,
-  `DESCRIPTION` varchar(250) DEFAULT NULL,
-  `NEXT_FIRE_TIME` bigint(13) DEFAULT NULL,
-  `PREV_FIRE_TIME` bigint(13) DEFAULT NULL,
-  `PRIORITY` int(11) DEFAULT NULL,
-  `TRIGGER_STATE` varchar(16) NOT NULL,
-  `TRIGGER_TYPE` varchar(8) NOT NULL,
-  `START_TIME` bigint(13) NOT NULL,
-  `END_TIME` bigint(13) DEFAULT NULL,
-  `CALENDAR_NAME` varchar(200) DEFAULT NULL,
-  `MISFIRE_INSTR` smallint(2) DEFAULT NULL,
-  `JOB_DATA` blob,
-  PRIMARY KEY (`SCHED_NAME`,`TRIGGER_NAME`,`TRIGGER_GROUP`),
-  KEY `IDX_QRTZ_T_J` (`SCHED_NAME`,`JOB_NAME`,`JOB_GROUP`),
-  KEY `IDX_QRTZ_T_JG` (`SCHED_NAME`,`JOB_GROUP`),
-  KEY `IDX_QRTZ_T_C` (`SCHED_NAME`,`CALENDAR_NAME`),
-  KEY `IDX_QRTZ_T_G` (`SCHED_NAME`,`TRIGGER_GROUP`),
-  KEY `IDX_QRTZ_T_STATE` (`SCHED_NAME`,`TRIGGER_STATE`),
-  KEY `IDX_QRTZ_T_N_STATE` (`SCHED_NAME`,`TRIGGER_NAME`,`TRIGGER_GROUP`,`TRIGGER_STATE`),
-  KEY `IDX_QRTZ_T_N_G_STATE` (`SCHED_NAME`,`TRIGGER_GROUP`,`TRIGGER_STATE`),
-  KEY `IDX_QRTZ_T_NEXT_FIRE_TIME` (`SCHED_NAME`,`NEXT_FIRE_TIME`),
-  KEY `IDX_QRTZ_T_NFT_ST` (`SCHED_NAME`,`TRIGGER_STATE`,`NEXT_FIRE_TIME`),
-  KEY `IDX_QRTZ_T_NFT_MISFIRE` (`SCHED_NAME`,`MISFIRE_INSTR`,`NEXT_FIRE_TIME`),
-  KEY `IDX_QRTZ_T_NFT_ST_MISFIRE` (`SCHED_NAME`,`MISFIRE_INSTR`,`NEXT_FIRE_TIME`,`TRIGGER_STATE`),
-  KEY `IDX_QRTZ_T_NFT_ST_MISFIRE_GRP` (`SCHED_NAME`,`MISFIRE_INSTR`,`NEXT_FIRE_TIME`,`TRIGGER_GROUP`,`TRIGGER_STATE`),
-  CONSTRAINT `qrtz_triggers_ibfk_1` FOREIGN KEY (`SCHED_NAME`, `JOB_NAME`, `JOB_GROUP`) REFERENCES `qrtz_job_details` (`SCHED_NAME`, `JOB_NAME`, `JOB_GROUP`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of qrtz_triggers
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for role
