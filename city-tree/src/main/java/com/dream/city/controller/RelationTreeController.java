@@ -37,7 +37,7 @@ public class RelationTreeController {
     public Result getTrees(@RequestParam("playerId") String playerId) {
         List<RelationTree> trees = relationTreeService.getTrees();
 
-        return new Result(CityGlobal.Constant.TREE_RELATION_SUCCESS, 200, trees);
+        return new Result(CityGlobal.Constant.TREE_RELATION_SUCCESS, ReturnStatus.SUCCESS.getStatus(), trees);
     }
 
     /**
@@ -105,7 +105,7 @@ public class RelationTreeController {
      */
     @RequestMapping("/find/parent")
     public Result findParent(@RequestParam("playerId")String playerId){
-        return new Result("success",200,relationTreeService.getParent(playerId));
+        return new Result("success",ReturnStatus.SUCCESS.getStatus(),relationTreeService.getParent(playerId));
     }
 
     /**
@@ -117,7 +117,7 @@ public class RelationTreeController {
     @RequestMapping("/query/sales")
     public Result querySales(@RequestParam("playerId")String playerId){
         List<SalesOrder> orders = salesOrderService.selectSalesSellerOrder(playerId);
-        return new Result(true,"获取订单成功",200,orders);
+        return new Result(true,"获取订单成功",ReturnStatus.SUCCESS.getStatus(),orders);
     }
 
     @RequestMapping("/check/tradePass")
@@ -164,10 +164,10 @@ public class RelationTreeController {
         accountService.createAccount(playerId,address);
         PlayerAccount account = accountService.getPlayerAccount(playerId);
         if (null != account ){
-            return Result.result(true,"玩家账户开设成功",200,account);
+            return Result.result(true,"玩家账户开设成功",ReturnStatus.SUCCESS.getStatus(),account);
         }
 
-        return Result.result(false,"玩家账户开设失败",200,null);
+        return Result.result(false,"玩家账户开设失败",ReturnStatus.SUCCESS.getStatus(),null);
     }
 
     /**

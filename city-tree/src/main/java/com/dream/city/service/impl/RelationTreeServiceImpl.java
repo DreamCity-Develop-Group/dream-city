@@ -101,7 +101,7 @@ public class RelationTreeServiceImpl implements RelationTreeService {
                 Message message = new Message(
                         "server",
                         "client",
-                        new MessageData("push","comm",new JSONObject(),200),
+                        new MessageData("push","comm",new JSONObject(),ReturnStatus.SUCCESS.getStatus()),
                         "升级成功"
                 );
 
@@ -161,9 +161,9 @@ public class RelationTreeServiceImpl implements RelationTreeService {
             }
 
 
-            return Result.result(true, "成功", 200);
+            return Result.result(true, "成功", ReturnStatus.SUCCESS.getStatus());
         }
-        return Result.result(false, CityGlobal.Constant.TREE_RELATION_EXISTS, 201);
+        return Result.result(false, CityGlobal.Constant.TREE_RELATION_EXISTS, ReturnStatus.EXISTS.getStatus());
 
     }
 

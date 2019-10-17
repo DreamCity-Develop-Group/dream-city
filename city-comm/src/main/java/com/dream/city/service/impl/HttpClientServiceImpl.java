@@ -124,7 +124,7 @@ public class HttpClientServiceImpl implements HttpClientService {
 
             log.info("Send=响应状态为:" + response.getStatusLine());
             int code = response.getStatusLine().getStatusCode();
-            if (responseEntity != null && code == 200) {
+            if (responseEntity != null && code == ReturnStatus.SUCCESS.getStatus()) {
                 log.info("Send=响应内容长度为:" + responseEntity.getContentLength());
                 log.info(responseEntity.getContent().toString());
                 String resp = EntityUtils.toString(responseEntity);
@@ -247,7 +247,7 @@ public class HttpClientServiceImpl implements HttpClientService {
             log.info("Post=响应状态为:" + response.getStatusLine());
             int responseCode = response.getStatusLine().getStatusCode();
             //TODO 是否完成请求
-            if (responseEntity != null && responseCode == 200) {
+            if (responseEntity != null && responseCode == ReturnStatus.SUCCESS.getStatus()) {
                 log.info("Post=响应内容长度为:" + responseEntity.getContentLength());
                 log.info("Post=>内容：" + responseEntity.getContent().toString());
                 String resp = EntityUtils.toString(responseEntity);

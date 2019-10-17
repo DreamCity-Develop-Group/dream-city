@@ -1,5 +1,6 @@
 package com.dream.city.base.model;
 
+import com.dream.city.base.model.enu.ReturnStatus;
 import org.apache.commons.lang.StringUtils;
 
 /**
@@ -12,9 +13,9 @@ public interface CityGlobal {
      */
     enum ResultCode {
 
-        success(200,"成功"),
+        success(ReturnStatus.SUCCESS.getStatus(),"成功"),
 
-        fail(404,"失败");
+        fail(ReturnStatus.FAILED.getStatus(),"失败");
 
         // 成员变量
         private int status;

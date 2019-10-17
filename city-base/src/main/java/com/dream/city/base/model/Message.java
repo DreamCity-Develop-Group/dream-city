@@ -1,6 +1,7 @@
 package com.dream.city.base.model;
 
 
+import com.dream.city.base.model.enu.ReturnStatus;
 import lombok.Data;
 import lombok.ToString;
 import sun.java2d.loops.GeneralRenderer;
@@ -42,7 +43,7 @@ public class Message implements Serializable{
         this.target = target;
         this.data = data;
         this.desc = "";
-        this.code = 200;
+        this.code = ReturnStatus.SUCCESS.getStatus();
         this.createtime = String.valueOf(System.currentTimeMillis());
     }
 
@@ -53,7 +54,7 @@ public class Message implements Serializable{
         this.target = target;
         this.data = data;
         this.desc = desc;
-        this.code = 200;
+        this.code = ReturnStatus.SUCCESS.getStatus();
         this.createtime = String.valueOf(System.currentTimeMillis());
     }
 
@@ -64,7 +65,7 @@ public class Message implements Serializable{
         this.source = source;
         this.data = data;
         this.desc = desc;
-        this.code = 200;
+        this.code = ReturnStatus.SUCCESS.getStatus();
         this.target = target;
         this.createtime = createtime;
     }

@@ -177,7 +177,7 @@ public class PushController {
 
             pusher.publish(channel, com.dream.city.base.utils.JsonUtil.parseObjToJson(message));
         }
-        return Result.result(true, "成功！", 200, notice);
+        return Result.result(true, "成功！", ReturnStatus.SUCCESS.getStatus(), notice);
     }
 
     @RequestMapping("job/push/notice")
@@ -187,7 +187,7 @@ public class PushController {
 
         redisTemplate.convertAndSend(channel, com.dream.city.base.utils.JsonUtil.parseObjToJson(message));
 
-        return Result.result(true, "成功！", 200, message);
+        return Result.result(true, "成功！", ReturnStatus.SUCCESS.getStatus(), message);
     }
 
     @RequestMapping("push/to")

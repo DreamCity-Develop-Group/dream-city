@@ -293,7 +293,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
         }
         salesOrderMapper.sendOrderMt(orders);
         playerAccountService.updatePlayerAccounts(accounts);
-        return new Result(true, "发货成功", 200);
+        return new Result(true, "发货成功", ReturnStatus.SUCCESS.getStatus());
     }
 
 

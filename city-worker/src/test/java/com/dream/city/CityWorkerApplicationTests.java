@@ -3,6 +3,7 @@ package com.dream.city;
 import com.alibaba.fastjson.JSONObject;
 import com.dream.city.base.model.Message;
 import com.dream.city.base.model.MessageData;
+import com.dream.city.base.model.enu.ReturnStatus;
 import com.dream.city.base.utils.JsonUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,7 +21,7 @@ public class CityWorkerApplicationTests {
         Message message = new Message(
                 "server",
                 "client",
-                new MessageData("push","comm",new JSONObject(),200),
+                new MessageData("push","comm",new JSONObject(), ReturnStatus.SUCCESS.getStatus()),
                 "升级成功"
         );
         JSONObject upgrade = new JSONObject();

@@ -4,6 +4,7 @@ import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.Notice;
 import com.dream.city.base.model.enu.GameSettingType;
 import com.dream.city.base.model.entity.PlayerGameSetting;
+import com.dream.city.base.model.enu.ReturnStatus;
 import com.dream.city.base.model.mapper.PlayerGameSettingMapper;
 import com.dream.city.base.model.mapper.NoticeMapper;
 import com.dream.city.base.utils.RedisUtils;
@@ -55,7 +56,7 @@ public class GameSettingServiceImpl implements GameSettingService {
         Map<Object,Object> gameMap = redisUtils.hmget("game_default");
         Map<String,Notice> noticesMap = (Map)gameMap.get("notice_list");
         if (null == noticesMap){
-            return new Result(true,"取公告消息成功,没有公告",200,null);
+            return Result.result(false,"取公告消息成功,没有公告", ReturnStatus.FAILED.getStatus());
         }
         Iterator<Map.Entry<String,Notice>> iterator = noticesMap.entrySet().iterator();
         while (iterator.hasNext()){
@@ -63,6 +64,6 @@ public class GameSettingServiceImpl implements GameSettingService {
             notices.add(entry.getValue());
         }
         //返回公告
-        return new Result(true,"取公告消息成功",200,notices);
+        return Result.result(true,"取公告消息成功",ReturnStatus.SUCCESS.getStatus(),notices);
     }
 }

@@ -2,6 +2,7 @@ package com.dream.city.invest.controller;
 
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.PlayerTrade;
+import com.dream.city.base.model.enu.ReturnStatus;
 import com.dream.city.base.model.req.PlayerAccountReq;
 import com.dream.city.base.model.req.PlayerTradeReq;
 import com.dream.city.base.model.resp.PlayerTradeResp;
@@ -34,11 +35,12 @@ public class TradeController {
 
     /**
      * 新增投资记录
+     *
      * @param record
      * @return
      */
     @RequestMapping("/insertPlayerTrade")
-    public Result<PlayerTrade> insertPlayerTrade(@RequestBody PlayerTrade record){
+    public Result<PlayerTrade> insertPlayerTrade(@RequestBody PlayerTrade record) {
         logger.info("新增投资记录，{}", record);
         boolean success = Boolean.FALSE;
         String desc = "新增投资记录失败";
@@ -47,20 +49,23 @@ public class TradeController {
             resultDate = tradeService.insertPlayerTrade(record);
             desc = "新增投资记录成功";
             success = Boolean.TRUE;
-        }catch (Exception e){
+        } catch (Exception e) {
             desc = "新增投资记录异常";
-            logger.error(desc,e);
+            logger.error(desc, e);
         }
-        return new Result<PlayerTrade>(success,desc,resultDate);
+        return Result.result(success, desc,
+                success ? ReturnStatus.SUCCESS.getStatus() : ReturnStatus.FAILED.getStatus(),
+                resultDate);
     }
 
     /**
      * 根据tradeId获取投资记录
+     *
      * @param tradeId
      * @return
      */
     @RequestMapping("/getPlayerTradeById")
-    public Result<PlayerTradeResp> getPlayerTradeById(@RequestParam Integer tradeId){
+    public Result<PlayerTradeResp> getPlayerTradeById(@RequestParam Integer tradeId) {
         logger.info("根据tradeId获取投资记录，tradeId：{}", tradeId);
         boolean success = Boolean.FALSE;
         String desc = "根据tradeId获取投资记录成功";
@@ -68,21 +73,24 @@ public class TradeController {
         try {
             resultDate = tradeService.getPlayerTradeById(tradeId);
             success = Boolean.TRUE;
-        }catch (Exception e){
+        } catch (Exception e) {
             desc = "根据tradeId获取投资记录异常";
-            logger.error(desc,e);
+            logger.error(desc, e);
         }
-        return new Result<>(success,desc,resultDate);
+        return Result.result(success, desc,
+                success ? ReturnStatus.SUCCESS.getStatus() : ReturnStatus.FAILED.getStatus(),
+                resultDate);
     }
 
 
     /**
      * 获取投资记录
+     *
      * @param record
      * @return
      */
     @RequestMapping("/getPlayerTrade")
-    public Result<PlayerTrade> getPlayerTrade(@RequestBody PlayerTrade record){
+    public Result<PlayerTrade> getPlayerTrade(@RequestBody PlayerTrade record) {
         logger.info("获取投资记录，{}", record);
         boolean success = Boolean.FALSE;
         String desc = "获取投资记录成功";
@@ -90,20 +98,23 @@ public class TradeController {
         try {
             resultDate = tradeService.getPlayerTrade(record);
             success = Boolean.TRUE;
-        }catch (Exception e){
+        } catch (Exception e) {
             desc = "获取投资记录异常";
-            logger.error(desc,e);
+            logger.error(desc, e);
         }
-        return new Result<PlayerTrade>(success,desc,resultDate);
+        return Result.result(success, desc,
+                success ? ReturnStatus.SUCCESS.getStatus() : ReturnStatus.FAILED.getStatus(),
+                resultDate);
     }
 
     /**
      * 获取投资记录列表
+     *
      * @param record
      * @return
      */
     @RequestMapping("/getPlayerTradeList")
-    public Result<List<PlayerTradeResp>> getPlayerTradeList(@RequestBody PlayerTradeReq record){
+    public Result<List<PlayerTradeResp>> getPlayerTradeList(@RequestBody PlayerTradeReq record) {
         logger.info("获取投资记录，{}", record);
         boolean success = Boolean.FALSE;
         String desc = "获取投资记录失败";
@@ -112,43 +123,46 @@ public class TradeController {
             resultDate = tradeService.getPlayerTradeList(record);
             success = Boolean.TRUE;
             desc = "获取投资记录成功";
-        }catch (Exception e){
+        } catch (Exception e) {
             desc = "获取投资记录异常";
-            logger.error(desc,e);
+            logger.error(desc, e);
         }
-        return new Result<>(success,desc,resultDate);
+        return Result.result(success, desc,
+                success ? ReturnStatus.SUCCESS.getStatus() : ReturnStatus.FAILED.getStatus(),
+                resultDate);
     }
 
 
     /**
      * 玩家充值
+     *
      * @return
      */
     @RequestMapping("/playerRecharge")
-    public Result playerRecharge(@RequestBody PlayerAccountReq record){
+    public Result playerRecharge(@RequestBody PlayerAccountReq record) {
         logger.info("玩家充值，{}", record);
         return tradeHandleService.playerRecharge(record);
     }
 
     /**
      * 玩家提现
+     *
      * @return
      */
     @RequestMapping("/playerWithdraw")
-    public Result playerWithdraw(@RequestBody PlayerAccountReq record){
+    public Result playerWithdraw(@RequestBody PlayerAccountReq record) {
         logger.info("玩家提现，{}", record);
         return tradeHandleService.playerWithdraw(record);
     }
 
     /**
      * 玩家转账
+     *
      * @return
      */
     @RequestMapping("/playerTransfer")
-    public Result playerTransfer(@RequestBody PlayerAccountReq record){
+    public Result playerTransfer(@RequestBody PlayerAccountReq record) {
         logger.info("玩家转账，{}", record);
         return tradeHandleService.playerTransfer(record);
     }
-
-
 }

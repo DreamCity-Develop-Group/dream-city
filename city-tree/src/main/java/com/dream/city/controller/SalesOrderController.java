@@ -77,7 +77,7 @@ public class SalesOrderController {
                 orderList.add(data);
             }
         });
-        return new Result("success", 200, orderList);
+        return new Result("success", ReturnStatus.SUCCESS.getStatus(), orderList);
     }
 
     /**
@@ -90,9 +90,9 @@ public class SalesOrderController {
     public Result getSalesNum(@RequestParam("playerId") String playerId) {
         List<SalesOrder> orders = salesOrderService.selectSalesOrderUnSend(playerId);
         if (orders.size() > 0) {
-            return Result.result(true, orders.size());
+            return Result.result(true, "成功",ReturnStatus.SUCCESS.getStatus(),orders.size());
         }
-        return Result.result(false, 0);
+        return Result.result(false, ReturnStatus.FAILED.getStatus());
     }
 
     /**
@@ -105,9 +105,9 @@ public class SalesOrderController {
     public Result getSalesOvertime(@RequestParam("playerId") String playerId) {
         List<SalesOrder> orders = salesOrderService.selectSalesOrderOvertime(playerId);
         if (orders.size() > 0) {
-            return Result.result(true, orders.size());
+            return Result.result(true, "成功",ReturnStatus.SUCCESS.getStatus(), orders.size());
         }
-        return Result.result(false, 0);
+        return Result.result(false, "失败",ReturnStatus.FAILED.getStatus());
     }
 
     /**
@@ -140,10 +140,10 @@ public class SalesOrderController {
     @RequestMapping("/player/buy/mt")
     public Result playerBuyMtCreate(@RequestParam("amount") BigDecimal buyAmount, @RequestParam("playerId") String playerId) {
         if (StringUtils.isBlank(playerId)) {
-            return new Result("参数错误", 501);
+            return Result.result(false,"参数错误", ReturnStatus.INVALID.getStatus());
         }
         if (buyAmount.compareTo(new BigDecimal(0.00)) < 0) {
-            return new Result("购买额度不能小于0", ReturnStatus.INVALID.getStatus());
+            return Result.result(false,"购买额度不能小于0", ReturnStatus.INVALID.getStatus());
         }
         //支付比率 USDT 和 MT
         BigDecimal rate = salesOrderService.getUsdtToMtRate();
@@ -258,11 +258,11 @@ public class SalesOrderController {
     @RequestMapping("/get/buyer/order")
     public Result getBuyerOrder(@RequestParam("playerId") String playerId) {
         if (StringUtils.isBlank(playerId)) {
-            return new Result("参数错误", 501);
+            return new Result("参数错误", ReturnStatus.INVALID.getStatus());
         }
         List<SalesOrder> orders = salesOrderService.selectSalesSellerOrder(playerId);
 
-        return new Result("success", 200, orders);
+        return new Result("success", ReturnStatus.SUCCESS.getStatus(), orders);
     }
 
 
@@ -275,11 +275,11 @@ public class SalesOrderController {
     @RequestMapping("/get/seller/order")
     public Result getSellerOrder(@RequestParam("playerId") String playerId) {
         if (StringUtils.isBlank(playerId)) {
-            return new Result("参数错误", 501);
+            return new Result("参数错误", ReturnStatus.INVALID.getStatus());
         }
         List<SalesOrder> orders = salesOrderService.selectSalesBuyerOrder(playerId);
 
-        return new Result("sucess", 200, orders);
+        return new Result("sucess", ReturnStatus.SUCCESS.getStatus(), orders);
     }
 
     /**
@@ -294,10 +294,10 @@ public class SalesOrderController {
         accountService.createAccount(playerId, address);
         PlayerAccount account = accountService.getPlayerAccount(playerId);
         if (null != account) {
-            return Result.result(true, "玩家账户开设成功", 200, account);
+            return Result.result(true, "玩家账户开设成功", ReturnStatus.SUCCESS.getStatus(), account);
         }
 
-        return Result.result(false, "玩家账户开设失败", 200, null);
+        return Result.result(false, "玩家账户开设失败", ReturnStatus.FAILED.getStatus(), null);
     }
 
 }

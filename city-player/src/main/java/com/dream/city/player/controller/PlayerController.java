@@ -452,7 +452,7 @@ public class PlayerController {
     public Result getPlayerByInvite(@RequestParam("invite")String invite){
         Player player = playerService.getPlayerByInvite(invite);
         //Result<Player>result = new Result<>(true,);
-        Result result = Result.result(true,"获取玩家",200,player);
+        Result result = Result.result(true,"获取玩家",ReturnStatus.SUCCESS.getStatus(),player);
         return result;
     }
 
@@ -475,7 +475,7 @@ public class PlayerController {
     public Result getPlayerByAccount(@RequestParam("account")String account){
         Player player = playerService.getPlayerByAccount(account);
         //Result<Player>result = new Result<>(true,"获取玩家",200,player);
-        Result result = Result.result(true,"获取玩家",200,player);
+        Result result = Result.result(true,"获取玩家",ReturnStatus.SUCCESS.getStatus(),player);
         return result;
     }
 
@@ -489,9 +489,9 @@ public class PlayerController {
     public Result<Boolean> updatePlayerHeadImg(@RequestBody PlayerExt record){
         Integer integer = playerExtService.updatePlayerExtByPlayerId(record);
         if (integer != null && integer > 0){
-            return new Result<Boolean>(true,"success",200,true);
+            return Result.result(true,"success",ReturnStatus.SUCCESS.getStatus(),true);
         }
-        return new Result<Boolean>(true,"fail",200,false);
+        return new Result<Boolean>(false,"fail",ReturnStatus.FAILED.getStatus(),false);
     }
 
     @RequestMapping("/checkInvite")
