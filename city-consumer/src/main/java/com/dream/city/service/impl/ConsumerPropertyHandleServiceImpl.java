@@ -54,7 +54,7 @@ public class ConsumerPropertyHandleServiceImpl implements ConsumerPropertyHandle
                     //resultMap = JSON.parseObject(JSON.toJSONString(invest),Map.class);
                     resultMap = new HashMap<>();
                     //物业投资按钮
-                    int status = ReturnStatus.ERROR.getStatus();
+                        int status = ReturnStatus.ERROR.getStatus();
                     if (StringUtils.isBlank(invest.getOrderState())){
                         //预约
                         status = ReturnStatus.INVEST_SUBSCRIBE.getStatus();

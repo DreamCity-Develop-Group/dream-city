@@ -1,10 +1,8 @@
 package com.dream.city.base.model.mapper;
 
-import com.dream.city.base.model.entity.PlayerTrade;
 import com.dream.city.base.model.entity.TradeDetail;
 import com.dream.city.base.model.req.PlayerTradeReq;
 import com.dream.city.base.model.resp.PlayerTradeResp;
-import io.swagger.models.auth.In;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
