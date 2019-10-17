@@ -91,14 +91,23 @@ public class ConsumerTreeController {
             }
         }
 
-
-        Map parent = (Map)  playerService.getPlayerByInvite(invite).getData();
-        if (parent == null){
-            message.getData().setCode(ReturnStatus.ERROR_INVITE.getStatus());
-            message.setDesc(ReturnStatus.ERROR_INVITE.getDesc());
-            return message;
+        //如果是系统的不使用玩家表判断
+        String parentId = "";
+        if(!"system".equals(invite)) {
+            Map parent = (Map) playerService.getPlayerByInvite(invite).getData();
+            parentId = parent.get("playerId").toString();
+            if (parent == null) {
+                message.getData().setCode(ReturnStatus.ERROR_INVITE.getStatus());
+                message.setDesc(ReturnStatus.ERROR_INVITE.getDesc());
+                return message;
+            }
+        }else{
+            Result result = treeService.getTree("system");
+            if (result.getSuccess()){
+                JSONObject jsonObject1 = JsonUtil.parseJsonToObj(JsonUtil.parseObjToJson(result.getData()),JSONObject.class);
+                parentId  = jsonObject1.getString("treePlayerId");
+            }
         }
-        String parentId = parent.get("playerId").toString();
 
         Result result = treeService.addTree(parentId, playerId, playerInvite);
         if (result.getSuccess()) {
