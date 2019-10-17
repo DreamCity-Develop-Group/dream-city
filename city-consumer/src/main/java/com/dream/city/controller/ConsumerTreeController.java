@@ -75,8 +75,7 @@ public class ConsumerTreeController {
             playerId = player.get("playerId").toString();
             playerInvite = player.get("playerInvite").toString();
         }else {
-            String p = playerService.getPlayer(playerId).getData().toString();
-            Player player = JsonUtil.parseJsonToObj(p,Player.class);
+            Player player = playerService.getPlayerByPlayerId(playerId);
             playerInvite = player.getPlayerInvite();
         }
 
