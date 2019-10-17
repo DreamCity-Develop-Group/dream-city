@@ -1,6 +1,5 @@
 package com.dream.city.service.impl;
 
-import com.alibaba.fastjson.JSON;
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.CityInvest;
 import com.dream.city.base.model.enu.InvestStatus;

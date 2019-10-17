@@ -1,7 +1,6 @@
 package com.dream.city.service;
 
 import com.dream.city.base.model.Message;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 
 /**
@@ -16,11 +15,9 @@ public interface ConsumerOrderHandleService {
      * @param msg
      * @return
      */
-    @RequestMapping("/insertOrder")
     Message playerInvest(Message msg);
 
 
-    @RequestMapping("/playerInvesting")
     Message playerInvesting(Message msg);
 
     /**
@@ -28,7 +25,6 @@ public interface ConsumerOrderHandleService {
      * @param msg
      * @return
      */
-    @RequestMapping("/orderInvalid")
     Message playerInvestInvalid(Message msg);
 
     /**
@@ -36,7 +32,6 @@ public interface ConsumerOrderHandleService {
      * @param msg
      * @return
      */
-    @RequestMapping("/orderCancel")
     Message playerInvestCancel(Message msg);
 
     /**
@@ -44,7 +39,6 @@ public interface ConsumerOrderHandleService {
      * @param msg
      * @return
      */
-    @RequestMapping("/getOrderById/{orderId}")
     Message getPlayerInvestOrderById(Message msg);
 
     /**
@@ -52,7 +46,6 @@ public interface ConsumerOrderHandleService {
      * @param msg
      * @return
      */
-    @RequestMapping("/getOrders")
     Message getPlayerInvestOrders(Message msg);
 
 
@@ -61,7 +54,6 @@ public interface ConsumerOrderHandleService {
      * @param msg
      * @return
      */
-    @RequestMapping("/getOrders")
     Message getFriendInvestOrders(Message msg);
 
 
