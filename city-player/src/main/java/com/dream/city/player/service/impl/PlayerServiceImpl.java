@@ -6,6 +6,7 @@ import com.dream.city.base.model.Page;
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.Friends;
 import com.dream.city.base.model.entity.PlayerGrade;
+import com.dream.city.base.model.enu.ReturnStatus;
 import com.dream.city.base.model.resp.PlayerResp;
 import com.dream.city.base.utils.DateUtils;
 import com.dream.city.base.model.entity.Player;
@@ -43,7 +44,7 @@ public class PlayerServiceImpl implements PlayerService {
     public Result forgetPwd(String username, String newPwd) {
         PlayerResp player = getPlayerByName(username,null);
         if (player == null){
-            return new Result(Boolean.FALSE, CityGlobal.Constant.USER_NOT_EXIT);
+            return Result.result(Boolean.FALSE, CityGlobal.Constant.USER_NOT_EXIT);
         }
 
         return changePwd(player.getPlayerId(), newPwd);
@@ -53,7 +54,7 @@ public class PlayerServiceImpl implements PlayerService {
     public Result resetLoginPwd(String username, String oldPwd, String newPwd) {
         String pwdType = "resetLoginPwd";
         PlayerResp player = getPlayerByName(username,null);
-        Result result = changePwdVelid(username, oldPwd,pwdType);
+        Result result = changePwdValid(username, oldPwd,pwdType);
         if (!result.getSuccess()){
             return result;
         }
@@ -68,16 +69,16 @@ public class PlayerServiceImpl implements PlayerService {
         int i = playerMapper.updateByPlayerId(player);
         if (i>0){
             // 修改密码成功
-            return new Result(Boolean.TRUE, CityGlobal.Constant.USER_CHANGE_PWD_SUCCESS);
+            return Result.result(Boolean.TRUE, CityGlobal.Constant.USER_CHANGE_PWD_SUCCESS);
         }
-        return new Result(Boolean.FALSE, CityGlobal.Constant.USER_CHANGE_PWD_FAIL);
+        return Result.result(Boolean.FALSE, CityGlobal.Constant.USER_CHANGE_PWD_FAIL);
     }
 
 
     @Override
     public Result resetTraderPwd(String username, String oldpwshop, String newpwshop) {
         String pwdType = "resetTraderPwd";
-        Result result = changePwdVelid(username, oldpwshop,pwdType);
+        Result result = changePwdValid(username, oldpwshop,pwdType);
         if (!result.getSuccess()){
             return result;
         }
@@ -88,33 +89,33 @@ public class PlayerServiceImpl implements PlayerService {
         int i = playerMapper.updatePassByName(player);
         if (i>0){
             // 修改密码成功
-            return new Result(Boolean.TRUE, CityGlobal.Constant.USER_CHANGE_TRADERPWD_SUCCESS);
+            return Result.result(Boolean.TRUE, CityGlobal.Constant.USER_CHANGE_TRADERPWD_SUCCESS,ReturnStatus.SUCCESS.getStatus());
         }
-        return new Result(Boolean.FALSE, CityGlobal.Constant.USER_CHANGE_TRADERPWD_FAIL);
+        return Result.result(Boolean.FALSE, CityGlobal.Constant.USER_CHANGE_TRADERPWD_FAIL,ReturnStatus.FAILED.getStatus());
     }
 
-    private Result changePwdVelid(String username, String oldpwshop,String pwdType){
+    private Result changePwdValid(String username, String oldpwshop,String pwdType){
         Player player = new Player();
         player.setPlayerName(username);
         PlayerResp playerExit = playerMapper.getPlayerById(player);
 
         // 用户不存在
         if(playerExit == null){
-            return new Result(Boolean.FALSE, CityGlobal.Constant.USER_NOT_EXIT);
+            return Result.result(Boolean.FALSE, CityGlobal.Constant.USER_NOT_EXIT,ReturnStatus.ERROR_NOTEXISTS.getStatus());
         }
 
         // 旧密码不正确
         if ("resetLoginPwd".equalsIgnoreCase(pwdType) && !playerExit.getPlayerPass().equals(oldpwshop)){
-            return new Result(Boolean.FALSE, CityGlobal.Constant.USER_OLD_PWD_ERROR);
+            return Result.result(Boolean.FALSE, CityGlobal.Constant.USER_OLD_PWD_ERROR, ReturnStatus.ERROR_PASS.getStatus());
         }
         // 交易密码 没有交易密码的设置交易密码，有交易密码的修改交易密码
         if ("resetTraderPwd".equalsIgnoreCase(pwdType)
                 && StringUtils.isNotBlank(playerExit.getPlayerTradePass())
                 && !playerExit.getPlayerTradePass().equals(oldpwshop)){
-            return new Result(Boolean.FALSE, CityGlobal.Constant.USER_OLD_PWD_ERROR);
+            return Result.result(Boolean.FALSE, CityGlobal.Constant.USER_OLD_PWD_ERROR,ReturnStatus.ERROR_PASS.getStatus());
         }
 
-        return new Result(Boolean.TRUE, CityGlobal.Constant.USER_CHANGE_PWD_SUCCESS);
+        return Result.result(Boolean.TRUE, CityGlobal.Constant.USER_CHANGE_PWD_SUCCESS,ReturnStatus.SUCCESS.getStatus());
     }
 
     @Override

@@ -5,6 +5,7 @@ import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.RelationTree;
 import com.dream.city.base.model.entity.Notice;
 import com.dream.city.base.model.entity.RelationTree;
+import com.dream.city.base.model.enu.ReturnStatus;
 import com.dream.city.service.NoticeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +47,7 @@ public class NoticeController {
             logger.error("删除通知异常",e);
         }
 
-        return new Result(success,"删除通知");
+        return Result.result(success,"删除通知");
     }
 
     @RequestMapping("/insertNoticeById")
@@ -61,7 +62,7 @@ public class NoticeController {
             logger.error("新增通知异常",e);
         }
 
-        return new Result(success,"新增通知");
+        return Result.result(success,"新增通知");
     }
 
     @RequestMapping("/getNoticeById/{noticeId}")
@@ -75,7 +76,7 @@ public class NoticeController {
             logger.error("查询通知异常",e);
         }
 
-        return new Result(success,"查询通知",i);
+        return Result.result(success,"查询通知", ReturnStatus.SUCCESS.getStatus(),i);
     }
 
     @RequestMapping("/getNoticeList")
@@ -89,7 +90,7 @@ public class NoticeController {
             logger.error("获取通知列表异常",e);
         }
 
-        return new Result(success,"获取通知列表",i);
+        return Result.result(success,"获取通知列表", ReturnStatus.SUCCESS.getStatus(),i);
     }
 
     @RequestMapping("/updateNoticeById")
@@ -104,7 +105,7 @@ public class NoticeController {
             logger.error("更新通知异常",e);
         }
 
-        return new Result(success,"更新通知");
+        return Result.result(success,"更新通知");
     }
 
 }

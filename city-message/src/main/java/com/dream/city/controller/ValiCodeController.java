@@ -76,7 +76,7 @@ public class ValiCodeController {
                     "验证成功！",
                     String.valueOf(System.currentTimeMillis())
             );
-            return new Result(false, "验证成功！", 200, msg);
+            return Result.result(true, "验证成功！", ReturnStatus.SUCCESS.getStatus(), msg);
         } else {
             MessageData data2 = new MessageData(message.getData().getType(), message.getData().getModel());
             data2.setData(Boolean.FALSE);
@@ -87,7 +87,7 @@ public class ValiCodeController {
                     "验证失败！",
                     String.valueOf(System.currentTimeMillis())
             );
-            return new Result(true, "验证失败！", 200, msg);
+            return Result.result(false, "验证失败！", ReturnStatus.FAILED.getStatus(), msg);
         }
     }
 

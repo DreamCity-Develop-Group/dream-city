@@ -113,7 +113,12 @@ public class AccountController {
             logger.error("玩家账户列表异常",e);
         }
         Result result = new Result<>(b,desc,accounts);
-        return result;
+        return Result.result(
+                b,
+                desc,
+                b?ReturnStatus.SUCCESS.getStatus():ReturnStatus.FAILED.getStatus(),
+                accounts
+        );
     }
 
     /**
@@ -136,9 +141,9 @@ public class AccountController {
             logger.error("更新玩家账户异常",e);
         }
         if (i > 0){
-            return new Result<>(b,desc, ReturnStatus.SUCCESS.getStatus(),i);
+            return Result.result(b,desc, ReturnStatus.SUCCESS.getStatus(),i);
         }
-        return new Result<>(b,desc,ReturnStatus.ERROR.getStatus(),i);
+        return Result.result(b,desc,ReturnStatus.ERROR.getStatus(),i);
     }
 
 
