@@ -23,9 +23,9 @@ public class DataUtils {
         if ("RECHARGE".equalsIgnoreCase(code)){
             desc = "充值";
         }else if ("USDT_INVEST_VERIFY".equalsIgnoreCase(code)){
-            desc = "投资冻结";
-        }else if ("USDT_INVEST_FREEZE".equalsIgnoreCase(code)){
             desc = "投资审核通过扣款";
+        }else if ("USDT_INVEST_FREEZE".equalsIgnoreCase(code)){
+            desc = "投资冻结";
         }else if ("USDT_INVEST_UNFREEZE".equalsIgnoreCase(code)){
             desc = "投资解冻";
         }else if ("USDT_EARNINGS".equalsIgnoreCase(code)){
