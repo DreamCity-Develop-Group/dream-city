@@ -96,6 +96,7 @@ public class ConsumerFriendsController {
             FriendsReq condition = DataUtils.getFriendsReq(msg);
             Page pageReq = new Page<>();
             pageReq.setCondition(condition);
+            pageReq.setPageSize(9999999);
             Result<PageInfo> page = consumerFriendsService.friendList(pageReq);
             data.setData(page.getData());
         }catch (Exception e){
@@ -118,6 +119,7 @@ public class ConsumerFriendsController {
             FriendsReq condition = DataUtils.getFriendsReq(msg);
             Page pageReq = new Page<>();
             pageReq.setCondition(condition);
+            pageReq.setPageSize(9999999);
             Result<PageInfo> page = consumerFriendsService.applyFriendList(pageReq);
             data.setData(page.getData());
         }catch (Exception e){

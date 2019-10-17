@@ -5,6 +5,7 @@ import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.PlayerGrade;
 import com.dream.city.base.model.entity.Player;
 import com.dream.city.base.model.resp.PlayerResp;
+import com.github.pagehelper.PageInfo;
 import org.springframework.stereotype.Repository;
 
 import java.util.Map;
@@ -48,7 +49,7 @@ public interface PlayerService {
      * @param pageReq
      * @return
      */
-    Page getPlayers(Page pageReq);
+    PageInfo<PlayerResp> getPlayers(Page pageReq);
 
     PlayerResp getPlayerByName(String username, String playerNick);
 

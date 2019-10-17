@@ -261,6 +261,7 @@ public class DataUtils {
     public static FriendsReq getFriendsReq(Message msg){
         Map map = (Map)msg.getData().getData();
         String username = map.containsKey("username")?(String) map.get("username"):null;
+        String playerId = map.containsKey("playerId")?(String) map.get("playerId"):null;
         if (StringUtils.isBlank(username)){
             username = map.containsKey("playerName")?(String) map.get("playerName"):null;
         }
@@ -268,6 +269,7 @@ public class DataUtils {
 
         FriendsReq resultMap = new FriendsReq();
         resultMap.setPlayerName(username);
+        resultMap.setPlayerId(playerId);
         resultMap.setFriendNick(nick);
         return resultMap;
     }
