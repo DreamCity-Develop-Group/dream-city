@@ -13,6 +13,7 @@ import com.dream.city.service.*;
 import com.dream.city.service.impl.ConsumerNoticeServiceImpl;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -107,6 +108,11 @@ public class DefaultController {
         PlayerAccount playerAccount = playerAccountService.getPlayerAccount(player.getPlayerId());
 
         Map<String, Object> account = new HashMap<>();
+        if (StringUtils.isBlank(player.getPlayerTradePass())){
+            account.put("isHasTradePassword",Boolean.FALSE);
+        }else {
+            account.put("isHasTradePassword",Boolean.TRUE);
+        }
         if(playerAccount != null) {
             account.put("usdt", playerAccount.getAccUsdtAvailable());
             account.put("mt", playerAccount.getAccMtAvailable());
