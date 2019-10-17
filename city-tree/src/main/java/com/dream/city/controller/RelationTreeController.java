@@ -3,6 +3,7 @@ package com.dream.city.controller;
 import com.dream.city.base.model.CityGlobal;
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.*;
+import com.dream.city.base.model.enu.ReturnStatus;
 import com.dream.city.service.PlayerAccountService;
 import com.dream.city.service.RelationTreeService;
 import com.dream.city.service.SalesOrderService;
@@ -48,8 +49,10 @@ public class RelationTreeController {
     @RequestMapping("/get/tree")
     public Result getTree(@RequestParam("playerId") String playerId) {
         RelationTree tree = relationTreeService.getTreeByPlayerId(playerId);
-
-        return new Result(CityGlobal.Constant.TREE_RELATION_SUCCESS, 200, tree);
+        if (tree!=null) {
+            return Result.result(true,"fail",ReturnStatus.SUCCESS.getStatus(), tree);
+        }
+        return Result.result(false, "success",ReturnStatus.ERROR_NOTEXISTS.getStatus(),null);
     }
 
     /**

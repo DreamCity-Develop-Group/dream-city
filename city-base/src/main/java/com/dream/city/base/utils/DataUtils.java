@@ -5,7 +5,6 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.dream.city.base.model.Message;
 import com.dream.city.base.model.entity.CityFile;
-import com.dream.city.base.model.entity.CityInvest;
 import com.dream.city.base.model.entity.PlayerEarning;
 import com.dream.city.base.model.req.*;
 import org.apache.commons.lang.StringUtils;
@@ -16,6 +15,77 @@ import java.util.List;
 import java.util.Map;
 
 public class DataUtils {
+
+
+
+    public static String getTradeDetailType(String code){
+        String desc = "";
+        if ("RECHARGE".equalsIgnoreCase(code)){
+            desc = "充值";
+        }else if ("USDT_INVEST_VERIFY".equalsIgnoreCase(code)){
+            desc = "投资审核通过扣款";
+        }else if ("USDT_INVEST_FREEZE".equalsIgnoreCase(code)){
+            desc = "投资冻结";
+        }else if ("USDT_INVEST_UNFREEZE".equalsIgnoreCase(code)){
+            desc = "投资解冻";
+        }else if ("USDT_EARNINGS".equalsIgnoreCase(code)){
+            desc = "投资收益";
+        }else if ("MT_INVES_FREEZE".equalsIgnoreCase(code)){
+            desc = "投资冻结税金";
+        }else if ("MT_INVEST_PERSONAL_TAX".equalsIgnoreCase(code)){
+            desc = "投资个人税金";
+        }else if ("MT_INVEST_ENTERPRISE_TAX".equalsIgnoreCase(code)){
+            desc = "投资企业税金";
+        }else if ("MT_INVEST_QUOTA_TAX".equalsIgnoreCase(code)){
+            desc = "定额税税金";
+        }else if ("MT_INVEST_PERSONAL_TAX_UNFREEZE".equalsIgnoreCase(code)){
+            desc = "投资个人税金解冻";
+        }else if ("MT_INVEST_ENTERPRISE_TAX_UNFREEZE".equalsIgnoreCase(code)){
+            desc = "投资企业税金解冻";
+        }else if ("BUY_MT_FREEZE".equalsIgnoreCase(code)){
+            desc = "购买mt冻结";
+        }else if ("TRANSFER_FREEZE".equalsIgnoreCase(code)){
+            desc = "转账冻结";
+        }else if ("TRANSFER_VERIFY".equalsIgnoreCase(code)){
+            desc = "转账审核通过扣款";
+        }else if ("TRANSFER_TAX".equalsIgnoreCase(code)){
+            desc = "转账所得税";
+        }else if ("TRANSFER_UNFREEZE_USDT".equalsIgnoreCase(code)){
+            desc = "转账审核不通过解冻";
+        }else if ("TRANSFER_UNFREEZE_MT".equalsIgnoreCase(code)){
+            desc = "转账审核不通过解冻税金";
+        }else if ("WITHDRAW_FREEZE".equalsIgnoreCase(code)){
+            desc = "提现冻结";
+        }else if ("WITHDRAW_VERIFY".equalsIgnoreCase(code)){
+            desc = "提现审核通过扣款";
+        }else if ("WITHDRAW_TAX".equalsIgnoreCase(code)){
+            desc = "提现扣税";
+        }else if ("WITHDRAW_UNFREEZE_USDT".equalsIgnoreCase(code)){
+            desc = "提现审核不通过解冻";
+        }else if ("WITHDRAW_UNFREEZE_MT".equalsIgnoreCase(code)){
+            desc = "提现审核不通过解冻税金";
+        }else {
+            desc = code;
+        }
+        return desc;
+    }
+
+
+    public static String getTradeStatus(String code){
+        String desc = "";
+        if ("FREEZE".equalsIgnoreCase(code)){
+            desc = "冻结";
+        }else if ("UNFREEZE".equalsIgnoreCase(code)){
+            desc = "解冻";
+        }else if ("OUT".equalsIgnoreCase(code)){
+            desc = "已出账";
+        }else if ("IN".equalsIgnoreCase(code)){
+            desc = "已入账";
+        }else {
+            desc = code;
+        }
+        return desc;
+    }
 
 
     /**

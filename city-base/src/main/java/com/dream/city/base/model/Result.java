@@ -50,6 +50,8 @@ public class Result<T> {
         this.code = code;
         if (code == CityGlobal.ResultCode.success.getStatus()) {
             this.success = Boolean.TRUE;
+        }else {
+            this.success = Boolean.FALSE;
         }
     }
 
@@ -59,6 +61,8 @@ public class Result<T> {
         this.data = data;
         if (code == CityGlobal.ResultCode.success.getStatus()) {
             this.success = Boolean.TRUE;
+        }else {
+            this.success = Boolean.FALSE;
         }
     }
 
@@ -69,6 +73,8 @@ public class Result<T> {
         this.data = data;
         if (success) {
             this.code = CityGlobal.ResultCode.success.getStatus();
+        }else {
+            this.code = CityGlobal.ResultCode.fail.getStatus();
         }
     }
 
@@ -86,6 +92,8 @@ public class Result<T> {
         this.msg = msg;
         if (success) {
             this.code = CityGlobal.ResultCode.success.getStatus();
+        }else {
+            this.code = CityGlobal.ResultCode.fail.getStatus();
         }
     }
 
@@ -95,6 +103,8 @@ public class Result<T> {
         this.data = data;
         if (success) {
             this.code = CityGlobal.ResultCode.success.getStatus();
+        }else {
+            this.code = CityGlobal.ResultCode.fail.getStatus();
         }
     }
 
@@ -105,6 +115,8 @@ public class Result<T> {
         this.data = data;
         if (code == CityGlobal.ResultCode.success.getStatus()) {
             this.success = Boolean.TRUE;
+        }else {
+            this.success = Boolean.FALSE;
         }
     }
 
