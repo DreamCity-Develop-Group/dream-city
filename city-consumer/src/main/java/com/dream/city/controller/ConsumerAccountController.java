@@ -8,6 +8,7 @@ import com.dream.city.base.model.MessageData;
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.Player;
 import com.dream.city.base.model.entity.PlayerAccount;
+import com.dream.city.base.model.entity.RelationTree;
 import com.dream.city.base.model.req.UserReq;
 import com.dream.city.base.model.resp.PlayerResp;
 import com.dream.city.base.utils.DataUtils;
@@ -58,7 +59,7 @@ public class ConsumerAccountController {
     @ApiOperation(value = "获取玩家账户", httpMethod = "POST", notes = "t入参username", response = Message.class)
     @RequestMapping("/account/getPlayerAccount")
     public Message getPlayerAccount(@RequestBody Message msg){
-        logger.info("添加好友", JSONObject.toJSONString(msg));
+        logger.info("获取玩家账户", JSONObject.toJSONString(msg));
         Object dataMsg = msg.getData().getData();
         JSONObject jsonObject = JsonUtil.parseJsonToObj(JsonUtil.parseObjToJson(dataMsg), JSONObject.class);
         String username = jsonObject.getString("username");
@@ -66,12 +67,17 @@ public class ConsumerAccountController {
         String playerId = jsonObject.getString("playerId");
 
         Player player1 = playerService.getPlayerByPlayerId(playerId);
-        Result trees = treeService.getMembers(playerId,9);
-        JSONObject tree = JsonUtil.parseJsonToObj(JsonUtil.parseObjToJson(trees.getData()), JSONObject.class);
-        int num = tree.getInteger("num");
-        JSONArray array = tree.getJSONArray("members");
-        int size = array.size();
-        int total = num+size;
+        Object relationTree = treeService.getTree(playerId).getData();
+         int size = 0;
+         int total = 0;
+        if(relationTree!=null) {
+            Result trees = treeService.getMembers(playerId, 9);
+            JSONObject tree = JsonUtil.parseJsonToObj(JsonUtil.parseObjToJson(trees.getData()), JSONObject.class);
+            int num = tree.getInteger("num");
+            JSONArray array = tree.getJSONArray("members");
+            size = array.size();
+            total = num + size;
+        }
         UserReq userReq = DataUtils.getUserReq(msg);
 
         if (StringUtils.isBlank(playerId) && StringUtils.isBlank(userReq.getUsername())){

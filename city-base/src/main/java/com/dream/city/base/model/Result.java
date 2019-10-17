@@ -160,7 +160,7 @@ public class Result<T> {
                 "success=" + success +
                 ", code='" + code + '\'' +
                 ", msg='" + msg + '\'' +
-                ", data=" + data +
+                ", data=" + data +py
                 '}';
     }
 
