@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.dream.city.base.model.Message;
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.PlayerTrade;
+import com.dream.city.base.model.enu.ReturnStatus;
 import com.dream.city.base.model.req.PlayerAccountReq;
 import com.dream.city.base.model.req.PlayerTradeReq;
 import com.dream.city.base.model.resp.PlayerResp;
@@ -58,16 +59,22 @@ public class ConsumerTradeController {
     @RequestMapping("/trade/getTradeDetailList")
     public Message getTradeDetailList(@RequestBody Message msg){
         logger.info("根据tradeId获取投资记录", JSONObject.toJSONString(msg));
+        msg.setCode(ReturnStatus.ERROR.getStatus());
+        msg.getData().setCode(ReturnStatus.ERROR.getStatus());
+        msg.setDesc("根据用户id获取交易明细");
+
         PlayerAccountReq accountReq = DataUtils.getPlayerAccountReqFromMessage(msg);
         PlayerTradeReq tradeReq = new PlayerTradeReq();
         tradeReq.setPlayerId(accountReq.getAccPlayerId());
         Result<List<PlayerTradeResp>> tradeResult = tradeService.getTradeDetailList(tradeReq);
-        Map<String,Object> data = new HashMap();
-        List<PlayerTradeResp> tradeDetailList = tradeResult.getData();
+        Map<String,Object> data = new HashMap<>();
+        List<Map<String,Object>> tradeDetailListResult = new ArrayList<>();
         if (tradeResult != null){
+            msg.setCode(tradeResult.getCode());
+            msg.getData().setCode(tradeResult.getCode());
             msg.setDesc(tradeResult.getMsg());
             if (!CollectionUtils.isEmpty(tradeResult.getData())){
-                List<Map<String,Object>> tradeDetailListResult = new ArrayList<>();
+                List<PlayerTradeResp> tradeDetailList = tradeResult.getData();
                 Map<String,Object> dataMap = new HashMap<>();
                 for(PlayerTradeResp tradeResp: tradeDetailList){
                     dataMap.put("createTime",tradeResp.getCreateTime());
@@ -80,7 +87,7 @@ public class ConsumerTradeController {
                 }
             }
         }
-        data.put("tradeRecordList",tradeDetailList);
+        data.put("tradeRecordList",tradeDetailListResult);
         msg.getData().setData(data);
         return msg;
     }
