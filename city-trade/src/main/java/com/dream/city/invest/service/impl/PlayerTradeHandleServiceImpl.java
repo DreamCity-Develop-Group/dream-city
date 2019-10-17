@@ -44,13 +44,14 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
 
     @Override
     @Transactional
-    public Result<Boolean> playerRecharge(PlayerAccountReq record) {
+    public Result<PlayerTrade>  playerRecharge(PlayerAccountReq record) {
         boolean success = Boolean.FALSE;
         String msg = null;
         record.setTradeType(TradeType.RECHARGE.name());
         record.setInOut(AmountDynType.IN.name());
 
         Result<BigDecimal> updateAccountResult = null;
+        PlayerTrade trade = null;
         try {
             Result<PlayerTrade> playerTradeResult = null;
             //充值
@@ -63,37 +64,46 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
                 record.setAccId(record.getAccId());
                 playerTradeResult = this.createPlayerTrade(record, updateAccountResult.getData(), updateAccountResult.getMsg());
             }
+
             if (playerTradeResult != null && playerTradeResult.getSuccess()){
+                PlayerAccount getPlayerAccount = accountService.getPlayerAccount(record.getAccPlayerId());
+                BigDecimal usdtSurplus = BigDecimal.ZERO;
+                BigDecimal mtSurplus = BigDecimal.ZERO;
+                if (record.getAmountType().equalsIgnoreCase(AmountType.USDT.name())){
+                    usdtSurplus = getPlayerAccount.getAccUsdt().add(playerTradeResult.getData().getTradeAmount());
+                }else {
+                    mtSurplus = getPlayerAccount.getAccMt().add(playerTradeResult.getData().getTradeAmount());
+                }
+                trade = playerTradeResult.getData();
                 this.createTradeDetail(playerTradeResult.getData().getTradePlayerId(), playerTradeResult.getData().getTradeId(),
-                        playerTradeResult.getData().getTradeAmount(), null,null,TradeDetailType.RECHARGE.getCode(), "充值");
+                        playerTradeResult.getData().getTradeAmount(), usdtSurplus,mtSurplus,null,null,TradeDetailType.RECHARGE.getCode(), "充值");
             }
         }catch (Exception e){
             logger.error("充值异常",e);
             throw new BusinessException("充值异常");
         }
-
-        if (success){
-            // todo
-            msg = "您的充值已到账，金额：" + updateAccountResult.getData();
-
-        }
-        return new Result<>(success,msg,success);
+        return new Result<>(success,msg,trade);
     }
 
 
 
     @Override
     @Transactional
-    public Result<Boolean> playerWithdraw(PlayerAccountReq record) {
+    public Result<PlayerTrade>  playerWithdraw(PlayerAccountReq record) {
         boolean success = Boolean.FALSE;
         String msg = "玩家提现";
         record.setInOut(AmountDynType.OUT.name());
         record.setTradeType(TradeType.WITHDRAW.name());
         //record.setAmountType(AmountType.USDT.name());
         Result<BigDecimal> updateAccountResult = null;
+        PlayerTrade trade = null;
         try {
-            //校验提现规则 todo
-
+            //校验提现规则
+            PlayerAccount getPlayerAccount = accountService.getPlayerAccount(record.getAccPlayerId());
+            String checkAmount = checkAmount(record,getPlayerAccount);
+            if (StringUtils.isNotBlank(checkAmount)){
+                return new Result<>(success,checkAmount);
+            }
 
             //提现 冻结金额
             BigDecimal tradeAmount = BigDecimal.ZERO;
@@ -111,39 +121,65 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
             //新增交易审核 待审核
             TradeVerify tradeVerify = null;
             if (createPlayerTradeResult != null && createPlayerTradeResult.getSuccess()){
+                trade = createPlayerTradeResult.getData();
                 tradeVerify = this.createTradeVerify(createPlayerTradeResult.getData().getTradeId(),
                         VerifyStatus.WAIT.name(), updateAccountResult.getMsg());
             }
 
             if (createPlayerTradeResult != null && createPlayerTradeResult.getSuccess() && tradeVerify != null){
+                BigDecimal usdtSurplus = getPlayerAccount.getAccUsdt().subtract(createPlayerTradeResult.getData().getTradeAmount());
                 this.createTradeDetail(createPlayerTradeResult.getData().getTradePlayerId(), createPlayerTradeResult.getData().getTradeId(),
-                        createPlayerTradeResult.getData().getTradeAmount(), null,tradeVerify.getVerifyId(),TradeDetailType.WITHDRAW_FREEZE.getCode(), "提现冻结金额");
+                        createPlayerTradeResult.getData().getTradeAmount(), usdtSurplus,getPlayerAccount.getAccMt(),null,tradeVerify.getVerifyId(),TradeDetailType.WITHDRAW_FREEZE.getCode(), "提现冻结金额");
+
+                BigDecimal mtSurplus = getPlayerAccount.getAccMt().subtract(withdrawTax);
                 this.createTradeDetail(createPlayerTradeResult.getData().getTradePlayerId(), createPlayerTradeResult.getData().getTradeId(),
-                        withdrawTax, null,tradeVerify.getVerifyId(),TradeDetailType.WITHDRAW_FREEZE.getCode(), "提现冻结税金");
+                        withdrawTax, usdtSurplus,mtSurplus,null,tradeVerify.getVerifyId(),TradeDetailType.WITHDRAW_FREEZE.getCode(), "提现冻结税金");
             }
         }catch (Exception e){
             logger.error("提现异常",e);
             throw new BusinessException("提现异常");
         }
-        return new Result<>(success,msg,success);
+        return new Result<>(success,msg,trade);
+    }
+
+
+    private String checkAmount(PlayerAccountReq record,PlayerAccount getPlayerAccount){
+        String msg = "";
+        if (record.getAccUsdt().compareTo(getPlayerAccount.getAccUsdtAvailable()) > 0){
+            msg = "USDT余额不足";
+        }
+        if (TradeType.WITHDRAW.getCode().equalsIgnoreCase(record.getTradeType()) && withdrawTax.compareTo(getPlayerAccount.getAccMtAvailable()) > 0){
+            msg = "MT余额不足";
+        }
+        if (TradeType.TRANSFER_FROM.getCode().equalsIgnoreCase(record.getTradeType()) && transferTax.compareTo(getPlayerAccount.getAccMtAvailable()) > 0){
+            msg = "MT余额不足";
+        }
+        return msg;
     }
 
 
     @Override
     @Transactional
-    public Result<Boolean> playerTransfer(PlayerAccountReq recordOut) {
+    public Result<PlayerTrade>  playerTransfer(PlayerAccountReq recordOut) {
         boolean success = Boolean.FALSE;
         String msg = "玩家转账";
         Result<BigDecimal> updateAccountResult = null;
+        PlayerTrade trade = null;
         try {
-            String verifyStatus = VerifyStatus.WAIT.name();
-            //获取转账账户信息
-            PlayerAccount playerAccountOut = accountService.getPlayerAccount(recordOut.getAccPlayerId());
-            recordOut.setAccId(playerAccountOut.getAccId());
-
-            //转账账户 出账
             recordOut.setInOut(AmountDynType.OUT.name());
             recordOut.setTradeType(TradeType.TRANSFER_FROM.getCode());
+            String verifyStatus = VerifyStatus.WAIT.name();
+            //获取转账账户信息
+            PlayerAccount getPlayerAccount = accountService.getPlayerAccount(recordOut.getAccPlayerId());
+            recordOut.setAccId(getPlayerAccount.getAccId());
+
+            //校验提现规则
+            String checkAmount = checkAmount(recordOut,getPlayerAccount);
+            if (StringUtils.isNotBlank(checkAmount)){
+                return new Result<>(success,checkAmount);
+            }
+
+            //转账账户 出账
             updateAccountResult = this.updatePlayerAccount(recordOut);
             if (updateAccountResult != null) {
                 success = updateAccountResult.getSuccess();
@@ -155,6 +191,7 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
             //新增交易审核 内部转账：审核通过；外部转账：待审核
             TradeVerify tradeVerify = null;
             if (createPlayerTradeResult.getSuccess()){
+                trade = createPlayerTradeResult.getData();
                 if (transferVerify){
                     tradeVerify = this.createTradeVerify(createPlayerTradeResult.getData().getTradeId(),
                             verifyStatus, msg);
@@ -166,25 +203,28 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
             }
             //新增交易流水
             if (createPlayerTradeResult != null && createPlayerTradeResult.getSuccess() && tradeVerify != null){
-                if (isInsideAccAddr(playerAccountOut.getAccAddr())){
+                BigDecimal usdtSurplus = getPlayerAccount.getAccUsdt().subtract(createPlayerTradeResult.getData().getTradeAmount());
+                BigDecimal mtSurplus = getPlayerAccount.getAccMt().subtract(transferTax);
+
+                if (isInsideAccAddr(getPlayerAccount.getAccAddr())){
                     //内部转账
                     if (transferVerify){
                         this.createTradeDetail(createPlayerTradeResult.getData().getTradePlayerId(), createPlayerTradeResult.getData().getTradeId(),
-                                createPlayerTradeResult.getData().getTradeAmount(), null,tradeVerify.getVerifyId(),TradeDetailType.TRANSFER_FREEZE.getCode(), "转账冻结金额");
+                                createPlayerTradeResult.getData().getTradeAmount(), usdtSurplus,getPlayerAccount.getAccMt(),null,tradeVerify.getVerifyId(),TradeDetailType.TRANSFER_FREEZE.getCode(), "转账冻结金额");
                         this.createTradeDetail(createPlayerTradeResult.getData().getTradePlayerId(), createPlayerTradeResult.getData().getTradeId(),
-                                transferTax, null,tradeVerify.getVerifyId(),TradeDetailType.TRANSFER_FREEZE.getCode(), "转账冻结税金");
+                                transferTax, usdtSurplus,mtSurplus,null,tradeVerify.getVerifyId(),TradeDetailType.TRANSFER_FREEZE.getCode(), "转账冻结税金");
                     }else {
                         this.createTradeDetail(createPlayerTradeResult.getData().getTradePlayerId(), createPlayerTradeResult.getData().getTradeId(),
-                                createPlayerTradeResult.getData().getTradeAmount(), null,tradeVerify.getVerifyId(),TradeDetailType.TRANSFER_VERIFY.getCode(), "转账扣除金额");
+                                createPlayerTradeResult.getData().getTradeAmount(), usdtSurplus,getPlayerAccount.getAccMt(),null,tradeVerify.getVerifyId(),TradeDetailType.TRANSFER_VERIFY.getCode(), "转账扣除金额");
                         this.createTradeDetail(createPlayerTradeResult.getData().getTradePlayerId(), createPlayerTradeResult.getData().getTradeId(),
-                                transferTax, null,tradeVerify.getVerifyId(),TradeDetailType.TRANSFER_VERIFY.getCode(), "转账扣除税金");
+                                transferTax, usdtSurplus,mtSurplus,null,tradeVerify.getVerifyId(),TradeDetailType.TRANSFER_VERIFY.getCode(), "转账扣除税金");
                     }
                 }else {
                     //外部转账
                     this.createTradeDetail(createPlayerTradeResult.getData().getTradePlayerId(), createPlayerTradeResult.getData().getTradeId(),
-                            createPlayerTradeResult.getData().getTradeAmount(), null,tradeVerify.getVerifyId(),TradeDetailType.TRANSFER_FREEZE.getCode(), "转账冻结金额");
+                            createPlayerTradeResult.getData().getTradeAmount(), usdtSurplus,getPlayerAccount.getAccMt(),null,tradeVerify.getVerifyId(),TradeDetailType.TRANSFER_FREEZE.getCode(), "转账冻结金额");
                     this.createTradeDetail(createPlayerTradeResult.getData().getTradePlayerId(), createPlayerTradeResult.getData().getTradeId(),
-                            transferTax, null,tradeVerify.getVerifyId(),TradeDetailType.TRANSFER_FREEZE.getCode(), "转账冻结税金");
+                            transferTax, usdtSurplus,mtSurplus,null,tradeVerify.getVerifyId(),TradeDetailType.TRANSFER_FREEZE.getCode(), "转账冻结税金");
                 }
 
             }
@@ -207,12 +247,13 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
                     recordIn.setAccUsdtAvailable(recordOut.getAccUsdt());
                     Result<BigDecimal> transferInResult = this.updatePlayerAccount(recordIn);
 
+                    BigDecimal usdtSurplus = playerAccountIn.getAccUsdt().subtract(createPlayerTradeResult.getData().getTradeAmount());
                     //新增交易记录 入账
                     recordIn.setAccId(playerAccountIn.getAccId());
                     this.createPlayerTrade(recordIn,transferInResult.getData(), transferInResult.getMsg());
 
                     this.createTradeDetail(createPlayerTradeResult.getData().getTradePlayerId(), createPlayerTradeResult.getData().getTradeId(),
-                            createPlayerTradeResult.getData().getTradeAmount(), null,null,TradeType.TRANSFER_TO.getCode(), "转账进账");
+                            createPlayerTradeResult.getData().getTradeAmount(), usdtSurplus,playerAccountIn.getAccMt(),null,null,TradeType.TRANSFER_TO.getCode(), "转账进账");
                 }
             }else {
                 //外部转账 相当于提现 待审核
@@ -222,7 +263,7 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
             logger.error("转账异常",e);
             throw new BusinessException("转账异常");
         }
-        return new Result<>(success,msg,success);
+        return new Result<>(success,msg,trade);
     }
 
 
@@ -238,10 +279,13 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
     }
 
 
-    private void createTradeDetail(String playerId,Integer tradeId,BigDecimal tradeAmount,Integer orderId,Integer verifyId,String tradeDetailType,String descr){
+    private void createTradeDetail(String playerId,Integer tradeId,BigDecimal tradeAmount,BigDecimal usdtSurplus,
+                                   BigDecimal mtSurplus,Integer orderId,Integer verifyId,String tradeDetailType,String descr){
         TradeDetail tradeDetail = new TradeDetail();
         tradeDetail.setTradeId(tradeId);
         tradeDetail.setTradeAmount(tradeAmount);
+        tradeDetail.setMtSurplus(mtSurplus);
+        tradeDetail.setUsdtSurplus(usdtSurplus);
         tradeDetail.setDescr(descr);
         tradeDetail.setPlayerId(playerId);
         tradeDetail.setTradeDetailType(tradeDetailType);
