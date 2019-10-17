@@ -248,6 +248,12 @@ public class ConsumerPlayerController {
         dataMap.put("desc", result.getMsg());
 
         MessageData data = new MessageData(msg.getData().getType(), msg.getData().getModel());
+        //添加判断状态码
+        data.setCode(result.getCode());
+        if (result.getSuccess()){
+            data.setCode(ReturnStatus.SUCCESS.getStatus());
+        }
+
         data.setData(dataMap);
         Message message = new Message(msg.getSource(), msg.getTarget(), data);
         return message;

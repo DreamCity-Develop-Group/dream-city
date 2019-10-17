@@ -82,7 +82,11 @@ public class Result<T> {
         super();
         this.success = success;
         this.msg = msg;
-        this.code = code;
+        if (success) {
+            this.code = CityGlobal.ResultCode.success.getStatus();
+        }else {
+            this.code = CityGlobal.ResultCode.fail.getStatus();
+        }
         this.data = null;
     }
 
@@ -124,13 +128,22 @@ public class Result<T> {
         super();
         this.success = success;
         this.msg = msg;
-        this.code = code;
+        if (success) {
+            this.code = CityGlobal.ResultCode.success.getStatus();
+        }else {
+            this.code = CityGlobal.ResultCode.fail.getStatus();
+        }
         this.data = data;
     }
 
     public Result(boolean success){
         super();
         this.success = success;
+        if (success) {
+            this.code = CityGlobal.ResultCode.success.getStatus();
+        }else {
+            this.code = CityGlobal.ResultCode.fail.getStatus();
+        }
     }
 
     public boolean getSuccess() {
