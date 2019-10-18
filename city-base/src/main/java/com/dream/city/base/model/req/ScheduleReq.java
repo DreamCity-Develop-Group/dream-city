@@ -20,9 +20,9 @@ public class ScheduleReq implements Serializable {
     private String triggerName;
     private String triggerGroup;
 
-    private boolean startNow;
+    private Boolean startNow;
     private Date startAt;
-    private String parameter;
+    private String jsonParameter;
 
 
     private String descr;

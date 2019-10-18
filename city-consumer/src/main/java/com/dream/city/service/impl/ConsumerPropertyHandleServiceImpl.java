@@ -6,6 +6,7 @@ import com.dream.city.base.model.enu.InvestStatus;
 import com.dream.city.base.model.enu.ReturnStatus;
 import com.dream.city.base.model.req.CityInvestReq;
 import com.dream.city.base.model.resp.InvestResp;
+import com.dream.city.base.utils.DateUtils;
 import com.dream.city.service.ConsumerPropertyHandleService;
 import com.dream.city.service.ConsumerPropertyService;
 import org.apache.commons.lang.StringUtils;
@@ -97,6 +98,11 @@ public class ConsumerPropertyHandleServiceImpl implements ConsumerPropertyHandle
                     resultMap.put("expectIncome", invest.getInLimit()
                             .multiply(BigDecimal.valueOf(Long.parseLong(String.valueOf(invest.getInEarning())))));
 
+                    String resultTime = DateUtils.date2Str(invest.getVerifyTime());
+                    if (invest.getVerifyTime() == null){
+                        resultTime ="9:30";
+                    }
+                    resultMap.put("resultTime",resultTime);
 
                     resultList.add(resultMap);
                 }
