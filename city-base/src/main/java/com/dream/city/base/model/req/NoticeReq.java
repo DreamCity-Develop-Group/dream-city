@@ -12,10 +12,14 @@ public class NoticeReq implements Serializable {
 
     private Integer noticeId;
 
+    private String title;
     private String noticeContent;
 
     private Integer noticeState;
 
     private String sendTime;
+
+    //查询几天内的
+    private Integer dayParam;
 
 }

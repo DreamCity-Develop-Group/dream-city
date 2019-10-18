@@ -131,7 +131,7 @@ public class DefaultController {
         Map<String, Object> data = new Hashtable<>();
 
         //消息数量 显示为小红点
-        Integer messages = 0;
+        boolean messages = true;
         //公告
         data.put("notices", notices);
         //我的信息Player
