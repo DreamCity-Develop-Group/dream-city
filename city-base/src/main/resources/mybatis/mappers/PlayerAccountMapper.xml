@@ -176,7 +176,8 @@
         <include refid="Base_Column_List"/>
         from player_account
         <where>
-            and acc_id not in(#{platformAccIds,jdbcType=VARCHAR})
+            1=1
+            and acc_player_id not in(#{platformAccIds,jdbcType=VARCHAR})
             <if test="accId != null">
                 and acc_id = #{accId,jdbcType=INTEGER}
             </if>
@@ -228,6 +229,27 @@
         where acc_player_id = #{accPlayerId,jdbcType=VARCHAR}
 
     </update>
+
+
+    <select id="getPlayerAccountSelective" resultType="com.dream.city.base.model.entity.PlayerAccount"
+            parameterType="com.dream.city.base.model.entity.PlayerAccount">
+        select
+        <include refid="Base_Column_List"/>
+        from player_account
+        <where>
+            1=1
+            <if test="accId != null">
+                and acc_id = #{accId,jdbcType=INTEGER}
+            </if>
+            <if test="accPlayerId != null and accPlayerId != '' ">
+                and acc_player_id = #{accPlayerId,jdbcType=VARCHAR}
+            </if>
+            <if test="accAddr != null and accAddr != '' ">
+                and acc_addr = #{accAddr,jdbcType=VARCHAR}
+            </if>
+        </where>
+        order by create_time desc
+    </select>
 
 
 </mapper>

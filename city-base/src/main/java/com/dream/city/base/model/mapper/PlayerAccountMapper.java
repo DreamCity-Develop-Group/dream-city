@@ -3,6 +3,7 @@ package com.dream.city.base.model.mapper;
 
 import com.dream.city.base.model.entity.PlayerAccount;
 import com.dream.city.base.model.req.PlayerAccountReq;
+import org.apache.commons.lang.StringUtils;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
@@ -21,6 +22,9 @@ public interface PlayerAccountMapper {
     Integer updateByPrimaryKeySelective(PlayerAccount account);
     Integer insert(PlayerAccount account);
     PlayerAccount selectByPrimaryKey(Integer accId);
+
+    PlayerAccount getPlayerAccountSelective(PlayerAccount record);
+
     /**
      * 获取平台账户
      * @param record

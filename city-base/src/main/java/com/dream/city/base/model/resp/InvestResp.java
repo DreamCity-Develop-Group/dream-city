@@ -44,6 +44,8 @@ public class InvestResp implements Serializable {
     private String playerName;
     private String playerNick;
 
+    private Date verifyTime;
+
 
 
 }

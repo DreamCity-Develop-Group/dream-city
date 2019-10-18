@@ -25,6 +25,8 @@ public interface AccountService {
      */
     PlayerAccount getPlayerAccount(String playerId);
 
+    PlayerAccount getPlayerAccount(PlayerAccount record);
+
     /**
      * 玩家账户列表
      * @param record

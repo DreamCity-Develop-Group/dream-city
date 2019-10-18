@@ -41,6 +41,11 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    public PlayerAccount getPlayerAccount(PlayerAccount record) {
+        return accountMapper.getPlayerAccountSelective(record);
+    }
+
+    @Override
     public List<PlayerAccount> getPlayerAccountList(PlayerAccount record) {
         return accountMapper.getPlayerAccountList(record);
     }
