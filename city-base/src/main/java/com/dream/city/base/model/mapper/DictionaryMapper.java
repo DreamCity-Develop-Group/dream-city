@@ -2,6 +2,7 @@ package com.dream.city.base.model.mapper;
 
 import com.dream.city.base.model.entity.Dictionary;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -21,11 +22,11 @@ public interface DictionaryMapper {
 
     Dictionary selectByPrimaryKey(Integer id);
 
-    List<Dictionary> getDictionaryByKey(String key);
+    List<Dictionary> getDictionaryByKey(@Param("key") String key);
 
-    List<Dictionary> getDictionaryByVal(String val);
+    List<Dictionary> getDictionaryByVal(@Param("val")String val);
 
-    List<Dictionary> getDictionaryByName(String name);
+    List<Dictionary> getDictionaryByName(@Param("name")String name);
 
     List<Dictionary> getDictionaryList(Dictionary record);
 

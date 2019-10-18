@@ -9,6 +9,7 @@ import com.dream.city.base.model.entity.PlayerExt;
 import com.dream.city.base.model.enu.ReturnStatus;
 import com.dream.city.base.model.req.UserReq;
 import com.dream.city.base.model.resp.PlayerResp;
+import com.dream.city.base.service.DictionaryService;
 import com.dream.city.base.utils.DataUtils;
 import com.dream.city.base.utils.JsonUtil;
 import com.dream.city.base.utils.RedisKeys;
@@ -60,8 +61,8 @@ public class ConsumerPlayerController {
     ConsumerFriendsService friendsService;
     @Autowired
     ConsumerCommonsService commonsService;
-    @Value("${dreamcity.platform.account.accIds}")
-    String platformAccIds;
+    @Autowired
+    DictionaryService dictionaryService;
 
     /**
      * 修改玩家头像
@@ -285,7 +286,7 @@ public class ConsumerPlayerController {
                 //扣除玩家1MT TODO
 
                 //平台账户
-                String[] idsArr = platformAccIds.split(",");
+                String[] idsArr = dictionaryService.getValByKey("platform.account.accIds").split(",");
                 PlayerAccount playerAccount1 = playerAccountService.getPlayerAccount(idsArr[0]);
                 //平台账户增加1MT TODO
 

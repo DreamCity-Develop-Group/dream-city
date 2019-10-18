@@ -13,59 +13,54 @@
   </resultMap>
 
   <sql id="Base_Column_List" >
-    id, name, key, val, is_valid, descr, DATE_FORMAT(create_time,'%Y-%m-%d %h:%m:%s') create_time, DATE_FORMAT(update_time,'%Y-%m-%d %h:%m:%s') update_time
+    id, name, key, val, is_valid, descr, create_time, update_time
   </sql>
 
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select 
-    <include refid="Base_Column_List" />
-    from city_dictionary
-    where id = #{id,jdbcType=INTEGER}
+    select  d.*
+    from city_dictionary d
+    where d.id = #{id,jdbcType=INTEGER}
   </select>
 
   <select id="getDictionaryByKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
-    select
-    <include refid="Base_Column_List" />
-    from city_dictionary
-    where key = #{_parameter}
+    select  d.*
+    from city_dictionary d
+    where d.key = #{key,jdbcType=VARCHAR}
   </select>
 
   <select id="getDictionaryByVal" resultMap="BaseResultMap" parameterType="java.lang.String" >
-    select
-    <include refid="Base_Column_List" />
-    from city_dictionary
-    where val = #{_parameter}
+    select d.*
+    from city_dictionary d
+    where d.val = #{val,jdbcType=VARCHAR}
   </select>
 
   <select id="getDictionaryByName" resultMap="BaseResultMap" parameterType="java.lang.String" >
-    select
-    <include refid="Base_Column_List" />
-    from city_dictionary
-    where name = #{_parameter}
+    select  d.*
+    from city_dictionary d
+    where d.name = #{name,jdbcType=VARCHAR}
   </select>
 
   <select id="getDictionaryList" resultMap="BaseResultMap" parameterType="com.dream.city.base.model.entity.Dictionary" >
-    select
-    <include refid="Base_Column_List" />
-    from city_dictionary
+    select  d.*
+    from city_dictionary d
     <where>
       <if test="id != null" >
-        and id = #{id,jdbcType=INTEGER}
+        and d.id = #{id,jdbcType=INTEGER}
       </if>
       <if test="name != null and name != ''" >
-        and name like '%${name}%'
+        and d.name like '%${name}%'
       </if>
       <if test="key != null and key != ''" >
-        and key like '%${key}%'
+        and d.key like '%${key}%'
       </if>
       <if test="val != null and val != ''" >
-        and val like '%${val}%'
+        and d.val like '%${val}%'
       </if>
       <if test="isValid != null" >
-        and is_valid = #{isValid,jdbcType=TINYINT}
+        and d.is_valid = #{isValid,jdbcType=TINYINT}
       </if>
       <if test="descr != null and descr != ''" >
-        and descr like '%${descr}%'
+        and d.descr like '%${descr}%'
       </if>
 
     </where>

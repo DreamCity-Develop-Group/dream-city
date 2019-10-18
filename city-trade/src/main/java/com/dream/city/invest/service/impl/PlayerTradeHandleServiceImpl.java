@@ -8,12 +8,12 @@ import com.dream.city.base.model.entity.TradeDetail;
 import com.dream.city.base.model.entity.TradeVerify;
 import com.dream.city.base.model.enu.*;
 import com.dream.city.base.model.req.PlayerAccountReq;
+import com.dream.city.base.service.DictionaryService;
 import com.dream.city.invest.service.*;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,13 +33,9 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
     private TradeVerifyService verifyService;
     @Autowired
     private TradeDetailService tradeDetailService;
+    @Autowired
+    DictionaryService dictionaryService;
 
-    @Value("${player.withdraw.mt.tax:5}")
-    private BigDecimal withdrawTax;
-    @Value("${player.transfer.mt.tax:5}")
-    private BigDecimal transferTax;
-    @Value("${player.inside.transfer.verify:true}")
-    private Boolean transferVerify;
 
 
     @Override
@@ -98,6 +94,12 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
         Result<BigDecimal> updateAccountResult = null;
         PlayerTrade trade = null;
         try {
+            String valByKey = dictionaryService.getValByKey("player.withdraw.mt.tax");
+            BigDecimal withdrawTax = BigDecimal.ZERO;
+            if(StringUtils.isNotBlank(valByKey)){
+                withdrawTax = BigDecimal.valueOf(Double.parseDouble(valByKey));
+            }
+
             //校验提现规则
             PlayerAccount getPlayerAccount = accountService.getPlayerAccount(record.getAccPlayerId());
             String checkAmount = checkAmount(record,getPlayerAccount);
@@ -130,7 +132,6 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
                 BigDecimal usdtSurplus = getPlayerAccount.getAccUsdt().subtract(createPlayerTradeResult.getData().getTradeAmount());
                 this.createTradeDetail(createPlayerTradeResult.getData().getTradePlayerId(), createPlayerTradeResult.getData().getTradeId(),
                         createPlayerTradeResult.getData().getTradeAmount(), usdtSurplus,getPlayerAccount.getAccMt(),null,tradeVerify.getVerifyId(),TradeDetailType.WITHDRAW_FREEZE.getCode(), "提现冻结金额");
-
                 BigDecimal mtSurplus = getPlayerAccount.getAccMt().subtract(withdrawTax);
                 this.createTradeDetail(createPlayerTradeResult.getData().getTradePlayerId(), createPlayerTradeResult.getData().getTradeId(),
                         withdrawTax, usdtSurplus,mtSurplus,null,tradeVerify.getVerifyId(),TradeDetailType.WITHDRAW_FREEZE.getCode(), "提现冻结税金");
@@ -144,6 +145,17 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
 
 
     private String checkAmount(PlayerAccountReq record,PlayerAccount getPlayerAccount){
+        String valByKey = dictionaryService.getValByKey("player.withdraw.mt.tax");
+        String valByKey2 = dictionaryService.getValByKey("player.transfer.mt.tax");
+        BigDecimal withdrawTax = BigDecimal.ZERO;
+        BigDecimal transferTax = BigDecimal.ZERO;
+        if(StringUtils.isNotBlank(valByKey)){
+            withdrawTax = BigDecimal.valueOf(Double.parseDouble(valByKey));
+        }
+        if(StringUtils.isNotBlank(valByKey2)){
+            transferTax = BigDecimal.valueOf(Double.parseDouble(valByKey2));
+        }
+
         String msg = "";
         if (record.getAccUsdt().compareTo(getPlayerAccount.getAccUsdtAvailable()) > 0){
             msg = "USDT余额不足";
@@ -166,6 +178,17 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
         Result<BigDecimal> updateAccountResult = null;
         PlayerTrade trade = null;
         try {
+            String valByKey = dictionaryService.getValByKey("player.inside.transfer.verify");
+            String valByKey2 = dictionaryService.getValByKey("player.transfer.mt.tax");
+            BigDecimal transferTax = BigDecimal.ZERO;
+            Boolean transferVerify = Boolean.FALSE;
+            if(StringUtils.isNotBlank(valByKey)){
+                transferVerify = Boolean.parseBoolean(valByKey);
+            }
+            if(StringUtils.isNotBlank(valByKey2)){
+                transferTax = BigDecimal.valueOf(Double.parseDouble(valByKey2));
+            }
+
             recordOut.setInOut(AmountDynType.OUT.name());
             recordOut.setTradeType(TradeType.TRANSFER_FROM.getCode());
             String verifyStatus = VerifyStatus.WAIT.name();
@@ -318,6 +341,22 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
         boolean success = Boolean.FALSE;
         String tradeType = null;
         String desc = "失败！";
+        String valByKey = dictionaryService.getValByKey("player.inside.transfer.verify");
+        BigDecimal transferTax = BigDecimal.ZERO;
+        Boolean transferVerify = Boolean.FALSE;
+        if(StringUtils.isNotBlank(valByKey)){
+            transferVerify = Boolean.parseBoolean(valByKey);
+        }
+        String valByKey2 = dictionaryService.getValByKey("player.transfer.mt.tax");
+        if(StringUtils.isNotBlank(valByKey2)){
+            transferTax = BigDecimal.valueOf(Double.parseDouble(valByKey2));
+        }
+        String valByKey3 = dictionaryService.getValByKey("player.withdraw.mt.tax");
+        BigDecimal withdrawTax = BigDecimal.ZERO;
+        if(StringUtils.isNotBlank(valByKey3)){
+            withdrawTax = BigDecimal.valueOf(Double.parseDouble(valByKey3));
+        }
+
         PlayerAccount getPlayerAccount = accountService.getPlayerAccount(record.getAccPlayerId());
 
         //更新PlayerAccount参数
@@ -362,6 +401,7 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
             accUsdtAvailable = getPlayerAccount.getAccUsdtAvailable().subtract(tradeAmount);
             accUsdtFreeze = getPlayerAccount.getAccUsdtFreeze().add(tradeAmount);
         }
+
         //转账
         if (TradeType.TRANSFER.name().equalsIgnoreCase(record.getTradeType())){
             tradeAmount = record.getAccUsdt();
@@ -432,6 +472,22 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
      * @param record
      */
     private Result<PlayerTrade> createPlayerTrade(PlayerAccountReq record,BigDecimal tradeAmount,String desc) throws Exception{
+        String valByKey = dictionaryService.getValByKey("player.inside.transfer.verify");
+        String valByKey2 = dictionaryService.getValByKey("player.transfer.mt.tax");
+        BigDecimal transferTax = BigDecimal.ZERO;
+        Boolean transferVerify = Boolean.FALSE;
+        if(StringUtils.isNotBlank(valByKey)){
+            transferVerify = Boolean.parseBoolean(valByKey);
+        }
+        if(StringUtils.isNotBlank(valByKey2)){
+            transferTax = BigDecimal.valueOf(Double.parseDouble(valByKey2));
+        }
+        String valByKey3 = dictionaryService.getValByKey("player.withdraw.mt.tax");
+        BigDecimal withdrawTax = BigDecimal.ZERO;
+        if(StringUtils.isNotBlank(valByKey3)){
+            withdrawTax = BigDecimal.valueOf(Double.parseDouble(valByKey3));
+        }
+
         PlayerTrade tradeReq = new PlayerTrade();
         tradeReq.setTradeType(record.getTradeType());
         tradeReq.setTradeDesc(desc);

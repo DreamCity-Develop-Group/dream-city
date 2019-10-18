@@ -3,31 +3,40 @@
 <mapper namespace="com.dream.city.base.model.mapper.NoticeMapper" >
   <resultMap id="BaseResultMap" type="com.dream.city.base.model.entity.Notice" >
     <id column="notice_id" property="noticeId" jdbcType="INTEGER" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
     <result column="notice_content" property="noticeContent" jdbcType="VARCHAR" />
     <result column="notice_state" property="noticeState" jdbcType="INTEGER" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    notice_id, notice_content, notice_state, DATE_FORMAT(create_time,'%Y-%m-%d %h:%m:%s') create_time
+    notice_id, notice_content, notice_state, DATE_FORMAT(create_time,'%Y-%m-%d %h:%m:%s') create_time,title
   </sql>
+
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
     from city_notice
     where notice_id = #{noticeId,jdbcType=INTEGER}
   </select>
-  <select id="getNoticeList" resultMap="BaseResultMap" parameterType="com.dream.city.base.model.entity.Notice" >
+
+  <select id="getNoticeList" resultMap="BaseResultMap" parameterType="com.dream.city.base.model.req.NoticeReq" >
     select
     <include refid="Base_Column_List" />
     from city_notice
-    where 1=1
+    where
+      1=1
+    <if test="dayParam != null and dayParam > 0" >
+      and create_time >= DATE_SUB(NOW(), INTERVAL ${dayParam} DAY)
+    </if>
     <if test="noticeState != null" >
       and notice_state = #{noticeState,jdbcType=INTEGER}
     </if>
     <if test="noticeContent != null and noticeContent != ''" >
       and notice_content like CONCAT(CONCAT('%',#{noticeContent,jdbcType=VARCHAR}),'%')
     </if>
+      order by create_time desc
   </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from city_notice
     where notice_id = #{noticeId,jdbcType=INTEGER}
@@ -38,6 +47,9 @@
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="noticeId != null" >
         notice_id,
+      </if>
+      <if test="title != null" >
+        title,
       </if>
       <if test="noticeContent != null" >
         notice_content,
@@ -51,6 +63,9 @@
       <if test="noticeId != null" >
         #{noticeId,jdbcType=INTEGER},
       </if>
+      <if test="title != null" >
+        #{title,jdbcType=VARCHAR},
+      </if>
       <if test="noticeContent != null" >
         #{noticeContent,jdbcType=VARCHAR},
       </if>
@@ -63,6 +78,9 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.dream.city.base.model.entity.Notice" >
     update city_notice
     <set >
+      <if test="title != null" >
+        title = #{title,jdbcType=VARCHAR},
+      </if>
       <if test="noticeContent != null" >
         notice_content = #{noticeContent,jdbcType=VARCHAR},
       </if>

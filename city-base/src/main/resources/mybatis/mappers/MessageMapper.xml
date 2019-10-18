@@ -5,6 +5,7 @@
     <id column="id" property="id" jdbcType="BIGINT" />
     <result column="player_id" property="playerId" jdbcType="VARCHAR" />
     <result column="friend_id" property="friendId" jdbcType="VARCHAR" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
     <result column="content" property="content" jdbcType="VARCHAR" />
     <result column="have_read" property="haveRead" jdbcType="INTEGER" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
@@ -12,7 +13,7 @@
   </resultMap>
 
   <sql id="Base_Column_List" >
-    id, player_id, friend_id, content, have_read, DATE_FORMAT(create_time,'%Y-%m-%d %h:%m:%s') create_time, DATE_FORMAT(update_time,'%Y-%m-%d %h:%m:%s') update_time
+    id, player_id, friend_id, title, content, have_read, DATE_FORMAT(create_time,'%Y-%m-%d %h:%m:%s') create_time, DATE_FORMAT(update_time,'%Y-%m-%d %h:%m:%s') update_time
   </sql>
 
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
@@ -22,27 +23,31 @@
     where id = #{id,jdbcType=BIGINT}
   </select>
 
-  <select id="getCityMessageList" resultMap="BaseResultMap" parameterType="com.dream.city.base.model.entity.CityMessage" >
+  <select id="getCityMessageList" resultMap="BaseResultMap" parameterType="com.dream.city.base.model.req.MessageReq" >
     select
     <include refid="Base_Column_List" />
     from city_message
-    where 1=1
+    where
+      1=1
+      <if test="dayParam != null and dayParam > 0" >
+        and create_time >= DATE_SUB(NOW(), INTERVAL ${dayParam} DAY)
+      </if>
       <if test="id != null" >
-          and id = #{id,jdbcType=BIGINT}
+        and id = #{id,jdbcType=BIGINT}
       </if>
       <if test="playerId != null and playerId != ''" >
-          and player_id = #{playerId,jdbcType=VARCHAR}
+        and player_id = #{playerId,jdbcType=VARCHAR}
       </if>
       <if test="friendId != null and friendId != ''" >
-          and friend_id = #{friendId,jdbcType=VARCHAR}
+        and friend_id = #{friendId,jdbcType=VARCHAR}
       </if>
       <if test="haveRead != null" >
-          and have_read = #{haveRead,jdbcType=INTEGER}
+        and have_read = #{haveRead,jdbcType=INTEGER}
       </if>
       <if test="content != null and content != ''" >
-          and content like CONCAT(CONCAT('%',#{content,jdbcType=VARCHAR}),'%')
+        and content like CONCAT(CONCAT('%',#{content,jdbcType=VARCHAR}),'%')
       </if>
-
+        order by have_read asc,create_time desc
   </select>
 
 
@@ -63,18 +68,17 @@
       <if test="friend_id != null" >
         friend_id,
       </if>
+      <if test="title != null" >
+        title,
+      </if>
       <if test="content != null" >
         content,
       </if>
       <if test="have_read != null" >
         have_read,
       </if>
-      <if test="create_time != null" >
-        create_time,
-      </if>
-      <if test="update_time != null" >
-        update_time,
-      </if>
+      create_time,
+      update_time,
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -86,18 +90,17 @@
       <if test="friendId != null" >
         #{friendId,jdbcType=VARCHAR},
       </if>
+      <if test="title != null" >
+        #{title,jdbcType=VARCHAR},
+      </if>
       <if test="content != null" >
         #{content,jdbcType=VARCHAR},
       </if>
       <if test="haveRead != null" >
         #{haveRead,jdbcType=INTEGER},
       </if>
-      <if test="createTime != null" >
-        #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateTime != null" >
-        #{updateTime,jdbcType=TIMESTAMP},
-      </if>
+      now(),
+      now(),
     </trim>
   </insert>
 
@@ -110,18 +113,16 @@
       <if test="friendId != null" >
         friend_id = #{friendId,jdbcType=VARCHAR},
       </if>
+      <if test="title != null" >
+        title = #{title,jdbcType=VARCHAR},
+      </if>
       <if test="content != null" >
         content = #{content,jdbcType=VARCHAR},
       </if>
       <if test="haveRead != null" >
         have_read = #{haveRead,jdbcType=INTEGER},
       </if>
-      <if test="createTime != null" >
-        create_time = #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateTime != null" >
-        update_time = #{updateTime,jdbcType=TIMESTAMP},
-      </if>
+      update_time = now(),
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>

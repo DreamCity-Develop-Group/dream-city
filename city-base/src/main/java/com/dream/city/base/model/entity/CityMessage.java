@@ -15,6 +15,7 @@ public class CityMessage implements Serializable {
     /**  */
     private String friendId;
 
+    private String title;
     private String content;
 
     private Integer haveRead;
