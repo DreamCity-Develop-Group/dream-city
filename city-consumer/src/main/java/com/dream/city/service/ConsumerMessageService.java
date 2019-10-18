@@ -68,4 +68,8 @@ public interface ConsumerMessageService {
     @RequestMapping("/getCityMessageList")
     Result<List<CityMessage>> getCityMessageList(@RequestBody CityMessage record);
 
+
+    @RequestMapping("/getUnReadCount/{playerId}")
+    Result<Integer> getUnReadCount(@PathVariable("playerId")String playerId);
+
 }

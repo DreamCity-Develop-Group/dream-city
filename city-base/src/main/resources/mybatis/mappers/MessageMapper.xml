@@ -16,8 +16,14 @@
     id, player_id, friend_id, title, content, have_read, DATE_FORMAT(create_time,'%Y-%m-%d %h:%m:%s') create_time, DATE_FORMAT(update_time,'%Y-%m-%d %h:%m:%s') update_time
   </sql>
 
+  <select id="getUnReadCount" resultType="java.lang.Integer" parameterType="java.lang.String" >
+    select count(player_id)
+    from city_message
+    where have_read = 0 and  player_id = #{playerId,jdbcType=VARCHAR}
+  </select>
+
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
-    select 
+    select
     <include refid="Base_Column_List" />
     from city_message
     where id = #{id,jdbcType=BIGINT}

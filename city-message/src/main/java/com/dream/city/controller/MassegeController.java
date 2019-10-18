@@ -122,4 +122,21 @@ public class MassegeController {
                 message);
     }
 
+
+    @RequestMapping("/getUnReadCount/{playerId}")
+    public Result<Integer> getUnReadCount(@PathVariable("playerId")String playerId){
+        boolean success = Boolean.TRUE;
+        int count = 0;
+        try {
+            count = messageService.getUnReadCount(playerId);
+        }catch (Exception e){
+            success = Boolean.FALSE;
+            logger.error("查询玩家信息数量异常",e);
+        }
+        return Result.result(success,"查询玩家信息数量",
+                success? ReturnStatus.SUCCESS.getStatus():ReturnStatus.FAILED.getStatus(),
+                count);
+    }
+
+
 }
