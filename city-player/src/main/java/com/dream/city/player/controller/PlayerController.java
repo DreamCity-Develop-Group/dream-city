@@ -78,7 +78,9 @@ public class PlayerController {
         PlayerResp playerExistByName = playerService.getPlayerByName(playerName,null);
         if (playerExistByName != null){
             tip = "["+ playerName +"]" + CityGlobal.Constant.REG_USER_EXIT + ",请直接登录！";
-            return Result.result(false,tip,ReturnStatus.ACCOUNT_EXISTS.getStatus(),null);
+            Integer code = ReturnStatus.ACCOUNT_EXISTS.getStatus();
+            Result result1 = Result.result(false,tip,ReturnStatus.ACCOUNT_EXISTS.getStatus(),null);
+            return result1;
         }
         if (StringUtils.isBlank(nick)){
             nick = playerName;
