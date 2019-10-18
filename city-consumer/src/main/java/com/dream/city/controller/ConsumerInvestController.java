@@ -94,6 +94,7 @@ public class ConsumerInvestController {
         Result<List<Map<String,Object>>> result = investService.getPropertyLsit(invest);
         Map<String,Object>  dataResult = new HashMap<>();
         dataResult.put("investList",result.getData());
+        dataResult.put("playerId",invest.getPlayerId());
         msg.getData().setData(dataResult);
         msg.setDesc(result.getMsg());
         msg.setCode(result.getSuccess()? ReturnStatus.SUCCESS.getStatus():ReturnStatus.ERROR.getStatus());
