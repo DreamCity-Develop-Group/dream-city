@@ -30,11 +30,16 @@ public class PlayerAccountReq implements Serializable {
      * 玩家账户地址
      */
     private String accAddr;
+    private BigDecimal money ;
 
     /**
      * 玩家账户密码
      */
     private String accPass;
+    /**
+     * 交易密码
+     */
+    private String oldpwshop;
 
     /**
      * 交易类型（充值:recharge,转账:transfer,提现:withdraw,购买mt:buy_mt,投资invest)

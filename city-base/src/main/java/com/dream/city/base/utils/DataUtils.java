@@ -126,6 +126,7 @@ public class DataUtils {
             userReq.setPlayerId(map.containsKey("playerId") ? (String) map.get("playerId") : null);
             userReq.setOldpwshop(map.containsKey("oldpwshop") ? (String) map.get("oldpwshop") : null);
             userReq.setNewpwshop(map.containsKey("newpwshop") ? (String) map.get("newpwshop") : null);
+            userReq.setMoney(map.containsKey("money") ?  BigDecimal.valueOf(Double.parseDouble(String.valueOf(map.get("money ")))): null);
             userReq.setUsername(map.containsKey("username") ? (String) map.get("username") : null);
             userReq.setUserpass(map.containsKey("userpass") ? (String) map.get("userpass") : null);
             userReq.setCode(map.containsKey("code") ? (String) map.get("code") : null);
@@ -207,6 +208,8 @@ public class DataUtils {
         String accPass = map.containsKey("accPass")?String.valueOf(map.get("accPass")):null;
         BigDecimal accUsdt = map.containsKey("accUsdt")?BigDecimal.valueOf(Double.parseDouble(String.valueOf(map.get("accUsdt")))):null;
         BigDecimal accMt = map.containsKey("accMt")?BigDecimal.valueOf(Double.parseDouble(String.valueOf(map.get("accMt")))):null;
+        BigDecimal money = map.containsKey("money")?BigDecimal.valueOf(Double.parseDouble(String.valueOf(map.get("money")))):null;
+        String oldpwshop = map.containsKey("oldpwshop")?String.valueOf(map.get("oldpwshop")):null;
 
         PlayerAccountReq result = new PlayerAccountReq();
         result.setAccId(accId);
@@ -218,6 +221,8 @@ public class DataUtils {
         result.setAccUsdt(accUsdt);
         result.setAccAddr(accAddr);
         result.setTradeType(tradeType);
+        result.setMoney(money);
+        result.setOldpwshop(oldpwshop);
         return result;
     }
 

@@ -3,6 +3,7 @@ package com.dream.city.base.model.req;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 /**
  * @author Wvv
@@ -33,6 +34,8 @@ public class UserReq implements Serializable {
     private String invite;
 
     private String code;
+
+    private BigDecimal money;
 
     public UserReq(){
     }
