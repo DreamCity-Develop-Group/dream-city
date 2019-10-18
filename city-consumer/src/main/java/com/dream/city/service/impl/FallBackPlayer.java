@@ -35,6 +35,7 @@ public class FallBackPlayer implements ConsumerPlayerService {
 
     @Override
     public Result login(String jsonReq) {
+        System.out.println("登录不能完成，玩家服务连线不成功!");
         return null;
     }
 

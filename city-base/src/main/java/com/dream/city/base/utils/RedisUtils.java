@@ -22,6 +22,7 @@ import java.util.concurrent.TimeUnit;
  * @author wvv
  * Redis客户端
  */
+@Component
 public class RedisUtils {
     private static final Charset CODE = Charset.forName("UTF-8");
 
@@ -590,6 +591,14 @@ public class RedisUtils {
     public boolean rmOnlinePlayer(String playerName) {
         Long id = redisTemplate.opsForZSet().remove("ONLINE_PLAYERS",playerName);
         return id>0;
+    }
+
+    public boolean isOnlinePlayer(String playerName) {
+        Double score = redisTemplate.opsForZSet().score("ONLINE_PLAYERS",playerName);
+        if (null == score){
+            return false;
+        }
+        return score.compareTo(new Double(0))>0;
     }
 
 }

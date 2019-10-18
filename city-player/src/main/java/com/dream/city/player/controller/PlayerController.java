@@ -305,6 +305,10 @@ public class PlayerController {
             redisUtils.del(RedisKeys.CURRENT_USER + playerExit.getPlayerName());
             redisUtils.decr(RedisKeys.CURRENT_LOGIN_USER_COUNT);
         }
+        if(redisUtils.hasKey(RedisKeys.LOGIN_USER_TOKEN+playerExit.getPlayerName())){
+            redisUtils.del(RedisKeys.LOGIN_USER_TOKEN+playerExit.getPlayerName());
+        }
+        redisUtils.rmOnlinePlayer(playerExit.getPlayerName());
         return result;
     }
 

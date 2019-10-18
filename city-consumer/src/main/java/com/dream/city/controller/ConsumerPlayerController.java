@@ -619,10 +619,10 @@ public class ConsumerPlayerController {
         Result result = Result.result(false);
         if (StringUtils.isNotBlank(playerId)) {
             result = consumerPlayerService.quit(playerId);
+
         } else {
             result = consumerPlayerService.quitAccount(account);
         }
-
         log.info("##################### 用户登出 :{}", msg);
 
         String redisKey = RedisKeys.LOGIN_USER_TOKEN + jsonReq.getUsername();

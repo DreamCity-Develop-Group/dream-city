@@ -13,6 +13,7 @@ import com.dream.city.service.HttpClientService;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
@@ -39,7 +40,7 @@ public class WebSocketServer {
     //private RedisMessageListenerContainer redisMessageListenerContainer = SpringUtils.getBean(RedisMessageListenerContainer.class);
     //RedisSubListenerConfig config = SpringUtils.getBean(RedisSubListenerConfig.class);
 
-    private RedisUtils redisUtils = SpringUtils.getBean(RedisUtils.class);
+    private static RedisUtils redisUtils = SpringUtils.getBean(RedisUtils.class);
 
     private HttpClientService httpClientService = SpringUtils.getBean(HttpClientService.class);
     private PublishServer publishService = SpringUtils.getBean(PublishServer.class);
@@ -170,7 +171,6 @@ public class WebSocketServer {
         log.info("Message:" + message);
         //this.session.addMessageHandler(SocketMessageHandler.MessageHandler.handleTextMessage(this.session,message));
         publishService.publish(topic, message);
-
         //根据sid 到服务上找对应的数据，=》校验 =》 推送数据到客户端
         try {
             //TODO 1、如果客户端发心跳包[ping&&XXXX],回复success：包括登录期间的ping和登录之前的连接检测
@@ -193,7 +193,6 @@ public class WebSocketServer {
                             String token = redisUtils.getStr(redisKey);
                             //延期token
                             redisUtils.set(redisKey, token, 30 * 60);
-
                         }
                     }
                     sendMessage("success");
@@ -250,9 +249,30 @@ public class WebSocketServer {
                 if (null != msg.getData().getData()) {
                     JSONObject data = JsonUtil.parseJsonToObj(msg.getData().getData().toString(), JSONObject.class);
                     String tokenStr = RedisKeys.LOGIN_USER_TOKEN + data.getString("username");
-                    String token = redisUtils.getStr(tokenStr);
+
+                    Optional<String> token0 = redisUtils.get(tokenStr);
+                    String token = token0.isPresent()?token0.get():null;
                     //设置识别名称
                     if (StringUtils.isNotBlank(token)) {
+                        //检测是否重复登录
+                        if("login".equals(msg.getData().getType())|| "codeLogin".equals(msg.getData().getType())){
+                            //将已经上线的客户端强制下线
+                            //取出clientId
+                            if(redisUtils.hasKey(RedisKeys.LOGIN_USER_TOKEN + data.get("username").toString())) {
+                                if(redisUtils.isOnlinePlayer(data.get("username").toString())) {
+                                    redisUtils.rmOnlinePlayer(data.get("username").toString());
+                                    redisUtils.del(RedisKeys.LOGIN_USER_TOKEN + data.get("username").toString());
+                                    String client = redisUtils.get(RedisKeys.PLAYER_ONLINE_STATE_KEY + data.get("username").toString()).get();
+                                    replay.getData().setCode(ReturnStatus.RELOGIN_OPT.getStatus());
+                                    replay.setDesc(ReturnStatus.RELOGIN_OPT.getDesc());
+                                    replay.setTarget(client);
+
+                                    sendInfo(replay);
+                                }
+                            }
+                            redisUtils.delete(tokenStr);
+                        }
+
                         redisUtils.set(RedisKeys.PLAYER_ONLINE_STATE_KEY + data.get("username").toString(), this.clientId, 60);
                         for (WebSocketServer webSocketServer : webSocketSet) {
                             if (webSocketServer.clientId.equals(this.clientId)) {
@@ -260,18 +280,7 @@ public class WebSocketServer {
                                 break;
                             }
                         }
-                        //检测是否重复登录
-                        if("login".equals(msg.getData().getType())|| "codeLogin".equals(msg.getData().getType())){
-                            //将已经上线的客户端强制下线
-                            //取出clientId
-                            String client = redisUtils.getStr(RedisKeys.PLAYER_ONLINE_STATE_KEY + data.get("username").toString());
-                            replay.getData().setCode(ReturnStatus.RELOGIN_OPT.getStatus());
-                            replay.setDesc(ReturnStatus.RELOGIN_OPT.getDesc());
-                            replay.setTarget(client);
 
-                            sendInfo(replay);
-                            redisUtils.delete(tokenStr);
-                        }
                     }else {
                         HashSet<String> set = new HashSet<>();
                         set.add("login");
