@@ -7,6 +7,7 @@ import com.dream.city.base.model.enu.ReturnStatus;
 import com.dream.city.service.PlayerAccountService;
 import com.dream.city.service.RelationTreeService;
 import com.dream.city.service.SalesOrderService;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -64,6 +65,14 @@ public class RelationTreeController {
     @RequestMapping("/get/relationTree")
     public RelationTree getRelationTree(@RequestParam("playerId") String playerId) {
         RelationTree tree = relationTreeService.getTreeByPlayerId(playerId);
+
+        return tree;
+    }
+
+    @RequestMapping("/get/by/relation")
+    public RelationTree getPlayerByRelation(@RequestParam("relation")String relation){
+
+        RelationTree tree = relationTreeService.getPlayerByRef(relation);
 
         return tree;
     }

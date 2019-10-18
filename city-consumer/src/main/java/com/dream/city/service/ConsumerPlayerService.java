@@ -127,7 +127,7 @@ public interface ConsumerPlayerService {
      * @return
      */
     @RequestMapping("/player/getPlayerByInvite")
-    Result getPlayerByInvite(@RequestParam String invite);
+    Result getPlayerByInvite(@RequestParam("invite") String invite);
 
     /**
      * 根据玩家ID查找玩家
@@ -135,7 +135,7 @@ public interface ConsumerPlayerService {
      * @return
      */
     @RequestMapping("/player/getPlayerByPlayerId")
-    Player getPlayerByPlayerId(@RequestParam String playerId);
+    Player getPlayerByPlayerId(@RequestParam("playerId") String playerId);
 
     /**
      * 根据用户账户查找玩家
@@ -143,7 +143,7 @@ public interface ConsumerPlayerService {
      * @return
      */
     @RequestMapping("/player/getPlayerByAccount")
-    Result getPlayerByAccount(@RequestParam String account);
+    Result getPlayerByAccount(@RequestParam("account") String account);
 
     /**
      * 检验邀请码
@@ -151,7 +151,7 @@ public interface ConsumerPlayerService {
      * @return
      */
     @RequestMapping("/player/checkInvite")
-    Result checkPlayerInvite(@RequestParam String invite);
+    Result checkPlayerInvite(@RequestParam("invite") String invite);
 
     /**
      * 设置交易密码

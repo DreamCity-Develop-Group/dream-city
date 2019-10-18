@@ -119,10 +119,10 @@ public class PlayerController {
             if (ret){
                 tip = "注册成功";
                 PlayerResp playerInsert = playerService.getPlayerByName(playerName,nick);
-
+                playerInsert.setPlayerInvite(inviteCode);
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("playerId",playerInsert.getPlayerId());
-                jsonObject.put("playerCode",playerInsert.getPlayerInvite());
+                jsonObject.put("playerInvite",playerInsert.getPlayerInvite());
                 result.setSuccess(Boolean.TRUE);
                 result.setCode(CityGlobal.ResultCode.success.getStatus());
                 result.setData(jsonObject);

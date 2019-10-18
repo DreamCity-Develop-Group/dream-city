@@ -87,77 +87,81 @@ public class RelationTreeServiceImpl implements RelationTreeService {
             int stars = 0;
             RuleItem ruleItem = investRuleService.getRuleItemByFlag(PlAYER_FLAG);
             List<InvestRule> rules = investRuleService.getRulesByItem(ruleItem.getItemId());
-            for (InvestRule rule : rules){
-                if ("OPT_NUM".equals(rule.getRuleOpt())){
-                    if(rule.getRuleRate().compareTo(new BigDecimal(childsSize)) != 1){
+            for (InvestRule rule : rules) {
+                if ("OPT_NUM".equals(rule.getRuleOpt())) {
+                    if (rule.getRuleRate().compareTo(new BigDecimal(childsSize)) != 1) {
                         stars = rule.getRuleLevel();
                     }
                 }
             }
-            if (stars>0){
+            if (stars > 0) {
                 parentTree.setTreeLevel(stars);
                 Result result = updateTree(parentTree);
-                playerAccountService.updatePlayerLevel(parent,stars);
+                playerAccountService.updatePlayerLevel(parent, stars);
                 Message message = new Message(
                         "server",
                         "client",
-                        new MessageData("push","comm",new JSONObject(),ReturnStatus.SUCCESS.getStatus()),
+                        new MessageData("push", "comm", new JSONObject(), ReturnStatus.SUCCESS.getStatus()),
                         "升级成功"
                 );
 
                 Player playerTo = playerAccountService.getPlayerByPlayerId(parentTree.getTreePlayerId());
-                String clientId =  redisUtils.get(RedisKeys.PLAYER_ONLINE_STATE_KEY+playerTo.getPlayerName()).get();
+                boolean isPresent = redisUtils.get(RedisKeys.PLAYER_ONLINE_STATE_KEY + playerTo.getPlayerName()).isPresent();
+                String clientId = "";
+                if (isPresent) {
+                    clientId = redisUtils.get(RedisKeys.PLAYER_ONLINE_STATE_KEY + playerTo.getPlayerName()).get();
+                    message.setTarget(clientId);
+                    message.getData().setCode(ReturnStatus.UPGRADE_TIP.getStatus());
+                    message.setDesc(ReturnStatus.UPGRADE_TIP.getDesc());
 
-                message.setTarget(clientId);
-                message.getData().setCode(ReturnStatus.UPGRADE_TIP.getStatus());
-                message.setDesc(ReturnStatus.UPGRADE_TIP.getDesc());
-
-                if (result.getSuccess()){
-                    log.info("改变商会等级成功!");
-                    //message.setTarget(playerTo.getPlayerName());
-                    //主动推送消息，升级成功
-                    JSONObject upgrade = new JSONObject();
-                    upgrade.put("level",stars);
-                    upgrade.put("toPlayerId",parent);
-                    upgrade.put("username",playerTo.getPlayerName());
-                    upgrade.put("fromPlayerId",child);
-                    message.getData().setData(upgrade);
-                    String json = JsonUtil.parseObjToJson(message);
-                    log.info("升级：》"+json);
-                    JSONObject ret = JSONObject.parseObject(json);
-                    redisUtils.publishMsg(PlAYER_UPGRADE,json);
-                }else {
-                    result = updateTree(parentTree);
-                    if (result.getSuccess()){
-                        //message.setTarget(playerTo.getPlayerName());
+                    if (result.getSuccess()) {
                         log.info("改变商会等级成功!");
+                        //message.setTarget(playerTo.getPlayerName());
                         //主动推送消息，升级成功
                         JSONObject upgrade = new JSONObject();
-                        upgrade.put("level",stars);
-                        upgrade.put("toPlayerId",parent);
-                        upgrade.put("username",playerTo.getPlayerName());
-                        upgrade.put("fromPlayerId",child);
+                        upgrade.put("level", stars);
+                        upgrade.put("toPlayerId", parent);
+                        upgrade.put("username", playerTo.getPlayerName());
+                        upgrade.put("fromPlayerId", child);
                         message.getData().setData(upgrade);
                         String json = JsonUtil.parseObjToJson(message);
+                        log.info("升级：》" + json);
                         JSONObject ret = JSONObject.parseObject(json);
-                        redisUtils.publishMsg(PlAYER_UPGRADE,json);
-                    }else {
+                        redisUtils.publishMsg(PlAYER_UPGRADE, json);
+                    } else {
                         result = updateTree(parentTree);
-                        if(result.getSuccess()){
+                        if (result.getSuccess()) {
                             //message.setTarget(playerTo.getPlayerName());
+                            log.info("改变商会等级成功!");
                             //主动推送消息，升级成功
                             JSONObject upgrade = new JSONObject();
-                            upgrade.put("level",stars);
-                            upgrade.put("toPlayerId",parent);
-                            upgrade.put("username",playerTo.getPlayerName());
-                            upgrade.put("fromPlayerId",child);
+                            upgrade.put("level", stars);
+                            upgrade.put("toPlayerId", parent);
+                            upgrade.put("username", playerTo.getPlayerName());
+                            upgrade.put("fromPlayerId", child);
                             message.getData().setData(upgrade);
                             String json = JsonUtil.parseObjToJson(message);
                             JSONObject ret = JSONObject.parseObject(json);
-                            redisUtils.publishMsg(PlAYER_UPGRADE,json);
+                            redisUtils.publishMsg(PlAYER_UPGRADE, json);
+                        } else {
+                            result = updateTree(parentTree);
+                            if (result.getSuccess()) {
+                                //message.setTarget(playerTo.getPlayerName());
+                                //主动推送消息，升级成功
+                                JSONObject upgrade = new JSONObject();
+                                upgrade.put("level", stars);
+                                upgrade.put("toPlayerId", parent);
+                                upgrade.put("username", playerTo.getPlayerName());
+                                upgrade.put("fromPlayerId", child);
+                                message.getData().setData(upgrade);
+                                String json = JsonUtil.parseObjToJson(message);
+                                JSONObject ret = JSONObject.parseObject(json);
+                                redisUtils.publishMsg(PlAYER_UPGRADE, json);
+                            }
                         }
                     }
                 }
+
             }
 
 
@@ -225,7 +229,7 @@ public class RelationTreeServiceImpl implements RelationTreeService {
      * @return
      */
     @Override
-    public Map<String,Object> getLevelChildTreesMap(String playerId, int level) {
+    public Map<String, Object> getLevelChildTreesMap(String playerId, int level) {
         Map<Integer, List<RelationTree>> treeListMap = new Hashtable<>();
         for (int i = 0; i < level; i++) {
             List<RelationTree> levelTree = this.findLevel(playerId, i + 1);
@@ -233,35 +237,35 @@ public class RelationTreeServiceImpl implements RelationTreeService {
         }
 
         int num = 0;
-        Map<String,Object> data = new HashMap<>();
-        List<Map<String,String>> members = new ArrayList<>();
+        Map<String, Object> data = new HashMap<>();
+        List<Map<String, String>> members = new ArrayList<>();
         Iterator<Map.Entry<Integer, List<RelationTree>>> entries = treeListMap.entrySet().iterator();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-        while(entries.hasNext()){
+        while (entries.hasNext()) {
             Map.Entry<Integer, List<RelationTree>> entry = entries.next();
             Integer key = entry.getKey();
             List<RelationTree> value = entry.getValue();
-            if (key>1){
-                num+=value.size();
-            }else {
-                for(RelationTree tree : value){
+            if (key > 1) {
+                num += value.size();
+            } else {
+                for (RelationTree tree : value) {
                     Player player = playerAccountService.getPlayerByPlayerId(tree.getTreePlayerId());
-                    Map<String,String> p = new HashMap<>();
-                    p.put("playerId",player.getPlayerId());
+                    Map<String, String> p = new HashMap<>();
+                    p.put("playerId", player.getPlayerId());
                     //String pre = player.getPlayerName().substring(0,2);
                     //String end = player.getPlayerName().substring(7,-1);
-                    p.put("playerName",player.getPlayerNick());
-                    Date date = player.getCreateTime() == null ?new Date():player.getCreateTime();
+                    p.put("playerName", player.getPlayerNick());
+                    Date date = player.getCreateTime() == null ? new Date() : player.getCreateTime();
                     String date1 = simpleDateFormat.format(date);
-                    p.put("createTime",date1);
+                    p.put("createTime", date1);
                     members.add(p);
                 }
 
             }
         }
-        data.put("num",num);
-        data.put("members",members);
+        data.put("num", num);
+        data.put("members", members);
 
         return data;
     }
@@ -313,7 +317,7 @@ public class RelationTreeServiceImpl implements RelationTreeService {
 
             int start = 0;
             int end = 7 * (levels - level) - 1;
-            if(end<0){
+            if (end < 0) {
                 break;
             }
             String parentRef = selfRef.substring(start, end);

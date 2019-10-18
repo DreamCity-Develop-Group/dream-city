@@ -7,6 +7,7 @@ import com.dream.city.base.model.MessageData;
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.Player;
 import com.dream.city.base.model.entity.PlayerAccount;
+import com.dream.city.base.model.entity.RelationTree;
 import com.dream.city.base.model.entity.SalesOrder;
 import com.dream.city.base.model.enu.ReturnStatus;
 import com.dream.city.base.utils.JsonUtil;
@@ -101,10 +102,9 @@ public class ConsumerTreeController {
                 return message;
             }
         }else{
-            Result result = treeService.getTree("system");
-            if (result.getSuccess()){
-                JSONObject jsonObject1 = JsonUtil.parseJsonToObj(JsonUtil.parseObjToJson(result.getData()),JSONObject.class);
-                parentId  = jsonObject1.getString("treePlayerId");
+            RelationTree tree = treeService.getTreeByRelation(invite);
+            if (tree != null){
+                parentId  = tree.getTreePlayerId();
             }
         }
 
@@ -162,12 +162,14 @@ public class ConsumerTreeController {
         BigDecimal amount = new BigDecimal(10);
 
         if (amount.compareTo(new BigDecimal(0.00)) <= 0) {
+            message.getData().setCode(ReturnStatus.INVALID.getStatus());
             message.setDesc("设置的USDT不够");
             return message;
         }
         PlayerAccount account = accountService.getPlayerAccountByPlayerId(playerId);
 
         if (account.getAccUsdtAvailable().compareTo(amount) < 0) {
+            message.getData().setCode(ReturnStatus.NOT_ENOUGH.getStatus());
             message.setDesc("持有USDT不够支付许可费用");
             return message;
         }
