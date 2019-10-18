@@ -84,7 +84,7 @@ public class WebSocketFilter extends ZuulFilter {
             String redisKey = RedisKeys.LOGIN_USER_TOKEN + username;
             boolean isPresent = redisUtils.get(redisKey).isPresent();
             String token =  isPresent?redisUtils.get(redisKey).get():null;
-
+            token = token.replace("\"","");
             if (org.apache.commons.lang.StringUtils.isNotBlank(token) && token.equals(accessToken)){
                 log.info("Access token is Ok! ");
                 return null;
