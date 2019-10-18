@@ -1,7 +1,6 @@
 package com.dream.city.service.impl;
 
 import com.dream.city.base.model.entity.CityMessage;
-import com.dream.city.base.model.mapper.DictionaryMapper;
 import com.dream.city.base.model.mapper.MessageMapper;
 import com.dream.city.base.model.req.MessageReq;
 import com.dream.city.base.service.DictionaryService;
@@ -22,8 +21,6 @@ public class MessageServiceImpl implements MessageService {
 
     @Autowired
     MessageMapper messageMapper;
-    @Autowired
-    DictionaryMapper dictionaryMapper;
     @Autowired
     DictionaryService dictionaryService;
 
@@ -70,5 +67,11 @@ public class MessageServiceImpl implements MessageService {
         }
         messageReq.setDayParam(getMsgListDay);
         return messageMapper.getCityMessageList(messageReq);
+    }
+
+    @Override
+    public int getUnReadCount(String playerId) {
+        Integer count = messageMapper.getUnReadCount(playerId);
+        return count == null?0:count;
     }
 }

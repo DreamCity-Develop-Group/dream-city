@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
  * @author wvv
  * Redis客户端
  */
-@Component
+//@Component
 public class RedisUtils {
     private static final Charset CODE = Charset.forName("UTF-8");
 
@@ -68,6 +68,7 @@ public class RedisUtils {
         ValueOperations valueOperations = redisTemplate.opsForValue();
         valueOperations.set(key, value);
     }
+
     public void set(String key, final String value,final long expireTime) {
        redisTemplate.execute((RedisCallback) redisConnection -> {
            redisConnection.set(key.getBytes(),value.getBytes());

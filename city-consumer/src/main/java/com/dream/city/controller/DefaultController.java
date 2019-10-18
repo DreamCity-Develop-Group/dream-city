@@ -1,9 +1,7 @@
 package com.dream.city.controller;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.dream.city.base.model.Message;
-import com.dream.city.base.model.MessageData;
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.*;
 import com.dream.city.base.model.enu.ReturnStatus;
@@ -19,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.*;
-import java.util.logging.Level;
 
 @Api(value = "API-Consumer Main Default Page", tags = "主页数据接口")
 @RestController
@@ -47,7 +44,8 @@ public class DefaultController {
     ConsumerSalesService salesService;
     @Autowired
     ConsumerPlayerBlockChainService playerBlockChainService;
-    
+    @Autowired
+    ConsumerMessageService messageService;
 
 
 
@@ -131,7 +129,12 @@ public class DefaultController {
         Map<String, Object> data = new Hashtable<>();
 
         //消息数量 显示为小红点
+        Result<Integer> integerResult = messageService.getUnReadCount(playerId);
         boolean messages = true;
+        if (integerResult != null){
+            int count = integerResult.getData();
+            messages = count > 0? true: false;
+        }
         //公告
         data.put("notices", notices);
         //我的信息Player

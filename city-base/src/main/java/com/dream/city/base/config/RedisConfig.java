@@ -131,6 +131,7 @@ public class RedisConfig extends CachingConfigurerSupport {
     @ConditionalOnMissingBean(name = "redisTemplate")
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory jedisConnectionFactory) throws UnknownHostException {
         RedisTemplate<String, Object> template = new RedisTemplate<>();
+
         template.setConnectionFactory(jedisConnectionFactory);
 
         ObjectMapper om = new ObjectMapper();
@@ -138,12 +139,16 @@ public class RedisConfig extends CachingConfigurerSupport {
         om.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
         Jackson2JsonRedisSerializer jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer(Object.class);
         jackson2JsonRedisSerializer.setObjectMapper(om);
+
         RedisSerializer<String> redisSerializer = new StringRedisSerializer();
 
-        template.setHashKeySerializer(redisSerializer);
-        template.setHashValueSerializer(jackson2JsonRedisSerializer);
+
+
         template.setKeySerializer(redisSerializer);
         template.setValueSerializer(jackson2JsonRedisSerializer);
+        template.setHashKeySerializer(redisSerializer);
+        template.setHashValueSerializer(jackson2JsonRedisSerializer);
+
 
         return template;
     }
@@ -151,18 +156,24 @@ public class RedisConfig extends CachingConfigurerSupport {
     @Bean(name = "stringRedisTemplate")
     @ConditionalOnMissingBean
     public StringRedisTemplate stringRedisTemplate(RedisConnectionFactory jedisConnectionFactory) throws UnknownHostException{
+        StringRedisTemplate template = new StringRedisTemplate();
+        template.setConnectionFactory(jedisConnectionFactory);
+
         ObjectMapper om = new ObjectMapper();
         om.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
         om.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
         Jackson2JsonRedisSerializer jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer(Object.class);
         jackson2JsonRedisSerializer.setObjectMapper(om);
 
-        StringRedisTemplate template = new StringRedisTemplate();
-        template.setConnectionFactory(jedisConnectionFactory);
         RedisSerializer<String> redisSerializer = new StringRedisSerializer();
+
+
+
         template.setKeySerializer(redisSerializer);
         template.setValueSerializer(jackson2JsonRedisSerializer);
+        template.setHashKeySerializer(redisSerializer);
         template.setHashValueSerializer(jackson2JsonRedisSerializer);
+
         return template;
     }
 

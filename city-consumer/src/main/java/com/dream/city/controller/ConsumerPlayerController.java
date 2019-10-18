@@ -3,6 +3,7 @@ package com.dream.city.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.dream.city.base.model.*;
+import com.dream.city.base.model.entity.CityMessage;
 import com.dream.city.base.model.entity.Player;
 import com.dream.city.base.model.entity.PlayerAccount;
 import com.dream.city.base.model.entity.PlayerExt;
@@ -21,12 +22,14 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -648,6 +651,80 @@ public class ConsumerPlayerController {
         MessageData data = new MessageData(msg.getData().getType(), msg.getData().getModel());
         data.setData(t);
         Message message = new Message(msg.getSource(), msg.getTarget(), data);
+        return message;
+    }
+
+
+
+
+
+    @RequestMapping("/readMessage")
+    public Message readMessage(@RequestBody Message msg) {
+        CityMessage message = getCityMessage(msg);
+        Result<CityMessage> result = messageService.getMessageById(message.getId());
+        Map map = new HashMap();
+        if (result != null){
+            CityMessage cityMessage = result.getData();
+            if (cityMessage != null){
+                map.put("id",cityMessage.getId());
+                map.put("title", cityMessage.getTitle());
+                map.put("createtime",cityMessage.getCreateTime());
+                map.put("content",cityMessage.getContent());
+                map.put("readState",cityMessage.getHaveRead()==0?false:true);
+
+                messageService.updateMessageHaveReadById(cityMessage);
+            }
+        }
+        msg.setDesc(result.getMsg());
+        msg.getData().setData(map);
+        return msg;
+    }
+
+
+    @RequestMapping("/getMessageList")
+    public Message getMessageList(@RequestBody Message msg) {
+        CityMessage message = getCityMessage(msg);
+        Result<List<CityMessage>> result = messageService.getCityMessageList(message);
+
+        List<Map> resultList = new ArrayList<>();
+        if (result != null){
+            List<CityMessage> messageList = result.getData();
+            if (!CollectionUtils.isEmpty(messageList)){
+                Map map = new HashMap();
+                for (CityMessage cityMessage:messageList){
+                    map.put("id",cityMessage.getId());
+                    map.put("title", cityMessage.getTitle());
+                    map.put("createtime",cityMessage.getCreateTime());
+                    map.put("content",cityMessage.getContent());
+                    map.put("readState",cityMessage.getHaveRead()==0?false:true);
+                    resultList.add(map);
+                }
+            }
+        }
+        Map resultData = new HashMap();
+        resultData.put("messageList",resultList);
+        msg.setDesc(result.getMsg());
+        msg.getData().setData(resultData);
+        return msg;
+    }
+
+
+
+    private CityMessage getCityMessage(Message msg){
+        JSONObject jsonObject = JsonUtil.parseJsonToObj(JsonUtil.parseObjToJson(msg.getData().getData()), JSONObject.class);
+        Long id = Long.parseLong(jsonObject.containsKey("id")?String.valueOf(jsonObject.get("id")):"0");
+        String playerId = jsonObject.containsKey("playerId")?String.valueOf(jsonObject.get("playerId")):null;
+        String friendId = jsonObject.containsKey("friendId")?String.valueOf(jsonObject.get("friendId")):null;
+        String title = jsonObject.containsKey("title")?String.valueOf(jsonObject.get("title")):null;
+        String haveReadStr = jsonObject.containsKey("readState")?String.valueOf(jsonObject.get("readState")):null;
+        Boolean haveRead = StringUtils.isBlank(haveReadStr)?null:Boolean.parseBoolean(haveReadStr);
+        id = id == 0? null: id;
+        CityMessage message = new CityMessage();
+        message.setHaveRead(haveRead == null? null: (haveRead==Boolean.TRUE)?1:0);
+        message.setTitle(title);
+        message.setPlayerId(playerId);
+        message.setFriendId(friendId);
+        message.setId(id);
         return message;
     }
 
