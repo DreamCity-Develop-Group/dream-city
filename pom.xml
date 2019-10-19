@@ -187,6 +187,9 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <fork>false</fork>
+                </configuration>
             </plugin>
 
 

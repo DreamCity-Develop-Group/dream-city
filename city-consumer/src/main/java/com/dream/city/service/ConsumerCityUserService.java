@@ -19,11 +19,7 @@ public interface ConsumerCityUserService {
 
     @RequestMapping("/user/get/{id}")
     String users(@PathVariable("id")String id);
-    /**
-     * 用户注册
-     */
-    @RequestMapping("/user/reg")
-    String reg(@RequestBody Message message);
+    
 
     /**
      * 用户登录
