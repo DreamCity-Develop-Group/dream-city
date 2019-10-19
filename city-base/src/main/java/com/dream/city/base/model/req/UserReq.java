@@ -35,6 +35,10 @@ public class UserReq implements Serializable {
 
     private String code;
 
+    private Integer total;
+    private Integer pageNum;
+    private Integer pageSize;
+
     private BigDecimal money;
 
     public UserReq(){

@@ -47,4 +47,5 @@ public class PlayerResp implements Serializable {
 
     private Integer agree;
 
+
 }

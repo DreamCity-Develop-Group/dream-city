@@ -23,5 +23,9 @@ public class PlayerReq implements Serializable {
 
     private String createTime;
 
+    private Integer pageNum;
+    private Integer pageSize;
+    private Integer start;
+
 
 }
