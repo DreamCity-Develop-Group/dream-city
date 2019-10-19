@@ -115,13 +115,13 @@ public class ConsumerPlayerController {
         playerReq.setPlayerName(playerName);
         playerReq.setPlayerId(playerId);
 
-        Integer start = 0;
-        if (jsonReq.getPageNum() == 1){
-            start = 0;
+        Integer start = jsonReq.getPageNum();
+        /*if (jsonReq.getPageNum() == 1){
+            start = 1;
         }else {
-            start = jsonReq.getPageSize() * jsonReq.getPageNum() - jsonReq.getPageSize() + 1;
-        }
-        Page pageReq = new Page(start,jsonReq.getPageSize());
+            //start = jsonReq.getPageSize() * jsonReq.getPageNum() - jsonReq.getPageSize() + 1;
+        }*/
+        Page pageReq = new Page();
         pageReq.setTotal(jsonReq.getTotal());
         pageReq.setPageSize(jsonReq.getPageSize());
         pageReq.setPageNum(jsonReq.getPageNum());

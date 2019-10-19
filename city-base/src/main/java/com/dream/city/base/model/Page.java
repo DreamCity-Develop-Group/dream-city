@@ -53,7 +53,7 @@ public class Page<T> implements Serializable {
     }
 
     public int getStartRow() {
-        this.startRow = this.pageSize * (this.pageNum - 1);
+        this.startRow = this.pageSize * this.pageNum - this.pageSize + 1;
         return startRow;
     }
 

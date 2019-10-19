@@ -19,10 +19,10 @@ public class FallBackCityUser implements ConsumerCityUserService {
         return "error id";
     }
 
-    @Override
-    public String reg(Message message) {
-        return null;
-    }
+//    @Override
+//    public String reg(Message message) {
+//        return null;
+//    }
 
     @Override
     public String login(Message message) {
