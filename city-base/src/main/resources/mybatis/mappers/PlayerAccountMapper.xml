@@ -6,21 +6,23 @@
         <result column="acc_player_id" jdbcType="INTEGER" property="accPlayerId"/>
         <result column="acc_addr" jdbcType="VARCHAR" property="accAddr"/>
         <result column="acc_pass" jdbcType="VARCHAR" property="accPass"/>
-        <result column="acc_usdt" jdbcType="DOUBLE" property="accUsdt"/>
+        <result column="acc_usdt" jdbcType="DECIMAL" property="accUsdt"/>
         <result column="acc_usdt_available" jdbcType="VARCHAR" property="accUsdtAvailable"/>
         <result column="acc_usdt_freeze" jdbcType="VARCHAR" property="accUsdtFreeze"/>
         <result column="acc_mt" jdbcType="VARCHAR" property="accMt"/>
         <result column="acc_mt_available" jdbcType="VARCHAR" property="accMtAvailable"/>
         <result column="acc_mt_freeze" jdbcType="INTEGER" property="accMtFreeze"/>
-        <result column="acc_income" jdbcType="DOUBLE" property="accIncome"/>
+        <result column="acc_income" jdbcType="DECIMAL" property="accIncome"/>
+        <result column="version" jdbcType="INTEGER" property="version"/>
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-    acc_id, acc_player_id, acc_usdt, acc_usdt_available, acc_usdt_freeze, acc_mt, acc_mt_available, 
-    acc_mt_freeze, acc_income, DATE_FORMAT(create_time,'%Y-%m-%d %h:%m:%s') create_time, DATE_FORMAT(update_time,'%Y-%m-%d %h:%m:%s') update_time
-  </sql>
+      acc_id, acc_player_id, acc_usdt, acc_usdt_available, acc_usdt_freeze, acc_mt, acc_mt_available, version,
+      acc_mt_freeze, acc_income, DATE_FORMAT(create_time,'%Y-%m-%d %h:%m:%s') create_time, DATE_FORMAT(update_time,'%Y-%m-%d %h:%m:%s') update_time
+    </sql>
+
     <select id="selectByPrimaryKey" resultMap="BasePlayerAccountResultMap" parameterType="java.lang.Integer">
         select
         <include refid="Base_Column_List"/>
@@ -33,16 +35,17 @@
     where acc_id = #{accId,jdbcType=INTEGER}
   </delete>
 
-    <insert id="insert" parameterType="com.dream.city.base.model.entity.PlayerAccount">
-    insert into player_account (acc_id, acc_player_id, acc_usdt,
-      acc_usdt_available, acc_usdt_freeze, acc_mt,
-      acc_mt_available, acc_income,acc_mt_freeze, create_time,
-      update_time)
-    values (#{accId,jdbcType=INTEGER}, #{accPlayerId,jdbcType=VARCHAR}, #{accUsdt,jdbcType=DECIMAL},
-      #{accUsdtAvailable,jdbcType=DECIMAL}, #{accUsdtFreeze,jdbcType=DECIMAL}, #{accMt,jdbcType=DECIMAL},
-      #{accMtAvailable,jdbcType=DECIMAL}, #{accMtFreeze,jdbcType=DECIMAL}, #{accIncome},#{createTime,jdbcType=TIMESTAMP},
-      #{updateTime,jdbcType=TIMESTAMP})
-  </insert>
+    <!--<insert id="insert" parameterType="com.dream.city.base.model.entity.PlayerAccount">
+      insert into player_account (acc_id, acc_player_id, acc_usdt,
+        acc_usdt_available, acc_usdt_freeze, acc_mt,
+        acc_mt_available, acc_income,acc_mt_freeze, create_time,
+        update_time)
+      values (#{accId,jdbcType=INTEGER}, #{accPlayerId,jdbcType=VARCHAR}, #{accUsdt,jdbcType=DECIMAL},
+        #{accUsdtAvailable,jdbcType=DECIMAL}, #{accUsdtFreeze,jdbcType=DECIMAL}, #{accMt,jdbcType=DECIMAL},
+        #{accMtAvailable,jdbcType=DECIMAL}, #{accMtFreeze,jdbcType=DECIMAL}, #{accIncome},#{createTime,jdbcType=TIMESTAMP},
+        #{updateTime,jdbcType=TIMESTAMP})
+    </insert>-->
+
     <insert id="insertSelective" parameterType="com.dream.city.base.model.entity.PlayerAccount">
         insert into player_account
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -72,6 +75,9 @@
             </if>
             <if test="accIncome != null">
                 acc_income,
+            </if>
+            <if test="version != null">
+                version,
             </if>
             <if test="createTime != null">
                 create_time,
@@ -106,7 +112,10 @@
                 #{accMtFreeze,jdbcType=DECIMAL},
             </if>
             <if test="accMtFreeze != null">
-                #{accIncome,jdbcType=DOUBLE},
+                #{accIncome,jdbcType=DECIMAL},
+            </if>
+            <if test="version != null">
+                #{version,jdbcType=DECIMAL},
             </if>
             <if test="createTime != null">
                 #{createTime,jdbcType=TIMESTAMP},
@@ -116,6 +125,7 @@
             </if>
         </trim>
     </insert>
+
     <update id="updateByPrimaryKeySelective" parameterType="com.dream.city.base.model.entity.PlayerAccount">
         update player_account
         <set>
@@ -140,23 +150,25 @@
             <if test="accMtFreeze != null">
                 acc_mt_freeze = #{accMtFreeze,jdbcType=DECIMAL},
             </if>
+            version = version + 1,
         </set>
-        where acc_id = #{accId,jdbcType=INTEGER}
+        where acc_id = #{accId,jdbcType=INTEGER} and version = #{version,jdbcType=INTEGER}
     </update>
-    <update id="updateByPrimaryKey" parameterType="com.dream.city.base.model.entity.PlayerAccount">
-    update player_account
-    set acc_player_id = #{accPlayerId,jdbcType=VARCHAR},
-      acc_usdt = #{accUsdt,jdbcType=DECIMAL},
-      acc_usdt_available = #{accUsdtAvailable,jdbcType=DECIMAL},
-      acc_usdt_freeze = #{accUsdtFreeze,jdbcType=DECIMAL},
-      acc_mt = #{accMt,jdbcType=DECIMAL},
-      acc_mt_available = #{accMtAvailable,jdbcType=DECIMAL},
-      acc_mt_freeze = #{accMtFreeze,jdbcType=DECIMAL},
-      acc_income = #{accIncome,jdbcType=DECIMAL},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_time = #{updateTime,jdbcType=TIMESTAMP}
-    where acc_id = #{accId,jdbcType=INTEGER}
-  </update>
+
+    <!--<update id="updateByPrimaryKey" parameterType="com.dream.city.base.model.entity.PlayerAccount">
+      update player_account
+      set acc_player_id = #{accPlayerId,jdbcType=VARCHAR},
+        acc_usdt = #{accUsdt,jdbcType=DECIMAL},
+        acc_usdt_available = #{accUsdtAvailable,jdbcType=DECIMAL},
+        acc_usdt_freeze = #{accUsdtFreeze,jdbcType=DECIMAL},
+        acc_mt = #{accMt,jdbcType=DECIMAL},
+        acc_mt_available = #{accMtAvailable,jdbcType=DECIMAL},
+        acc_mt_freeze = #{accMtFreeze,jdbcType=DECIMAL},
+        acc_income = #{accIncome,jdbcType=DECIMAL},
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+        update_time = #{updateTime,jdbcType=TIMESTAMP}
+      where acc_id = #{accId,jdbcType=INTEGER}
+    </update>-->
 
 
     <select id="getPlatformAccounts" resultMap="BasePlayerAccountResultMap"
@@ -190,18 +202,18 @@
 
 
     <!--<select id="getAccountByPlayerIds" resultMap="BasePlayerAccountResultMap"
-            parameterType="java.lang.String">
-        select
-        <include refid="Base_Column_List"/>
-        from player_account
-        <where>
-            <if test="accPlayerId != null and accPlayerId != '' ">
-                and acc_player_id = #{accPlayerId,jdbcType=VARCHAR}
-            </if>
-        </where>
-        order by create_time desc
-    </select>
--->
+                parameterType="java.lang.String">
+            select
+            <include refid="Base_Column_List"/>
+            from player_account
+            <where>
+                <if test="accPlayerId != null and accPlayerId != '' ">
+                    and acc_player_id = #{accPlayerId,jdbcType=VARCHAR}
+                </if>
+            </where>
+            order by create_time desc
+        </select>
+    -->
 
     <update id="updateByPlayerId" parameterType="com.dream.city.base.model.entity.PlayerAccount" >
         update player_account
@@ -224,9 +236,10 @@
             <if test="accMtFreeze != null" >
                 acc_mt_freeze = #{accMtFreeze,jdbcType=DECIMAL},
             </if>
+            version = version + 1,
             update_time = now(),
         </set>
-        where acc_player_id = #{accPlayerId,jdbcType=VARCHAR}
+        where acc_player_id = #{accPlayerId,jdbcType=VARCHAR} and version = #{version,jdbcType=VARCHAR}
 
     </update>
 

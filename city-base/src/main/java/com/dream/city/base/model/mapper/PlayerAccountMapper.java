@@ -3,7 +3,6 @@ package com.dream.city.base.model.mapper;
 
 import com.dream.city.base.model.entity.PlayerAccount;
 import com.dream.city.base.model.req.PlayerAccountReq;
-import org.apache.commons.lang.StringUtils;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
@@ -18,9 +17,9 @@ import java.util.List;
 public interface PlayerAccountMapper {
     Integer deleteByPrimaryKey(Integer accId);
     Integer insertSelective(PlayerAccount record);
-    PlayerAccount updateByPrimaryKey(Integer accId);
+    //PlayerAccount updateByPrimaryKey(Integer accId);
     Integer updateByPrimaryKeySelective(PlayerAccount account);
-    Integer insert(PlayerAccount account);
+    //Integer insert(PlayerAccount account);
     PlayerAccount selectByPrimaryKey(Integer accId);
 
     PlayerAccount getPlayerAccountSelective(PlayerAccount record);
@@ -56,6 +55,7 @@ public interface PlayerAccountMapper {
             @Result(property = "accMtAvailable", column = "acc_mt_available", id = true),
             @Result(property = "accMtFreeze", column = "acc_mt_freeze", id = true),
             @Result(property = "accIncome", column = "acc_income", id = true),
+            @Result(property = "version", column = "version", id = true),
             @Result(property = "createTime", column = "create_time", id = true),
             @Result(property = "updateTime", column = "update_time", id = true),
 
