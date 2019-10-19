@@ -75,13 +75,13 @@ public class ConsumerTreeController {
 
             playerId = player.get("playerId").toString();
             playerInvite = player.get("playerInvite").toString();
-        }else {
+        } else {
             Player player = playerService.getPlayerByPlayerId(playerId);
             playerInvite = player.getPlayerInvite();
         }
 
         Result treeRet = treeService.getTree(playerId);
-        if (treeRet.getSuccess() && treeRet.getData()!=null){
+        if (treeRet.getSuccess() && treeRet.getData() != null) {
             Result allowed = treeService.getInvestAllowed(playerId);
 
             if (!allowed.getSuccess()) {
@@ -93,7 +93,7 @@ public class ConsumerTreeController {
 
         //如果是系统的不使用玩家表判断
         String parentId = "";
-        if(!"system".equals(invite)) {
+        if (!"system".equals(invite)) {
             Map parent = (Map) playerService.getPlayerByInvite(invite).getData();
             parentId = parent.get("playerId").toString();
             if (parent == null) {
@@ -101,10 +101,10 @@ public class ConsumerTreeController {
                 message.setDesc(ReturnStatus.ERROR_INVITE.getDesc());
                 return message;
             }
-        }else{
+        } else {
             RelationTree tree = treeService.getTreeByRelation(invite);
-            if (tree != null){
-                parentId  = tree.getTreePlayerId();
+            if (tree != null) {
+                parentId = tree.getTreePlayerId();
             }
         }
 
@@ -145,20 +145,23 @@ public class ConsumerTreeController {
 
         Message message = new Message(
                 "server", "client",
-                new MessageData("join", "/consumer/tree",0),
+                new MessageData("join", "/consumer/tree", ReturnStatus.NOTSET_PASS.getStatus()),
                 "加入经营许可失败，尚未设置交易 密码");
+
         Result result = playerService.getPlayer(playerId);
         Player player = JsonUtil.parseJsonToObj(result.getData().toString(), Player.class);
         Result allowed = treeService.getInvestAllowed(playerId);
+
+        if (player != null && StringUtils.isBlank(player.getPlayerTradePass())) {
+            //没有设置密码
+            return message;
+        }
 
         if (allowed.getSuccess()) {
             message.setDesc("已经获得投资许可");
             return message;
         }
-        /*if (StringUtils.isBlank(player.getPlayerTradePass())) {
-            //没有设置密码
-            return message;
-        }*/
+
         BigDecimal amount = new BigDecimal(10);
 
         if (amount.compareTo(new BigDecimal(0.00)) <= 0) {
@@ -168,51 +171,51 @@ public class ConsumerTreeController {
         }
         PlayerAccount account = accountService.getPlayerAccountByPlayerId(playerId);
 
-        if (account.getAccUsdtAvailable().compareTo(amount) < 0) {
+        if (null != account && account.getAccUsdtAvailable().compareTo(amount) < 0) {
             message.getData().setCode(ReturnStatus.NOT_ENOUGH.getStatus());
             message.setDesc("持有USDT不够支付许可费用");
             return message;
         }
-        player.setPlayerTradePass(tradePass);
+        //player.setPlayerTradePass(tradePass);
         //设置交易密码
-        Result retPassSet = playerService.setTradePassword(player);
-        if(retPassSet.getSuccess()){
-            //加入许可设置
-            Result ret = treeService.joinInvestAllow(playerId, amount);
-            if (ret.getSuccess()) {
-                //将分配时锁定的收益额度扣除
-                account.setAccUsdt(account.getAccUsdt().subtract(amount));
-                account.setAccUsdtFreeze(account.getAccUsdtFreeze().subtract(amount));
+        //Result retPassSet = playerService.setTradePassword(player);
+        //if(retPassSet.getSuccess()){
+        //加入许可设置
+        Result ret = treeService.joinInvestAllow(playerId, amount);
+        if (ret.getSuccess()) {
+            //将分配时锁定的收益额度扣除
+            account.setAccUsdt(account.getAccUsdt().subtract(amount));
+            account.setAccUsdtFreeze(account.getAccUsdtFreeze().subtract(amount));
 
-                Result updateAcc  = accountService.updatePlayerAccount(account);
+            Result updateAcc = accountService.updatePlayerAccount(account);
 
-                if (updateAcc.getSuccess()){
-                    //设置推荐二维码生效，即用户可用状态
-                    Player player1 = playerService.getPlayerByPlayerId(playerId);
-                    player1.setIsValid("1");
-                    playerService.updatePlayer(player1);
+            if (updateAcc.getSuccess()) {
+                //设置推荐二维码生效，即用户可用状态
+                Player player1 = playerService.getPlayerByPlayerId(playerId);
+                player1.setIsValid("1");
+                playerService.updatePlayer(player1);
 
-                    message.getData().setCode(ReturnStatus.SUCCESS.getStatus());
-                    message.setDesc("加入成功，可以投资运营");
-                }else {
-                    Result updateAcc1  = accountService.updatePlayerAccount(account);
-                    if (!updateAcc1.getSuccess()){
-                        accountService.updatePlayerAccount(account);
-                    }
-                }
-
-                return message;
+                message.getData().setCode(ReturnStatus.SUCCESS.getStatus());
+                message.setDesc("加入成功，可以投资运营");
             } else {
-                message.getData().setCode(ReturnStatus.SET_FAILED.getStatus());
-                message.setDesc("加入失败，请重试");
-                return message;
+                Result updateAcc1 = accountService.updatePlayerAccount(account);
+                if (!updateAcc1.getSuccess()) {
+                    accountService.updatePlayerAccount(account);
+                }
             }
-        }else {
-            message.getData().setCode(ReturnStatus.SET_FAILED.getStatus());
-            message.setDesc("设置交易密码失败");
-        }
 
-        return message;
+            return message;
+        } else {
+            message.getData().setCode(ReturnStatus.SET_FAILED.getStatus());
+            message.setDesc("加入失败，请重试");
+            return message;
+        }
+        //}else {
+        //    message.getData().setCode(ReturnStatus.SET_FAILED.getStatus());
+        //    message.setDesc("设置交易密码失败");
+        //}
+
+        //return message;
     }
 
     /**
@@ -231,8 +234,8 @@ public class ConsumerTreeController {
         if (StringUtils.isNotBlank(playerId)) {
             playerId = jsonObject.getString("playerId");
         } else {
-            LinkedHashMap ppid = (LinkedHashMap)playerService.getPlayerByAccount(username).getData();
-            playerId= ppid.get("playerId").toString();
+            LinkedHashMap ppid = (LinkedHashMap) playerService.getPlayerByAccount(username).getData();
+            playerId = ppid.get("playerId").toString();
             String json = JsonUtil.parseObjToJson(playerService.getPlayerByAccount(username).getData());
 
 
@@ -261,19 +264,19 @@ public class ConsumerTreeController {
         String username = jsonObject.getString("username");
         Integer page = jsonObject.getInteger("page");
         String playerId = jsonObject.getString("playerId");
-        if (StringUtils.isBlank(playerId) ){
+        if (StringUtils.isBlank(playerId)) {
             msg.getData().setCode(ReturnStatus.ERROR.getStatus());
             msg.setDesc("获取MT交易订单失败");
             return msg;
         }
-        if (page == 0){
-            page =1;
+        if (page == 0) {
+            page = 1;
         }
 
-        Result result = treeService.getOrderList(playerId,page);
+        Result result = treeService.getOrderList(playerId, page);
         Map data = new HashMap();
-        data.put("page",page);
-        data.put("list",result.getData());
+        data.put("page", page);
+        data.put("list", result.getData());
         msg.getData().setCode(result.getCode());
         msg.setDesc(result.getMsg());
         msg.getData().setData(data);
@@ -359,7 +362,7 @@ public class ConsumerTreeController {
         String playerId = jsonObject.getString("playerId");
         BigDecimal amount = jsonObject.getBigDecimal("amount");
 
-        Result result =  treeService.createOrder(playerId,amount);
+        Result result = treeService.createOrder(playerId, amount);
 
         msg.getData().setCode(result.getCode());
         msg.getData().setData(result.getData());
@@ -380,14 +383,13 @@ public class ConsumerTreeController {
         String playerId = jsonObject.getString("playerId");
         String confirmPass = jsonObject.getString("confirmPass");
 
-        Result result =  treeService.checkOrderPass(playerId,confirmPass);
+        Result result = treeService.checkOrderPass(playerId, confirmPass);
 
         msg.getData().setCode(result.getCode());
         msg.getData().setData(null);
         msg.setDesc(result.getMsg());
         return msg;
     }
-
 
 
 }

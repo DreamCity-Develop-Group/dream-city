@@ -67,4 +67,5 @@ public interface PlayerService {
     Player getPlayerByPlayerId(String playerId);
 
 
+    boolean setTraderPwd(String playerId, String tradePass);
 }

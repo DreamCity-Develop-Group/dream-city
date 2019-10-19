@@ -246,5 +246,17 @@ public class PlayerServiceImpl implements PlayerService {
         return playerMapper.getPlayer(playerId);
     }
 
+    @Override
+    public boolean setTraderPwd(String playerId, String tradePass){
+        try {
+            Player player = playerMapper.getPlayer(playerId);
+            player.setPlayerTradePass(tradePass);
+            playerMapper.updateByPlayerId(player);
+            return true;
+        }catch (Exception e){
+            return false;
+        }
+    }
+
 
 }

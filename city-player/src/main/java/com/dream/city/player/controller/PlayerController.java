@@ -388,6 +388,27 @@ public class PlayerController {
     }
 
     /**
+     * 重置交易密码
+     * @param playerId
+     * @param tradePass
+     * @return
+     */
+    @RequestMapping("/setTraderPwd")
+    public Result resetTraderPwd(@RequestParam("playerId")String playerId,
+                                 @RequestParam("tradePass") String tradePass){
+        log.info("设置交易密码，playerId:{},newpwshop:{}",playerId,tradePass);
+        Player player = playerService.getPlayerByPlayerId(playerId);
+        if (player!=null && StringUtils.isNotBlank(player.getPlayerTradePass())){
+            return Result.result(true,"交易密码已经设置",ReturnStatus.SUCCESS.getStatus());
+        }
+        boolean ret =  playerService.setTraderPwd(playerId, tradePass);
+
+        return Result.result(ret,"设置交易密码结果",
+                    ret?ReturnStatus.SUCCESS.getStatus():ReturnStatus.SET_FAILED.getStatus()
+                );
+    }
+
+    /**
      * 玩家
      * @param playerId
      * @return

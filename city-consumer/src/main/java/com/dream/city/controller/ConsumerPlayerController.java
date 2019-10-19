@@ -67,6 +67,9 @@ public class ConsumerPlayerController {
     @Autowired
     DictionaryService dictionaryService;
 
+    @Autowired
+    ConsumerPlayerService playerService;
+
     /**
      * 修改玩家头像
      *
@@ -121,6 +124,27 @@ public class ConsumerPlayerController {
         msg.getData().setData(players.getData());
         return msg;
     }
+
+    @RequestMapping("/setTradePass")
+    @ApiOperation(value = "设置交易密码", httpMethod = "POST", notes = "设置交易密码", response = Message.class)
+    public Message setTradePass(@RequestBody Message msg) {
+        log.info("设置交易密码", JSONObject.toJSONString(msg));
+
+        String json = JsonUtil.parseObjToJson(msg.getData().getData());
+        JSONObject data = JsonUtil.parseJsonToObj(json,JSONObject.class);
+
+        String tradePass = data.getString("tradePass");
+        String playerId = data.getString("playerId");
+        Player player = playerService.getPlayerByPlayerId(playerId);
+
+        Result result = consumerPlayerService.setTradePassword(player);
+
+        msg.getData().setData(result.getData());
+        msg.getData().setCode(result.getCode());
+
+        return msg;
+    }
+
 
 
     /**
