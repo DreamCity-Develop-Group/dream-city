@@ -1,0 +1,32 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/dreamcity?serverTimezone=UTC&useUnicode=true&characterEncoding=UTF-8&transformedBitIsBoolean=true&autoReconnect=true&failOverReadOnly=false&allowMultiQueries=true&useSSL=false
+    username: dreamcity
+    password: Root@123
+
+  redis:
+    database: 0
+    host: localhost
+    port: 6379
+    password: 123456
+
+
+#eureka
+eureka:
+  instance:
+    hostname: localhost
+    instance-id: ${spring.application.name}
+  client:
+    service-url:
+      defaultZone: http://${eureka.instance.hostname}:8888/eureka/, http://${eureka.instance.hostname}:9999/eureka/
+
+
+
+auth:
+  secret: oKKLJOoasdl
+
+platform:
+  account: 4E2EE556055042AB80E3D164E51DDD1A
+
+
