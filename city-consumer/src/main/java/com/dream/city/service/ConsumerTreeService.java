@@ -48,7 +48,7 @@ public interface ConsumerTreeService {
     Result getInvestAllowed(@RequestParam("playerId")String playerId);
 
     @RequestMapping("/tree/get/by/relation")
-    RelationTree getTreeByRelation(String invite);
+    RelationTree getTreeByRelation(@RequestParam("relation")String relation);
 
     @RequestMapping("/tree/invest/join")
     Result joinInvestAllow(@RequestParam("playerId")String playerId, @RequestParam("amount")BigDecimal amount);
