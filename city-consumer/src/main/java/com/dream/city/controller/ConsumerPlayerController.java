@@ -123,10 +123,35 @@ public class ConsumerPlayerController {
         pageReq.setCondition(playerReq);
 
         Result<PageInfo> players = consumerPlayerService.getPlayers(pageReq);
+
+        List<Map> dataList = new ArrayList<>();
+        PageInfo<PlayerResp> pageInfo = players.getData();
+        List<PlayerResp> playerList = pageInfo.getList();
+        if (!CollectionUtils.isEmpty(playerList)){
+            Map data = null;
+            for (int i= 0; i<playerList.size();i++){
+                PlayerResp resp = DataUtils.getData(playerList.get(i),PlayerResp.class);
+                data = new HashMap();
+                data.put("playerId",StringUtils.isBlank(resp.getPlayerId())?"":resp.getPlayerId());
+                data.put("imgurl",StringUtils.isBlank(resp.getImgurl())?"":resp.getImgurl());
+                data.put("friendId",StringUtils.isBlank(resp.getFriendId())?"":resp.getFriendId());
+                data.put("nick",StringUtils.isBlank(resp.getPlayerNick())?"":resp.getPlayerNick());
+                data.put("agree",resp.getAgree()==null?false:(resp.getAgree()==0)?false:true);
+                data.put("grade",StringUtils.isBlank(resp.getGrade())?"":resp.getGrade());
+
+                dataList.add(data);
+            }
+        }
+
+        PageInfo pageRsult = pageInfo;
+        pageRsult.getList().clear();
+        pageRsult.setList(dataList);
+
+
         msg.setDesc(players.getMsg());
         msg.setCode(ReturnStatus.SUCCESS.getStatus());
         msg.getData().setCode(ReturnStatus.SUCCESS.getStatus());
-        msg.getData().setData(players.getData());
+        msg.getData().setData(pageRsult);
         return msg;
     }
 
