@@ -1,6 +1,6 @@
 spring:
   redis:
-    host: 192.168.0.99
+    host: localhost
     database: 0
     password: 123456
     port: 6379
@@ -25,7 +25,7 @@ spring:
 
 eureka:
   instance:
-    hostname: 192.168.0.99
+    hostname: localhost
     instance-id: ${spring.application.name}
   client:
     service-url:
