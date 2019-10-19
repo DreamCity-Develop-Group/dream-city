@@ -199,17 +199,17 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
             recordOut.setAccUsdt(recordOut.getMoney());
             //校验提现规则
             if (getPlayerAccount == null){
-                return new Result<>(success,"没找到账户信息");
+                return new Result(success,"没找到账户信息",ReturnStatus.ACCOUNT_EXISTS.getStatus(),null);
             }
             if (recordOut.getMoney() == null){
-                return new Result<>(success,"转账金额不能为空");
+                return new Result(success,"转账金额不能为空",ReturnStatus.PARAM_ERROR.getStatus(),null);
             }
             if (StringUtils.isBlank(recordOut.getAccAddr())){
-                return new Result<>(success,"转账地址不能为空");
+                return new Result(success,"转账地址不能为空",ReturnStatus.PARAM_ERROR.getStatus(),null);
             }
             String checkAmount = checkAmount(recordOut,getPlayerAccount);
             if (StringUtils.isNotBlank(checkAmount)){
-                return new Result<>(success,checkAmount);
+                return new Result<>(success,checkAmount,ReturnStatus.NOT_ENOUGH.getStatus(),null);
             }
 
             //转账账户 出账
@@ -272,6 +272,7 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
                 msg = "玩家内部转账";
                 if (success && !transferVerify){
                     msg = "玩家内部转账成功";
+                    trade.setQuotaTax(BigDecimal.valueOf(Double.parseDouble(dictionaryService.getValByKey("player.transfer.mt.tax"))));
 
                     //内部转账 立即到账 转入账户入账
                     PlayerAccountReq recordIn = new PlayerAccountReq();

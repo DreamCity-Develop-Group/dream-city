@@ -74,17 +74,14 @@ public class AccountController {
      * @param record
      * @return
      */
-    /*@RequestMapping("/getPlatformAccounts")
-    public Result<PlayerAccount> getPlayerAccount(@RequestBody PlayerAccountReq record){
+    @RequestMapping("/getPlatformAccounts")
+    public Result<PlayerAccount> getPlayerAccount(@RequestBody PlayerAccount record){
         logger.info("获取平台账户，{}", record);
         String desc = "获取平台账户成功";
         PlayerAccount account = null;
         boolean b = Boolean.TRUE;
         try {
-            List<PlayerAccount> accountList = accountService.getPlatformAccounts(record);
-            if (!CollectionUtils.isEmpty(accountList)){
-                account = accountList.get(0);
-            }
+            account = accountService.getPlayerAccount(record);
         }catch (Exception e){
             desc = "获取玩平台户失败";
             b = Boolean.FALSE;
@@ -92,7 +89,7 @@ public class AccountController {
         }
         Result<PlayerAccount> result = new Result<>(b,desc,account);
         return result;
-    }*/
+    }
 
     /**
      * 玩家账户列表
