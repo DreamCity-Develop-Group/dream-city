@@ -7,6 +7,7 @@ import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.Friends;
 import com.dream.city.base.model.entity.PlayerGrade;
 import com.dream.city.base.model.enu.ReturnStatus;
+import com.dream.city.base.model.req.PlayerReq;
 import com.dream.city.base.model.resp.PlayerResp;
 import com.dream.city.base.utils.DataUtils;
 import com.dream.city.base.model.entity.Player;
@@ -157,8 +158,8 @@ public class PlayerServiceImpl implements PlayerService {
 
     @Override
     public PageInfo<PlayerResp> getPlayers(Page pageReq) {
-        Player playerReq = DataUtils.toJavaObject(pageReq.getCondition(),Player.class);
-        PageHelper.startPage(pageReq.getPageNum(),pageReq.getPageSize());
+        PlayerReq playerReq = DataUtils.toJavaObject(pageReq.getCondition(), PlayerReq.class);
+        PageHelper.startPage(pageReq.getPageNum(),pageReq.getPageSize(),pageReq.isCount());
         List<PlayerResp> players = playerMapper.getPlayers(playerReq);
         if (!CollectionUtils.isEmpty(players)){
             String getFriendAgree = "添加";

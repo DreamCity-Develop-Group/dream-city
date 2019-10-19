@@ -83,7 +83,7 @@
   </select>
 
 
-  <select id="getPlayers" parameterType="com.dream.city.base.model.entity.Player" resultType="com.dream.city.base.model.resp.PlayerResp">
+  <select id="getPlayers" parameterType="com.dream.city.base.model.req.PlayerReq" resultType="com.dream.city.base.model.resp.PlayerResp">
     SELECT p.id, p.player_id playerId,p.player_name playerName,p.player_nick playerNick,p.create_time createTime,
       (SELECT e1.friendlink FROM player_ext e1 WHERE e1.player_id = p.player_id) playerLink,
       (SELECT e2.imgurl FROM player_ext e2 WHERE e2.player_id = p.player_id) imgurl,
@@ -93,9 +93,9 @@
     from city_player p
     <where>
       1=1
-      <if test="playerId != null and playerId != ''">
+      <!--<if test="playerId != null and playerId != ''">
         AND p.player_id != #{playerId}
-      </if>
+      </if>-->
       <if test="playerName != null and playerName != ''">
         AND p.player_name = #{playerName}
       </if>

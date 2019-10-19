@@ -133,6 +133,10 @@ public class DataUtils {
             userReq.setOldpw(map.containsKey("oldpw") ? (String) map.get("oldpw") : null);
             userReq.setNewpw(map.containsKey("newpw") ? (String) map.get("newpw") : null);
             userReq.setImgUrl(map.containsKey("imgUrl") ? (String) map.get("imgUrl") : null);
+            userReq.setImgUrl(map.containsKey("imgUrl") ? (String) map.get("imgUrl") : null);
+            userReq.setTotal(map.containsKey("total") ? (Integer) map.get("total") : null);
+            userReq.setPageSize(map.containsKey("pageSize") ? (Integer) map.get("pageSize") : null);
+            userReq.setPageNum(map.containsKey("pageNum") ? (Integer) map.get("pageNum") : null);
         }
         return userReq;
     }

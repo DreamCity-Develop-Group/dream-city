@@ -99,12 +99,33 @@ public class ConsumerPlayerController {
 
         UserReq jsonReq = DataUtils.getUserReq(msg);
         Player playerReq = new Player();
-        playerReq.setPlayerId(jsonReq.getPlayerId());
-        playerReq.setPlayerName(jsonReq.getUsername());
-        Page pageReq = new Page();
+
+        String playerId = jsonReq.getPlayerId();
+        String nick = jsonReq.getNick();
+        String playerName = null;
+        PlayerResp playerByStrUserName = commonsService.getPlayerByStrUserName(nick);
+        if (playerByStrUserName != null) {
+            playerName = playerByStrUserName.getPlayerNick();
+            nick = null;
+        }
+        playerReq.setPlayerNick(nick);
+        playerReq.setPlayerName(playerName);
+        playerReq.setPlayerId(playerId);
+
+        Integer start = 0;
+        if (jsonReq.getPageNum() == 1){
+            start = 0;
+        }else {
+            start = jsonReq.getPageSize() * jsonReq.getPageNum() - jsonReq.getPageSize() + 1;
+        }
+        Page pageReq = new Page(start,jsonReq.getPageSize());
+        pageReq.setTotal(jsonReq.getTotal());
+        pageReq.setPageSize(jsonReq.getPageSize());
+        pageReq.setPageNum(jsonReq.getPageNum());
+        pageReq.setCount(Boolean.TRUE);
         pageReq.setCondition(playerReq);
 
-        int pageNo = 1;
+        /*int pageNo = 1;
         String redisKey = RedisKeys.SQUARE_PLAYER_LIST_ANOTHER_BATCH + jsonReq.getPlayerId();
         if (redisUtils.hasKey(redisKey)) {
             pageNo = Integer.parseInt(redisUtils.getStr(redisKey));
@@ -112,7 +133,7 @@ public class ConsumerPlayerController {
         } else {
             redisUtils.setStr(redisKey, String.valueOf(pageNo));
         }
-        pageReq.setPageNum(pageNo);
+        pageReq.setPageNum(pageNo);*/
 
         Result<PageInfo> players = consumerPlayerService.getPlayers(pageReq);
         msg.setDesc(players.getMsg());
@@ -184,29 +205,50 @@ public class ConsumerPlayerController {
         //当前用户id
         String playerId = jsonReq.getPlayerId();
         //查询用户
-        String username = jsonReq.getUsername();
-        String nick = null;
+        //String username = jsonReq.getUsername();
+        String nick = jsonReq.getNick();
 
-        PlayerResp playerByStrUserName = commonsService.getPlayerByStrUserName(username);
-        PlayerResp playerByStrNick = commonsService.getPlayerByStrNick(username);
+        PlayerResp playerByStrUserName = commonsService.getPlayerByStrUserName(nick);
+        PlayerResp playerByStrNick = commonsService.getPlayerByStrNick(nick);
         if (playerByStrUserName != null) {
             nick = playerByStrUserName.getPlayerNick();
         }
         if (playerByStrNick != null) {
-            username = playerByStrNick.getPlayerName();
             nick = playerByStrNick.getPlayerNick();
         }
 
         Player playerReq = new Player();
         playerReq.setPlayerId(playerId);
-        playerReq.setPlayerName(username);
         playerReq.setPlayerNick(nick);
         Page pageReq = new Page();
         pageReq.setCondition(playerReq);
         Result<PageInfo> players = consumerPlayerService.getPlayers(pageReq);
 
+        List<Map> dataList = new ArrayList<>();
+        PageInfo<PlayerResp> pageInfo = players.getData();
+        List<PlayerResp> playerList = pageInfo.getList();
+        if (!CollectionUtils.isEmpty(playerList)){
+            Map data = null;
+            for (int i= 0; i<playerList.size();i++){
+                PlayerResp resp = DataUtils.getData(playerList.get(i),PlayerResp.class);
+                data = new HashMap();
+                data.put("playerId",StringUtils.isBlank(resp.getPlayerId())?"":resp.getPlayerId());
+                data.put("imgurl",StringUtils.isBlank(resp.getImgurl())?"":resp.getImgurl());
+                data.put("friendId",StringUtils.isBlank(resp.getFriendId())?"":resp.getFriendId());
+                data.put("nick",StringUtils.isBlank(resp.getPlayerNick())?"":resp.getPlayerNick());
+                data.put("agree",resp.getAgree()==null?false:(resp.getAgree()==0)?false:true);
+                data.put("grade",StringUtils.isBlank(resp.getGrade())?"":resp.getGrade());
+
+                dataList.add(data);
+            }
+        }
+
+        PageInfo pageRsult = pageInfo;
+        pageRsult.getList().clear();
+        pageRsult.setList(dataList);
+
         msg.setDesc(players.getMsg());
-        msg.getData().setData(players.getData());
+        msg.getData().setData(pageRsult);
         msg.setCode(ReturnStatus.SUCCESS.getStatus());
         msg.getData().setCode(ReturnStatus.SUCCESS.getStatus());
         return msg;

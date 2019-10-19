@@ -4,6 +4,7 @@ package com.dream.city.base.model.mapper;
 import com.dream.city.base.model.Page;
 import com.dream.city.base.model.entity.Player;
 import com.dream.city.base.model.entity.PlayerAccount;
+import com.dream.city.base.model.req.PlayerReq;
 import com.dream.city.base.model.resp.PlayerResp;
 import org.apache.ibatis.annotations.*;
 
@@ -22,7 +23,7 @@ public interface PlayerMapper {
     List<PlayerResp> getPlayerList(Player record);
 
 
-    List<PlayerResp> getPlayers(Player record);
+    List<PlayerResp> getPlayers(PlayerReq record);
     //List<PlayerResp> getPlayers(Player record);
     //Integer getPlayersCount(Page pageReq);
 
