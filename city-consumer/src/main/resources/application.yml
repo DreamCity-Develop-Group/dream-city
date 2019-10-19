@@ -8,7 +8,7 @@ spring:
     name: city-consumer
 
   profiles:
-    active: dev
+    active: ${spring.profiles.active}
 
   main:
     allow-bean-definition-overriding: true

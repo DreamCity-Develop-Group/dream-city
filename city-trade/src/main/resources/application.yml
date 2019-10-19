@@ -5,7 +5,7 @@ spring:
   application:
     name: city-trade
   profiles:
-    active: dev
+    active: ${spring.profiles.active}
 
   main:
     allow-bean-definition-overriding: true

@@ -7,7 +7,7 @@ spring:
     name: city-comm
     port: 8888
   profiles:
-    active: dev
+    active: ${spring.profiles.active}
   main:
     allow-bean-definition-overriding: true
 

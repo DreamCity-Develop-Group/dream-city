@@ -4,7 +4,7 @@ spring:
   application:
     name: city-player
   profiles:
-    active: dev
+    active: ${spring.profiles.active}
   main:
     allow-bean-definition-overriding: true
 

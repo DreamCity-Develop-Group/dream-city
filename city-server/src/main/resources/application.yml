@@ -5,7 +5,7 @@ spring:
     name: city-server
     port: 9999
   profiles:
-    active: dev
+    active: ${spring.profiles.active}
 
   devtools:
     restart:

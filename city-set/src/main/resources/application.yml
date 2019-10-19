@@ -7,7 +7,7 @@ spring:
   application:
     name: city-set
   profiles:
-    active: dev
+    active: ${spring.profiles.active}
   main:
     allow-bean-definition-overriding: true
 

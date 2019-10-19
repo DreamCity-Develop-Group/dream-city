@@ -10,7 +10,7 @@ spring:
     allow-bean-definition-overriding: true
 
   profiles:
-    active: dev
+    active: ${spring.profiles.active}
 
 auth:
   secret: oKKLJOoasdl
