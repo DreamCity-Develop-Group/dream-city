@@ -115,28 +115,12 @@ public class ConsumerPlayerController {
         playerReq.setPlayerName(playerName);
         playerReq.setPlayerId(playerId);
 
-        Integer start = jsonReq.getPageNum();
-        /*if (jsonReq.getPageNum() == 1){
-            start = 1;
-        }else {
-            //start = jsonReq.getPageSize() * jsonReq.getPageNum() - jsonReq.getPageSize() + 1;
-        }*/
         Page pageReq = new Page();
         pageReq.setTotal(jsonReq.getTotal());
         pageReq.setPageSize(jsonReq.getPageSize());
         pageReq.setPageNum(jsonReq.getPageNum());
         pageReq.setCount(Boolean.TRUE);
         pageReq.setCondition(playerReq);
-
-        /*int pageNo = 1;
-        String redisKey = RedisKeys.SQUARE_PLAYER_LIST_ANOTHER_BATCH + jsonReq.getPlayerId();
-        if (redisUtils.hasKey(redisKey)) {
-            pageNo = Integer.parseInt(redisUtils.getStr(redisKey));
-            pageNo = pageNo + 1;
-        } else {
-            redisUtils.setStr(redisKey, String.valueOf(pageNo));
-        }
-        pageReq.setPageNum(pageNo);*/
 
         Result<PageInfo> players = consumerPlayerService.getPlayers(pageReq);
         msg.setDesc(players.getMsg());
