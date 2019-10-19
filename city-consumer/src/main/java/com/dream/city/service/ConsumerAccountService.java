@@ -19,6 +19,11 @@ import java.util.List;
 public interface ConsumerAccountService {
 
 
+
+    @RequestMapping("/getPlatformAccounts")
+    Result<PlayerAccount> getPlayerAccount(@RequestBody PlayerAccount record);
+
+
     /**
      * 获取玩家账户
      * @param playerId

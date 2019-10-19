@@ -666,13 +666,24 @@ public class ConsumerPlayerController {
         if (result != null){
             CityMessage cityMessage = result.getData();
             if (cityMessage != null){
-                map.put("id",cityMessage.getId());
+                /*map.put("id",cityMessage.getId());
                 map.put("title", cityMessage.getTitle());
                 map.put("createtime",cityMessage.getCreateTime());
                 map.put("content",cityMessage.getContent());
-                map.put("readState",cityMessage.getHaveRead()==0?false:true);
+                map.put("readState",true);*/
 
+                cityMessage.setHaveRead(1);
                 messageService.updateMessageHaveReadById(cityMessage);
+
+                Result<Integer> integerResult = messageService.getUnReadCount(cityMessage.getPlayerId());
+                boolean messages = true;
+                if (integerResult != null){
+                    int count = integerResult.getData();
+                    messages = count > 0? true: false;
+                }
+                map.put("messages",messages);
+                msg.setCode(ReturnStatus.SUCCESS.getStatus());
+                msg.getData().setCode(ReturnStatus.SUCCESS.getStatus());
             }
         }
         msg.setDesc(result.getMsg());
@@ -690,8 +701,9 @@ public class ConsumerPlayerController {
         if (result != null){
             List<CityMessage> messageList = result.getData();
             if (!CollectionUtils.isEmpty(messageList)){
-                Map map = new HashMap();
+                Map map = null;
                 for (CityMessage cityMessage:messageList){
+                    map = new HashMap();
                     map.put("id",cityMessage.getId());
                     map.put("title", cityMessage.getTitle());
                     map.put("createtime",cityMessage.getCreateTime());
@@ -701,8 +713,15 @@ public class ConsumerPlayerController {
                 }
             }
         }
+        Result<Integer> integerResult = messageService.getUnReadCount(message.getPlayerId());
+        boolean messages = true;
+        if (integerResult != null){
+            int count = integerResult.getData();
+            messages = count > 0? true: false;
+        }
         Map resultData = new HashMap();
         resultData.put("messageList",resultList);
+        resultData.put("messages",messages);
         msg.setDesc(result.getMsg());
         msg.getData().setData(resultData);
         return msg;

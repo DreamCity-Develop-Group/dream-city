@@ -16,7 +16,7 @@ public enum ReturnStatus {
     RELOGIN_OPT(301,"重复登录"),
     FAILED(303,"失败"),
     NOT_FINISHED(311,"未完成"),
-
+    PARAM_ERROR(321,"参数错误"),
 
 
     ACCOUNT_PASS_REQUIRED(401,"请输入用户名和密码"),
@@ -43,6 +43,8 @@ public enum ReturnStatus {
     ERROR_PASS(514,"密码错误"),
     NOTSET_PASS(515,"密码未设置"),
 
+    TRANSFER_TO(600,"转账入账"),
+    TRANSFER_FROM(603,"转账转出"),
 
     UPGRADE_TIP(666,"恭喜升级成功"),
     MT_MISS_BUY_TIP(602,"错过购买兑换处理提示"),
