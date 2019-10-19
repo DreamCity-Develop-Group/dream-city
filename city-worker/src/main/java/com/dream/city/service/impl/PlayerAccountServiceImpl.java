@@ -2,6 +2,7 @@ package com.dream.city.service.impl;
 
 import com.dream.city.base.model.entity.PlayerAccount;
 import com.dream.city.base.model.entity.PlayerAccountLog;
+import com.dream.city.base.model.mapper.AccountMapper;
 import com.dream.city.base.model.mapper.PlayerAccountLogMapper;
 import com.dream.city.base.model.mapper.PlayerAccountMapper;
 import com.dream.city.service.PlayerAccountService;
@@ -16,6 +17,8 @@ import org.springframework.stereotype.Service;
 public class PlayerAccountServiceImpl implements PlayerAccountService {
     @Autowired
     PlayerAccountMapper playerAccountMapper;
+    @Autowired
+    AccountMapper accountMapper;
 
     @Autowired
     PlayerAccountLogMapper playerAccountLogMapper;
@@ -27,7 +30,7 @@ public class PlayerAccountServiceImpl implements PlayerAccountService {
 
     @Override
     public void updateProfitToAccount(PlayerAccount account) {
-        playerAccountMapper.updateByPrimaryKeySelective(account);
+        accountMapper.updateByPrimaryKeySelective(account);
     }
 
     @Override
