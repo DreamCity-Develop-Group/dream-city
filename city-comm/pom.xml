@@ -199,7 +199,7 @@
         <profile>
             <id>pro</id>
             <properties>
-                <spring.profiles.active>pro</spring.profiles.active>
+                <spring.profiles.active>prod</spring.profiles.active>
             </properties>
         </profile>
     </profiles>
