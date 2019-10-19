@@ -2,6 +2,7 @@ package com.dream.city.invest.service.impl;
 
 import com.dream.city.base.model.entity.PlayerAccount;
 import com.dream.city.base.model.entity.PlayerAccountLog;
+import com.dream.city.base.model.mapper.AccountMapper;
 import com.dream.city.base.model.mapper.PlayerAccountLogMapper;
 import com.dream.city.base.model.req.PlayerAccountReq;
 import com.dream.city.base.model.mapper.PlayerAccountMapper;
@@ -9,7 +10,6 @@ import com.dream.city.base.service.DictionaryService;
 import com.dream.city.invest.service.AccountService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,7 +21,9 @@ public class AccountServiceImpl implements AccountService {
 //    @Value("${dreamcity.platform.account.accIds}")
 //    String platformAccIds;
     @Autowired
-    private PlayerAccountMapper accountMapper;
+    private PlayerAccountMapper playerAccountMapper;
+    @Autowired
+    private AccountMapper accountMapper;
     @Autowired
     private PlayerAccountLogMapper playerAccountLogMapper;
     @Autowired
@@ -39,7 +41,7 @@ public class AccountServiceImpl implements AccountService {
         if (StringUtils.isBlank(playerId)){
             return null;
         }
-        return accountMapper.getPlayerAccount(playerId);
+        return playerAccountMapper.getPlayerAccount(playerId);
     }
 
     @Override
@@ -55,11 +57,12 @@ public class AccountServiceImpl implements AccountService {
     @Override
     @Transactional
     public int updatePlayerAccount(PlayerAccount record) {
-        accountMapper.updatePlayerAccount(record);
+        playerAccountMapper.updatePlayerAccount(record);
         return 1;
     }
 
     @Override
+    @Transactional
     public int updatePlayerAccountById(PlayerAccount record) {
         Integer integer = accountMapper.updateByPrimaryKeySelective(record);
         return integer == null?0:integer;
@@ -76,7 +79,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public PlayerAccount getPlayerAccountByPlayerId(String playerId){
-        return accountMapper.getPlayerAccountByPlayerId(playerId);
+        return playerAccountMapper.getPlayerAccountByPlayerId(playerId);
     }
 
     @Override
