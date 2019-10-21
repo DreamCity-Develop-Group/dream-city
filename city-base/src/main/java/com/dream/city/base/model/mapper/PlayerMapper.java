@@ -26,6 +26,8 @@ public interface PlayerMapper {
     List<PlayerResp> getPlayers(PlayerReq record);
     //List<PlayerResp> getPlayers(Player record);
     //Integer getPlayersCount(Page pageReq);
+    //玩家搜索
+    List<PlayerResp> searchPlayers(PlayerReq record);
 
     /**
      * 广场玩家列表

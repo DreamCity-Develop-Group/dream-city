@@ -106,52 +106,65 @@ public class ConsumerPlayerController {
         String playerId = jsonReq.getPlayerId();
         String nick = jsonReq.getNick();
         String playerName = null;
-        PlayerResp playerByStrUserName = commonsService.getPlayerByStrUserName(nick);
+        /*PlayerResp playerByStrUserName = commonsService.getPlayerByStrUserName(nick);
         if (playerByStrUserName != null) {
             playerName = playerByStrUserName.getPlayerNick();
             nick = null;
+        }*/
+        if(StringUtils.isNotBlank(nick)){
+            playerReq.setPlayerNick(nick);
+            playerReq.setPlayerName(nick);
+        }else {
+            msg.setDesc("请输入查找数据");
+            msg.getData().setCode(ReturnStatus.PARAM_ERROR.getStatus());
+            return msg;
         }
-        playerReq.setPlayerNick(nick);
-        playerReq.setPlayerName(playerName);
+
+
         playerReq.setPlayerId(playerId);
 
         Page pageReq = new Page();
-        pageReq.setTotal(jsonReq.getTotal());
-        pageReq.setPageSize(jsonReq.getPageSize());
-        pageReq.setPageNum(jsonReq.getPageNum());
+        pageReq.setTotal(jsonReq.getTotal()==null?50:jsonReq.getTotal());
+        pageReq.setPageSize(jsonReq.getPageSize()==null?10:jsonReq.getTotal());
+        pageReq.setPageNum(jsonReq.getPageNum()==null?1:jsonReq.getPageNum());
         pageReq.setCount(Boolean.TRUE);
         pageReq.setCondition(playerReq);
 
         Result<PageInfo> players = consumerPlayerService.getPlayers(pageReq);
+        if (players.getSuccess() && players.getData() != null){
+            List<Map> dataList = new ArrayList<>();
+            PageInfo<PlayerResp> pageInfo = players.getData();
+            List<PlayerResp> playerList = pageInfo.getList();
+            if (!CollectionUtils.isEmpty(playerList)){
+                Map data = null;
+                for (int i= 0; i<playerList.size();i++){
+                    PlayerResp resp = DataUtils.getData(playerList.get(i),PlayerResp.class);
+                    data = new HashMap();
+                    data.put("playerId",StringUtils.isBlank(resp.getPlayerId())?"":resp.getPlayerId());
+                    data.put("imgurl",StringUtils.isBlank(resp.getImgurl())?"":resp.getImgurl());
+                    data.put("friendId",StringUtils.isBlank(resp.getFriendId())?"":resp.getFriendId());
+                    data.put("nick",StringUtils.isBlank(resp.getPlayerNick())?"":resp.getPlayerNick());
+                    data.put("agree",resp.getAgree()==null?false:(resp.getAgree()==0)?false:true);
+                    data.put("grade",StringUtils.isBlank(resp.getGrade())?"":resp.getGrade());
 
-        List<Map> dataList = new ArrayList<>();
-        PageInfo<PlayerResp> pageInfo = players.getData();
-        List<PlayerResp> playerList = pageInfo.getList();
-        if (!CollectionUtils.isEmpty(playerList)){
-            Map data = null;
-            for (int i= 0; i<playerList.size();i++){
-                PlayerResp resp = DataUtils.getData(playerList.get(i),PlayerResp.class);
-                data = new HashMap();
-                data.put("playerId",StringUtils.isBlank(resp.getPlayerId())?"":resp.getPlayerId());
-                data.put("imgurl",StringUtils.isBlank(resp.getImgurl())?"":resp.getImgurl());
-                data.put("friendId",StringUtils.isBlank(resp.getFriendId())?"":resp.getFriendId());
-                data.put("nick",StringUtils.isBlank(resp.getPlayerNick())?"":resp.getPlayerNick());
-                data.put("agree",resp.getAgree()==null?false:(resp.getAgree()==0)?false:true);
-                data.put("grade",StringUtils.isBlank(resp.getGrade())?"":resp.getGrade());
-
-                dataList.add(data);
+                    dataList.add(data);
+                }
             }
+
+            PageInfo pageRsult = pageInfo;
+            pageRsult.getList().clear();
+            pageRsult.setList(dataList);
+
+
+            msg.setDesc(players.getMsg());
+            msg.setCode(ReturnStatus.SUCCESS.getStatus());
+            msg.getData().setCode(ReturnStatus.SUCCESS.getStatus());
+            msg.getData().setData(pageRsult);
+        }else {
+            msg.setDesc("未查询到数据");
+            msg.getData().setCode(ReturnStatus.SUCCESS.getStatus());
         }
 
-        PageInfo pageRsult = pageInfo;
-        pageRsult.getList().clear();
-        pageRsult.setList(dataList);
-
-
-        msg.setDesc(players.getMsg());
-        msg.setCode(ReturnStatus.SUCCESS.getStatus());
-        msg.getData().setCode(ReturnStatus.SUCCESS.getStatus());
-        msg.getData().setData(pageRsult);
         return msg;
     }
 
@@ -350,13 +363,28 @@ public class ConsumerPlayerController {
         log.info("修改交易密码", JSONObject.toJSONString(msg));
         UserReq jsonReq = DataUtils.getUserReq(msg);
         PlayerResp player = commonsService.getPlayerByUserName(msg);
+        String username = jsonReq.getUsername();
+        String oldPwd = jsonReq.getOldpwshop();
+        String newPwd =  jsonReq.getNewpwshop();
 
-        Result result = consumerPlayerService.resetTraderPwd(jsonReq.getUsername(), jsonReq.getOldpwshop(), jsonReq.getNewpwshop());
+        Result result;
+        if (StringUtils.isBlank(oldPwd)){
+            oldPwd = "";
+            result = consumerPlayerService.resetTraderPwd(username,oldPwd,newPwd);
+
+        }else if(StringUtils.isBlank(newPwd)){
+            msg.getData().setCode(ReturnStatus.PARAM_ERROR.getStatus());
+            msg.setDesc("新密码不能为空 ！");
+            return msg;
+        }else{
+            result = consumerPlayerService.resetTraderPwd(username,oldPwd,newPwd);
+        }
+
         log.info("##################### 修改交易密码 : {}", msg);
         Map<String, String> t = new HashMap<>();
         t.put("desc", result.getMsg());
 
-        if (result.getSuccess()) {
+        if (result.getSuccess() && StringUtils.isNotBlank(oldPwd)) {
             if (StringUtils.isNotBlank(player.getPlayerTradePass())) {
                 //修改交易密码，扣除1MT
                 //玩家账户
@@ -367,7 +395,6 @@ public class ConsumerPlayerController {
                 String[] idsArr = dictionaryService.getValByKey("platform.account.accIds").split(",");
                 PlayerAccount playerAccount1 = playerAccountService.getPlayerAccount(idsArr[0]);
                 //平台账户增加1MT TODO
-
             }
         }
 

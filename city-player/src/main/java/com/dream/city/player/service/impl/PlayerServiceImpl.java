@@ -81,6 +81,9 @@ public class PlayerServiceImpl implements PlayerService {
     @Override
     public Result resetTraderPwd(String username, String oldpwshop, String newpwshop) {
         String pwdType = "resetTraderPwd";
+        if (StringUtils.isBlank(oldpwshop)){
+            pwdType = "setTraderPwd";
+        }
         Result result = changePwdValid(username, oldpwshop,pwdType);
         if (!result.getSuccess()){
             return result;
@@ -111,6 +114,11 @@ public class PlayerServiceImpl implements PlayerService {
         if ("resetLoginPwd".equalsIgnoreCase(pwdType) && !playerExit.getPlayerPass().equals(oldpwshop)){
             return Result.result(Boolean.FALSE, CityGlobal.Constant.USER_OLD_PWD_ERROR, ReturnStatus.ERROR_PASS.getStatus());
         }
+        // 交易密码 没有交易密码的设置交易密码，有交易密码的修改交易密码
+        if ("setTraderPwd".equalsIgnoreCase(pwdType)){
+            return Result.result(Boolean.TRUE, CityGlobal.Constant.USER_CHANGE_PWD_SUCCESS,ReturnStatus.SUCCESS.getStatus());
+        }
+
         // 交易密码 没有交易密码的设置交易密码，有交易密码的修改交易密码
         if ("resetTraderPwd".equalsIgnoreCase(pwdType)
                 && StringUtils.isNotBlank(playerExit.getPlayerTradePass())
@@ -160,7 +168,7 @@ public class PlayerServiceImpl implements PlayerService {
     public PageInfo<PlayerResp> getPlayers(Page pageReq) {
         PlayerReq playerReq = DataUtils.toJavaObject(pageReq.getCondition(), PlayerReq.class);
         PageHelper.startPage(pageReq.getPageNum(),pageReq.getPageSize(),pageReq.isCount());
-        List<PlayerResp> players = playerMapper.getPlayers(playerReq);
+        List<PlayerResp> players = playerMapper.searchPlayers(playerReq);
         if (!CollectionUtils.isEmpty(players)){
             String getFriendAgree = "添加";
             for (int i=0;i<players.size();i++){
