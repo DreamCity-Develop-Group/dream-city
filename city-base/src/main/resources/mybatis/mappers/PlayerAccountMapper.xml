@@ -210,6 +210,12 @@
             order by create_time desc
         </select>
     -->
+    <select id="getPlayerAccount" resultMap="BasePlayerAccountResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from player_account
+        where 1=1 and acc_player_id = #{accId,jdbcType=VARCHAR}
+    </select>
 
     <update id="updateByPlayerId" parameterType="com.dream.city.base.model.entity.PlayerAccount" >
         update player_account

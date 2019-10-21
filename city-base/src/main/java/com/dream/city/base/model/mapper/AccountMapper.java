@@ -47,4 +47,5 @@ public interface AccountMapper {
 
     List<PlayerAccount> getPlayerAccountList(PlayerAccount record);
 
+    PlayerAccount getPlayerAccount(String accPlayerId);
 }
