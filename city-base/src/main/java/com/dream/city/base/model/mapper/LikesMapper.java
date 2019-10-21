@@ -4,6 +4,8 @@ package com.dream.city.base.model.mapper;
 import com.dream.city.base.model.entity.Likes;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 @Mapper
 public interface LikesMapper {
     int deleteByPrimaryKey(Long id);
@@ -17,4 +19,6 @@ public interface LikesMapper {
     int updateByPrimaryKeySelective(Likes record);
 
     int updateByPrimaryKey(Likes record);
+
+    List<Likes> getInvestLikes(String playerId);
 }

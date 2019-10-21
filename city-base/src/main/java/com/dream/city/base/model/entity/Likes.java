@@ -7,43 +7,26 @@ import java.util.Date;
 
 @Data
 public class Likes implements Serializable {
-    private Long id;
+    private Long likeId;
+    /**
+     * 收获点赞玩家
+     */
+    private String likedPlayerId;
+    /**
+     * 点赞的项目
+     */
+    private Integer likedInvestId;
 
-    private String playerId;
+    /**
+     * 当前玩家当前项目收获的点赞总数
+     */
+    private Integer likedGetTotal;
 
-    private Integer likes;
+    /**
+     * 当前玩家当前项目付出的点赞总数
+     */
+    private Integer likedSetTotal;
 
-    private Date createDate;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getPlayerId() {
-        return playerId;
-    }
-
-    public void setPlayerId(String playerId) {
-        this.playerId = playerId == null ? null : playerId.trim();
-    }
-
-    public Integer getLikes() {
-        return likes;
-    }
-
-    public void setLikes(Integer likes) {
-        this.likes = likes;
-    }
-
-    public Date getCreateDate() {
-        return createDate;
-    }
-
-    public void setCreateDate(Date createDate) {
-        this.createDate = createDate;
-    }
+    private Date createTime;
+    private Date updateTime;
 }
