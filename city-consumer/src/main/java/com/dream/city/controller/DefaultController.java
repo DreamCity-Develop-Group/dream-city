@@ -48,19 +48,29 @@ public class DefaultController {
     ConsumerMessageService messageService;
 
 
-
-    @ApiOperation(value = "主页数据接口Player", httpMethod = "POST", notes = "此接口描述xxxxxxxxxxxxx<br/>xxxxxxx<br>值得庆幸的是这儿支持html标签<hr/>", response = Result.class)
+    @ApiOperation(
+            value = "主页数据接口Player",
+            httpMethod = "POST",
+            notes = "此接口提供游戏主页<br/>" +
+                    "玩家数据及基本游戏数据<br>" +
+                    "每个数据都不能缺失<hr/>",
+            response = Result.class)
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "player", value = "玩家",
-                    required = true, dataType = "Player",
+            @ApiImplicitParam(
+                    name = "message",
+                    value = "消息主体",
+                    required = true,
+                    dataType = "Message",
                     paramType = "body")
     })
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success — 请求已完成"),
-            @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
-            @ApiResponse(code = 401, message = "未授权客户机访问数据"),
-            @ApiResponse(code = 404, message = "服务器找不到给定的资源；文档不存在"),
-            @ApiResponse(code = 500, message = "服务器不能完成请求")}
+    @ApiResponses(
+            value = {
+                    @ApiResponse(code = 200, message = "Success — 请求已完成"),
+                    @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+                    @ApiResponse(code = 401, message = "未授权客户机访问数据"),
+                    @ApiResponse(code = 404, message = "服务器找不到给定的资源；文档不存在"),
+                    @ApiResponse(code = 500, message = "服务器不能完成请求")
+            }
     )
     @RequestMapping(value = "/default", method = RequestMethod.POST)
     public Message enterMainPage(@RequestBody Message message) {
@@ -75,11 +85,14 @@ public class DefaultController {
 
 
         RelationTree tree = treeService.getRelationTree(player.getPlayerId());
+        //个人信息
+        Map<String, Object> profile = new HashMap<>();
+
         int level = 0;
         //是否已经加入商会
         int commerce = 0;
-        if (tree != null){
-            level = tree.getTreeLevel()==null?0:tree.getTreeLevel();
+        if (tree != null) {
+            level = tree.getTreeLevel() == null ? 0 : tree.getTreeLevel();
             Result allowed = treeService.getInvestAllowed(player.getPlayerId());
 
             commerce = 1;
@@ -88,13 +101,14 @@ public class DefaultController {
                 commerce = 2;
             }
         }
-        //个人信息
-        Map<String, Object> profile = new HashMap<>();
+        //昵称
         profile.put("nick", player.getPlayerNick());
-        if(tree != null){
+        //邀请码
+        profile.put("invite",player.getPlayerInvite());
+        if (tree != null) {
             profile.put("level", tree.getTreeLevel() == null ? 0 : tree.getTreeLevel());
-        }else{
-            profile.put("level", 0 );
+        } else {
+            profile.put("level", 0);
         }
 
         //取出公告缓存
@@ -106,21 +120,21 @@ public class DefaultController {
         PlayerAccount playerAccount = playerAccountService.getPlayerAccount(player.getPlayerId());
 
         Map<String, Object> account = new HashMap<>();
-        if (StringUtils.isBlank(player.getPlayerTradePass())){
-            account.put("isHasTradePassword",Boolean.FALSE);
-        }else {
-            account.put("isHasTradePassword",Boolean.TRUE);
+        if (StringUtils.isBlank(player.getPlayerTradePass())) {
+            account.put("isHasTradePassword", Boolean.FALSE);
+        } else {
+            account.put("isHasTradePassword", Boolean.TRUE);
         }
-        if(playerAccount != null) {
+        if (playerAccount != null) {
             account.put("usdt", playerAccount.getAccUsdtAvailable());
             account.put("mt", playerAccount.getAccMtAvailable());
             account.put("address", playerAccount.getAccAddr());
-        }else{
+        } else {
             account.put("usdt", new BigDecimal(0));
             account.put("mt", new BigDecimal(0));
             account.put("address", "");
             Result accRet = playerBlockChainService.createBlockChainAccount(username);
-            playerAccountService.createAccount(playerId,accRet.getData().toString());
+            playerAccountService.createAccount(playerId, accRet.getData().toString());
         }
         //InvestOrder investOrder = propertyService.getInvests(player.getPlayerId());
         Result result1 = salesService.getUsdtToMtRate(player.getPlayerId());
@@ -131,9 +145,9 @@ public class DefaultController {
         //消息数量 显示为小红点
         Result<Integer> integerResult = messageService.getUnReadCount(playerId);
         boolean messages = true;
-        if (integerResult != null){
+        if (integerResult != null) {
             int count = integerResult.getData();
-            messages = count > 0? true: false;
+            messages = count > 0 ? true : false;
         }
         //公告
         data.put("notices", notices);
@@ -147,7 +161,7 @@ public class DefaultController {
         data.put("commerce", commerce);
         data.put("level", level);
         //data.put("invest",invests);
-        data.put("rate",rate);
+        data.put("rate", rate);
 
 
         message.getData().setData(data);
@@ -155,9 +169,9 @@ public class DefaultController {
         message.setCode(ReturnStatus.SUCCESS.getStatus());
 
         //弹出收到兑换请求提示窗口
-        pusherService.receive(player,1);
+        pusherService.receive(player, 1);
         //弹出收到兑换请求错过提示窗口
-        pusherService.receive(player,2);
+        pusherService.receive(player, 2);
         return message;
     }
 

@@ -1,8 +1,11 @@
 package com.dream.city.player.service.impl;
 
 import com.dream.city.base.model.Page;
+import com.dream.city.base.model.Result;
+import com.dream.city.base.model.entity.Likes;
 import com.dream.city.base.model.entity.PlayerLikes;
 import com.dream.city.base.model.entity.PlayerLikesLog;
+import com.dream.city.base.model.mapper.LikesMapper;
 import com.dream.city.base.model.req.PlayerLikesReq;
 import com.dream.city.base.model.mapper.PlayerLikesLogMapper;
 import com.dream.city.base.model.mapper.PlayerLikesMapper;
@@ -25,6 +28,8 @@ public class LikesServiceImpl implements LikesService {
     PlayerLikesMapper playerLikesMapper;
     @Autowired
     PlayerLikesLogMapper likesLogMapper;
+    @Autowired
+    LikesMapper likesMapper;
 
 
     @Override
@@ -87,6 +92,12 @@ public class LikesServiceImpl implements LikesService {
         likesLog.setLikeInvestId(record.getLikedInvestId());
         likesLog.setLikePlayerId(record.getLikePlayerId());
         return likesLogMapper.playerLikesCountToday(likesLog);
+    }
+
+    @Override
+    public List<Likes> getPlayerInvestLikes(String playerId) {
+        List<Likes> likes = likesMapper.getInvestLikes(playerId);
+        return likes;
     }
 
 

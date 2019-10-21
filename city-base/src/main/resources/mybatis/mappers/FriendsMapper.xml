@@ -51,10 +51,14 @@
         </if>
       ) a,
       (SELECT p.player_id friend_id,p.player_name friend_name,p.player_nick friend_nick,e.friendlink,e.imgurl
-      FROM city_player p,player_ext e WHERE p.player_id=e.player_id) b
+      FROM city_player p,player_ext e WHERE p.player_id=e.player_id ) b
     WHERE a.friend_id = b.friend_id
     <if test="friendNick != null and friendNick != ''">
       and b.friend_nick = #{friendNick,jdbcType=VARCHAR}
+    </if>
+    <!--排除自身-->
+    <if test="playerId != null and playerId != ''">
+      and b.playerId != #{playerId,jdbcType=VARCHAR}
     </if>
     ORDER BY a.create_time DESC
   </select>

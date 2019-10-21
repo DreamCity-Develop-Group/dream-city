@@ -1,10 +1,12 @@
 package com.dream.city.controller;
 
+import com.alibaba.druid.support.json.JSONUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.dream.city.base.model.*;
 import com.dream.city.base.model.req.FriendsReq;
 import com.dream.city.base.utils.DataUtils;
+import com.dream.city.base.utils.JsonUtil;
 import com.dream.city.service.*;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
@@ -44,8 +46,18 @@ public class ConsumerFriendsController {
     @ApiOperation(value = "好友主页", httpMethod = "POST", notes = "好友主页", response = Message.class)
     @RequestMapping("/friendHomePage")
     public Message friendHomePage(@RequestBody Message msg){
-        logger.info("好友主页", JSONObject.toJSONString(msg));
-        return orderHandleService.getPlayerInvestOrders(msg);
+        String json = JSONObject.toJSONString(msg);
+
+        logger.info("好友主页", json);
+        //return orderHandleService.getPlayerInvestOrders(msg);
+        String data = JsonUtil.parseObjToJson(msg.getData());
+        JSONObject jsonObject = JsonUtil.parseJsonToObj(data,JSONObject.class);
+        String playerId = jsonObject.getString("playerId");
+
+        Result result = consumerFriendsService.getInvestLikes(playerId);
+
+
+        return Message.generateMessage(msg,result);
     }
 
 

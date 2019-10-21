@@ -50,4 +50,10 @@ public interface ConsumerFriendsService {
     @RequestMapping("/applyFriendList")
     Result<PageInfo> applyFriendList(@RequestBody Page pageReq);
 
+    /**
+     * 获取好友主页投资点赞数据
+     * @param playerId
+     */
+    @RequestMapping("/to/friend/main")
+    Result getInvestLikes(@RequestParam("playerId") String playerId);
 }

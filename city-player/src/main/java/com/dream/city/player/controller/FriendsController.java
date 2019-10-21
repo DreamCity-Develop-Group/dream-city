@@ -4,7 +4,11 @@ package com.dream.city.player.controller;
 import com.dream.city.base.model.Page;
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.Friends;
+import com.dream.city.base.model.entity.Likes;
+import com.dream.city.base.model.enu.ReturnStatus;
 import com.dream.city.player.service.FriendsService;
+import com.dream.city.player.service.LikesService;
+import com.dream.city.player.service.PlayerService;
 import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -16,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Date;
+import java.util.List;
 
 
 @RestController
@@ -26,6 +31,9 @@ public class FriendsController {
 
     @Autowired
     private FriendsService friendsService;
+
+    @Autowired
+    LikesService likesService;
 
 
 
@@ -131,6 +139,14 @@ public class FriendsController {
         logger.info("applyFriendList，pageReq：{}",pageReq);
         PageInfo page = friendsService.applyFriendList(pageReq);
         return new Result<>(Boolean.TRUE,"好友申请列表",page);
+    }
+
+
+    @RequestMapping("/to/friend/main")
+    public Result toFriendMain(@RequestParam("playerId")String playerId){
+        List<Likes> likes = likesService.getPlayerInvestLikes(playerId);
+
+        return Result.result(true,"获取朋友首页数据成功", ReturnStatus.SUCCESS.getStatus(),likes);
     }
 
 
