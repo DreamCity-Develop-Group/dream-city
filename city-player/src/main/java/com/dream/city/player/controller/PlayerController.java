@@ -171,17 +171,20 @@ public class PlayerController {
             PlayerResp playerExists= playerService.getPlayerByName(username,null);
             if (playerExists == null){
                 result.setMsg(CityGlobal.Constant.USER_NOT_EXIT);
+                result.setCode(ReturnStatus.ERROR_NOTEXISTS.getStatus());
                 tip.append(CityGlobal.Constant.USER_NOT_EXIT);
             }else {
                 playerId = playerExists.getPlayerId();
                 // 用户名
                 if (!playerExists.getPlayerName().equalsIgnoreCase(username)){
                     tip.append(CityGlobal.Constant.USER_NOT_EXIT);
+                    result.setCode(ReturnStatus.ERROR_NOTEXISTS.getStatus());
                 }
                 // 密码
                 String redisKey = RedisKeys.LOGIN_USER_TOKEN + username;
                 if (!redisUtils.hasKey(redisKey) && !playerExists.getPlayerPass().equals(userpass)) {
                     tip.append(CityGlobal.Constant.USER_PWD_ERROR);
+                    result.setCode(ReturnStatus.ERROR_PASS.getStatus());
                 }
                 if (StringUtils.isBlank(tip.toString())) {
                     tip.append(CityGlobal.Constant.LOGIN_SUCCESS);
