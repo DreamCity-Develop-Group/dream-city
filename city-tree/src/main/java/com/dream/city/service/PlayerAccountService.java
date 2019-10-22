@@ -29,6 +29,8 @@ public interface PlayerAccountService {
 
     Result lockUstdAmount(String playerId, BigDecimal amount);
 
+    Result unlockUstdAmount(String playerId, BigDecimal amount);
+
     void subtractAmount(BigDecimal orderPayAmount, String playerId);
 
     void updatePlayerAccounts(List<PlayerAccount> accounts);
@@ -36,4 +38,5 @@ public interface PlayerAccountService {
     int updatePlayerAccount(PlayerAccount account);
 
     void addAccountLog(PlayerAccountLog accountLog);
+
 }

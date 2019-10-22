@@ -266,6 +266,7 @@ public class ConsumerPlayerController {
         Player playerReq = new Player();
         playerReq.setPlayerId(playerId);
         playerReq.setPlayerNick(nick);
+
         Page pageReq = new Page();
         pageReq.setCondition(playerReq);
         Result<PageInfo> players = consumerPlayerService.getPlayers(pageReq);
@@ -368,14 +369,14 @@ public class ConsumerPlayerController {
         String newPwd =  jsonReq.getNewpwshop();
 
         Result result;
-        if (StringUtils.isBlank(oldPwd)){
-            oldPwd = "";
-            result = consumerPlayerService.resetTraderPwd(username,oldPwd,newPwd);
-
-        }else if(StringUtils.isBlank(newPwd)){
+        if(StringUtils.isBlank(newPwd)){
             msg.getData().setCode(ReturnStatus.PARAM_ERROR.getStatus());
             msg.setDesc("新密码不能为空 ！");
             return msg;
+        }else if (StringUtils.isBlank(oldPwd)){
+            oldPwd = "";
+            result = consumerPlayerService.resetTraderPwd(username,oldPwd,newPwd);
+
         }else{
             result = consumerPlayerService.resetTraderPwd(username,oldPwd,newPwd);
         }

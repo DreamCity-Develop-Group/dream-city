@@ -130,92 +130,72 @@ public class ConsumerTreeController {
     public Message Join(@RequestBody Message msg) {
         Object dataMsg = msg.getData().getData();
         JSONObject jsonObject = JsonUtil.parseJsonToObj(JsonUtil.parseObjToJson(dataMsg), JSONObject.class);
-        //@RequestParam("playerId")String playerId, @RequestParam("amount")BigDecimal amount
+
         String username = jsonObject.getString("username");
-        String playerId = "";
         String tradePass = jsonObject.getString("tradePass");
-        if (StringUtils.isNotBlank(playerId)) {
-            playerId = jsonObject.getString("playerId");
-        } else {
-            Map player = (Map) playerService.getPlayerByAccount(username).getData();
+        String playerId = jsonObject.getString("playerId");
 
-            playerId = player.get("playerId").toString();
-        }
-
-
-        Message message = new Message(
-                "server", "client",
-                new MessageData("join", "/consumer/tree", ReturnStatus.NOTSET_PASS.getStatus()),
-                "加入经营许可失败，尚未设置交易 密码");
 
         Result result = playerService.getPlayer(playerId);
         Player player = JsonUtil.parseJsonToObj(result.getData().toString(), Player.class);
-        Result allowed = treeService.getInvestAllowed(playerId);
+
 
         if (player != null && StringUtils.isBlank(player.getPlayerTradePass())) {
+            msg.getData().setData(null);
+            msg.getData().setCode(ReturnStatus.NOTSET_PASS.getStatus());
+            msg.setDesc("加入经营许可失败，尚未设置交易密码");
             //没有设置密码
-            return message;
+            return msg;
         }
 
+        if (!tradePass.equals(player.getPlayerTradePass())) {
+            msg.getData().setData(null);
+            msg.getData().setCode(ReturnStatus.ERROR_PASS.getStatus());
+            msg.setDesc("加入经营许可失败，交易密码不正确");
+            return msg;
+        }
+        Result allowed = treeService.getInvestAllowed(playerId);
         if (allowed.getSuccess()) {
-            message.setDesc("已经获得投资许可");
-            return message;
+            msg.getData().setData(null);
+            msg.getData().setCode(ReturnStatus.SUCCESS.getStatus());
+            msg.setDesc("已经获得投资许可");
+            return msg;
         }
 
         BigDecimal amount = new BigDecimal(10);
 
         if (amount.compareTo(new BigDecimal(0.00)) <= 0) {
-            message.getData().setCode(ReturnStatus.INVALID.getStatus());
-            message.setDesc("设置的USDT不够");
-            return message;
+            msg.getData().setData(null);
+            msg.getData().setCode(ReturnStatus.INVALID.getStatus());
+            msg.setDesc(ReturnStatus.INVALID.getDesc());
+            return msg;
         }
         PlayerAccount account = accountService.getPlayerAccountByPlayerId(playerId);
 
         if (null != account && account.getAccUsdtAvailable().compareTo(amount) < 0) {
-            message.getData().setCode(ReturnStatus.NOT_ENOUGH.getStatus());
-            message.setDesc("持有USDT不够支付许可费用");
-            return message;
+            msg.getData().setData(null);
+            msg.getData().setCode(ReturnStatus.NOT_ENOUGH.getStatus());
+            msg.setDesc("持有USDT不够支付许可费用");
+            return msg;
         }
-        //player.setPlayerTradePass(tradePass);
-        //设置交易密码
-        //Result retPassSet = playerService.setTradePassword(player);
-        //if(retPassSet.getSuccess()){
+
         //加入许可设置
         Result ret = treeService.joinInvestAllow(playerId, amount);
         if (ret.getSuccess()) {
-            //将分配时锁定的收益额度扣除
-            account.setAccUsdt(account.getAccUsdt().subtract(amount));
-            account.setAccUsdtFreeze(account.getAccUsdtFreeze().subtract(amount));
+            //设置推荐二维码生效，即用户可用状态
+            Player player1 = playerService.getPlayerByPlayerId(playerId);
+            player1.setIsValid("1");
+            playerService.updatePlayer(player1);
 
-            Result updateAcc = accountService.updatePlayerAccount(account);
-
-            if (updateAcc.getSuccess()) {
-                //设置推荐二维码生效，即用户可用状态
-                Player player1 = playerService.getPlayerByPlayerId(playerId);
-                player1.setIsValid("1");
-                playerService.updatePlayer(player1);
-
-                message.getData().setCode(ReturnStatus.SUCCESS.getStatus());
-                message.setDesc("加入成功，可以投资运营");
-            } else {
-                Result updateAcc1 = accountService.updatePlayerAccount(account);
-                if (!updateAcc1.getSuccess()) {
-                    accountService.updatePlayerAccount(account);
-                }
-            }
-
-            return message;
+            msg.getData().setCode(ReturnStatus.SUCCESS.getStatus());
+            msg.setDesc("加入成功，可以投资运营");
+            return msg;
         } else {
-            message.getData().setCode(ReturnStatus.SET_FAILED.getStatus());
-            message.setDesc("加入失败，请重试");
-            return message;
+            msg.getData().setData(null);
+            msg.getData().setCode(ReturnStatus.SET_FAILED.getStatus());
+            msg.setDesc("加入失败，请重试");
+            return msg;
         }
-        //}else {
-        //    message.getData().setCode(ReturnStatus.SET_FAILED.getStatus());
-        //    message.setDesc("设置交易密码失败");
-        //}
-
-        //return message;
     }
 
     /**
