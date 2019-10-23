@@ -323,7 +323,6 @@ public class ConsumerTradeController {
         if (tradeResult != null){
             if (tradeResult.getSuccess()){
                 resultMap.put("money",tradeResult.getData().getTradeAmount());
-                resultMap.put("mt",tradeResult.getData().getQuotaTax());
                 msg.getData().setCode(tradeResult.getCode());
 
                 PlayerAccount playerAccountReq = new PlayerAccount();
@@ -336,7 +335,6 @@ public class ConsumerTradeController {
                         Player player2 = playerService.getPlayerByPlayerId(playerAccount.getAccPlayerId());
 
                         msg.setCode(tradeResult.getCode());
-                        resultMap.put("code",tradeResult.getCode());
                         resultMap.put("desc","转账["+tradeResult.getData().getTradeAmount()+"]USDT给["+player2.getPlayerName()+"]成功");
                         //commonsService.sendMessage(playerId,null,JSON.toJSONString(resultMap));
 
@@ -364,6 +362,8 @@ public class ConsumerTradeController {
                         commonsService.sendMessage(player2.getPlayerId(),null,JSON.toJSONString(resultMap));*/
                     }
                 }
+                resultMap.put("mt",tradeResult.getData().getQuotaTax());
+                resultMap.put("code",tradeResult.getCode());
             }else {
                 msg.setCode(tradeResult.getCode());
                 msg.getData().setCode(tradeResult.getCode());
