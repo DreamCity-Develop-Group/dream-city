@@ -343,14 +343,15 @@ public class ConsumerTradeController {
                         Message message = new Message(
                                 "server",
                                 "client",
-                                new MessageData("push", "comm", new JSONObject(), tradeResult.getCode()),
+                                new MessageData("push", "comm", new JSONObject(), ReturnStatus.TRANSFER_TO.getStatus()),
                                 ""
                         );
-                        message.setCode(ReturnStatus.TRANSFER_TO.getStatus());
+                        message.setCode(tradeResult.getCode());
                         if (redisUtils.hasKey(RedisKeys.PLAYER_ONLINE_STATE_KEY + player2.getPlayerName())){
                             Optional<String> optional = redisUtils.get(RedisKeys.PLAYER_ONLINE_STATE_KEY + player2.getPlayerName());
                             String clientId = null;
                             if (optional != null && optional.isPresent()){
+                                resultMap.put("code",ReturnStatus.TRANSFER_TO.getStatus());
                                 clientId = optional.get();
                                 message.setTarget(clientId);
                                 message.getData().setData(resultMap);
