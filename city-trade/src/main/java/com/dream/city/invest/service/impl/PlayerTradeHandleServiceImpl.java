@@ -292,7 +292,7 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
                     recordIn.setAccUsdtAvailable(recordOut.getMoney());
                     Result<BigDecimal> transferInResult = this.updatePlayerAccount(recordIn);
 
-                    BigDecimal usdtSurplus = accountTo.getAccUsdt().subtract(createPlayerTradeResult.getData().getTradeAmount());
+                    BigDecimal usdtSurplus = accountTo.getAccUsdt().add(createPlayerTradeResult.getData().getTradeAmount());
                     //新增交易记录 入账
                     recordIn.setAccId(accountTo.getAccId());
                     this.createPlayerTrade(recordIn,transferInResult.getData(), transferInResult.getMsg());
