@@ -179,7 +179,7 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
 
 
     @Override
-    @Transactional
+    //@Transactional
     public Result<PlayerTrade>  playerTransfer(PlayerAccountReq recordOut) {
         boolean success = Boolean.FALSE;
         String msg = "玩家转账";
@@ -280,7 +280,7 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
                 msg = "玩家内部转账";
                 if (success && !transferVerify){
                     msg = "玩家内部转账成功";
-                    //trade.setQuotaTax(BigDecimal.valueOf(Double.parseDouble(dictionaryService.getValByKey("player.transfer.mt.tax"))));
+                    trade.setQuotaTax(BigDecimal.valueOf(Double.parseDouble(dictionaryService.getValByKey("player.transfer.mt.tax"))));
 
                     //内部转账 立即到账 转入账户入账
                     PlayerAccountReq recordIn = new PlayerAccountReq();

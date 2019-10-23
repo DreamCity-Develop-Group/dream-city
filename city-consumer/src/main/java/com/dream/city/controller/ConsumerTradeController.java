@@ -313,6 +313,17 @@ public class ConsumerTradeController {
         if (StringUtils.isBlank(accountReq.getOldpwshop()) || !accountReq.getOldpwshop().equals(player.getPlayerTradePass())){
             msg.setCode(ReturnStatus.ERROR_PASS.getStatus());
             msg.getData().setCode(ReturnStatus.ERROR_PASS.getStatus());
+            msg.setDesc("交易密码错误");
+            return msg;
+        }
+
+        PlayerAccount playerAccountReq = new PlayerAccount();
+        playerAccountReq.setAccAddr(accountReq.getAccAddr());
+        Result<PlayerAccount> playerAccountResult = accountService.getPlayerAccount(playerAccountReq);
+        if (playerId.equalsIgnoreCase(playerAccountResult.getData().getAccPlayerId())){
+            msg.setCode(ReturnStatus.ERROR_PASS.getStatus());
+            msg.getData().setCode(ReturnStatus.ERROR_PASS.getStatus());
+            msg.setDesc("不能给自己转账");
             return msg;
         }
 
@@ -325,9 +336,6 @@ public class ConsumerTradeController {
                 resultMap.put("money",tradeResult.getData().getTradeAmount());
                 msg.getData().setCode(tradeResult.getCode());
 
-                PlayerAccount playerAccountReq = new PlayerAccount();
-                playerAccountReq.setAccAddr(accountReq.getAccAddr());
-                Result<PlayerAccount> playerAccountResult = accountService.getPlayerAccount(playerAccountReq);
                 PlayerAccount playerAccount = null;
                 if (playerAccountResult!= null){
                     playerAccount = playerAccountResult.getData();

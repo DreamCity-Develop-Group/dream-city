@@ -7,6 +7,8 @@ import com.dream.city.base.model.resp.PlayerTradeResp;
 import com.dream.city.invest.service.TradeDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -21,6 +23,7 @@ public class TradeDetailServiceImpl implements TradeDetailService {
 
 
     @Override
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public int insert(TradeDetail record) {
         Integer integer = detailMapper.insertSelective(record);
         return integer == null?0:integer;
