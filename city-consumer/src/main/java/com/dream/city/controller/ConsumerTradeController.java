@@ -86,8 +86,9 @@ public class ConsumerTradeController {
             msg.setDesc(tradeResult.getMsg());
             if (!CollectionUtils.isEmpty(tradeResult.getData())){
                 List<PlayerTradeResp> tradeDetailList = tradeResult.getData();
-                Map<String,Object> dataMap = new HashMap<>();
+                Map<String,Object> dataMap = null;
                 for(PlayerTradeResp tradeResp: tradeDetailList){
+                    dataMap = new HashMap<>();
                     dataMap.put("createTime",tradeResp.getCreateTime());
                     dataMap.put("tradeDetailType",DataUtils.getTradeDetailType(tradeResp.getTradeDetailType()));
                     dataMap.put("tradeAmount",tradeResp.getTradeAmount());
