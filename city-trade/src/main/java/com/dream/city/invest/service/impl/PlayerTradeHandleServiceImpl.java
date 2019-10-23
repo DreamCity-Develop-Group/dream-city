@@ -280,7 +280,7 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
                 msg = "玩家内部转账";
                 if (success && !transferVerify){
                     msg = "玩家内部转账成功";
-                    trade.setQuotaTax(BigDecimal.valueOf(Double.parseDouble(dictionaryService.getValByKey("player.transfer.mt.tax"))));
+                    //trade.setQuotaTax(BigDecimal.valueOf(Double.parseDouble(dictionaryService.getValByKey("player.transfer.mt.tax"))));
 
                     //内部转账 立即到账 转入账户入账
                     PlayerAccountReq recordIn = new PlayerAccountReq();
@@ -289,7 +289,7 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
                     recordIn.setTradeType(TradeType.TRANSFER.getCode());
                     recordIn.setTradeDetailType(TradeType.TRANSFER_TO.getCode());
                     recordIn.setAccUsdt(recordOut.getMoney());
-                    recordIn.setAccUsdtAvailable(recordOut.getAccUsdt());
+                    recordIn.setAccUsdtAvailable(recordOut.getMoney());
                     Result<BigDecimal> transferInResult = this.updatePlayerAccount(recordIn);
 
                     BigDecimal usdtSurplus = accountTo.getAccUsdt().subtract(createPlayerTradeResult.getData().getTradeAmount());
@@ -297,7 +297,7 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
                     recordIn.setAccId(accountTo.getAccId());
                     this.createPlayerTrade(recordIn,transferInResult.getData(), transferInResult.getMsg());
 
-                    this.createTradeDetail(createPlayerTradeResult.getData().getTradePlayerId(), createPlayerTradeResult.getData().getTradeId(),
+                    this.createTradeDetail(recordIn.getAccPlayerId(), createPlayerTradeResult.getData().getTradeId(),
                             createPlayerTradeResult.getData().getTradeAmount(), usdtSurplus,accountTo.getAccMt(),null,null,TradeType.TRANSFER_TO.getCode(), "转账进账");
                 }
             }else {

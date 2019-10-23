@@ -341,7 +341,7 @@ public class ConsumerTradeController {
                         Message message = new Message(
                                 "server",
                                 "client",
-                                new MessageData("push", "comm", new JSONObject(), ReturnStatus.TRANSFER_TO.getStatus()),
+                                new MessageData("trade/transfer", "consumer", new JSONObject(), ReturnStatus.TRANSFER_TO.getStatus()),
                                 ""
                         );
                         message.setCode(tradeResult.getCode());
