@@ -17,6 +17,7 @@ public class FriendsResp implements Serializable {
     private String friendName;
     private String friendNick;
     private String friendImgurl;
+    private String friendLink;
 
     private Integer agree;
 
@@ -24,5 +25,7 @@ public class FriendsResp implements Serializable {
 
     private String createTime;
     private String updateTime;
+
+    private String grade;
 
 }

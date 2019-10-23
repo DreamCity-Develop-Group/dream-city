@@ -6,6 +6,8 @@ import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.Friends;
 import com.dream.city.base.model.entity.Likes;
 import com.dream.city.base.model.enu.ReturnStatus;
+import com.dream.city.base.model.req.FriendsReq;
+import com.dream.city.base.model.resp.FriendsResp;
 import com.dream.city.player.service.FriendsService;
 import com.dream.city.player.service.LikesService;
 import com.dream.city.player.service.PlayerService;
@@ -39,30 +41,33 @@ public class FriendsController {
 
     /**
      * 添加好友
-     * @param playerId
-     * @param friendId
+     * @param record
      * @return
      */
     @RequestMapping("/addFriend")
-    public Result<Boolean> addFriend(@RequestParam("playerId") String playerId,
-                                     @RequestParam("friendId") String friendId,
-                                     @RequestParam("invite")String invite){
-        logger.info("addFriend，playerId：{},friendId:{}",playerId,friendId);
+    public Result<Boolean> addFriend(@RequestBody FriendsReq record){
+        logger.info("addFriend，:{}",record);
 
         //判断是否存在好友关系: 作互为好友的判断，只要存在一条记录就表示已经是好友状态
-        Friends friend = getFriendFromUsername(friendId,playerId);
-        Friends friend1 = getFriendFromUsername(playerId,friendId);
+        Friends friend = getFriendFromUsername(record.getFriendId(),record.getPlayerId());
+        Friends friend1 = getFriendFromUsername(record.getPlayerId(),record.getFriendId());
         if(null == friend && friend1 ==null){
             friend = new Friends();
             friend.setAgree(0);
             friend.setCreateTime(new Date());
-            friend.setFriendId(friendId);
-            friend.setPlayerId(playerId);
+            friend.setFriendId(record.getFriendId());
+            friend.setPlayerId(record.getPlayerId());
             friend.setUpdateTime(new Date());
             friend.setInvite("");
-            if (StringUtils.isNotBlank(invite)){
-                friend.setInvite(invite);
+            if (StringUtils.isNotBlank(record.getInvite())){
+                friend.setInvite(record.getInvite());
             }
+
+            int applyCount = friendsService.isApplyCount(friend);
+            if (applyCount > 0){
+                return Result.result(true,"已经添加好友关系");
+            }
+
             boolean addFriend = friendsService.addFriend(friend);
             return Result.result(addFriend,"添加完成");
         }else{
@@ -108,8 +113,8 @@ public class FriendsController {
     public Result<Boolean> agreeAddFriend(@RequestParam("playerId") String playerId,
                            @RequestParam("friendId") String friendId,@RequestParam("agree") String agree){
         logger.info("agreeAddFriend，playerId：{},friendId:{}",playerId,friendId);
-        Friends friend = getFriendFromUsername(playerId,friendId);
-        if ("agreed".equalsIgnoreCase(agree)){
+        Friends friend = getFriendFromUsername(friendId,playerId);
+        if ("agree".equalsIgnoreCase(agree)){
             friend.setAgree(1);
         }
         boolean agreeAddFriend = friendsService.agreeAddFriend(friend);
@@ -122,9 +127,9 @@ public class FriendsController {
      * @return
      */
     @RequestMapping("/friendList")
-    public Result<PageInfo> friendList(@RequestBody Page pageReq){
+    public Result<PageInfo<FriendsResp>> friendList(@RequestBody Page pageReq){
         logger.info("friendList，pageReq：{}",pageReq);
-        PageInfo page = friendsService.friendList(pageReq);
+        PageInfo<FriendsResp> page = friendsService.friendList(pageReq);
         return new Result<>(Boolean.TRUE,"好友列表",page);
     }
 
@@ -135,7 +140,7 @@ public class FriendsController {
      * @return
      */
     @RequestMapping("/applyFriendList")
-    public Result<PageInfo> applyFriendList(@RequestBody Page pageReq){
+    public Result<PageInfo<FriendsResp>> applyFriendList(@RequestBody Page pageReq){
         logger.info("applyFriendList，pageReq：{}",pageReq);
         PageInfo page = friendsService.applyFriendList(pageReq);
         return new Result<>(Boolean.TRUE,"好友申请列表",page);

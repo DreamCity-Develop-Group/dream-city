@@ -24,7 +24,8 @@ public class PlayerResp implements Serializable {
     private String playerInvite;
 
     private Integer playerLevel;
-    private Integer playerLink;
+
+    private String playerLink;
 
     private String isValid;
 

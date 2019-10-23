@@ -6,6 +6,7 @@ import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.Player;
 import com.dream.city.base.model.entity.PlayerExt;
 import com.dream.city.base.model.enu.ReturnStatus;
+import com.dream.city.base.model.req.PlayerReq;
 import com.dream.city.service.impl.FallBackPlayer;
 import com.github.pagehelper.PageInfo;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -38,7 +39,8 @@ public interface ConsumerPlayerService {
      */
     @RequestMapping("/player/getPlayers")
     Result<PageInfo> getPlayers(@RequestBody Page pageReq);
-
+    @RequestMapping("/player/getPlayersCount")
+    Integer getPlayersCount(@RequestBody PlayerReq record);
 
     /**
      * 用户注册

@@ -4,6 +4,7 @@ import com.dream.city.base.model.Page;
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.PlayerGrade;
 import com.dream.city.base.model.entity.Player;
+import com.dream.city.base.model.req.PlayerReq;
 import com.dream.city.base.model.resp.PlayerResp;
 import com.github.pagehelper.PageInfo;
 import org.springframework.stereotype.Repository;
@@ -50,6 +51,7 @@ public interface PlayerService {
      * @return
      */
     PageInfo<PlayerResp> getPlayers(Page pageReq);
+    Integer getPlayersCount(PlayerReq record);
 
     PlayerResp getPlayerByName(String username, String playerNick);
 

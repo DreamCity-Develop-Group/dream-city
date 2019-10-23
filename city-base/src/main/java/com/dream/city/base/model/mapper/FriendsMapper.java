@@ -56,4 +56,9 @@ public interface FriendsMapper {
     List<FriendsResp> getFriendsAll(FriendsReq page);
 
 
+    Integer isApplyCount(Friends record);
+
+
+
+
 }

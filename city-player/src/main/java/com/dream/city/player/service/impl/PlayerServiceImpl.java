@@ -17,6 +17,7 @@ import com.dream.city.player.service.FriendsService;
 import com.dream.city.player.service.PlayerService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,6 +30,7 @@ import java.util.*;
 /**
  * @author Wvv
  */
+@Slf4j
 @Service
 public class PlayerServiceImpl implements PlayerService {
 
@@ -166,22 +168,35 @@ public class PlayerServiceImpl implements PlayerService {
 
     @Override
     public PageInfo<PlayerResp> getPlayers(Page pageReq) {
-        PlayerReq playerReq = DataUtils.toJavaObject(pageReq.getCondition(), PlayerReq.class);
-        PageHelper.startPage(pageReq.getPageNum(),pageReq.getPageSize(),pageReq.isCount());
-        List<PlayerResp> players = playerMapper.searchPlayers(playerReq);
-        if (!CollectionUtils.isEmpty(players)){
-            String getFriendAgree = "添加";
-            for (int i=0;i<players.size();i++){
-                if (StringUtils.isNotBlank(playerReq.getPlayerId())){
-                    getFriendAgree = this.getFriendAgree(playerReq.getPlayerId(),players.get(i));
-                }
-                players.get(i).setAddfriend(getFriendAgree);
-                if (players.get(i).getAgree() == null){
+        List<PlayerResp> players = null;
+        try {
+            PlayerReq playerReq = DataUtils.toJavaObject(pageReq.getCondition(), PlayerReq.class);
+            PageHelper.startPage(pageReq.getPageNum(),pageReq.getPageSize(),pageReq.isCount());
+            //List<PlayerResp> players = playerMapper.searchPlayers(playerReq);
+            players = playerMapper.getPlayers(playerReq);
+            if (!CollectionUtils.isEmpty(players)){
+                String getFriendAgree = "添加";
+                for (int i=0;i<players.size();i++){
+                    if (StringUtils.isNotBlank(playerReq.getPlayerId())){
+                        getFriendAgree = this.getFriendAgree(playerReq.getPlayerId(),players.get(i));
+                    }
+                    players.get(i).setAddfriend(getFriendAgree);
+                /*if (players.get(i).getAgree() == null){
                     players.get(i).setAgree(0);
+                }*/
                 }
             }
+        }catch (Exception e){
+            log.error("",e);
         }
+
         return new PageInfo<>(players);
+    }
+
+    @Override
+    public Integer getPlayersCount(PlayerReq record) {
+        Integer playersCount = playerMapper.getPlayersCount(record);
+        return playersCount==null?0:playersCount;
     }
 
     private String getFriendAgree(String playerId,PlayerResp player){

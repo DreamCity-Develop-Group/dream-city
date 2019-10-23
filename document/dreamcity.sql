@@ -481,16 +481,16 @@ CREATE TABLE `player_friends` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `player_id` varchar(64) CHARACTER SET utf8 NOT NULL COMMENT '用户id',
   `friend_id` varchar(64) CHARACTER SET utf8 NOT NULL COMMENT '好友id',
-  `agree` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '同意添加',
+  `agree` tinyint(4) unsigned NOT NULL DEFAULT '0' COMMENT '同意添加',
   `invite` varchar(255) CHARACTER SET utf8 DEFAULT NULL COMMENT '邀请码（来自friend_id）',
-  `is_valid` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '是否可用的',
+  `is_valid` tinyint(4) unsigned NOT NULL DEFAULT '1' COMMENT '是否可用的',
   `create_time` datetime DEFAULT NULL,
   `update_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   KEY `index_player_id` (`player_id`) USING BTREE,
   KEY `index_friend_id` (`friend_id`) USING BTREE,
   KEY `index_invite` (`invite`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='好友';
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='好友';
 
 -- ----------------------------
 -- Table structure for player_game_setting

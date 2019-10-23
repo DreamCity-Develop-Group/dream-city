@@ -28,6 +28,7 @@ public class FriendsServiceImpl implements FriendsService {
     @Override
     public boolean addFriend(Friends friend) {
         friend.setAgree(0);
+
         return friendsMapper.insertSelective(friend)>0?Boolean.TRUE:Boolean.FALSE;
     }
 
@@ -49,7 +50,7 @@ public class FriendsServiceImpl implements FriendsService {
     }*/
 
     @Override
-    public PageInfo friendList(Page pageReq) {// TODO
+    public PageInfo<FriendsResp> friendList(Page pageReq) {// TODO
         FriendsReq friendsReq = DataUtils.toJavaObject(pageReq.getCondition(),FriendsReq.class);
         PageHelper.startPage(pageReq.getPageNum(),pageReq.getPageSize());
         List<FriendsResp> friendList = friendsMapper.friendList(friendsReq);
@@ -68,7 +69,7 @@ public class FriendsServiceImpl implements FriendsService {
         return page;
     }*/
     @Override
-    public PageInfo applyFriendList(Page pageReq) {// TODO
+    public PageInfo<FriendsResp> applyFriendList(Page pageReq) {// TODO
         FriendsReq friendsReq = DataUtils.toJavaObject(pageReq.getCondition(),FriendsReq.class);
         PageHelper.startPage(pageReq.getPageNum(),pageReq.getPageSize());
         List<FriendsResp> friendList = friendsMapper.applyFriendList(friendsReq);
@@ -83,5 +84,11 @@ public class FriendsServiceImpl implements FriendsService {
     @Override
     public Integer getFriendAgree(Friends record) {
         return friendsMapper.getFriendAgree(record);
+    }
+
+    @Override
+    public int isApplyCount(Friends record) {
+        Integer count = friendsMapper.isApplyCount(record);
+        return count == null?0:count;
     }
 }

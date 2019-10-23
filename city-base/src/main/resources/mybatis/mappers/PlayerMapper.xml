@@ -83,28 +83,49 @@
   </select>
 
 
+
   <select id="getPlayers" parameterType="com.dream.city.base.model.req.PlayerReq" resultType="com.dream.city.base.model.resp.PlayerResp">
-    SELECT p.id, p.player_id playerId,p.player_name playerName,p.player_nick playerNick,p.create_time createTime,
-      (SELECT e1.friendlink FROM player_ext e1 WHERE e1.player_id = p.player_id) playerLink,
-      (SELECT e2.imgurl FROM player_ext e2 WHERE e2.player_id = p.player_id) imgurl,
-      (SELECT g1.grade FROM player_grade g1 WHERE g1.player_id = p.player_id) grade,
-      (SELECT g2.integral FROM player_grade g2 WHERE g2.player_id = p.player_id) integral,
-      (SELECT IFNULL(f.agree,0) FROM player_friends f WHERE f.friend_id=p.player_id and f.player_id=#{playerId}) agree
-    from city_player p
-    <where>
-      1=1
-      <!--<if test="playerId != null and playerId != ''">
-        AND p.player_id != #{playerId}
-      </if>-->
-      <if test="playerName != null and playerName != ''">
-        AND p.player_name = #{playerName}
-      </if>
-      <if test="playerNick != null and playerNick != ''">
-        AND p.player_nick = #{playerNick}
-      </if>
-    </where>
-    GROUP BY p.player_id ORDER BY p.create_time DESC
+    SELECT a.* from (
+      SELECT p.id, p.player_id playerId,p.player_name playerName,p.player_nick playerNick,p.create_time createTime,
+        e.friendlink playerLink,e.imgurl,
+        (SELECT t.tree_level FROM city_tree t WHERE t.tree_player_id = p.player_id order by t.create_time desc limit 1) grade,
+        (SELECT f1.agree FROM player_friends f1 WHERE f1.friend_id=p.player_id and f1.player_id = #{playerId} order by f1.update_time desc limit 1) agree
+      from city_player p inner join player_ext e on p.player_id = e.player_id
+      <where>
+        p.player_id != #{playerId}
+        <if test="playerName != null and playerName != ''">
+          AND p.player_name like '%${playerName}%'
+        </if>
+        <if test="playerNick != null and playerNick != ''">
+          AND p.player_nick like '%${playerNick}%'
+        </if>
+      </where>
+      GROUP BY p.player_id
+    ) a where a.agree = 0 or a.agree is NULL
+     ORDER BY a.createTime DESC
   </select>
+  <select id="getPlayersCount" parameterType="com.dream.city.base.model.req.PlayerReq" resultType="java.lang.Integer">
+    SELECT count(*) from (
+      SELECT p.id, p.player_id playerId,p.player_name playerName,p.player_nick playerNick,p.create_time createTime,
+        e.friendlink playerLink,e.imgurl,
+        (SELECT t.tree_level FROM city_tree t WHERE t.tree_player_id = p.player_id order by t.create_time desc limit 1) grade,
+        (SELECT f1.agree FROM player_friends f1 WHERE f1.friend_id=p.player_id and f1.player_id = #{playerId} order by f1.update_time desc limit 1) agree
+      from city_player p inner join player_ext e on p.player_id = e.player_id
+      <where>
+        p.player_id != #{playerId}
+        <if test="playerName != null and playerName != ''">
+          AND p.player_name like '%${playerName}%'
+        </if>
+        <if test="playerNick != null and playerNick != ''">
+          AND p.player_nick like '%${playerNick}%'
+        </if>
+      </where>
+      GROUP BY p.player_id
+    ) a where a.agree = 0 or a.agree is NULL
+  </select>
+
+
+
 
   <select id="searchPlayers" parameterType="com.dream.city.base.model.req.PlayerReq" resultType="com.dream.city.base.model.resp.PlayerResp">
     SELECT p.id, p.player_id playerId,p.player_name playerName,p.player_nick playerNick,p.create_time createTime,
