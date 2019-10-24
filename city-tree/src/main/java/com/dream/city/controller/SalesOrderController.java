@@ -202,7 +202,7 @@ public class SalesOrderController {
 
 
     /**
-     * 专家发货,单条或者多条，遍历货单ID
+     * 卖家发货,单条或者多条，遍历货单ID
      */
     @RequestMapping("/player/seller/send")
     public Result playerSellerSend(@RequestParam("playerId") String playerId, @RequestParam("ordersId") String ordersId) {
@@ -217,9 +217,9 @@ public class SalesOrderController {
         int i = 0;
         for (String order : orders) {
             SalesOrder salesOrder = salesOrderService.getSalesOrder(order);
-
+            BigDecimal amount = salesOrder.getOrderAmount();
             //遍历核计订单总额度
-            amountMt = amountMt.add(salesOrder.getOrderAmount());
+            amountMt = amountMt.add(amount);
             //额度检测
             if (availbleMt.compareTo(amountMt) < 0) {
                 break;

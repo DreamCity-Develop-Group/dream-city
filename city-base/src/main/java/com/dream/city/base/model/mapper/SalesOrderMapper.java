@@ -83,7 +83,7 @@ public interface SalesOrderMapper {
             "<foreach collection=\"orderList\" item=\"item\" separator=\";\">" +
             " UPDATE" +
             " `sales_order0`" +
-            " SET order_state = #{item.orderState, jdbcType=TINYINT}, " +
+            " SET order_state = #{item.orderState, jdbcType=TINYINT} " +
             "  WHERE " +
             "  AND order_id = #{item.orderId, jdbcType=VARCHAR} " +
             "</foreach>" +

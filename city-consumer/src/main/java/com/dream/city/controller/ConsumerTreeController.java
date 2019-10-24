@@ -342,8 +342,9 @@ public class ConsumerTreeController {
         for (int i =0;i<orders.length;i++){
             if(i == orders.length-1){
                 ordersId+=orders[i];
+            }else {
+                ordersId += orders[i] + "_";
             }
-            ordersId+=orders[i]+"_";
         }
         Result result = treeService.sendOrder(playerId, ordersId);
         Message message = new Message("server", "client", new MessageData("sendOrder", "/consumer/tree"), "发货成功");
