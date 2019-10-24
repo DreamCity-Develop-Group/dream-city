@@ -57,7 +57,7 @@
     <if test="playerId != null and playerId != ''">
       and f.player_id = #{playerId,jdbcType=VARCHAR}
     </if>
-    ) a GROUP BY a.friendId
+    ) a
     ORDER BY a.createTime DESC
   </select>
   <!--<select id="friendCount" parameterType="com.dream.city.base.model.Page" resultType="java.lang.Integer">

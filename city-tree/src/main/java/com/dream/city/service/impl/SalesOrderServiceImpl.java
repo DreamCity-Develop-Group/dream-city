@@ -290,8 +290,12 @@ public class SalesOrderServiceImpl implements SalesOrderService {
             account.setAccMt(account.getAccMt().add(order.getOrderAmount()));
             account.setAccMtAvailable(account.getAccUsdtAvailable().add(order.getOrderAmount()));
             accounts.add(account);
+            //设置订单状态
+            order.setOrderState(OrderState.SHIPPED.getStatus());
         }
+        //更新订单状态
         salesOrderMapper.sendOrderMt(orders);
+        //更新账户数据
         playerAccountService.updatePlayerAccounts(accounts);
         return new Result(true, "发货成功", ReturnStatus.SUCCESS.getStatus());
     }

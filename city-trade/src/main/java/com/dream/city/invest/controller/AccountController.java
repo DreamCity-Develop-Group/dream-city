@@ -3,6 +3,8 @@ package com.dream.city.invest.controller;
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.PlayerAccount;
 import com.dream.city.base.model.enu.ReturnStatus;
+import com.dream.city.base.model.req.PlayerAccountReq;
+import com.dream.city.base.model.resp.PlayerAccountResp;
 import com.dream.city.invest.service.AccountService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,10 +77,10 @@ public class AccountController {
      * @return
      */
     @RequestMapping("/getPlatformAccounts")
-    public Result<PlayerAccount> getPlayerAccount(@RequestBody PlayerAccount record){
+    public Result<PlayerAccountResp> getPlayerAccount(@RequestBody PlayerAccountReq record){
         logger.info("获取平台账户，{}", record);
         String desc = "获取平台账户成功";
-        PlayerAccount account = null;
+        PlayerAccountResp account = null;
         boolean b = Boolean.TRUE;
         try {
             account = accountService.getPlayerAccount(record);
@@ -87,7 +89,7 @@ public class AccountController {
             b = Boolean.FALSE;
             logger.error("获取平台账户异常",e);
         }
-        Result<PlayerAccount> result = new Result<>(b,desc,account);
+        Result<PlayerAccountResp> result = new Result<>(b,desc,account);
         return result;
     }
 
@@ -97,10 +99,10 @@ public class AccountController {
      * @return
      */
     @RequestMapping("/getPlayerAccountList")
-    public Result<List<PlayerAccount>> getPlayerAccountList(@RequestBody PlayerAccount record){
+    public Result<List<PlayerAccountResp>> getPlayerAccountList(@RequestBody PlayerAccountReq record){
         logger.info("玩家账户列表，{}", record);
         String desc = "玩家账户列表成功";
-        List<PlayerAccount> accounts = null;
+        List<PlayerAccountResp> accounts = null;
         boolean b = Boolean.TRUE;
         try {
             accounts = accountService.getPlayerAccountList(record);

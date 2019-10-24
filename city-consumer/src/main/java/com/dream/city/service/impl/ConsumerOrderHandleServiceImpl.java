@@ -76,7 +76,7 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
         //1是否复投
         int orderRepeat = 0;
         InvestOrderReq getOrdersReq = new InvestOrderReq();
-        getOrdersReq.setOrderId(orderReq.getInvestId());
+        getOrdersReq.setInvestId(orderReq.getInvestId());
         getOrdersReq.setPlayerId(player.getPlayerId());
         Result<List<InvestOrderResp>> getOrdersResult = orderService.getOrders(getOrdersReq);
         List<InvestOrderResp> orderList= getOrdersResult.getData();
@@ -182,12 +182,14 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
             tradeDetail.setUsdtSurplus(playerAccount.getAccUsdt().subtract(orderAmount));
             tradeDetail.setMtSurplus(playerAccount.getAccMt());
             tradeDetail.setTradeDetailType(TradeDetailType.USDT_INVEST_FREEZE.getCode());
+            tradeDetail.setDescr(TradeDetailType.USDT_INVEST_FREEZE.getDesc());
             tradeService.insertTradeDetail(tradeDetail);
             //个人所得税
             if (trade.getPersonalTax().compareTo(BigDecimal.ZERO) > 0) {
                 tradeDetail.setTradeAmount(trade.getPersonalTax());
                 tradeDetail.setMtSurplus(playerAccount.getAccMt().subtract(trade.getPersonalTax()));
                 tradeDetail.setTradeDetailType(TradeDetailType.MT_INVEST_PERSONAL_TAX.getCode());
+                tradeDetail.setDescr(TradeDetailType.MT_INVEST_PERSONAL_TAX.getDesc());
                 tradeService.insertTradeDetail(tradeDetail);
             }
             //企业所得税
@@ -195,6 +197,7 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
                 tradeDetail.setTradeAmount(trade.getEnterpriseTax());
                 tradeDetail.setMtSurplus(playerAccount.getAccMt().subtract(trade.getEnterpriseTax().add(trade.getPersonalTax())));
                 tradeDetail.setTradeDetailType(TradeDetailType.MT_INVEST_ENTERPRISE_TAX.getCode());
+                tradeDetail.setDescr(TradeDetailType.MT_INVEST_ENTERPRISE_TAX.getDesc());
                 tradeService.insertTradeDetail(tradeDetail);
             }
             //定额得税
@@ -202,6 +205,7 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
                 tradeDetail.setTradeAmount(trade.getQuotaTax());
                 tradeDetail.setMtSurplus(playerAccount.getAccMt().subtract(trade.getEnterpriseTax().add(trade.getPersonalTax()).add(trade.getQuotaTax())));
                 tradeDetail.setTradeDetailType(TradeDetailType.MT_INVEST_QUOTA_TAX.getCode());
+                tradeDetail.setDescr(TradeDetailType.MT_INVEST_QUOTA_TAX.getDesc());
                 tradeService.insertTradeDetail(tradeDetail);
             }
 

@@ -73,6 +73,7 @@ public interface SalesOrderMapper {
     SalesOrder findSalesOrder();
 
     @Select("select * from `sales_order` where 1=1 and order_id = #{orderId} limit 1 ")
+    @ResultMap("BaseSalesOrderResultMap")
     SalesOrder getSalesOrderByOrderId(String orderId);
 
     @Update("update `sales_order` set order_state=#{orderState} where 1=1 and order_player_buyer=#{orderPlayerBuyer}")
@@ -82,7 +83,7 @@ public interface SalesOrderMapper {
             "<foreach collection=\"orderList\" item=\"item\" separator=\";\">" +
             " UPDATE" +
             " `sales_order0`" +
-            " SET order_state = #{item.orderState, jdbcType=TINYINT}, " +
+            " SET order_state = #{item.orderState, jdbcType=TINYINT} " +
             "  WHERE " +
             "  AND order_id = #{item.orderId, jdbcType=VARCHAR} " +
             "</foreach>" +

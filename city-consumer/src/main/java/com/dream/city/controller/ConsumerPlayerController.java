@@ -1,17 +1,15 @@
 package com.dream.city.controller;
 
-import com.alibaba.druid.sql.visitor.functions.If;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.dream.city.base.model.*;
-import com.dream.city.base.model.entity.CityMessage;
-import com.dream.city.base.model.entity.Player;
-import com.dream.city.base.model.entity.PlayerAccount;
-import com.dream.city.base.model.entity.PlayerExt;
-import com.dream.city.base.model.enu.ReturnStatus;
+import com.dream.city.base.model.entity.*;
+import com.dream.city.base.model.enu.*;
 import com.dream.city.base.model.req.FriendsReq;
+import com.dream.city.base.model.req.PlayerAccountReq;
 import com.dream.city.base.model.req.PlayerReq;
 import com.dream.city.base.model.req.UserReq;
+import com.dream.city.base.model.resp.PlayerAccountResp;
 import com.dream.city.base.model.resp.PlayerResp;
 import com.dream.city.base.service.DictionaryService;
 import com.dream.city.base.utils.DataUtils;
@@ -30,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -66,9 +65,12 @@ public class ConsumerPlayerController {
     ConsumerCommonsService commonsService;
     @Autowired
     DictionaryService dictionaryService;
-
     @Autowired
     ConsumerPlayerService playerService;
+    @Autowired
+    ConsumerAccountService accountService;
+    @Autowired
+    ConsumerTradeService tradeService;
 
     /**
      * 修改玩家头像
@@ -348,8 +350,8 @@ public class ConsumerPlayerController {
      * @return
      */
     @ApiOperation(value = "修改密码", httpMethod = "POST", notes = "修改密码", response = Message.class)
-    @RequestMapping("/expw")
-    public Message resetLoginPwd(@RequestBody Message msg) {
+    @RequestMapping("/resetLoginPass")
+    public Message resetLoginPass(@RequestBody Message msg) {
         log.info("修改密码", JSONObject.toJSONString(msg));
         UserReq jsonReq = DataUtils.getUserReq(msg);
         Result result = consumerPlayerService.resetLoginPwd(jsonReq.getUsername(), jsonReq.getOldpw(), jsonReq.getNewpw());
@@ -377,8 +379,8 @@ public class ConsumerPlayerController {
      * @return
      */
     @ApiOperation(value = "设置、修改交易密码", httpMethod = "POST", notes = "修改交易密码，没有交易密码的设置交易密码，有交易密码的修改交易密码", response = Message.class)
-    @RequestMapping("/expwshop")
-    public Message expwshop(@RequestBody Message msg) {
+    @RequestMapping("/resetTradePass")
+    public Message resetTradePass(@RequestBody Message msg) {
         log.info("修改交易密码", JSONObject.toJSONString(msg));
         UserReq jsonReq = DataUtils.getUserReq(msg);
         PlayerResp player = commonsService.getPlayerByUserName(msg);
@@ -405,15 +407,90 @@ public class ConsumerPlayerController {
 
         if (result.getSuccess() && StringUtils.isNotBlank(oldPwd)) {
             if (StringUtils.isNotBlank(player.getPlayerTradePass())) {
-                //修改交易密码，扣除1MT
+                //修改交易密码扣除MT
+                String valByKey = dictionaryService.getValByKey("player.change.tran.pwd.tax");
+                BigDecimal taxMt = BigDecimal.valueOf(Double.parseDouble(valByKey));
+
                 //玩家账户
                 PlayerAccount playerAccount = playerAccountService.getPlayerAccount(player.getPlayerId());
-                //扣除玩家1MT TODO
 
                 //平台账户
-                String[] idsArr = dictionaryService.getValByKey("platform.account.accIds").split(",");
-                PlayerAccount playerAccount1 = playerAccountService.getPlayerAccount(idsArr[0]);
-                //平台账户增加1MT TODO
+                String plafortAddr = dictionaryService.getValByKey("platform.account.accIds");
+                PlayerAccountReq plafortAccountReq = new PlayerAccountReq();
+                plafortAccountReq.setAccAddr(plafortAddr);
+                Result<PlayerAccountResp> plafortAccountResult = accountService.getPlayerAccount(plafortAccountReq);
+
+                //扣除玩家MT
+                Result<Integer> updatePlayerAccount = null;
+                if (playerAccount != null && plafortAccountResult != null && plafortAccountResult.getSuccess()){
+                    BigDecimal mtSurplus = playerAccount.getAccMt().subtract(taxMt);
+
+                    //更新玩家账户
+                    PlayerAccount updateAccount = new  PlayerAccount();
+                    updateAccount.setAccId(playerAccount.getAccId());
+                    updateAccount.setAccMt(mtSurplus);
+                    updateAccount.setAccMtAvailable(mtSurplus);
+                    updateAccount.setAccPlayerId(playerAccount.getAccPlayerId());
+                    updatePlayerAccount = accountService.updatePlayerAccount(updateAccount);
+
+                    //玩家交易记录
+                    PlayerTrade tradeReq = new PlayerTrade();
+                    tradeReq.setTradeAmount(taxMt);
+                    tradeReq.setTradePlayerId(playerAccount.getAccPlayerId());
+                    tradeReq.setTradeStatus(TradeStatus.OUT.getCode());
+                    tradeReq.setTradeType(TradeType.CHANGE_TRAN_PWD.getCode());
+                    tradeReq.setInOutStatus(AmountDynType.OUT.getCode());
+                    tradeReq.setTradeDesc("玩家修改交易密码，扣除["+ taxMt +"]MT");
+                    Result<PlayerTrade> tradeResult = tradeService.insertPlayerTrade(tradeReq);
+
+                    //玩家交易流水
+                    TradeDetail tradeDetailReq = new TradeDetail();
+                    tradeDetailReq.setUsdtSurplus(playerAccount.getAccUsdt());
+                    tradeDetailReq.setMtSurplus(mtSurplus);
+                    tradeDetailReq.setTradeAmount(taxMt);
+                    tradeDetailReq.setTradeDetailType(TradeDetailType.CHANGE_TRAN_PWD.getCode());
+                    tradeDetailReq.setPlayerId(playerAccount.getAccPlayerId());
+                    tradeDetailReq.setDescr("玩家修改交易密码，扣除["+ taxMt +"]MT");
+                    if(tradeResult != null && tradeResult.getSuccess() && tradeResult.getData() != null){
+                      tradeDetailReq.setTradeId(tradeResult.getData().getTradeId());
+                    }
+                    tradeService.insertTradeDetail(tradeDetailReq);
+                }
+
+                //平台账户增加MT
+                if (updatePlayerAccount != null && updatePlayerAccount.getSuccess()
+                        && plafortAccountResult.getSuccess() && plafortAccountResult.getData() != null){
+                    //更新平台账户
+                    PlayerAccount updateAccount = new  PlayerAccount();
+                    updateAccount.setAccId(plafortAccountResult.getData().getAccId());
+                    updateAccount.setAccMt(plafortAccountResult.getData().getAccMt().add(taxMt));
+                    updateAccount.setAccMtAvailable(plafortAccountResult.getData().getAccMtAvailable().add(taxMt));
+                    updateAccount.setAccPlayerId(plafortAccountResult.getData().getPlayerId());
+                    accountService.updatePlayerAccount(updateAccount);
+
+                    //平台交易记录
+                    PlayerTrade tradeReq = new PlayerTrade();
+                    tradeReq.setTradeAmount(taxMt);
+                    tradeReq.setTradePlayerId(plafortAccountResult.getData().getPlayerId());
+                    tradeReq.setTradeStatus(TradeStatus.IN.getCode());
+                    tradeReq.setTradeType(TradeType.CHANGE_TRAN_PWD.getCode());
+                    tradeReq.setInOutStatus(AmountDynType.IN.getCode());
+                    tradeReq.setTradeDesc("玩家修改交易密码，收取["+ taxMt +"]MT");
+                    Result<PlayerTrade> tradeResult = tradeService.insertPlayerTrade(tradeReq);
+
+                    //平台交易流水
+                    TradeDetail tradeDetailReq = new TradeDetail();
+                    tradeDetailReq.setUsdtSurplus(plafortAccountResult.getData().getAccUsdt());
+                    tradeDetailReq.setMtSurplus(plafortAccountResult.getData().getAccMt().add(taxMt));
+                    tradeDetailReq.setTradeAmount(taxMt);
+                    tradeDetailReq.setTradeDetailType(TradeDetailType.CHANGE_TRAN_PWD.getCode());
+                    tradeDetailReq.setPlayerId(plafortAccountResult.getData().getPlayerId());
+                    tradeDetailReq.setDescr("玩家修改交易密码，收取["+ taxMt +"]MT");
+                    if(tradeResult != null && tradeResult.getSuccess() && tradeResult.getData() != null){
+                        tradeDetailReq.setTradeId(tradeResult.getData().getTradeId());
+                    }
+                    tradeService.insertTradeDetail(tradeDetailReq);
+                }
             }
         }
 

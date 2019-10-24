@@ -47,7 +47,7 @@ public class PlayerAccount implements Serializable {
     /** 积累总收入 */
     private BigDecimal accIncome;
 
-    //private Integer version;
+    private Integer version;
 
     /**  */
     private Date createTime;

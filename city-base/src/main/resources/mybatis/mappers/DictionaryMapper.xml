@@ -3,17 +3,17 @@
 <mapper namespace="com.dream.city.base.model.mapper.DictionaryMapper" >
   <resultMap id="BaseResultMap" type="com.dream.city.base.model.entity.Dictionary" >
     <id column="id" property="id" jdbcType="INTEGER" />
-    <result column="name" property="name" jdbcType="VARCHAR" />
-    <result column="key" property="key" jdbcType="VARCHAR" />
-    <result column="val" property="val" jdbcType="VARCHAR" />
+    <result column="dic_name" property="name" jdbcType="VARCHAR" />
+    <result column="dic_key" property="key" jdbcType="VARCHAR" />
+    <result column="dic_val" property="val" jdbcType="VARCHAR" />
     <result column="is_valid" property="isValid" jdbcType="TINYINT" />
-    <result column="descr" property="descr" jdbcType="VARCHAR" />
+    <result column="dic_descr" property="descr" jdbcType="VARCHAR" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
     <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
   </resultMap>
 
   <sql id="Base_Column_List" >
-    id, name, key, val, is_valid, descr, create_time, update_time
+    id, dic_name, dic_key, dic_val, is_valid, dic_descr, create_time, update_time
   </sql>
 
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
@@ -25,19 +25,19 @@
   <select id="getDictionaryByKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select  d.*
     from city_dictionary d
-    where d.key = #{key,jdbcType=VARCHAR}
+    where d.dic_key like '%${key}%'
   </select>
 
   <select id="getDictionaryByVal" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select d.*
     from city_dictionary d
-    where d.val = #{val,jdbcType=VARCHAR}
+    where d.dic_val like '%${val}%'
   </select>
 
   <select id="getDictionaryByName" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select  d.*
     from city_dictionary d
-    where d.name = #{name,jdbcType=VARCHAR}
+    where d.dic_name like '%${name}%'
   </select>
 
   <select id="getDictionaryList" resultMap="BaseResultMap" parameterType="com.dream.city.base.model.entity.Dictionary" >
@@ -48,19 +48,19 @@
         and d.id = #{id,jdbcType=INTEGER}
       </if>
       <if test="name != null and name != ''" >
-        and d.name like '%${name}%'
+        and d.dic_name like '%${name}%'
       </if>
       <if test="key != null and key != ''" >
-        and d.key like '%${key}%'
+        and d.dic_key like '%${key}%'
       </if>
       <if test="val != null and val != ''" >
-        and d.val like '%${val}%'
+        and d.dic_val like '%${val}%'
       </if>
       <if test="isValid != null" >
         and d.is_valid = #{isValid,jdbcType=TINYINT}
       </if>
       <if test="descr != null and descr != ''" >
-        and d.descr like '%${descr}%'
+        and d.dic_descr like '%${descr}%'
       </if>
 
     </where>
@@ -78,20 +78,20 @@
       <if test="id != null" >
         id,
       </if>
-      <if test="name != null" >
-        name,
+      <if test="name != null and name != ''" >
+        dic_name,
       </if>
-      <if test="key != null" >
-        key,
+      <if test="key != null and key != ''" >
+        dic_key,
       </if>
-      <if test="val != null" >
-        val,
+      <if test="val != null and val != ''" >
+        dic_val,
       </if>
       <if test="isValid != null" >
         is_valid,
       </if>
-      <if test="descr != null" >
-        descr,
+      <if test="descr != null and descr != ''" >
+        dic_descr,
       </if>
       create_time,
     </trim>
@@ -99,19 +99,19 @@
       <if test="id != null" >
         #{id,jdbcType=INTEGER},
       </if>
-      <if test="name != null" >
+      <if test="name != null and name != ''" >
         #{name,jdbcType=VARCHAR},
       </if>
-      <if test="key != null" >
+      <if test="key != null and key != ''" >
         #{key,jdbcType=VARCHAR},
       </if>
-      <if test="val != null" >
+      <if test="val != null and val != ''" >
         #{val,jdbcType=VARCHAR},
       </if>
       <if test="isValid != null" >
         #{isValid,jdbcType=TINYINT},
       </if>
-      <if test="descr != null" >
+      <if test="descr != null and descr != ''" >
         #{descr,jdbcType=VARCHAR},
       </if>
       now(),
@@ -121,20 +121,20 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.dream.city.base.model.entity.Dictionary" >
     update city_dictionary
     <set >
-      <if test="name != null" >
-        name = #{name,jdbcType=VARCHAR},
+    <if test="name != null and name != ''" >
+        dic_name = #{name,jdbcType=VARCHAR},
       </if>
-      <if test="key != null" >
-        key = #{key,jdbcType=VARCHAR},
+      <if test="key != null and key != ''" >
+        dic_key = #{key,jdbcType=VARCHAR},
       </if>
-      <if test="val != null" >
-        val = #{val,jdbcType=VARCHAR},
+      <if test="val != null and val != ''" >
+        dic_val = #{val,jdbcType=VARCHAR},
       </if>
       <if test="isValid != null" >
         is_valid = #{isValid,jdbcType=TINYINT},
       </if>
-      <if test="descr != null" >
-        descr = #{descr,jdbcType=VARCHAR},
+      <if test="descr != null and descr != ''" >
+        dic_descr = #{descr,jdbcType=VARCHAR},
       </if>
       create_time = now(),
     </set>

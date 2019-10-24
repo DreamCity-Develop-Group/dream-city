@@ -196,6 +196,23 @@ public class RelationTreeController {
         return Result.result(true);
     }
 
+    /**
+     * 自动发货功能
+     *
+     * @param playerId
+     * @return
+     */
+    @RequestMapping("/set/autoSendClose")
+    public Result autoSendClose(@RequestParam("playerId")String playerId){
+        RelationTree tree = relationTreeService.getTreeByPlayerId(playerId);
+
+        tree.setSendAuto("0");
+
+        relationTreeService.updateTree(tree);
+
+        return Result.result(true);
+    }
+
 
 
 }

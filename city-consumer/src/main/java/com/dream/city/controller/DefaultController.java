@@ -105,8 +105,13 @@ public class DefaultController {
         profile.put("nick", player.getPlayerNick());
         //邀请码
         profile.put("invite",player.getPlayerInvite());
+        //isAutoSend 是否设置自动发货
+        profile.put("isAutoSend",false);
         if (tree != null) {
             profile.put("level", tree.getTreeLevel() == null ? 0 : tree.getTreeLevel());
+            if("1".equals(tree.getSendAuto())){
+                profile.put("isAutoSend",true);
+            }
         } else {
             profile.put("level", 0);
         }

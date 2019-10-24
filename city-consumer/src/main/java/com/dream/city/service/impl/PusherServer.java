@@ -58,6 +58,7 @@ public class PusherServer implements PusherService {
             );
 
             Map<String, Integer> data = new HashMap();
+            //兑换请求数据
             data.put("num",0);
             switch (type) {
                 case 1:

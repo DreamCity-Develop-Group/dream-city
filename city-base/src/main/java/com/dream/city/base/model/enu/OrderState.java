@@ -5,25 +5,17 @@ package com.dream.city.base.model.enu;
  */
 public enum OrderState {
     CANCEL(0,"取消"),
-
     CREATE(1,"新建"),
-
     PAID(2,"待支付"),
-
     PAY(3,"已支付"),
-
     WAITVERIFY(4,"待审核"),
-
     TOBESHIPPED(5,"待发货"),
-
     SHIPPED(6,"已发货"),
-
     RECEIVED(7,"已收货"),
-
     CLOSE(8,"关闭"),
-
     FINISHED(9,"完成"),
     EXPIRED(10,"过期"),
+    REFUSE(11,"已拒绝"),
 
     INVALID(-1,"作废");
 
