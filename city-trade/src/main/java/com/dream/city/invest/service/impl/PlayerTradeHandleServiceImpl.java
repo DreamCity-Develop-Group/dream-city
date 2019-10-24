@@ -179,7 +179,7 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
 
 
     @Override
-    //@Transactional
+    @Transactional
     public Result<PlayerTrade>  playerTransfer(PlayerAccountReq recordOut) {
         boolean success = Boolean.FALSE;
         String msg = "玩家转账";
