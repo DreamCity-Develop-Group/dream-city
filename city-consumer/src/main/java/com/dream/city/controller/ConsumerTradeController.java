@@ -322,7 +322,7 @@ public class ConsumerTradeController {
         PlayerAccountReq playerAccountReq = new PlayerAccountReq();
         playerAccountReq.setAccAddr(accountReq.getAccAddr());
         Result<PlayerAccountResp> playerAccountResult = accountService.getPlayerAccount(playerAccountReq);
-        if (playerId.equalsIgnoreCase(playerAccountResult.getData().getPlayerId())){
+        if (playerAccountResult != null && playerId.equalsIgnoreCase(playerAccountResult.getData().getPlayerId())){
             msg.setCode(ReturnStatus.ERROR_PASS.getStatus());
             msg.getData().setCode(ReturnStatus.ERROR_PASS.getStatus());
             msg.setDesc("不能给自己转账");

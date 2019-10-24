@@ -47,11 +47,13 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public PlayerAccountResp getPlayerAccount(PlayerAccountReq record) {
+        record.setPlatformAccIds(dictionaryService.getValByKey("platform.account.accIds"));
         return accountMapper.getPlayerAccountSelective(record);
     }
 
     @Override
     public List<PlayerAccountResp> getPlayerAccountList(PlayerAccountReq record) {
+        record.setPlatformAccIds(dictionaryService.getValByKey("platform.account.accIds"));
         return accountMapper.getPlayerAccountList(record);
     }
 
