@@ -76,7 +76,7 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
         //1是否复投
         int orderRepeat = 0;
         InvestOrderReq getOrdersReq = new InvestOrderReq();
-        getOrdersReq.setOrderId(orderReq.getInvestId());
+        getOrdersReq.setInvestId(orderReq.getInvestId());
         getOrdersReq.setPlayerId(player.getPlayerId());
         Result<List<InvestOrderResp>> getOrdersResult = orderService.getOrders(getOrdersReq);
         List<InvestOrderResp> orderList= getOrdersResult.getData();
