@@ -1,8 +1,11 @@
 package com.dream.city.base.service.impl;
 
+import com.dream.city.base.model.Page;
 import com.dream.city.base.model.entity.Dictionary;
 import com.dream.city.base.model.mapper.DictionaryMapper;
 import com.dream.city.base.service.DictionaryService;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -16,6 +19,29 @@ public class DictionaryServiceImpl implements DictionaryService {
     private DictionaryMapper dictionaryMapper;
 
 
+
+    @Override
+    public int insert(Dictionary record) {
+        Integer integer = dictionaryMapper.insertSelective(record);
+        return integer==null?0:integer;
+    }
+
+    @Override
+    public int updateById(Dictionary record) {
+        Integer integer = dictionaryMapper.updateByPrimaryKeySelective(record);
+        return integer==null?0:integer;
+    }
+
+    @Override
+    public int deleteById(Integer id) {
+        Integer integer = dictionaryMapper.deleteByPrimaryKey(id);
+        return integer==null?0:integer;
+    }
+
+    @Override
+    public Dictionary getById(Integer id) {
+        return dictionaryMapper.selectByPrimaryKey(id);
+    }
 
     @Override
     public String getKeyByVal(String val) {
@@ -65,5 +91,12 @@ public class DictionaryServiceImpl implements DictionaryService {
     @Override
     public List<Dictionary> getListByName(String name) {
         return dictionaryMapper.getDictionaryByName(name);
+    }
+
+    @Override
+    public PageInfo<Dictionary> getDictionaryList(Page pageReq, Dictionary record) {
+        PageHelper.startPage(pageReq.getPageNum(),pageReq.getPageSize());
+        List<Dictionary> dictionaryList = dictionaryMapper.getDictionaryList(record);
+        return new PageInfo<>(dictionaryList);
     }
 }
