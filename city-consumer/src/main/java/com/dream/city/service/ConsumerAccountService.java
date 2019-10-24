@@ -2,6 +2,8 @@ package com.dream.city.service;
 
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.PlayerAccount;
+import com.dream.city.base.model.req.PlayerAccountReq;
+import com.dream.city.base.model.resp.PlayerAccountResp;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,7 +23,7 @@ public interface ConsumerAccountService {
 
 
     @RequestMapping("/getPlatformAccounts")
-    Result<PlayerAccount> getPlayerAccount(@RequestBody PlayerAccount record);
+    Result<PlayerAccountResp> getPlayerAccount(@RequestBody PlayerAccountReq record);
 
 
     /**
@@ -49,7 +51,7 @@ public interface ConsumerAccountService {
      */
     @ApiOperation(value = "玩家账户列表", httpMethod = "POST", notes = "t入参username", response = Result.class)
     @RequestMapping("/getPlayerAccountList")
-    Result<List<PlayerAccount>> getPlayerAccountList(@RequestBody PlayerAccount record);
+    Result<List<PlayerAccountResp>> getPlayerAccountList(@RequestBody PlayerAccountReq record);
 
 
     /**

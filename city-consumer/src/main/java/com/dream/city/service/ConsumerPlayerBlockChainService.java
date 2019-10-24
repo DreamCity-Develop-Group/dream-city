@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 /**
  * @author Wvv
  */
-@FeignClient(value = "city-omni", fallback = FallBackCityUser.class)
+@FeignClient(value = "city-wallet", fallback = FallBackCityUser.class)
 public interface ConsumerPlayerBlockChainService {
 
     /**

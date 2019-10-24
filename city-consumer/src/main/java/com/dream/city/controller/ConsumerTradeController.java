@@ -12,6 +12,7 @@ import com.dream.city.base.model.entity.PlayerTrade;
 import com.dream.city.base.model.enu.ReturnStatus;
 import com.dream.city.base.model.req.PlayerAccountReq;
 import com.dream.city.base.model.req.PlayerTradeReq;
+import com.dream.city.base.model.resp.PlayerAccountResp;
 import com.dream.city.base.model.resp.PlayerResp;
 import com.dream.city.base.model.resp.PlayerTradeResp;
 import com.dream.city.base.utils.DataUtils;
@@ -318,10 +319,10 @@ public class ConsumerTradeController {
             return msg;
         }
 
-        PlayerAccount playerAccountReq = new PlayerAccount();
+        PlayerAccountReq playerAccountReq = new PlayerAccountReq();
         playerAccountReq.setAccAddr(accountReq.getAccAddr());
-        Result<PlayerAccount> playerAccountResult = accountService.getPlayerAccount(playerAccountReq);
-        if (playerId.equalsIgnoreCase(playerAccountResult.getData().getAccPlayerId())){
+        Result<PlayerAccountResp> playerAccountResult = accountService.getPlayerAccount(playerAccountReq);
+        if (playerId.equalsIgnoreCase(playerAccountResult.getData().getPlayerId())){
             msg.setCode(ReturnStatus.ERROR_PASS.getStatus());
             msg.getData().setCode(ReturnStatus.ERROR_PASS.getStatus());
             msg.setDesc("不能给自己转账");
@@ -337,11 +338,11 @@ public class ConsumerTradeController {
                 resultMap.put("money",tradeResult.getData().getTradeAmount());
                 msg.getData().setCode(tradeResult.getCode());
 
-                PlayerAccount playerAccount = null;
+                PlayerAccountResp playerAccount = null;
                 if (playerAccountResult!= null){
                     playerAccount = playerAccountResult.getData();
-                    if (playerAccount != null && StringUtils.isNotBlank(playerAccount.getAccPlayerId())){
-                        Player player2 = playerService.getPlayerByPlayerId(playerAccount.getAccPlayerId());
+                    if (playerAccount != null && StringUtils.isNotBlank(playerAccount.getPlayerId())){
+                        Player player2 = playerService.getPlayerByPlayerId(playerAccount.getPlayerId());
 
                         msg.setCode(tradeResult.getCode());
                         resultMap.put("desc","转账["+tradeResult.getData().getTradeAmount()+"]USDT给["+player2.getPlayerName()+"]成功");

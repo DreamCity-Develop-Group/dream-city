@@ -55,7 +55,7 @@
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from player_account
-    where acc_id = #{accId,jdbcType=INTEGER}
+    where acc_id = #{accId,jdbcType=BIGINT}
   </delete>
 
     <!--<insert id="insert" parameterType="com.dream.city.base.model.entity.PlayerAccount">
@@ -102,12 +102,8 @@
             <if test="version != null">
                 version,
             </if>
-            <if test="createTime != null">
-                create_time,
-            </if>
-            <if test="updateTime != null">
-                update_time,
-            </if>
+            create_time,
+            update_time,
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="accId != null">
@@ -140,12 +136,8 @@
             <if test="version != null">
                 #{version,jdbcType=DECIMAL},
             </if>
-            <if test="createTime != null">
-                #{createTime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="updateTime != null">
-                #{updateTime,jdbcType=TIMESTAMP},
-            </if>
+            now(),
+            now(),
         </trim>
     </insert>
 
@@ -196,27 +188,32 @@
         <include refid="Base_Column_List"/>
         from player_account
         <where>
-            acc_player_id in(${platformAccIds})
+            acc_addr in(${platformAccIds})
         </where>
-        order by create_time desc
+        order by update_time desc
     </select>
 
-    <select id="getPlayerAccountList" resultMap="BasePlayerAccountResultMap"
-            parameterType="com.dream.city.base.model.entity.PlayerAccount">
-        select
-        <include refid="Base_Column_List"/>
-        from player_account
+    <select id="getPlayerAccountList" resultType="com.dream.city.base.model.resp.PlayerAccountResp"
+            parameterType="com.dream.city.base.model.req.PlayerAccountReq">
+        select a.acc_id accId,a.acc_player_id playerId,a.acc_addr accAddr,a.acc_income totalIncome,a.acc_usdt accUsdt,a.acc_usdt_available accUsdtAvailable,a.acc_usdt_freeze accUsdtFreeze,
+          a.acc_mt accMt,a.acc_mt_available accMtAvailable,a.acc_mt_freeze accMtFreeze,a.create_time createTime,p.player_name playerName
+        from player_account a ,city_player p
         <where>
-            1=1
-            and acc_player_id not in(#{platformAccIds,jdbcType=VARCHAR})
+            a.acc_player_id = p.player_id and a.acc_player_id not in(#{platformAccIds,jdbcType=VARCHAR})
             <if test="accId != null">
-                and acc_id = #{accId,jdbcType=INTEGER}
+                and a.acc_id = #{accId,jdbcType=INTEGER}
             </if>
             <if test="accPlayerId != null and accPlayerId != '' ">
-                and acc_player_id = #{accPlayerId,jdbcType=VARCHAR}
+                and a.acc_player_id = #{accPlayerId,jdbcType=VARCHAR}
+            </if>
+            <if test="username != null and username != '' ">
+                and p.player_name = #{username,jdbcType=VARCHAR}
+            </if>
+            <if test="accAddr != null and accAddr != '' ">
+                and a.acc_addr = #{accAddr,jdbcType=VARCHAR}
             </if>
         </where>
-        order by create_time desc
+        order by a.update_time desc
     </select>
 
 
@@ -280,7 +277,7 @@
     </update>
 
 
-    <select id="getPlayerAccountSelective" resultMap="BasePlayerAccountResultMap"
+    <!--<select id="getPlayerAccountSelective" resultMap="BasePlayerAccountResultMap"
             parameterType="com.dream.city.base.model.entity.PlayerAccount">
         select
         <include refid="Base_Column_List"/>
@@ -297,9 +294,30 @@
                 and acc_addr = #{accAddr,jdbcType=VARCHAR}
             </if>
         </where>
-        order by create_time desc
+        order by update_time desc
+    </select>-->
+    <select id="getPlayerAccountSelective" resultType="com.dream.city.base.model.resp.PlayerAccountResp"
+            parameterType="com.dream.city.base.model.req.PlayerAccountReq">
+        select a.acc_id accId,a.acc_player_id playerId,a.acc_addr accAddr,a.acc_income totalIncome,a.acc_usdt accUsdt,a.acc_usdt_available accUsdtAvailable,a.acc_usdt_freeze accUsdtFreeze,
+        a.acc_mt accMt,a.acc_mt_available accMtAvailable,a.acc_mt_freeze accMtFreeze,a.create_time createTime,p.player_name playerName
+        from player_account a ,city_player p
+        <where>
+            a.acc_player_id = p.player_id and a.acc_player_id not in(#{platformAccIds,jdbcType=VARCHAR})
+            <if test="accId != null">
+                and a.acc_id = #{accId,jdbcType=INTEGER}
+            </if>
+            <if test="accPlayerId != null and accPlayerId != '' ">
+                and a.acc_player_id = #{accPlayerId,jdbcType=VARCHAR}
+            </if>
+            <if test="username != null and username != '' ">
+                and p.player_name = #{username,jdbcType=VARCHAR}
+            </if>
+            <if test="accAddr != null and accAddr != '' ">
+                and a.acc_addr = #{accAddr,jdbcType=VARCHAR}
+            </if>
+        </where>
+        order by a.update_time desc limit 1
     </select>
-
 
 
     <insert id="insertPlayAccountLog" parameterType="com.dream.city.base.model.entity.PlayerAccountLog">

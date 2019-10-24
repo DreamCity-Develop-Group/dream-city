@@ -3,6 +3,7 @@ package com.dream.city.base.model.mapper;
 
 import com.dream.city.base.model.entity.PlayerAccount;
 import com.dream.city.base.model.req.PlayerAccountReq;
+import com.dream.city.base.model.resp.PlayerAccountResp;
 import org.apache.ibatis.annotations.*;
 
 import java.math.BigDecimal;
@@ -26,7 +27,7 @@ public interface AccountMapper {
 
     PlayerAccount selectByPrimaryKey(Integer accId);
 
-    PlayerAccount getPlayerAccountSelective(PlayerAccount record);
+    PlayerAccountResp getPlayerAccountSelective(PlayerAccountReq record);
 
 
     //cityPlayId
@@ -49,7 +50,7 @@ public interface AccountMapper {
      */
     List<PlayerAccount> getPlatformAccounts(PlayerAccountReq record);
 
-    List<PlayerAccount> getPlayerAccountList(PlayerAccount record);
+    List<PlayerAccountResp> getPlayerAccountList(PlayerAccountReq record);
 
     PlayerAccount getPlayerAccount(String accPlayerId);
 
