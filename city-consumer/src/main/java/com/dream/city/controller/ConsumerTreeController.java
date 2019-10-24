@@ -16,10 +16,7 @@ import com.dream.city.service.ConsumerPlayerService;
 import com.dream.city.service.ConsumerTreeService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -276,28 +273,51 @@ public class ConsumerTreeController {
         String username = jsonObject.getString("username");
         String playerId = jsonObject.getString("playerId");
         BigDecimal amount = jsonObject.getBigDecimal("amount");
-        if (StringUtils.isNotBlank(playerId)) {
-            playerId = jsonObject.getString("playerId");
-        } else {
-            Player player = (Player) playerService.getPlayerByAccount(username).getData();
+        String isAuto = jsonObject.getString("isAuto");
+        boolean isOpen = false;
+        if ("yes".equals(isAuto)) {
+            isOpen = true;
+            if (amount == null) {
+                amount = new BigDecimal(100);
+            }
+            if (StringUtils.isNotBlank(playerId)) {
+                playerId = jsonObject.getString("playerId");
+            } else {
+                Player player = (Player) playerService.getPlayerByAccount(username).getData();
 
-            playerId = player.getPlayerId();
-        }
-        //@RequestParam("playerId")String playerId,@RequestParam("amount")BigDecimal amount
-        Message message = new Message("server", "client", new MessageData("setAutoSend", "/consumer/tree"), "设置自动发货成功");
-        PlayerAccount account = accountService.getPlayerAccountByPlayerId(playerId);
-
-        if (account.getAccMtAvailable().compareTo(amount) < 0) {
-            message.setDesc("备货额度不足，设置失败");
-            return message;
-        }
-        Result result = treeService.setAutoSend(playerId);
-        if (result.getSuccess()) {
-            return message;
+                playerId = player.getPlayerId();
+            }
+            //@RequestParam("playerId")String playerId,@RequestParam("amount")BigDecimal amount
+            Message message = new Message("server", "client", new MessageData("setAutoSend", "/consumer/tree"), "设置自动发货成功");
+            PlayerAccount account = accountService.getPlayerAccountByPlayerId(playerId);
+            BigDecimal no = new BigDecimal(0);
+            if (account.getAccMtAvailable().compareTo(no) < 1 || account.getAccMtAvailable().compareTo(amount) < 1) {
+                message.getData().setCode(ReturnStatus.NOT_ENOUGH_MT.getStatus());
+                message.setDesc("备货额度不足，设置失败");
+                return message;
+            }
+            Result result = treeService.setAutoSend(playerId);
+            if (result.getSuccess()) {
+                message.getData().setCode(ReturnStatus.SUCCESS.getStatus());
+                return message;
+            } else {
+                message.getData().setCode(ReturnStatus.SET_FAILED.getStatus());
+                message.setDesc("设置失败");
+                return message;
+            }
         } else {
-            message.setDesc("设置失败");
-            return message;
+            Message message = new Message("server", "client", new MessageData("setAutoSend", "/consumer/tree"), "关闭自动发货成功");
+            Result result = treeService.setAutoSendClose(playerId);
+            if (result.getSuccess()) {
+                message.getData().setCode(ReturnStatus.SUCCESS.getStatus());
+                return message;
+            } else {
+                message.getData().setCode(ReturnStatus.SET_FAILED.getStatus());
+                message.setDesc("设置失败");
+                return message;
+            }
         }
+
     }
 
     /**
@@ -306,23 +326,34 @@ public class ConsumerTreeController {
      * @param msg
      * @return
      */
-    @RequestMapping("/tree/sendOrder")
+    @RequestMapping(value = "/tree/sendOrder", method = RequestMethod.POST)
     public Message sendOrder(@RequestBody Message msg) {
         Object dataMsg = msg.getData().getData();
         JSONObject jsonObject = JsonUtil.parseJsonToObj(JsonUtil.parseObjToJson(dataMsg), JSONObject.class);
-        //String username = jsonObject.getString("username");
+        String username = jsonObject.getString("username");
         String playerId = jsonObject.getString("playerId");
+        String[] orders = new String[]{};
+        orders = jsonObject.getJSONArray("orders").toArray(orders);//.get("orders");
+        String ordersId = "";
+        /*for (String orderId : orders) {
+            ordersId = ordersId.concat(orderId + "&");
+        }*/
 
-        List<String> orders = (List<String>) jsonObject.getJSONArray("orders").toJavaList(String.class);//.get("orders");
-
-        //@RequestParam("playerId")String playerId,@RequestParam("orders") List<String> orders
-        Result result = treeService.sendOrder(playerId, orders);
+        for (int i =0;i<orders.length;i++){
+            if(i == orders.length-1){
+                ordersId+=orders[i];
+            }
+            ordersId+=orders[i]+"_";
+        }
+        Result result = treeService.sendOrder(playerId, ordersId);
         Message message = new Message("server", "client", new MessageData("sendOrder", "/consumer/tree"), "发货成功");
         if (result.getSuccess()) {
+            message.getData().setCode(ReturnStatus.SUCCESS.getStatus());
             message.getData().setData(result.getData());
             return message;
         } else {
-            message.setDesc("发货失败");
+            message.getData().setCode(result.getCode());
+            message.setDesc("发货失败:" + result.getMsg());
             return message;
         }
     }

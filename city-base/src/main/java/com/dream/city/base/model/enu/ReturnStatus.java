@@ -10,7 +10,7 @@ public enum ReturnStatus {
     SUCCESS(200,"成功"),
     EXISTS(201,"已存在"),
     NOT_ENOUGH(210,"USDT额度不足，请去充值"),
-    NOT_ENOUGH_MT(209,"USDT额度不足，请去充值"),
+    NOT_ENOUGH_MT(209,"MT额度不足，请去充值"),
     NOT_ENOUGH_PARENT(211,"上级USDT额度不足"),
     TOKEN_EXPIRED(212,"TOKEN过期"),
 

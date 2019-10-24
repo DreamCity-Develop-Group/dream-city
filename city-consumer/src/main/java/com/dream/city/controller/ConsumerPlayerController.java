@@ -350,8 +350,8 @@ public class ConsumerPlayerController {
      * @return
      */
     @ApiOperation(value = "修改密码", httpMethod = "POST", notes = "修改密码", response = Message.class)
-    @RequestMapping("/expw")
-    public Message resetLoginPwd(@RequestBody Message msg) {
+    @RequestMapping("/resetLoginPass")
+    public Message resetLoginPass(@RequestBody Message msg) {
         log.info("修改密码", JSONObject.toJSONString(msg));
         UserReq jsonReq = DataUtils.getUserReq(msg);
         Result result = consumerPlayerService.resetLoginPwd(jsonReq.getUsername(), jsonReq.getOldpw(), jsonReq.getNewpw());
@@ -379,8 +379,8 @@ public class ConsumerPlayerController {
      * @return
      */
     @ApiOperation(value = "设置、修改交易密码", httpMethod = "POST", notes = "修改交易密码，没有交易密码的设置交易密码，有交易密码的修改交易密码", response = Message.class)
-    @RequestMapping("/expwshop")
-    public Message expwshop(@RequestBody Message msg) {
+    @RequestMapping("/resetTradePass")
+    public Message resetTradePass(@RequestBody Message msg) {
         log.info("修改交易密码", JSONObject.toJSONString(msg));
         UserReq jsonReq = DataUtils.getUserReq(msg);
         PlayerResp player = commonsService.getPlayerByUserName(msg);

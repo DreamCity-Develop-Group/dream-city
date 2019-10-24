@@ -5,12 +5,10 @@ import com.dream.city.base.model.entity.Player;
 import com.dream.city.base.model.entity.PlayerAccount;
 import com.dream.city.base.model.entity.RelationTree;
 import com.dream.city.base.model.entity.SalesOrder;
-import com.dream.city.base.model.enu.OrderState;
 import com.dream.city.base.model.enu.ReturnStatus;
 import com.dream.city.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
-import org.omg.CORBA.ORB;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.logging.Level;
 
 @RestController
 @RequestMapping("/sales")
@@ -60,7 +57,7 @@ public class SalesOrderController {
         }
 
         List<SalesOrder> orders = salesOrderService.selectSalesOrder(playerId, start, size);
-        Map data = new HashMap();
+
         SimpleDateFormat formats = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         List orderList = new ArrayList();
         orders.forEach(order -> {
@@ -68,6 +65,7 @@ public class SalesOrderController {
                 log.info("自己的购买订单:[" + order.getOrderPlayerBuyer() + "]");
             } else {
                 Player player = playerService.getPlayerByPlayerId(order.getOrderPlayerBuyer());
+                Map data = new HashMap();
                 data.put("date", formats.format(order.getCreateTime() == null ? new Date() : order.getCreateTime()));
                 data.put("player", player.getPlayerNick());
                 data.put("amount", order.getOrderAmount());
@@ -207,14 +205,15 @@ public class SalesOrderController {
      * 专家发货,单条或者多条，遍历货单ID
      */
     @RequestMapping("/player/seller/send")
-    public Result playerSellerSend(@RequestParam("playerId") String playerId, @RequestParam("orders") List<String> orders) {
-        if (StringUtils.isBlank(playerId) || null == orders || orders.size() == 0) {
+    public Result playerSellerSend(@RequestParam("playerId") String playerId, @RequestParam("ordersId") String ordersId) {
+        if (StringUtils.isBlank(playerId) || null == ordersId || StringUtils.isBlank(ordersId)) {
             return new Result(false, "参数错误", ReturnStatus.INVALID.getStatus());
         }
         List<SalesOrder> salesOrders = new ArrayList<>();
         BigDecimal amountMt = new BigDecimal(0.00);
         BigDecimal availbleMt = accountService.getPlayerAccountMTAvailble(playerId);
-        int size = orders.size();
+        String[] orders = ordersId.split("_");
+        int size = orders.length;
         int i = 0;
         for (String order : orders) {
             SalesOrder salesOrder = salesOrderService.getSalesOrder(order);
