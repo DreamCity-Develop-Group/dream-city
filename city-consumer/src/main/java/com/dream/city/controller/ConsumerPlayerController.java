@@ -441,7 +441,7 @@ public class ConsumerPlayerController {
                     tradeReq.setTradeStatus(TradeStatus.OUT.getCode());
                     tradeReq.setTradeType(TradeType.CHANGE_TRAN_PWD.getCode());
                     tradeReq.setInOutStatus(AmountDynType.OUT.getCode());
-                    tradeReq.setTradeDesc("玩家修改交易密码，扣除["+ taxMt +"]MT");
+                    tradeReq.setTradeDesc("玩家修改交易密码，玩家账户扣除["+ taxMt +"]MT");
                     Result<PlayerTrade> tradeResult = tradeService.insertPlayerTrade(tradeReq);
 
                     //玩家交易流水
@@ -451,7 +451,7 @@ public class ConsumerPlayerController {
                     tradeDetailReq.setTradeAmount(taxMt);
                     tradeDetailReq.setTradeDetailType(TradeDetailType.CHANGE_TRAN_PWD.getCode());
                     tradeDetailReq.setPlayerId(playerAccount.getAccPlayerId());
-                    tradeDetailReq.setDescr("玩家修改交易密码，扣除["+ taxMt +"]MT");
+                    tradeDetailReq.setDescr("玩家修改交易密码，玩家账户扣除["+ taxMt +"]MT");
                     if(tradeResult != null && tradeResult.getSuccess() && tradeResult.getData() != null){
                       tradeDetailReq.setTradeId(tradeResult.getData().getTradeId());
                     }
@@ -476,7 +476,7 @@ public class ConsumerPlayerController {
                     tradeReq.setTradeStatus(TradeStatus.IN.getCode());
                     tradeReq.setTradeType(TradeType.CHANGE_TRAN_PWD.getCode());
                     tradeReq.setInOutStatus(AmountDynType.IN.getCode());
-                    tradeReq.setTradeDesc("玩家修改交易密码，收取["+ taxMt +"]MT");
+                    tradeReq.setTradeDesc("玩家修改交易密码，平台账户收取玩家["+ taxMt +"]MT");
                     Result<PlayerTrade> tradeResult = tradeService.insertPlayerTrade(tradeReq);
 
                     //平台交易流水
@@ -486,7 +486,7 @@ public class ConsumerPlayerController {
                     tradeDetailReq.setTradeAmount(taxMt);
                     tradeDetailReq.setTradeDetailType(TradeDetailType.CHANGE_TRAN_PWD.getCode());
                     tradeDetailReq.setPlayerId(plafortAccountResult.getData().getPlayerId());
-                    tradeDetailReq.setDescr("玩家修改交易密码，收取["+ taxMt +"]MT");
+                    tradeDetailReq.setDescr("玩家修改交易密码，平台账户收取玩家["+ taxMt +"]MT");
                     if(tradeResult != null && tradeResult.getSuccess() && tradeResult.getData() != null){
                         tradeDetailReq.setTradeId(tradeResult.getData().getTradeId());
                     }
