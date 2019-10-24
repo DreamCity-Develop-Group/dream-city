@@ -33,10 +33,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 /**
@@ -89,8 +86,9 @@ public class ConsumerTradeController {
             msg.setDesc(tradeResult.getMsg());
             if (!CollectionUtils.isEmpty(tradeResult.getData())){
                 List<PlayerTradeResp> tradeDetailList = tradeResult.getData();
-                Map<String,Object> dataMap = new HashMap<>();
+                Map<String,Object> dataMap = null;
                 for(PlayerTradeResp tradeResp: tradeDetailList){
+                    dataMap = new HashMap<>();
                     dataMap.put("createTime",tradeResp.getCreateTime());
                     dataMap.put("tradeDetailType",DataUtils.getTradeDetailType(tradeResp.getTradeDetailType()));
                     dataMap.put("tradeAmount",tradeResp.getTradeAmount());
@@ -316,57 +314,77 @@ public class ConsumerTradeController {
         if (StringUtils.isBlank(accountReq.getOldpwshop()) || !accountReq.getOldpwshop().equals(player.getPlayerTradePass())){
             msg.setCode(ReturnStatus.ERROR_PASS.getStatus());
             msg.getData().setCode(ReturnStatus.ERROR_PASS.getStatus());
+            msg.setDesc("交易密码错误");
+            return msg;
+        }
+
+        PlayerAccount playerAccountReq = new PlayerAccount();
+        playerAccountReq.setAccAddr(accountReq.getAccAddr());
+        Result<PlayerAccount> playerAccountResult = accountService.getPlayerAccount(playerAccountReq);
+        if (playerId.equalsIgnoreCase(playerAccountResult.getData().getAccPlayerId())){
+            msg.setCode(ReturnStatus.ERROR_PASS.getStatus());
+            msg.getData().setCode(ReturnStatus.ERROR_PASS.getStatus());
+            msg.setDesc("不能给自己转账");
             return msg;
         }
 
         Result<PlayerTrade>  tradeResult = tradeService.playerTransfer(accountReq);
         msg.getData().setCode(tradeResult.getCode());
-
+        resultMap.put("money",accountReq.getMoney());
+        resultMap.put("mt",0);
         if (tradeResult != null){
-            resultMap.put("money",tradeResult.getData().getTradeAmount());
-            resultMap.put("mt",tradeResult.getData().getQuotaTax());
             if (tradeResult.getSuccess()){
-                msg.getData().setCode(ReturnStatus.SUCCESS.getStatus());
+                resultMap.put("money",tradeResult.getData().getTradeAmount());
+                msg.getData().setCode(tradeResult.getCode());
 
-                PlayerAccount playerAccountReq = new PlayerAccount();
-                playerAccountReq.setAccAddr(accountReq.getAccAddr());
-                Result<PlayerAccount> playerAccountResult = accountService.getPlayerAccount(playerAccountReq);
                 PlayerAccount playerAccount = null;
                 if (playerAccountResult!= null){
                     playerAccount = playerAccountResult.getData();
                     if (playerAccount != null && StringUtils.isNotBlank(playerAccount.getAccPlayerId())){
                         Player player2 = playerService.getPlayerByPlayerId(playerAccount.getAccPlayerId());
 
-                        resultMap.put("code",ReturnStatus.SUCCESS.getStatus());
+                        msg.setCode(tradeResult.getCode());
                         resultMap.put("desc","转账["+tradeResult.getData().getTradeAmount()+"]USDT给["+player2.getPlayerName()+"]成功");
                         //commonsService.sendMessage(playerId,null,JSON.toJSONString(resultMap));
 
                         Message message = new Message(
                                 "server",
                                 "client",
-                                new MessageData("push", "comm", new JSONObject(), ReturnStatus.SUCCESS.getStatus()),
+                                new MessageData("trade/transfer", "consumer", new JSONObject(), ReturnStatus.TRANSFER_TO.getStatus()),
                                 ""
                         );
-                        message.setCode(ReturnStatus.TRANSFER_TO.getStatus());
-                        String clientId = redisUtils.get(RedisKeys.PLAYER_ONLINE_STATE_KEY + player2.getPlayerName()).get();
-                        message.setTarget(clientId);
-                        message.getData().setData(resultMap);
-                        redisUtils.publishMsg(PlAYER_UPGRADE, JSON.toJSONString(message));
+                        message.setCode(tradeResult.getCode());
+                        if (redisUtils.hasKey(RedisKeys.PLAYER_ONLINE_STATE_KEY + player2.getPlayerName())){
+                            Optional<String> optional = redisUtils.get(RedisKeys.PLAYER_ONLINE_STATE_KEY + player2.getPlayerName());
+                            String clientId = null;
+                            if (optional != null && optional.isPresent()){
+                                resultMap.put("code",ReturnStatus.TRANSFER_TO.getStatus());
+                                clientId = optional.get();
+                                message.setTarget(clientId);
+                                message.getData().setData(resultMap);
+                                redisUtils.publishMsg(PlAYER_UPGRADE, JSON.toJSONString(message));
+                            }
+                        }
 
                         /*resultMap.put("code",ReturnStatus.TRANSFER_TO.getStatus());
                         resultMap.put("desc","["+player2.getPlayerName()+"]给您转账["+tradeResult.getData().getTradeAmount()+"]USDT成功");
                         commonsService.sendMessage(player2.getPlayerId(),null,JSON.toJSONString(resultMap));*/
                     }
                 }
-
+                resultMap.put("mt",tradeResult.getData().getQuotaTax());
+                resultMap.put("code",tradeResult.getCode());
             }else {
+                msg.setCode(tradeResult.getCode());
+                msg.getData().setCode(tradeResult.getCode());
+                resultMap.put("code",tradeResult.getCode());
                 commonsService.sendMessage(playerId,null,"转账失败");
             }
         }else {
+            msg.setCode(ReturnStatus.FAILED.getStatus());
+            resultMap.put("code",ReturnStatus.FAILED.getStatus());
             commonsService.sendMessage(playerId,null,"转账失败");
         }
 
-        msg.setCode(ReturnStatus.SUCCESS.getStatus());
         msg.getData().setData(resultMap);
         msg.setDesc(tradeResult.getMsg());
         return msg;

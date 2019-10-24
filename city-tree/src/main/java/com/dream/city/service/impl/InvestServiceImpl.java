@@ -1,22 +1,31 @@
 package com.dream.city.service.impl;
 
+import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.*;
 import com.dream.city.base.model.enu.ReturnStatus;
 import com.dream.city.base.model.mapper.*;
 import com.dream.city.service.InvestAllowService;
+import com.dream.city.service.PlayerAccountService;
+import com.dream.city.service.RelationTreeService;
 import io.swagger.models.Model;
 import io.swagger.models.auth.In;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import sun.rmi.runtime.Log;
 
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.Map;
 
 /**
  * @author Wvv
  */
+@Slf4j
 @Service
 public class InvestServiceImpl implements InvestAllowService {
     @Value("${platform.account}")
@@ -36,6 +45,12 @@ public class InvestServiceImpl implements InvestAllowService {
 
     @Autowired
     PlayerEarningMapper earningMapper;
+
+    @Autowired
+    PlayerAccountService accountService;
+    @Autowired
+    RelationTreeService relationTreeService;
+
 
     @Override
     public InvestAllow getInvestAllowByPlayerId(String playerId) {
@@ -75,11 +90,12 @@ public class InvestServiceImpl implements InvestAllowService {
     @Override
     public void allowcationUSDTToPlatform(BigDecimal amount) {
         PlayerAccount accountPlatform = accountMapper.getPlayerAccountByAddr(platformAccount);
+
         accountPlatform.setAccUsdt(accountPlatform.getAccUsdt().add(amount));
-        accountPlatform.setAccUsdt(accountPlatform.getAccUsdt().add(amount));
+        accountPlatform.setAccUsdtAvailable(accountPlatform.getAccUsdtAvailable().add(amount));
 
         //TODO 这里要加日志log
-        boolean logRet = addAccountLog(accountPlatform, amount);
+        boolean logRet = addAccountLog(accountPlatform, amount,"usdt");
         if (logRet) {
             accountMapper.updatePlayerAccount(accountPlatform);
         }
@@ -94,12 +110,12 @@ public class InvestServiceImpl implements InvestAllowService {
     @Override
     public void allowcationUSDTToPlayer(BigDecimal amount, RelationTree relationTree) {
         PlayerAccount accountPlayer = accountMapper.getPlayerAccount(relationTree.getTreePlayerId());
+
         accountPlayer.setAccUsdt(accountPlayer.getAccUsdt().add(amount));
         accountPlayer.setAccUsdtAvailable(accountPlayer.getAccUsdtAvailable().add(amount));
 
-        accountPlayer.setAccUsdtAvailable(accountPlayer.getAccUsdtAvailable().add(amount));
         //TODO 这里要加日志log
-        boolean logRet = addAccountLog(accountPlayer, amount);
+        boolean logRet = addAccountLog(accountPlayer, amount,"usdt");
         if (logRet) {
             accountMapper.updatePlayerAccount(accountPlayer);
         }
@@ -120,15 +136,85 @@ public class InvestServiceImpl implements InvestAllowService {
         earningMapper.updateByPrimaryKeySelective(earning);
     }
 
-    private boolean addAccountLog(PlayerAccount account, BigDecimal amount) {
+    @Transactional
+    @Override
+    public Result allocationToPlayer(String playerId, BigDecimal amount) {
+        try {
+            //TODO锁定付费额度
+            Result result = accountService.lockUstdAmount(playerId, amount);
+            if (result.getSuccess()) {
+
+                //TODO 遍历印记分配
+                Map<Integer, RelationTree> parents = relationTreeService.getParents(playerId);
+                BigDecimal rateDirection = getRateDirection();
+                BigDecimal rateInterpolation = getRateInterpolation();
+                /**
+                 *TODO
+                 * 分配USDT印记收益,key>1 表示为直推的收益分配
+                 */
+                BigDecimal total = amount;
+                if (parents.size() > 1) {
+                    for (Map.Entry<Integer, RelationTree> entry : parents.entrySet()) {
+                        Integer key = entry.getKey();
+                        RelationTree tree = entry.getValue();
+                        BigDecimal allocation = new BigDecimal(0);
+
+                        if (key > 1) {
+                            allocation = total.multiply(rateInterpolation);
+                        } else {
+                            allocation = total.multiply(rateDirection);
+                        }
+
+                        allowcationUSDTToPlayer(allocation, tree);
+                        amount = amount.subtract(allocation);
+                    }
+
+                    //剩余USDT归平台
+                    allowcationUSDTToPlatform(amount);
+
+                } else if (parents.size() == 1) {
+                    allowcationUSDTToPlatform(amount);
+                }
+                //释放账户额度
+                Result result1 = accountService.unlockUstdAmount(playerId, total);
+                if (result1.getSuccess()) {
+                    return Result.result(true);
+                }else {
+                    //释放账户额度
+                    result1 = accountService.unlockUstdAmount(playerId, total);
+                }
+                log.info("释放账户失败...");
+                return Result.result(false);
+
+            } else {
+                return Result.result(false, "锁定费用失败");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.result(false, "分配失败失败");
+        }
+
+    }
+
+    private boolean addAccountLog(PlayerAccount account, BigDecimal amount,String type) {
         try {
             PlayerAccountLog accountLog = new PlayerAccountLog();
             accountLog.setId(0L);
             accountLog.setAccId(account.getAccId());
             accountLog.setPlayerId(account.getAccPlayerId());
             accountLog.setAddress(account.getAccAddr());
-            accountLog.setAmountMt(amount);
-            accountLog.setAmountUsdt(new BigDecimal(0));
+
+            if ("usdt".equals(type)) {
+                accountLog.setAmountMt(new BigDecimal(0));
+                accountLog.setAmountUsdt(amount);
+            }else if("mt".equals(type)){
+                accountLog.setAmountMt(amount);
+                accountLog.setAmountUsdt(new BigDecimal(0));
+            }else {
+                accountLog.setAmountMt(amount);
+                accountLog.setAmountUsdt(amount);
+            }
+
             accountLog.setType(1);
             accountLog.setDesc("获取印记收益");
             accountLogMapper.insert(accountLog);

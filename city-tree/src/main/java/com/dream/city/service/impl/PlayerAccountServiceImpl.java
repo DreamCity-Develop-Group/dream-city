@@ -92,6 +92,19 @@ public class PlayerAccountServiceImpl implements PlayerAccountService {
     }
 
     @Override
+    public Result unlockUstdAmount(String playerId, BigDecimal amount){
+        PlayerAccount playerAccount = playerAccountMapper.getPlayerAccount(playerId);
+        //减可用额度
+        playerAccount.setAccUsdt(playerAccount.getAccUsdt().subtract(amount));
+        //增加冻结额度
+        playerAccount.setAccUsdtFreeze(playerAccount.getAccUsdtFreeze().subtract(amount));
+
+        int num = playerAccountMapper.updatePlayerAccount(playerAccount);
+
+        return Result.result(num>0);
+    }
+
+    @Override
     public void subtractAmount(BigDecimal orderPayAmount, String playerId) {
         playerAccountMapper.subtractAmount(orderPayAmount,playerId);
     }

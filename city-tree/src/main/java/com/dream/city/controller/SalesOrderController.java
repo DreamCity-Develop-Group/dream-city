@@ -194,7 +194,7 @@ public class SalesOrderController {
         } else {
             Result result = Result.result(
                     false,
-                    ReturnStatus.INVALID.getDesc(),
+                    ReturnStatus.INVALID.getDesc()+":没有订单",
                     ReturnStatus.INVALID.getStatus()
             );
             return result;

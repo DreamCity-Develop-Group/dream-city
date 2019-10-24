@@ -55,27 +55,28 @@ public class RelationTreeServiceImpl implements RelationTreeService {
 
     @Override
     public Result save(String parent, String child, String invite) {
-
-        RelationTree tree = new RelationTree();
-        RelationTree parentTree = treeMapper.getTreeByPlayerId(parent);
-        RelationTree playerTree = treeMapper.getTreeByPlayerId(child);
-        if (StringUtils.isBlank(parent) || StringUtils.isBlank(child) || StringUtils.isBlank(invite)) {
-            return Result.result(false, CityGlobal.Constant.TREE_PARAMS_ERROR, 501);
-        }
-        if (null == parentTree) {
-            log.info("玩家上级邀请码关系不存在");
-            return Result.result(false, "失败", 201);
-        }
-        if (null == playerTree) {
-            tree.setTreeId(0);
-            tree.setTreeParentId(parent);
-            tree.setTreePlayerId(child);
-            tree.setTreeRelation(parentTree.getTreeRelation() + "/" + invite);
-            tree.setSendAuto("");
-            tree.setTreeLevel(0);
-            tree.setCreateTime(new Timestamp(System.currentTimeMillis()));
-            treeMapper.saveTree(tree);
-            log.info("保存树成功");
+        try {
+            RelationTree tree = new RelationTree();
+            RelationTree parentTree = treeMapper.getTreeByPlayerId(parent);
+            RelationTree playerTree = treeMapper.getTreeByPlayerId(child);
+            if (StringUtils.isBlank(parent) || StringUtils.isBlank(child) || StringUtils.isBlank(invite)) {
+                return Result.result(false, CityGlobal.Constant.TREE_PARAMS_ERROR, 501);
+            }
+            if (null == parentTree) {
+                log.info("玩家上级邀请码关系不存在");
+                return Result.result(false, "失败", 201);
+            }
+            if (null == playerTree) {
+                tree.setTreeId(0);
+                tree.setTreeParentId(parent);
+                tree.setTreePlayerId(child);
+                tree.setTreeRelation(parentTree.getTreeRelation() + "/" + invite);
+                tree.setSendAuto("");
+                tree.setTreeLevel(0);
+                tree.setCreateTime(new Timestamp(System.currentTimeMillis()));
+                treeMapper.saveTree(tree);
+                log.info("保存树成功");
+            }
 
             /**
              *TODO
@@ -94,7 +95,7 @@ public class RelationTreeServiceImpl implements RelationTreeService {
                     }
                 }
             }
-            if (stars > 0) {
+            if (stars > 0 && stars > parentTree.getTreeLevel()) {
                 parentTree.setTreeLevel(stars);
                 Result result = updateTree(parentTree);
                 playerAccountService.updatePlayerLevel(parent, stars);
@@ -163,11 +164,11 @@ public class RelationTreeServiceImpl implements RelationTreeService {
                 }
 
             }
-
-
             return Result.result(true, "成功", ReturnStatus.SUCCESS.getStatus());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.result(false, CityGlobal.Constant.TREE_RELATION_EXISTS, ReturnStatus.EXISTS.getStatus());
         }
-        return Result.result(false, CityGlobal.Constant.TREE_RELATION_EXISTS, ReturnStatus.EXISTS.getStatus());
 
     }
 

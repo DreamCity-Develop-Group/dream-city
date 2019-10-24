@@ -9,6 +9,7 @@ import com.dream.city.base.model.entity.LoginLog;
 import com.dream.city.base.model.entity.Player;
 import com.dream.city.base.model.entity.PlayerExt;
 import com.dream.city.base.model.enu.ReturnStatus;
+import com.dream.city.base.model.req.PlayerReq;
 import com.dream.city.base.model.req.UserReq;
 import com.dream.city.base.model.resp.PlayerResp;
 import com.dream.city.base.utils.InvitedCodeUtil;
@@ -448,6 +449,17 @@ public class PlayerController {
         }
 
         return result;
+    }
+    @RequestMapping("/getPlayersCount")
+    public Integer getPlayersCount(@RequestBody PlayerReq record){
+        log.info("获取广场玩家列表，{}",record);
+        Integer count = null;
+        try {
+            count = playerService.getPlayersCount(record);
+        }catch (Exception e){
+        }
+
+        return count;
     }
 
 

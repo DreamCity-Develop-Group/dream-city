@@ -51,9 +51,9 @@ public class RelationTreeController {
     public Result getTree(@RequestParam("playerId") String playerId) {
         RelationTree tree = relationTreeService.getTreeByPlayerId(playerId);
         if (tree!=null) {
-            return Result.result(true,"fail",ReturnStatus.SUCCESS.getStatus(), tree);
+            return Result.result(true,"success",ReturnStatus.SUCCESS.getStatus(), tree);
         }
-        return Result.result(false, "success",ReturnStatus.ERROR_NOTEXISTS.getStatus(),null);
+        return Result.result(false, "fail",ReturnStatus.ERROR_NOTEXISTS.getStatus(),null);
     }
 
     /**

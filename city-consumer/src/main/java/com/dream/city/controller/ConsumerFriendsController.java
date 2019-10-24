@@ -1,10 +1,9 @@
 package com.dream.city.controller;
 
-import com.alibaba.druid.support.json.JSONUtils;
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.dream.city.base.model.*;
 import com.dream.city.base.model.req.FriendsReq;
+import com.dream.city.base.model.resp.FriendsResp;
 import com.dream.city.base.utils.DataUtils;
 import com.dream.city.base.utils.JsonUtil;
 import com.dream.city.service.*;
@@ -15,11 +14,14 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Api(value = "好友", description = "好友")
@@ -69,9 +71,13 @@ public class ConsumerFriendsController {
         Map map = getPlayerIdOrFriendId(msg);
         String playerId = map.containsKey("playerId")?(String)map.get("playerId"):null;
         String friendId = map.containsKey("friendId")?(String)map.get("friendId"):null;
-        String invite = map.containsKey("invite")?(String)map.get("friendId"):null;
+        String invite = map.containsKey("invite")?(String)map.get("invite"):null;
 
-        Result<Boolean> b = consumerFriendsService.addFriend(playerId,friendId,invite);
+        FriendsReq friendsReq = new FriendsReq();
+        friendsReq.setPlayerId(playerId);
+        friendsReq.setFriendId(friendId);
+        friendsReq.setInvite(invite);
+        Result<Boolean> b = consumerFriendsService.addFriend(friendsReq);
         Message message = getResultMessage(b.getSuccess(),"添加好友",msg);
         return message;
     }
@@ -104,13 +110,38 @@ public class ConsumerFriendsController {
         Message message = new Message();
         MessageData data = new MessageData(msg.getData().getType(),msg.getData().getModel());
         String desc = "获取好友成功";
+        List<Map> dataList = new ArrayList<>();
         try {
             FriendsReq condition = DataUtils.getFriendsReq(msg);
             Page pageReq = new Page<>();
             pageReq.setCondition(condition);
             pageReq.setPageSize(9999999);
-            Result<PageInfo> page = consumerFriendsService.friendList(pageReq);
-            data.setData(page.getData());
+            Result<PageInfo<FriendsResp>> page = consumerFriendsService.friendList(pageReq);
+            PageInfo<FriendsResp> pageInfo = page.getData();
+            if (pageInfo != null){
+                List<FriendsResp> friendList = pageInfo.getList();
+                if (!CollectionUtils.isEmpty(friendList)){
+                    Map map = null;
+                    for (FriendsResp resp:friendList){
+                        map = new HashMap();
+                        map.put("playerId",StringUtils.isBlank(resp.getPlayerId())?"":resp.getPlayerId());
+                        map.put("imgurl",StringUtils.isBlank(resp.getFriendImgurl())?"":resp.getFriendImgurl());
+                        map.put("friendId",StringUtils.isBlank(resp.getFriendId())?"":resp.getFriendId());
+                        map.put("nick",StringUtils.isBlank(resp.getFriendNick())?"":resp.getFriendNick());
+                        //-1未申请,0已申请,1已同意
+                        map.put("agree",resp.getAgree()==null?-1:resp.getAgree());
+                        map.put("grade",StringUtils.isBlank(resp.getGrade())?"":resp.getGrade());
+                        dataList.add(map);
+                    }
+                }
+
+            }
+
+            PageInfo pageRsult = pageInfo;
+            pageRsult.getList().clear();
+            pageRsult.setList(dataList);
+
+            data.setData(pageRsult);
         }catch (Exception e){
             desc = "获取好友失败";
             logger.error(desc,e);
@@ -127,13 +158,38 @@ public class ConsumerFriendsController {
         Message message = new Message();
         MessageData data = new MessageData(msg.getData().getType(),msg.getData().getModel());
         String desc = "获取好友申请列表成功";
+        List<Map> dataList = new ArrayList<>();
         try {
             FriendsReq condition = DataUtils.getFriendsReq(msg);
             Page pageReq = new Page<>();
             pageReq.setCondition(condition);
             pageReq.setPageSize(9999999);
-            Result<PageInfo> page = consumerFriendsService.applyFriendList(pageReq);
-            data.setData(page.getData());
+            Result<PageInfo<FriendsResp>> page = consumerFriendsService.applyFriendList(pageReq);
+            PageInfo<FriendsResp> pageInfo = page.getData();
+            if (pageInfo != null){
+                List<FriendsResp> friendList = pageInfo.getList();
+                if (!CollectionUtils.isEmpty(friendList)){
+                    Map map = null;
+                    for (FriendsResp resp:friendList){
+                        map = new HashMap();
+                        map.put("playerId",StringUtils.isBlank(resp.getPlayerId())?"":resp.getPlayerId());
+                        map.put("imgurl",StringUtils.isBlank(resp.getFriendImgurl())?"":resp.getFriendImgurl());
+                        map.put("friendId",StringUtils.isBlank(resp.getFriendId())?"":resp.getFriendId());
+                        map.put("nick",StringUtils.isBlank(resp.getFriendNick())?"":resp.getFriendNick());
+                        //-1未申请,0已申请,1已同意
+                        map.put("agree",resp.getAgree()==null?-1:resp.getAgree());
+                        map.put("grade",StringUtils.isBlank(resp.getGrade())?"":resp.getGrade());
+                        dataList.add(map);
+                    }
+                }
+
+            }
+
+            PageInfo pageRsult = pageInfo;
+            pageRsult.getList().clear();
+            pageRsult.setList(dataList);
+
+            data.setData(pageRsult);
         }catch (Exception e){
             desc = "获取好友申请列表失败";
             logger.error(desc,e);
@@ -187,24 +243,24 @@ public class ConsumerFriendsController {
             playerName = map.containsKey("username")?(String) map.get("username"):null;
         }
         String playerId = map.containsKey("playerId")?(String) map.get("playerId"):null;
-        if (StringUtils.isNotBlank(playerName)){
+        /*if (StringUtils.isNotBlank(playerName)){
             JSONObject playerNamejsonObject = new JSONObject();
             playerNamejsonObject.put("playerName",playerName);
             Result<String> player = consumerPlayerService.getPlayerByName(playerNamejsonObject.toJSONString());
             Map<String,Object> playerMap = JSON.parseObject(player.getData(),Map.class);
-            playerId = playerMap.containsKey("playerId")?(String)playerMap.get("playerId"):null;
+            //playerId = playerMap.containsKey("playerId")?(String)playerMap.get("playerId"):null;
             playerNick = playerMap.containsKey("playerNick")?(String)playerMap.get("playerNick"):null;
-        }
+        }*/
 
         String nick = map.containsKey("nick")?(String) map.get("nick"):null;
         String friendId = map.containsKey("friendId")?(String) map.get("friendId"):null;
-        if (StringUtils.isNotBlank(nick)){
+        /*if (StringUtils.isNotBlank(nick)){
             JSONObject nickjsonObject = new JSONObject();
             nickjsonObject.put("playerNick",nick);
             Result<String> friend = consumerPlayerService.getPlayerByName(nickjsonObject.toJSONString());
             Map<String,Object> friendMap = JSON.parseObject(friend.getData(),Map.class);
             friendId = friendMap.containsKey("playerId")?(String)friendMap.get("playerId"):null;
-        }
+        }*/
         Map<String,String> resultMap = new HashMap<>();
         resultMap.put("playerId",playerId);
         resultMap.put("username",playerName);

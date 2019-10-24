@@ -39,28 +39,26 @@
 
   <!-- 好友列表  -->
   <select id="friendList" parameterType="com.dream.city.base.model.req.FriendsReq" resultType="com.dream.city.base.model.resp.FriendsResp">
-    select a.id, a.player_id playerId, a.friend_id friendId, a.agree,
-      b.friend_name friendName,b.friend_nick friendNick,b.friendlink,b.imgurl FROM
-      (select f.id, f.player_id, f.friend_id , f.agree,f.create_time FROM player_friends f,city_player p
-      where f.player_id =p.player_id  and f.agree =1
-        <if test="playerName != null and playerName != ''">
-          and p.player_name = #{playerName,jdbcType=VARCHAR}
-        </if>
-        <if test="playerId != null and playerId != ''">
-          and p.player_id = #{playerId,jdbcType=VARCHAR}
-        </if>
-      ) a,
-      (SELECT p.player_id friend_id,p.player_name friend_name,p.player_nick friend_nick,e.friendlink,e.imgurl
-      FROM city_player p,player_ext e WHERE p.player_id=e.player_id ) b
-    WHERE a.friend_id = b.friend_id
-    <if test="friendNick != null and friendNick != ''">
-      and b.friend_nick = #{friendNick,jdbcType=VARCHAR}
-    </if>
-    <!--排除自身-->
+    select a.* FROM (
+    select f.id, f.player_id friendId, f.friend_id playerId, f.agree,f.create_time createTime,
+    p.player_name friendName,p.player_nick friendNick,e.friendlink friendLink,e.imgurl friendImgurl,
+    (SELECT t.tree_level FROM city_tree t WHERE t.tree_player_id = f.player_id order by t.create_time desc limit 1) grade
+    FROM player_friends f LEFT JOIN city_player p ON f.player_id =p.player_id LEFT JOIN player_ext e on p.player_id=e.player_id
+    where f.agree =1 and f.is_valid = 1
     <if test="playerId != null and playerId != ''">
-      and b.playerId != #{playerId,jdbcType=VARCHAR}
+      and f.friend_id = #{playerId,jdbcType=VARCHAR}
     </if>
-    ORDER BY a.create_time DESC
+    UNION
+    select f.id, f.player_id playerId, f.friend_id friendId, f.agree,f.create_time createTime,
+    p.player_name friendName,p.player_nick friendNick,e.friendlink friendLink,e.imgurl friendImgurl,
+    (SELECT t.tree_level FROM city_tree t WHERE t.tree_player_id = f.friend_id order by t.create_time desc limit 1) grade
+    FROM player_friends f LEFT JOIN city_player p ON f.friend_id =p.player_id LEFT JOIN player_ext e on p.player_id=e.player_id
+    where f.agree =1 and f.is_valid = 1
+    <if test="playerId != null and playerId != ''">
+      and f.player_id = #{playerId,jdbcType=VARCHAR}
+    </if>
+    ) a GROUP BY a.friendId
+    ORDER BY a.createTime DESC
   </select>
   <!--<select id="friendCount" parameterType="com.dream.city.base.model.Page" resultType="java.lang.Integer">
     select COUNT(a.friend_id) FROM
@@ -77,26 +75,23 @@
 
   <!-- 申请列表  -->
   <select id="applyFriendList" parameterType="com.dream.city.base.model.req.FriendsReq" resultType="com.dream.city.base.model.resp.FriendsResp">
-    select a.id, a.player_id playerId, a.friend_id friendId, a.agree,
-      b.friend_name username,b.friend_nick nick,b.friendlink playerLink,b.imgurl,g.grade,g.integral
-    FROM (select f.id, f.player_id, f.friend_id , f.agree,f.create_time FROM player_friends f,city_player p
-      where f.player_id =p.player_id and f.agree =0
-         <if test="playerName != null and playerName != ''">
-           and p.player_name = #{playerName,jdbcType=VARCHAR}
-         </if>
-         <if test="playerId != null and playerId != ''">
-           and p.player_id = #{playerId,jdbcType=VARCHAR}
-         </if>
-      ) a INNER JOIN
-      (SELECT p.player_id friend_id,p.player_name friend_name,p.player_nick friend_nick,e.friendlink,e.imgurl
-      FROM city_player p,player_ext e WHERE p.player_id=e.player_id) b ON a.friend_id = b.friend_id
-           INNER JOIN player_grade g ON b.friend_id=g.player_id
-      WHERE a.friend_id = b.friend_id and b.friend_id=g.player_id
-      <if test="friendNick != null and friendNick != ''">
-        and b.friend_nick = #{friendNick,jdbcType=VARCHAR}
+    select f.id, f.player_id friendId, f.friend_id playerId, f.agree,f.create_time createTime,
+      p.player_name friendName,p.player_nick friendNick,e.friendlink friendLink,e.imgurl friendImgurl,
+      (SELECT t.tree_level FROM city_tree t WHERE t.tree_player_id = f.player_id order by t.create_time desc limit 1) grade
+    FROM player_friends f LEFT JOIN city_player p ON f.player_id =p.player_id LEFT JOIN player_ext e on p.player_id=e.player_id
+    where f.is_valid = 1 and f.agree =0
+      <if test="playerId != null and playerId != ''">
+        and f.friend_id = #{playerId,jdbcType=VARCHAR}
       </if>
-    ORDER BY a.create_time DESC
+    ORDER BY f.create_time DESC
   </select>
+
+  <select id="isApplyCount" parameterType="com.dream.city.base.model.entity.Friends" resultType="java.lang.Integer">
+    SELECT IFNULL(COUNT(*),0) FROM player_friends
+    where agree = 0 and player_id = #{playerId,jdbcType=VARCHAR} and friend_id = #{friendId,jdbcType=VARCHAR}
+  </select>
+
+
   <!--<select id="applyFriendCount" parameterType="com.dream.city.base.model.Page" resultType="java.lang.Integer">
     select COUNT(a.friend_id)
     FROM (select f.id, f.player_id, f.friend_id , f.agree,f.create_time FROM player_friends f,city_player p
@@ -123,16 +118,16 @@
       <if test="id != null">
         id,
       </if>
-      <if test="playerId != null">
+      <if test="playerId != null and playerId != ''">
         player_id,
       </if>
-      <if test="friendId != null">
+      <if test="friendId != null and friendId != ''">
         friend_id,
       </if>
       <if test="agree != null">
         agree,
       </if>
-      <if test="invite != null">
+      <if test="invite != null and invite != ''">
         invite,
       </if>
       create_time,
@@ -142,16 +137,16 @@
       <if test="id != null">
         #{id,jdbcType=BIGINT},
       </if>
-      <if test="playerId != null">
+      <if test="playerId != null and playerId != ''">
         #{playerId},
       </if>
-      <if test="friendId != null">
+      <if test="friendId != null and friendId != ''">
         #{friendId},
       </if>
       <if test="agree != null">
         #{agree},
       </if>
-      <if test="invite != null">
+      <if test="invite != null and invite != ''">
         #{invite},
       </if>
       now(),
@@ -162,16 +157,16 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.dream.city.base.model.entity.Friends">
     update player_friends
     <set>
-      <if test="playerId != null">
+      <if test="playerId != null and playerId != ''">
         player_id = #{playerId,jdbcType=VARCHAR},
       </if>
-      <if test="friendId != null">
+      <if test="friendId != null and friendId != ''">
         friend_id = #{friendId,jdbcType=VARCHAR},
       </if>
       <if test="agree != null">
         agree = #{agree,jdbcType=INTEGER},
       </if>
-      <if test="invite != null">
+      <if test="invite != null and invite != ''">
         invite = #{invite,jdbcType=VARCHAR},
       </if>
       update_time = now(),
@@ -186,6 +181,9 @@
       <if test="agree != null">
         agree = #{agree,jdbcType=INTEGER},
       </if>
+      <if test="agree != null and agree == 0">
+        is_valid = -1,
+      </if>
       update_time = now(),
     </set>
     where player_id = #{playerId,jdbcType=VARCHAR} and friend_id = #{friendId,jdbcType=VARCHAR}
@@ -199,7 +197,7 @@
     WHERE f.agree = 1
     AND f.player_id = #{playerId,jdbcType=VARCHAR}
     AND f.friend_id = #{friendId,jdbcType=VARCHAR}
-    order by create_time desc limit 1
+    order by update_time desc limit 1
   </select>
 
   <select id="getFriend" parameterType="com.dream.city.base.model.entity.Friends" resultType="com.dream.city.base.model.resp.FriendsResp">
@@ -211,7 +209,7 @@
     f.agree,f.invite,f.is_valid isValid,DATE_FORMAT(f.create_time,"%Y-%m-%d %h:%m:%s") createTime,
     DATE_FORMAT(f.update_time,"%Y-%m-%d %h:%m:%s") updateTime
     FROM player_friends f
-    where 1=1
+    where  f.is_valid = 1
     <if test="id != null">
       and f.id = #{id,jdbcType=BIGINT}
     </if>

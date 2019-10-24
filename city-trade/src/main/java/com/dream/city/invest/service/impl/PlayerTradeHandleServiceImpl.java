@@ -102,9 +102,9 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
 
             //校验提现规则
             PlayerAccount getPlayerAccount = accountService.getPlayerAccount(record.getAccPlayerId());
-            String checkAmount = checkAmount(record,getPlayerAccount);
-            if (StringUtils.isNotBlank(checkAmount)){
-                return new Result<>(success,checkAmount);
+            Result checkAmount = this.checkAmount(record,getPlayerAccount);
+            if (!checkAmount.getSuccess()){
+                return new Result<>(success,checkAmount.getMsg(),checkAmount.getCode());
             }
 
             //提现 冻结金额
@@ -144,7 +144,7 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
     }
 
 
-    private String checkAmount(PlayerAccountReq record,PlayerAccount getPlayerAccount){
+    private Result checkAmount(PlayerAccountReq record,PlayerAccount getPlayerAccount){
         String valByKey = dictionaryService.getValByKey("player.withdraw.mt.tax");
         String valByKey2 = dictionaryService.getValByKey("player.transfer.mt.tax");
         BigDecimal withdrawTax = BigDecimal.ZERO;
@@ -157,16 +157,24 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
         }
 
         String msg = "";
+        boolean success = Boolean.TRUE;
+        int code = ReturnStatus.SUCCESS.getStatus();
         if (record.getMoney().compareTo(getPlayerAccount.getAccUsdtAvailable()) > 0){
             msg = "USDT余额不足";
+            success = Boolean.FALSE;
+            code = ReturnStatus.NOT_ENOUGH.getStatus();
         }
         if (TradeType.WITHDRAW.getCode().equalsIgnoreCase(record.getTradeType()) && withdrawTax.compareTo(getPlayerAccount.getAccMtAvailable()) > 0){
             msg = "MT余额不足";
+            success = Boolean.FALSE;
+            code = ReturnStatus.NOT_ENOUGH_MT.getStatus();
         }
-        if (TradeType.TRANSFER_FROM.getCode().equalsIgnoreCase(record.getTradeType()) && transferTax.compareTo(getPlayerAccount.getAccMtAvailable()) > 0){
+        if (TradeType.TRANSFER.getCode().equalsIgnoreCase(record.getTradeType()) && transferTax.compareTo(getPlayerAccount.getAccMtAvailable()) > 0){
             msg = "MT余额不足";
+            success = Boolean.FALSE;
+            code = ReturnStatus.NOT_ENOUGH_MT.getStatus();
         }
-        return msg;
+        return Result.result(success,msg,code);
     }
 
 
@@ -207,9 +215,9 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
             if (StringUtils.isBlank(recordOut.getAccAddr())){
                 return new Result(success,"转账地址不能为空",ReturnStatus.PARAM_ERROR.getStatus(),null);
             }
-            String checkAmount = checkAmount(recordOut,getPlayerAccount);
-            if (StringUtils.isNotBlank(checkAmount)){
-                return new Result<>(success,checkAmount,ReturnStatus.NOT_ENOUGH.getStatus(),null);
+            Result checkAmount = this.checkAmount(recordOut,getPlayerAccount);
+            if (!checkAmount.getSuccess()){
+                return new Result<>(success,checkAmount.getMsg(),checkAmount.getCode(),null);
             }
 
             //转账账户 出账
@@ -281,15 +289,15 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
                     recordIn.setTradeType(TradeType.TRANSFER.getCode());
                     recordIn.setTradeDetailType(TradeType.TRANSFER_TO.getCode());
                     recordIn.setAccUsdt(recordOut.getMoney());
-                    recordIn.setAccUsdtAvailable(recordOut.getAccUsdt());
+                    recordIn.setAccUsdtAvailable(recordOut.getMoney());
                     Result<BigDecimal> transferInResult = this.updatePlayerAccount(recordIn);
 
-                    BigDecimal usdtSurplus = accountTo.getAccUsdt().subtract(createPlayerTradeResult.getData().getTradeAmount());
+                    BigDecimal usdtSurplus = accountTo.getAccUsdt().add(createPlayerTradeResult.getData().getTradeAmount());
                     //新增交易记录 入账
                     recordIn.setAccId(accountTo.getAccId());
                     this.createPlayerTrade(recordIn,transferInResult.getData(), transferInResult.getMsg());
 
-                    this.createTradeDetail(createPlayerTradeResult.getData().getTradePlayerId(), createPlayerTradeResult.getData().getTradeId(),
+                    this.createTradeDetail(recordIn.getAccPlayerId(), createPlayerTradeResult.getData().getTradeId(),
                             createPlayerTradeResult.getData().getTradeAmount(), usdtSurplus,accountTo.getAccMt(),null,null,TradeType.TRANSFER_TO.getCode(), "转账进账");
                 }
             }else {

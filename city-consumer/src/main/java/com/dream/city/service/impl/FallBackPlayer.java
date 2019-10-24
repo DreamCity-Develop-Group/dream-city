@@ -4,6 +4,7 @@ import com.dream.city.base.model.Page;
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.Player;
 import com.dream.city.base.model.entity.PlayerExt;
+import com.dream.city.base.model.req.PlayerReq;
 import com.dream.city.service.ConsumerPlayerService;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -25,6 +26,11 @@ public class FallBackPlayer implements ConsumerPlayerService {
 
     @Override
     public Result getPlayers(Page pageReq) {
+        return null;
+    }
+
+    @Override
+    public Integer getPlayersCount(PlayerReq record) {
         return null;
     }
 
