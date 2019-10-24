@@ -4,6 +4,7 @@ import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.RelationTree;
 import com.dream.city.service.impl.FallBackPusherUser;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -32,8 +33,8 @@ public interface ConsumerTreeService {
      * @param playerId
      * @return
      */
-    @RequestMapping("/tree/get/tree")
-    Result getTree(@RequestParam("playerId") String playerId);
+    @RequestMapping("/tree/get/tree/{playerId}")
+    Result getTree(@PathVariable("playerId") String playerId);
 
     @RequestMapping("/tree/get/relationTree")
     RelationTree getRelationTree(@RequestParam("playerId") String playerId);
