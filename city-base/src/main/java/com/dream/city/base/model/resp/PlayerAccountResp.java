@@ -21,6 +21,8 @@ public class PlayerAccountResp implements Serializable {
 
     private String playerName;
 
+    private String accAddr;
+
     /** 玩家等级 */
     private String grade;
 

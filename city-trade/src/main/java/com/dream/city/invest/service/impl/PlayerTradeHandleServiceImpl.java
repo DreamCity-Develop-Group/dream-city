@@ -8,6 +8,7 @@ import com.dream.city.base.model.entity.TradeDetail;
 import com.dream.city.base.model.entity.TradeVerify;
 import com.dream.city.base.model.enu.*;
 import com.dream.city.base.model.req.PlayerAccountReq;
+import com.dream.city.base.model.resp.PlayerAccountResp;
 import com.dream.city.base.service.DictionaryService;
 import com.dream.city.invest.service.*;
 import org.apache.commons.lang.StringUtils;
@@ -244,7 +245,7 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
             }
 
             //收款用户
-            PlayerAccount accountTo = getrAccountByAccAddr(recordOut.getAccAddr());
+            PlayerAccountResp accountTo = getrAccountByAccAddr(recordOut.getAccAddr());
 
             //新增交易流水
             if (createPlayerTradeResult != null && createPlayerTradeResult.getSuccess() && tradeVerify != null){
@@ -285,7 +286,7 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
                     //内部转账 立即到账 转入账户入账
                     PlayerAccountReq recordIn = new PlayerAccountReq();
                     recordIn.setAccId(accountTo.getAccId());
-                    recordIn.setAccPlayerId(accountTo.getAccPlayerId());
+                    recordIn.setAccPlayerId(accountTo.getPlayerId());
                     recordIn.setTradeType(TradeType.TRANSFER.getCode());
                     recordIn.setTradeDetailType(TradeType.TRANSFER_TO.getCode());
                     recordIn.setAccUsdt(recordOut.getMoney());
@@ -317,10 +318,10 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
      * @param accAddr 玩家账户地址
      * @return TRUE：内部地址，FALSE外部地址
      */
-    private PlayerAccount getrAccountByAccAddr(String accAddr){
-        PlayerAccount record = new PlayerAccount();
+    private PlayerAccountResp getrAccountByAccAddr(String accAddr){
+        PlayerAccountReq record = new PlayerAccountReq();
         record.setAccAddr(accAddr);
-        PlayerAccount playerAccount = accountService.getPlayerAccount(record);
+        PlayerAccountResp playerAccount = accountService.getPlayerAccount(record);
         return playerAccount;
     }
 
@@ -422,7 +423,7 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
             tradeType = TradeType.TRANSFER.getDesc();
             if (TradeType.TRANSFER_FROM.name().equalsIgnoreCase(record.getTradeDetailType())){
                 //转账转出 账户金额减去转账金额
-                PlayerAccount accountByAccAddr = this.getrAccountByAccAddr(record.getAccAddr());
+                PlayerAccountResp accountByAccAddr = this.getrAccountByAccAddr(record.getAccAddr());
                 if (StringUtils.isNotBlank(record.getAccAddr()) && accountByAccAddr != null){
                     //内部转账
                     if (transferVerify){
@@ -505,7 +506,7 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
         PlayerTrade tradeReq = new PlayerTrade();
         tradeReq.setTradeType(record.getTradeType());
         tradeReq.setTradeDesc(desc);
-        tradeReq.setTradeAccId(record.getAccId());
+        tradeReq.setTradeAccId(Integer.parseInt(String.valueOf(record.getAccId())));
         tradeReq.setTradePlayerId(record.getAccPlayerId());
         tradeReq.setTradeAmount(tradeAmount);
         if (TradeType.RECHARGE.getCode().equalsIgnoreCase(record.getTradeType())){

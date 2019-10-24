@@ -6,6 +6,7 @@ import com.dream.city.base.model.mapper.AccountMapper;
 import com.dream.city.base.model.mapper.PlayerAccountLogMapper;
 import com.dream.city.base.model.req.PlayerAccountReq;
 import com.dream.city.base.model.mapper.PlayerAccountMapper;
+import com.dream.city.base.model.resp.PlayerAccountResp;
 import com.dream.city.base.service.DictionaryService;
 import com.dream.city.invest.service.AccountService;
 import org.apache.commons.lang.StringUtils;
@@ -45,12 +46,12 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public PlayerAccount getPlayerAccount(PlayerAccount record) {
+    public PlayerAccountResp getPlayerAccount(PlayerAccountReq record) {
         return accountMapper.getPlayerAccountSelective(record);
     }
 
     @Override
-    public List<PlayerAccount> getPlayerAccountList(PlayerAccount record) {
+    public List<PlayerAccountResp> getPlayerAccountList(PlayerAccountReq record) {
         return accountMapper.getPlayerAccountList(record);
     }
 

@@ -28,7 +28,7 @@ public interface PlayerAccountMapper {
             @Result(property = "accMtAvailable", column = "acc_mt_available", id = true),
             @Result(property = "accMtFreeze", column = "acc_mt_freeze", id = true),
             @Result(property = "accIncome", column = "acc_income", id = true),
-            @Result(property = "version", column = "version", id = true),
+            //@Result(property = "version", column = "version", id = true),
             @Result(property = "createTime", column = "create_time", id = true),
             @Result(property = "updateTime", column = "update_time", id = true),
 
@@ -48,7 +48,7 @@ public interface PlayerAccountMapper {
      */
     @Select("select * from player_account where 1=1 and  acc_player_id = #{playerId}")
     @ResultMap("BaseCityAccountResultMap")
-    PlayerAccount getPlayerAccount(String playerId);
+    PlayerAccount getPlayerAccount(@Param("playerId") String playerId);
 
     /**
      * 通过地址找账户

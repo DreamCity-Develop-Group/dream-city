@@ -7,6 +7,8 @@ public enum TradeType {
 
     CHANGE_TRAN_PWD("CHANGE_TRAN_PWD","修改交易密码"),
 
+    PLATFORM_CHANGE_AMOUNT("CHANGE_TRAN_PWD","管理后台修改账户额度"),
+
     INVEST("INVEST","USDT投资"),
     INVEST_EARNINGS("INVEST_EARNINGS","投资收益"),
 

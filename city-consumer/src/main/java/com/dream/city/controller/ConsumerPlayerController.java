@@ -6,8 +6,10 @@ import com.dream.city.base.model.*;
 import com.dream.city.base.model.entity.*;
 import com.dream.city.base.model.enu.*;
 import com.dream.city.base.model.req.FriendsReq;
+import com.dream.city.base.model.req.PlayerAccountReq;
 import com.dream.city.base.model.req.PlayerReq;
 import com.dream.city.base.model.req.UserReq;
+import com.dream.city.base.model.resp.PlayerAccountResp;
 import com.dream.city.base.model.resp.PlayerResp;
 import com.dream.city.base.service.DictionaryService;
 import com.dream.city.base.utils.DataUtils;
@@ -414,9 +416,9 @@ public class ConsumerPlayerController {
 
                 //平台账户
                 String plafortAddr = dictionaryService.getValByKey("platform.account.accIds");
-                PlayerAccount plafortAccountReq = new PlayerAccount();
+                PlayerAccountReq plafortAccountReq = new PlayerAccountReq();
                 plafortAccountReq.setAccAddr(plafortAddr);
-                Result<PlayerAccount> plafortAccountResult = accountService.getPlayerAccount(plafortAccountReq);
+                Result<PlayerAccountResp> plafortAccountResult = accountService.getPlayerAccount(plafortAccountReq);
 
                 //扣除玩家MT
                 Result<Integer> updatePlayerAccount = null;
@@ -463,13 +465,13 @@ public class ConsumerPlayerController {
                     updateAccount.setAccId(plafortAccountResult.getData().getAccId());
                     updateAccount.setAccMt(plafortAccountResult.getData().getAccMt().add(taxMt));
                     updateAccount.setAccMtAvailable(plafortAccountResult.getData().getAccMtAvailable().add(taxMt));
-                    updateAccount.setAccPlayerId(plafortAccountResult.getData().getAccPlayerId());
+                    updateAccount.setAccPlayerId(plafortAccountResult.getData().getPlayerId());
                     accountService.updatePlayerAccount(updateAccount);
 
                     //平台交易记录
                     PlayerTrade tradeReq = new PlayerTrade();
                     tradeReq.setTradeAmount(taxMt);
-                    tradeReq.setTradePlayerId(plafortAccountResult.getData().getAccPlayerId());
+                    tradeReq.setTradePlayerId(plafortAccountResult.getData().getPlayerId());
                     tradeReq.setTradeStatus(TradeStatus.IN.getCode());
                     tradeReq.setTradeType(TradeType.CHANGE_TRAN_PWD.getCode());
                     tradeReq.setInOutStatus(AmountDynType.IN.getCode());
@@ -482,7 +484,7 @@ public class ConsumerPlayerController {
                     tradeDetailReq.setMtSurplus(plafortAccountResult.getData().getAccMt().add(taxMt));
                     tradeDetailReq.setTradeAmount(taxMt);
                     tradeDetailReq.setTradeDetailType(TradeDetailType.CHANGE_TRAN_PWD.getCode());
-                    tradeDetailReq.setPlayerId(plafortAccountResult.getData().getAccPlayerId());
+                    tradeDetailReq.setPlayerId(plafortAccountResult.getData().getPlayerId());
                     tradeDetailReq.setDescr("玩家修改交易密码，收取["+ taxMt +"]MT");
                     if(tradeResult != null && tradeResult.getSuccess() && tradeResult.getData() != null){
                         tradeDetailReq.setTradeId(tradeResult.getData().getTradeId());
