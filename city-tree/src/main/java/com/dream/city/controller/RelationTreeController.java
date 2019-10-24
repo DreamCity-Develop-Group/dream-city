@@ -47,8 +47,8 @@ public class RelationTreeController {
      * @param playerId
      * @return
      */
-    @RequestMapping("/get/tree")
-    public Result getTree(@RequestParam("playerId") String playerId) {
+    @RequestMapping("/get/tree/{playerId}")
+    public Result getTree(@PathVariable("playerId") String playerId) {
         RelationTree tree = relationTreeService.getTreeByPlayerId(playerId);
         if (tree!=null) {
             return Result.result(true,"success",ReturnStatus.SUCCESS.getStatus(), tree);

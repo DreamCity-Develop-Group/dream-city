@@ -24,7 +24,7 @@ public interface RelationTreeMapper {
 
     int updateByPrimaryKey(RelationTree record);
 
-    RelationTree getByPlayer(String treePlayerId);
+    RelationTree getByPlayer(@Param("treePlayerId")String treePlayerId);
 
     @Results(id = "treeBaseMap", value = {
             @Result(property = "treeId", column = "tree_id", id = true),
@@ -37,14 +37,14 @@ public interface RelationTreeMapper {
             @Result(property = "updateTime", column = "update_time"),
     })
     @Select({"select * from `city_tree` where 1=1 and tree_id = #{treeId}"})
-    RelationTree getRuleById(String treeId);
+    RelationTree getRuleById(@Param("treeId") String treeId);
 
 
     @Select("select * from city_tree where 1=1")
     List<RelationTree> getCity();
 
     @Select("select * from city_tree where 1=1 and tree_parent_id = #{pid} and tree_player_id=#{cid}")
-    RelationTree get(String pid,String cid);
+    RelationTree get(@Param("pid") String pid,@Param("cid") String cid);
 
     @Insert({"insert into `city_tree`(tree_id,tree_parent_id, tree_player_id, tree_relation,send_auto,tree_level,create_time) " +
             "values (#{treeId},#{treeParentId}, #{treePlayerId}, #{treeRelation},#{sendAuto},#{treeLevel},#{createTime})"})
@@ -71,7 +71,7 @@ public interface RelationTreeMapper {
             "tree_level treeLevel," +
             "create_time createTime " +
             "from city_tree where 1=1 and tree_relation=#{relation} limit 1 ")
-    RelationTree getTreeByRef(String relation);
+    RelationTree getTreeByRef(@Param("relation") String relation);
 
     @Select("select " +
             "tree_id treeId," +
@@ -82,11 +82,11 @@ public interface RelationTreeMapper {
             "tree_level treeLevel," +
             "create_time createTime " +
             "from city_tree where 1=1 and tree_relation like  #{relation}")
-    List<RelationTree> selectByRelation(String relation);
+    List<RelationTree> selectByRelation(@Param("relation") String relation);
 
 
     @Select("select * from city_tree where 1=1 and tree_parent_id=#{parentId}")
-    List<RelationTree> getChilds(String parentId);
+    List<RelationTree> getChilds(@Param("parentId") String parentId);
 
     @Select("select " +
             "tree_id treeId," +
@@ -96,8 +96,7 @@ public interface RelationTreeMapper {
             "send_auto sendAuto," +
             "tree_level treeLevel," +
             "create_time createTime " +
-            "from city_tree where 1=1 and tree_player_id=#{playerId}")
-    //@ResultMap("treeBaseMap")
-    RelationTree getTreeByPlayerId(String playerId);
+            "from city_tree where 1=1 and tree_player_id=#{playerId}  ORDER BY create_time DESC LIMIT 1")
+    RelationTree getTreeByPlayerId(@Param("playerId") String playerId);
 
 }
