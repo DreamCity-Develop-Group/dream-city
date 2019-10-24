@@ -376,7 +376,7 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
         PlayerAccount accountUpdate = new PlayerAccount();
         accountUpdate.setAccId(getPlayerAccount.getAccId());
         accountUpdate.setAccPlayerId(record.getAccPlayerId());
-        accountUpdate.setVersion(getPlayerAccount.getVersion()==null?0:getPlayerAccount.getVersion());
+        //accountUpdate.setVersion(getPlayerAccount.getVersion()==null?0:getPlayerAccount.getVersion());
 
         BigDecimal accMt = BigDecimal.ZERO;
         BigDecimal accMtAvailable = BigDecimal.ZERO;

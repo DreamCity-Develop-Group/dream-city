@@ -5,6 +5,8 @@ package com.dream.city.base.model.enu;
  * */
 public enum TradeType {
 
+    CHANGE_TRAN_PWD("CHANGE_TRAN_PWD","修改交易密码"),
+
     INVEST("INVEST","USDT投资"),
     INVEST_EARNINGS("INVEST_EARNINGS","投资收益"),
 

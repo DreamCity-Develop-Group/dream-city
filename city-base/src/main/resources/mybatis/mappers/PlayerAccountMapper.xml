@@ -196,7 +196,7 @@
         <include refid="Base_Column_List"/>
         from player_account
         <where>
-            acc_player_id in(${platformAccIds})
+            acc_addr in(${platformAccIds})
         </where>
         order by create_time desc
     </select>

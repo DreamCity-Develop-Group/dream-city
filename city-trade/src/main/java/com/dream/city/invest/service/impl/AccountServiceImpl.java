@@ -73,6 +73,7 @@ public class AccountServiceImpl implements AccountService {
     public List<PlayerAccount> getPlatformAccounts(PlayerAccountReq record) {
         if (record == null || (record != null && StringUtils.isBlank(record.getPlatformAccIds()))) {
             record.setPlatformAccIds(dictionaryService.getValByKey("platform.account.accIds"));
+            //record.setAccAddr(dictionaryService.getValByKey("platform.account.accIds"));
         }
         return accountMapper.getPlatformAccounts(record);
     }

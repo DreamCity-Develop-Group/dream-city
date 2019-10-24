@@ -1,6 +1,3 @@
--- ----------------------------
--- 注：初始化数据，不要删除
--- ----------------------------
 
 SET FOREIGN_KEY_CHECKS=0;
 
@@ -18,7 +15,8 @@ CREATE TABLE `city_auth_code` (
   KEY `index_code` (`code`) USING BTREE,
   KEY `index_phone` (`phone`) USING BTREE,
   KEY `index_user_id` (`valid`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=125 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='认证码';
+) ENGINE=InnoDB AUTO_INCREMENT=431 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='认证码';
+
 
 -- ----------------------------
 -- Table structure for city_dictionary
@@ -26,15 +24,15 @@ CREATE TABLE `city_auth_code` (
 DROP TABLE IF EXISTS `city_dictionary`;
 CREATE TABLE `city_dictionary` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(100) DEFAULT NULL,
-  `key` varchar(255) DEFAULT NULL,
-  `val` varchar(600) DEFAULT NULL,
+  `dic_name` varchar(100) DEFAULT NULL,
+  `dic_key` varchar(255) DEFAULT NULL,
+  `dic_val` varchar(600) DEFAULT NULL,
   `is_valid` tinyint(4) unsigned DEFAULT '1',
-  `descr` varchar(255) DEFAULT NULL,
+  `dic_descr` varchar(255) DEFAULT NULL,
   `create_time` datetime DEFAULT NULL,
   `update_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COMMENT='字典（配置项）';
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8 COMMENT='字典（配置项）';
 
 -- ----------------------------
 -- Records of city_dictionary
@@ -43,7 +41,10 @@ INSERT INTO `city_dictionary` VALUES ('1', '平台账户id', 'platform.account.a
 INSERT INTO `city_dictionary` VALUES ('2', '注册密码salt', 'register.password.salt', 'DREAM_CITY_890@#$%', '1', '注册密码salt', null, null);
 INSERT INTO `city_dictionary` VALUES ('3', '提现税金', 'player.withdraw.mt.tax', '5', '1', '玩家提现税金', null, null);
 INSERT INTO `city_dictionary` VALUES ('4', '转账税金', 'player.transfer.mt.tax', '5', '1', '玩家转账税金', null, null);
-INSERT INTO `city_dictionary` VALUES ('5', '内部转账审核', 'player.inside.transfer.verify', 'true', '1', '玩家内部转账审核是否要审核，默认要审核', null, null);
+INSERT INTO `city_dictionary` VALUES ('5', '内部转账审核', 'player.inside.transfer.verify', 'false', '1', '玩家内部转账审核是否要审核，默认true要审核,false时不用审核', null, null);
+INSERT INTO `city_dictionary` VALUES ('6', '玩家获取消息天数', 'player.msg.getlist.day', '90', '1', '向玩家展示几天以内的消息', null, null);
+INSERT INTO `city_dictionary` VALUES ('7', '玩家获取通知天数', 'player.note.getlist.day', '90', '1', '向玩家展示几天以内的通知', null, null);
+INSERT INTO `city_dictionary` VALUES ('8', '修改交易密码', 'player.change.tran.pwd.tax', '1', '1', '修改交易密码扣除税金', null, null);
 
 -- ----------------------------
 -- Table structure for city_file
@@ -108,13 +109,13 @@ CREATE TABLE `city_invest` (
 -- ----------------------------
 -- Records of city_invest
 -- ----------------------------
-INSERT INTO `city_invest` VALUES ('1', '小吃摊', '11', '30.0000', '2019-09-18 17:56:20', '0000000000000000.0200', '0000000000000000.0000', '0.0000', '2', '2020-01-31 17:56:50', null, 'Y', null, null);
-INSERT INTO `city_invest` VALUES ('2', '玩具摊', '21', '100.0000', '2019-10-01 21:04:25', '0000000000000000.0100', '0000000000000000.0000', '0.0000', '3', '2019-11-30 21:04:53', null, 'Y', null, null);
-INSERT INTO `city_invest` VALUES ('3', '酒吧', '31', '300.0000', '2019-10-01 21:04:25', '0000000000000000.1000', '0000000000000000.1500', '0.0000', '3', '2019-11-30 21:04:53', null, 'N', null, null);
-INSERT INTO `city_invest` VALUES ('4', '医药公司', '41', '500.0000', '2019-10-01 21:04:25', '0000000000000000.2000', '0000000000000000.1000', '0.0000', '4', '2019-11-30 21:04:53', null, 'N', null, null);
-INSERT INTO `city_invest` VALUES ('5', '电影公司', '51', '1000.0000', '2019-10-01 21:04:25', '0000000000000000.2000', '0000000000000000.1500', '0.0000', '4', '2019-11-30 21:04:53', null, 'N', null, null);
-INSERT INTO `city_invest` VALUES ('6', '汽车集团', '61', '3000.0000', '2019-10-01 21:04:25', '0000000000000000.1000', '0000000000000000.1000', '0.0000', '5', '2019-11-30 21:04:53', null, 'N', null, null);
-INSERT INTO `city_invest` VALUES ('7', '投资集团', '71', '5000.0000', '2019-10-01 21:04:25', '0000000000000000.1000', '0000000000000000.0000', '0.0000', '5', '2019-11-30 21:04:53', null, 'N', null, null);
+INSERT INTO `city_invest` VALUES ('1', '小地摊', '11', '30.0000', '2019-09-18 17:56:20', '0000000000000000.1000', '0000000000000000.1000', '0.0000', '2', '2020-01-31 17:56:50', null, 'Y', null, null);
+INSERT INTO `city_invest` VALUES ('2', '玩具摊', '21', '100.0000', '2019-10-01 21:04:25', '0000000000000000.2000', '0000000000000000.1000', '0.0000', '3', '2019-11-30 21:04:53', null, 'Y', null, null);
+INSERT INTO `city_invest` VALUES ('3', '酒吧', '31', '300.0000', '2019-10-01 21:04:25', '0000000000000000.2500', '0000000000000000.1000', '0.0000', '3', '2019-11-30 21:04:53', null, 'N', null, null);
+INSERT INTO `city_invest` VALUES ('4', '医药公司', '41', '500.0000', '2019-10-01 21:04:25', '0000000000000000.3000', '0000000000000000.1000', '0.0000', '4', '2019-11-30 21:04:53', null, 'N', null, null);
+INSERT INTO `city_invest` VALUES ('5', '电影公司', '51', '1000.0000', '2019-10-01 21:04:25', '0000000000000000.3500', '0000000000000000.1000', '0.0000', '4', '2019-11-30 21:04:53', null, 'N', null, null);
+INSERT INTO `city_invest` VALUES ('6', '汽车集团', '61', '3000.0000', '2019-10-01 21:04:25', '0000000000000000.2000', '0000000000000000.1000', '0.0000', '5', '2019-11-30 21:04:53', null, 'N', null, null);
+INSERT INTO `city_invest` VALUES ('7', '投资集团', '71', '5000.0000', '2019-10-01 21:04:25', '0000000000000000.1000', '0000000000000000.1000', '0.0000', '5', '2019-11-30 21:04:53', null, 'N', null, null);
 
 -- ----------------------------
 -- Table structure for city_message
@@ -124,15 +125,16 @@ CREATE TABLE `city_message` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `player_id` varchar(64) CHARACTER SET utf8 DEFAULT NULL,
   `friend_id` varchar(64) CHARACTER SET utf8 DEFAULT NULL,
+  `title` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
   `content` varchar(600) DEFAULT NULL COMMENT '消息内容',
-  `have_read` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT '0未读，1已读',
+  `have_read` tinyint(4) unsigned NOT NULL DEFAULT '0' COMMENT '0未读，1已读',
   `send_time` datetime DEFAULT NULL COMMENT '通知发送时间',
   `create_time` datetime DEFAULT NULL,
   `update_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `index_player_id` (`player_id`),
   KEY `index_friend_id` (`friend_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=42 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Table structure for city_notice
@@ -140,6 +142,7 @@ CREATE TABLE `city_message` (
 DROP TABLE IF EXISTS `city_notice`;
 CREATE TABLE `city_notice` (
   `notice_id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) DEFAULT NULL,
   `notice_content` varchar(255) DEFAULT NULL COMMENT '内容',
   `notice_state` tinyint(4) DEFAULT NULL COMMENT '状态：1可用0不可用',
   `send_time` datetime DEFAULT NULL COMMENT '公告发送时间',
@@ -168,12 +171,14 @@ CREATE TABLE `city_player` (
   UNIQUE KEY `index_player_name` (`player_name`) USING BTREE,
   KEY `index_player_nick` (`player_nick`) USING BTREE,
   KEY `index_player_invite` (`player_invite`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=167 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='用户表（玩家）';
+) ENGINE=InnoDB AUTO_INCREMENT=262 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='用户表（玩家）';
 
 -- ----------------------------
 -- Records of city_player
 -- ----------------------------
-INSERT INTO `city_player` VALUES ('1', '4E2EE556055042AB80E3D164E51DDD1A', 'system', 'system', '8A2922A66F474A0DA9B10FB4BCD59BA0', null, 'system', null, '1', null, null);
+INSERT INTO `city_player` VALUES ('1', '4E2EE556055042AB80E3D164E51DDD1A', 'system', 'system', 'system', 'system', 'system', '1', '1', null, null);
+-- INSERT INTO `city_player` VALUES ('1', '8A2922A66F474A0DA9B10FB4BCD59BA0', 'system', 'system', 'system', 'system', 'system', '1', '1', NULL, NULL);
+
 
 -- ----------------------------
 -- Table structure for city_player_grade
@@ -189,8 +194,7 @@ CREATE TABLE `city_player_grade` (
   PRIMARY KEY (`id`) USING BTREE,
   KEY `index_player_id` (`player_id`) USING BTREE,
   KEY `index_grade` (`grade`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=59 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='玩家等级(会员/商会等级)';
-
+) ENGINE=InnoDB AUTO_INCREMENT=153 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='玩家等级(会员/商会等级)';
 
 -- ----------------------------
 -- Table structure for city_tree
@@ -205,12 +209,12 @@ CREATE TABLE `city_tree` (
   `tree_level` int(11) DEFAULT NULL COMMENT '商会等级',
   `create_time` datetime DEFAULT NULL,
   PRIMARY KEY (`tree_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=71 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=126 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
 -- Records of city_tree
 -- ----------------------------
-INSERT INTO `city_tree` VALUES ('1', 'system', '8A2922A66F474A0DA9B10FB4BCD59BA0', 'system', '1', '100', '2019-10-11 11:26:38');
+INSERT INTO `city_tree` VALUES ('1', 'system', '8A2922A66F474A0DA9B10FB4BCD59BA0', 'system', '1', '1', '2019-10-11 11:26:38');
 
 -- ----------------------------
 -- Table structure for earn_falldown_log
@@ -253,11 +257,12 @@ DROP TABLE IF EXISTS `invest_allow`;
 CREATE TABLE `invest_allow` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `player_id` varchar(50) DEFAULT NULL,
-  `allowed` varchar(255) DEFAULT NULL,
+  `allowed` varchar(255) DEFAULT NULL COMMENT '0b表示新建，1表示完成',
   `amount` decimal(20,4) DEFAULT NULL,
   `create_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+
 
 -- ----------------------------
 -- Table structure for invest_order
@@ -277,7 +282,7 @@ CREATE TABLE `invest_order` (
   PRIMARY KEY (`order_id`) USING BTREE,
   KEY `index_order_invest_id` (`order_invest_id`),
   KEY `index_order_payer_id` (`order_payer_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='订单（投资记录）';
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='订单（投资记录）';
 
 
 -- ----------------------------
@@ -392,7 +397,7 @@ INSERT INTO `menu` VALUES ('12', '1', '资源管理', '10300', null, null, '1', 
 INSERT INTO `menu` VALUES ('13', '12', '添加资源', '10301', null, null, '2', 'system:menu:add', null, '2018-05-20 22:17:11', null, '2018-05-20 22:17:11', null, '0');
 INSERT INTO `menu` VALUES ('14', '12', '编辑资源', '10302', null, null, '2', 'system:menu:edit', null, '2018-05-20 22:17:47', null, '2018-05-20 22:17:47', null, '0');
 INSERT INTO `menu` VALUES ('15', '12', '删除资源', '10303', null, null, '2', 'system:menu:delete', null, '2018-05-20 22:18:16', null, '2018-05-20 22:18:16', null, '0');
-INSERT INTO `menu` VALUES ('48', null, 'test', '30101', '', null, '1', 'system:test3', null, '2017-11-06 20:39:01', null, '2017-11-06 20:39:01', '', '0');
+INSERT INTO `menu` VALUES ('48', null, 'test3', '30101', '', null, '1', 'system:test3', null, '2017-11-06 20:39:01', null, '2017-11-06 20:39:01', '', '0');
 
 -- ----------------------------
 -- Table structure for player_account
@@ -410,16 +415,17 @@ CREATE TABLE `player_account` (
   `acc_mt_available` decimal(20,4) unsigned DEFAULT '0.0000' COMMENT 'mt可用金额',
   `acc_mt_freeze` decimal(20,4) unsigned DEFAULT '0.0000' COMMENT 'mt冻结金额',
   `acc_income` decimal(20,4) DEFAULT '0.0000',
+  `version` int(10) unsigned DEFAULT '0',
   `create_time` datetime DEFAULT NULL,
   `update_time` datetime DEFAULT NULL,
   PRIMARY KEY (`acc_id`) USING BTREE,
   KEY `index_acc_player_id` (`acc_player_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=888888890 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='玩家账户表';
+) ENGINE=InnoDB AUTO_INCREMENT=888888978 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='玩家账户表';
 
 -- ----------------------------
 -- Records of player_account
 -- ----------------------------
-INSERT INTO `player_account` VALUES ('888888888', '8A2922A66F474A0DA9B10FB4BCD59BA0', '4E2EE556055042AB80E3D164E51DDD1A', null, '4.0000', '3.0000', '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', null, null);
+INSERT INTO `player_account` VALUES ('888888888', '8A2922A66F474A0DA9B10FB4BCD59BA0', '4E2EE556055042AB80E3D164E51DDD1A', 'system', '101.5000', '101.5000', '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', '0', null, null);
 
 -- ----------------------------
 -- Table structure for player_account_log
@@ -436,7 +442,7 @@ CREATE TABLE `player_account_log` (
   `desc` varchar(255) DEFAULT NULL COMMENT '说明',
   `create_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=61 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
 -- Table structure for player_earning
@@ -471,7 +477,12 @@ CREATE TABLE `player_ext` (
   `update_date` datetime DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `index_player_id` (`player_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=71 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='用户扩展表（玩家）';
+) ENGINE=InnoDB AUTO_INCREMENT=165 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='用户扩展表（玩家）';
+
+-- ----------------------------
+-- Records of player_ext
+-- ----------------------------
+INSERT INTO `player_ext` VALUES ('56', '8A2922A66F474A0DA9B10FB4BCD59BA0', null, null, null, null);
 
 -- ----------------------------
 -- Table structure for player_friends
@@ -490,7 +501,7 @@ CREATE TABLE `player_friends` (
   KEY `index_player_id` (`player_id`) USING BTREE,
   KEY `index_friend_id` (`friend_id`) USING BTREE,
   KEY `index_invite` (`invite`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='好友';
+) ENGINE=InnoDB AUTO_INCREMENT=70 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='好友';
 
 -- ----------------------------
 -- Table structure for player_game_setting
@@ -569,7 +580,8 @@ CREATE TABLE `player_login_log` (
   PRIMARY KEY (`id`) USING BTREE,
   KEY `index_player_id` (`player_id`) USING BTREE,
   KEY `index_imei` (`imei`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=704 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='登录日志';
+) ENGINE=InnoDB AUTO_INCREMENT=1369 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='登录日志';
+
 
 -- ----------------------------
 -- Table structure for player_trade
@@ -593,7 +605,249 @@ CREATE TABLE `player_trade` (
   PRIMARY KEY (`trade_id`),
   KEY `index_trade_player_id` (`trade_player_id`),
   KEY `index_trade_order_id` (`trade_order_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8 COMMENT='交易记录表';
+) ENGINE=InnoDB AUTO_INCREMENT=266 DEFAULT CHARSET=utf8 COMMENT='交易记录表';
+
+
+-- ----------------------------
+-- Table structure for qrtz_blob_triggers
+-- ----------------------------
+DROP TABLE IF EXISTS `qrtz_blob_triggers`;
+CREATE TABLE `qrtz_blob_triggers` (
+  `SCHED_NAME` varchar(120) NOT NULL,
+  `TRIGGER_NAME` varchar(200) NOT NULL,
+  `TRIGGER_GROUP` varchar(200) NOT NULL,
+  `BLOB_DATA` blob,
+  PRIMARY KEY (`SCHED_NAME`,`TRIGGER_NAME`,`TRIGGER_GROUP`),
+  KEY `SCHED_NAME` (`SCHED_NAME`,`TRIGGER_NAME`,`TRIGGER_GROUP`),
+  CONSTRAINT `qrtz_blob_triggers_ibfk_1` FOREIGN KEY (`SCHED_NAME`, `TRIGGER_NAME`, `TRIGGER_GROUP`) REFERENCES `qrtz_triggers` (`SCHED_NAME`, `TRIGGER_NAME`, `TRIGGER_GROUP`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of qrtz_blob_triggers
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for qrtz_calendars
+-- ----------------------------
+DROP TABLE IF EXISTS `qrtz_calendars`;
+CREATE TABLE `qrtz_calendars` (
+  `SCHED_NAME` varchar(120) NOT NULL,
+  `CALENDAR_NAME` varchar(200) NOT NULL,
+  `CALENDAR` blob NOT NULL,
+  PRIMARY KEY (`SCHED_NAME`,`CALENDAR_NAME`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of qrtz_calendars
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for qrtz_cron_triggers
+-- ----------------------------
+DROP TABLE IF EXISTS `qrtz_cron_triggers`;
+CREATE TABLE `qrtz_cron_triggers` (
+  `SCHED_NAME` varchar(120) NOT NULL,
+  `TRIGGER_NAME` varchar(200) NOT NULL,
+  `TRIGGER_GROUP` varchar(200) NOT NULL,
+  `CRON_EXPRESSION` varchar(120) NOT NULL,
+  `TIME_ZONE_ID` varchar(80) DEFAULT NULL,
+  PRIMARY KEY (`SCHED_NAME`,`TRIGGER_NAME`,`TRIGGER_GROUP`),
+  CONSTRAINT `qrtz_cron_triggers_ibfk_1` FOREIGN KEY (`SCHED_NAME`, `TRIGGER_NAME`, `TRIGGER_GROUP`) REFERENCES `qrtz_triggers` (`SCHED_NAME`, `TRIGGER_NAME`, `TRIGGER_GROUP`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of qrtz_cron_triggers
+-- ----------------------------
+INSERT INTO `qrtz_cron_triggers` VALUES ('schedulerFactoryBean', '预约自动审核', 'InverstVerifyJob', '0 0 9 * * ?', 'Asia/Shanghai');
+
+-- ----------------------------
+-- Table structure for qrtz_fired_triggers
+-- ----------------------------
+DROP TABLE IF EXISTS `qrtz_fired_triggers`;
+CREATE TABLE `qrtz_fired_triggers` (
+  `SCHED_NAME` varchar(120) NOT NULL,
+  `ENTRY_ID` varchar(95) NOT NULL,
+  `TRIGGER_NAME` varchar(200) NOT NULL,
+  `TRIGGER_GROUP` varchar(200) NOT NULL,
+  `INSTANCE_NAME` varchar(200) NOT NULL,
+  `FIRED_TIME` bigint(13) NOT NULL,
+  `SCHED_TIME` bigint(13) NOT NULL,
+  `PRIORITY` int(11) NOT NULL,
+  `STATE` varchar(16) NOT NULL,
+  `JOB_NAME` varchar(200) DEFAULT NULL,
+  `JOB_GROUP` varchar(200) DEFAULT NULL,
+  `IS_NONCONCURRENT` varchar(1) DEFAULT NULL,
+  `REQUESTS_RECOVERY` varchar(1) DEFAULT NULL,
+  PRIMARY KEY (`SCHED_NAME`,`ENTRY_ID`),
+  KEY `IDX_QRTZ_FT_TRIG_INST_NAME` (`SCHED_NAME`,`INSTANCE_NAME`),
+  KEY `IDX_QRTZ_FT_INST_JOB_REQ_RCVRY` (`SCHED_NAME`,`INSTANCE_NAME`,`REQUESTS_RECOVERY`),
+  KEY `IDX_QRTZ_FT_J_G` (`SCHED_NAME`,`JOB_NAME`,`JOB_GROUP`),
+  KEY `IDX_QRTZ_FT_JG` (`SCHED_NAME`,`JOB_GROUP`),
+  KEY `IDX_QRTZ_FT_T_G` (`SCHED_NAME`,`TRIGGER_NAME`,`TRIGGER_GROUP`),
+  KEY `IDX_QRTZ_FT_TG` (`SCHED_NAME`,`TRIGGER_GROUP`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of qrtz_fired_triggers
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for qrtz_job_details
+-- ----------------------------
+DROP TABLE IF EXISTS `qrtz_job_details`;
+CREATE TABLE `qrtz_job_details` (
+  `SCHED_NAME` varchar(120) NOT NULL,
+  `JOB_NAME` varchar(200) NOT NULL,
+  `JOB_GROUP` varchar(200) NOT NULL,
+  `DESCRIPTION` varchar(250) DEFAULT NULL,
+  `JOB_CLASS_NAME` varchar(250) NOT NULL,
+  `IS_DURABLE` varchar(1) NOT NULL,
+  `IS_NONCONCURRENT` varchar(1) NOT NULL,
+  `IS_UPDATE_DATA` varchar(1) NOT NULL,
+  `REQUESTS_RECOVERY` varchar(1) NOT NULL,
+  `JOB_DATA` blob,
+  PRIMARY KEY (`SCHED_NAME`,`JOB_NAME`,`JOB_GROUP`),
+  KEY `IDX_QRTZ_J_REQ_RECOVERY` (`SCHED_NAME`,`REQUESTS_RECOVERY`),
+  KEY `IDX_QRTZ_J_GRP` (`SCHED_NAME`,`JOB_GROUP`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of qrtz_job_details
+-- ----------------------------
+INSERT INTO `qrtz_job_details` VALUES ('schedulerFactoryBean', '预约自动审核', 'InverstVerifyJob', null, 'com.dream.city.job.InverstVerifyJob', '0', '0', '0', '0', 0x230D0A23546875204F63742031372032323A32373A31322043535420323031390D0A);
+
+-- ----------------------------
+-- Table structure for qrtz_locks
+-- ----------------------------
+DROP TABLE IF EXISTS `qrtz_locks`;
+CREATE TABLE `qrtz_locks` (
+  `SCHED_NAME` varchar(120) NOT NULL,
+  `LOCK_NAME` varchar(40) NOT NULL,
+  PRIMARY KEY (`SCHED_NAME`,`LOCK_NAME`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of qrtz_locks
+-- ----------------------------
+INSERT INTO `qrtz_locks` VALUES ('schedulerFactoryBean', 'TRIGGER_ACCESS');
+
+-- ----------------------------
+-- Table structure for qrtz_paused_trigger_grps
+-- ----------------------------
+DROP TABLE IF EXISTS `qrtz_paused_trigger_grps`;
+CREATE TABLE `qrtz_paused_trigger_grps` (
+  `SCHED_NAME` varchar(120) NOT NULL,
+  `TRIGGER_GROUP` varchar(200) NOT NULL,
+  PRIMARY KEY (`SCHED_NAME`,`TRIGGER_GROUP`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of qrtz_paused_trigger_grps
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for qrtz_scheduler_state
+-- ----------------------------
+DROP TABLE IF EXISTS `qrtz_scheduler_state`;
+CREATE TABLE `qrtz_scheduler_state` (
+  `SCHED_NAME` varchar(120) NOT NULL,
+  `INSTANCE_NAME` varchar(200) NOT NULL,
+  `LAST_CHECKIN_TIME` bigint(13) NOT NULL,
+  `CHECKIN_INTERVAL` bigint(13) NOT NULL,
+  PRIMARY KEY (`SCHED_NAME`,`INSTANCE_NAME`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of qrtz_scheduler_state
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for qrtz_simple_triggers
+-- ----------------------------
+DROP TABLE IF EXISTS `qrtz_simple_triggers`;
+CREATE TABLE `qrtz_simple_triggers` (
+  `SCHED_NAME` varchar(120) NOT NULL,
+  `TRIGGER_NAME` varchar(200) NOT NULL,
+  `TRIGGER_GROUP` varchar(200) NOT NULL,
+  `REPEAT_COUNT` bigint(7) NOT NULL,
+  `REPEAT_INTERVAL` bigint(12) NOT NULL,
+  `TIMES_TRIGGERED` bigint(10) NOT NULL,
+  PRIMARY KEY (`SCHED_NAME`,`TRIGGER_NAME`,`TRIGGER_GROUP`),
+  CONSTRAINT `qrtz_simple_triggers_ibfk_1` FOREIGN KEY (`SCHED_NAME`, `TRIGGER_NAME`, `TRIGGER_GROUP`) REFERENCES `qrtz_triggers` (`SCHED_NAME`, `TRIGGER_NAME`, `TRIGGER_GROUP`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of qrtz_simple_triggers
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for qrtz_simprop_triggers
+-- ----------------------------
+DROP TABLE IF EXISTS `qrtz_simprop_triggers`;
+CREATE TABLE `qrtz_simprop_triggers` (
+  `SCHED_NAME` varchar(120) NOT NULL,
+  `TRIGGER_NAME` varchar(200) NOT NULL,
+  `TRIGGER_GROUP` varchar(200) NOT NULL,
+  `STR_PROP_1` varchar(512) DEFAULT NULL,
+  `STR_PROP_2` varchar(512) DEFAULT NULL,
+  `STR_PROP_3` varchar(512) DEFAULT NULL,
+  `INT_PROP_1` int(11) DEFAULT NULL,
+  `INT_PROP_2` int(11) DEFAULT NULL,
+  `LONG_PROP_1` bigint(20) DEFAULT NULL,
+  `LONG_PROP_2` bigint(20) DEFAULT NULL,
+  `DEC_PROP_1` decimal(13,4) DEFAULT NULL,
+  `DEC_PROP_2` decimal(13,4) DEFAULT NULL,
+  `BOOL_PROP_1` varchar(1) DEFAULT NULL,
+  `BOOL_PROP_2` varchar(1) DEFAULT NULL,
+  PRIMARY KEY (`SCHED_NAME`,`TRIGGER_NAME`,`TRIGGER_GROUP`),
+  CONSTRAINT `qrtz_simprop_triggers_ibfk_1` FOREIGN KEY (`SCHED_NAME`, `TRIGGER_NAME`, `TRIGGER_GROUP`) REFERENCES `qrtz_triggers` (`SCHED_NAME`, `TRIGGER_NAME`, `TRIGGER_GROUP`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of qrtz_simprop_triggers
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for qrtz_triggers
+-- ----------------------------
+DROP TABLE IF EXISTS `qrtz_triggers`;
+CREATE TABLE `qrtz_triggers` (
+  `SCHED_NAME` varchar(120) NOT NULL,
+  `TRIGGER_NAME` varchar(200) NOT NULL,
+  `TRIGGER_GROUP` varchar(200) NOT NULL,
+  `JOB_NAME` varchar(200) NOT NULL,
+  `JOB_GROUP` varchar(200) NOT NULL,
+  `DESCRIPTION` varchar(250) DEFAULT NULL,
+  `NEXT_FIRE_TIME` bigint(13) DEFAULT NULL,
+  `PREV_FIRE_TIME` bigint(13) DEFAULT NULL,
+  `PRIORITY` int(11) DEFAULT NULL,
+  `TRIGGER_STATE` varchar(16) NOT NULL,
+  `TRIGGER_TYPE` varchar(8) NOT NULL,
+  `START_TIME` bigint(13) NOT NULL,
+  `END_TIME` bigint(13) DEFAULT NULL,
+  `CALENDAR_NAME` varchar(200) DEFAULT NULL,
+  `MISFIRE_INSTR` smallint(2) DEFAULT NULL,
+  `JOB_DATA` blob,
+  PRIMARY KEY (`SCHED_NAME`,`TRIGGER_NAME`,`TRIGGER_GROUP`),
+  KEY `IDX_QRTZ_T_J` (`SCHED_NAME`,`JOB_NAME`,`JOB_GROUP`),
+  KEY `IDX_QRTZ_T_JG` (`SCHED_NAME`,`JOB_GROUP`),
+  KEY `IDX_QRTZ_T_C` (`SCHED_NAME`,`CALENDAR_NAME`),
+  KEY `IDX_QRTZ_T_G` (`SCHED_NAME`,`TRIGGER_GROUP`),
+  KEY `IDX_QRTZ_T_STATE` (`SCHED_NAME`,`TRIGGER_STATE`),
+  KEY `IDX_QRTZ_T_N_STATE` (`SCHED_NAME`,`TRIGGER_NAME`,`TRIGGER_GROUP`,`TRIGGER_STATE`),
+  KEY `IDX_QRTZ_T_N_G_STATE` (`SCHED_NAME`,`TRIGGER_GROUP`,`TRIGGER_STATE`),
+  KEY `IDX_QRTZ_T_NEXT_FIRE_TIME` (`SCHED_NAME`,`NEXT_FIRE_TIME`),
+  KEY `IDX_QRTZ_T_NFT_ST` (`SCHED_NAME`,`TRIGGER_STATE`,`NEXT_FIRE_TIME`),
+  KEY `IDX_QRTZ_T_NFT_MISFIRE` (`SCHED_NAME`,`MISFIRE_INSTR`,`NEXT_FIRE_TIME`),
+  KEY `IDX_QRTZ_T_NFT_ST_MISFIRE` (`SCHED_NAME`,`MISFIRE_INSTR`,`NEXT_FIRE_TIME`,`TRIGGER_STATE`),
+  KEY `IDX_QRTZ_T_NFT_ST_MISFIRE_GRP` (`SCHED_NAME`,`MISFIRE_INSTR`,`NEXT_FIRE_TIME`,`TRIGGER_GROUP`,`TRIGGER_STATE`),
+  CONSTRAINT `qrtz_triggers_ibfk_1` FOREIGN KEY (`SCHED_NAME`, `JOB_NAME`, `JOB_GROUP`) REFERENCES `qrtz_job_details` (`SCHED_NAME`, `JOB_NAME`, `JOB_GROUP`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of qrtz_triggers
+-- ----------------------------
+INSERT INTO `qrtz_triggers` VALUES ('schedulerFactoryBean', '预约自动审核', 'InverstVerifyJob', '预约自动审核', 'InverstVerifyJob', null, '1571533200000', '1571455662452', '5', 'PAUSED', 'CRON', '1571322432000', '0', null, '0', '');
 
 -- ----------------------------
 -- Table structure for role
@@ -619,11 +873,12 @@ CREATE TABLE `role` (
 -- Records of role
 -- ----------------------------
 INSERT INTO `role` VALUES ('1', '系统管理员', 'admin', '1', null, '2017-08-25 11:26:36', null, '2017-08-25 11:26:36', null, '0');
-INSERT INTO `role` VALUES ('2', '运营', 'operator', '1', null, '2017-08-25 11:26:36', null, '2017-08-25 11:26:36', null, '0');
+INSERT INTO `role` VALUES ('2', '运营test', 'operator', '1', null, '2017-08-25 11:26:36', null, '2017-08-25 11:26:36', null, '0');
 INSERT INTO `role` VALUES ('3', '人力', 'hr', '1', null, '2017-08-25 11:26:36', null, '2017-08-25 11:26:36', null, '0');
 INSERT INTO `role` VALUES ('4', '产品', 'product', '1', null, '2017-08-25 11:26:37', null, '2017-08-25 11:26:37', null, '0');
 INSERT INTO `role` VALUES ('5', '财务', 'finance', '1', null, '2017-08-25 11:26:37', null, '2017-08-25 11:26:37', null, '0');
 INSERT INTO `role` VALUES ('6', '超级管理员', 'superadmin', '1', null, '2017-09-26 12:46:12', null, '2017-09-26 12:46:12', null, '0');
+INSERT INTO `role` VALUES ('7', 'test3', null, '1', null, '2018-05-20 14:15:34', null, '2018-05-20 14:15:34', '吃了2', '0');
 
 -- ----------------------------
 -- Table structure for role_menu
@@ -698,7 +953,8 @@ CREATE TABLE `sales_order` (
   `createtime` datetime DEFAULT NULL,
   `updatetime` datetime DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=79 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=83 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+
 
 -- ----------------------------
 -- Table structure for trade_detail
@@ -722,7 +978,7 @@ CREATE TABLE `trade_detail` (
   KEY `index_player_id` (`player_id`),
   KEY `index_order_id` (`order_id`),
   KEY `index_verify_id` (`verify_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8 COMMENT='交易流水表';
+) ENGINE=InnoDB AUTO_INCREMENT=467 DEFAULT CHARSET=utf8 COMMENT='交易流水表';
 
 -- ----------------------------
 -- Table structure for trade_verify
@@ -738,7 +994,8 @@ CREATE TABLE `trade_verify` (
   `create_time` datetime DEFAULT NULL,
   `update_time` datetime DEFAULT NULL,
   PRIMARY KEY (`verify_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8 COMMENT='交易审核表';
+) ENGINE=InnoDB AUTO_INCREMENT=177 DEFAULT CHARSET=utf8 COMMENT='交易审核表';
+
 
 -- ----------------------------
 -- Table structure for user
@@ -774,7 +1031,9 @@ CREATE TABLE `user` (
 -- ----------------------------
 INSERT INTO `user` VALUES ('1', 'admin', 'e10adc3949ba59abbe56e057f20f883e', '1', null, '管理员', null, null, null, null, null, null, null, '2017-09-21 10:08:53', null, '2017-09-21 10:08:53', null, '0');
 INSERT INTO `user` VALUES ('2', 'superadmin', 'e10adc3949ba59abbe56e057f20f883e', '1', null, '超级管理员', null, null, null, null, null, null, null, '2017-09-21 10:08:53', null, '2017-09-21 10:08:53', null, '0');
-INSERT INTO `user` VALUES ('5', 'test', 'e358efa489f58062f10dd7316b65649e', '1', null, 'test', '123@main.com', '123', null, null, null, null, null, '2018-05-19 20:13:03', null, '2018-05-19 20:13:19', '123', '0');
+INSERT INTO `user` VALUES ('3', 'test2', 'e10adc3949ba59abbe56e057f20f883e', '1', null, '测试2', 'test@mail.cn', '13100131000', null, null, null, null, null, '2017-11-05 23:14:22', null, '2017-11-05 23:14:22', null, '0');
+INSERT INTO `user` VALUES ('4', 'test1', 'f4cc399f0effd13c888e310ea2cf5399', '1', null, 'test1', 'tw@mail.com', '13800138000', null, null, null, null, null, '2018-05-26 00:00:45', null, '2018-05-16 23:27:53', '123eee', '0');
+INSERT INTO `user` VALUES ('5', 'test1', 'e358efa489f58062f10dd7316b65649e', '1', null, 'test', '123@main.com', '123', null, null, null, null, null, '2018-05-19 20:13:03', null, '2018-05-19 20:13:19', '123', '0');
 
 -- ----------------------------
 -- Table structure for user_role
@@ -795,5 +1054,3 @@ INSERT INTO `user_role` VALUES ('3', '1');
 INSERT INTO `user_role` VALUES ('3', '2');
 INSERT INTO `user_role` VALUES ('4', '1');
 INSERT INTO `user_role` VALUES ('4', '7');
-
-

@@ -6,6 +6,8 @@ package com.dream.city.base.model.enu;
  */
 public enum TradeDetailType {
 
+    CHANGE_TRAN_PWD("CHANGE_TRAN_PWD","修改交易密码"),
+
     RECHARGE("RECHARGE","充值"),
 
     USDT_INVEST_FREEZE("USDT_INVEST_FREEZE","usdt投资冻结"),
