@@ -20,6 +20,10 @@ public interface PlayerMapper {
 
     PlayerResp getPlayerById(Player record);
 
+
+    //添加获取
+    Player selectPlayerId(Integer accId);
+
     List<PlayerResp> getPlayerList(Player record);
 
 

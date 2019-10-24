@@ -28,6 +28,10 @@ public interface AccountMapper {
 
     PlayerAccount getPlayerAccountSelective(PlayerAccount record);
 
+
+    //cityPlayId
+    PlayerAccount selectByPrimaryPlayerId(Integer accId);
+
     /**
      * 获取平台账户
      * @param record
@@ -48,4 +52,7 @@ public interface AccountMapper {
     List<PlayerAccount> getPlayerAccountList(PlayerAccount record);
 
     PlayerAccount getPlayerAccount(String accPlayerId);
+
+   int insertPlayAccountLog(PlayerAccount playerAccount);
+
 }

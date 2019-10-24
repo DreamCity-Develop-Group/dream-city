@@ -24,54 +24,42 @@ public class PlayerAccountResp implements Serializable {
     /** 玩家等级 */
     private String grade;
 
-    /** 商会成员数 */
+    //** 商会成员数 *//*
      private String commerceMember;
 
-    /** 商会邀请码*/
+    //** 商会邀请码*//*
     private String invite;
 
-    /** 总资产 */
+    //** 总资产 *//*
     private BigDecimal totalProperty;
 
-    /** 总收入*/
+    //** 总收入*//*
     private BigDecimal totalIncome;
 
-    /** 账户usdt额度 */
+    //** 账户usdt额度 *//*
     private BigDecimal accUsdt;
 
-    /** usdt可用金额 */
+    //** usdt可用金额 *//*
     private BigDecimal accUsdtAvailable;
 
-    /** usdt冻结金额 */
+    //** usdt冻结金额 *//*
     private BigDecimal accUsdtFreeze;
 
-    /** 账户mt额度 */
+    //** 账户mt额度 *//*
     private BigDecimal accMt;
 
-    /** mt可用金额 */
+    //** mt可用金额 *//*
     private BigDecimal accMtAvailable;
 
-    /** mt冻结金额 */
+    //** mt冻结金额 *//*
     private BigDecimal accMtFreeze;
 
-    /**  */
+    private  String bi;
+
+    //**  *//*
     private Date createTime;
 
-    public Integer getAccId() {
-        return accId;
-    }
 
-    public void setAccId(Integer accId) {
-        this.accId = accId;
-    }
-
-    public String getPlayerId() {
-        return playerId;
-    }
-
-    public void setPlayerId(String playerId) {
-        this.playerId = playerId;
-    }
 
     public BigDecimal getAccUsdt() {
         return accUsdt;
@@ -121,13 +109,6 @@ public class PlayerAccountResp implements Serializable {
         this.accMtFreeze = accMtFreeze;
     }
 
-    public String getPlayerName() {
-        return playerName;
-    }
-
-    public void setPlayerName(String playerName) {
-        this.playerName = playerName;
-    }
 
     public String getGrade() {
         return grade;
@@ -176,4 +157,29 @@ public class PlayerAccountResp implements Serializable {
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
+
+    public Integer getAccId() {
+        return accId;
+    }
+
+    public void setAccId(Integer accId) {
+        this.accId = accId;
+    }
+
+    public String getPlayerId() {
+        return playerId;
+    }
+
+    public void setPlayerId(String playerId) {
+        this.playerId = playerId;
+    }
+
+    public String getPlayerName() {
+        return playerName;
+    }
+
+    public void setPlayerName(String playerName) {
+        this.playerName = playerName;
+    }
+
 }

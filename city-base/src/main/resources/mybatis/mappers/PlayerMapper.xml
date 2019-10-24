@@ -249,4 +249,21 @@
     where player_name = #{playerName,jdbcType=VARCHAR}
   </update>
 
+
+
+  <select id="selectPlayerId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+
+      select
+      <include refid="Base_Column_List" />
+      from city_player
+      where 1=1
+      <if test="account != null and account != ''">
+        and id = #{accId,jdbcType=INTEGER}
+      </if>
+      limit 1
+    </select>
+
+
+
+
 </mapper>
