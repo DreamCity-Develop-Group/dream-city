@@ -207,7 +207,8 @@ public class HttpClientServiceImpl implements HttpClientService {
             log.info("Request-Url:" + url);
 
             httpPost = new HttpPost(url);
-            if ("exit".equals(serviceOpt) || "login".equals(serviceOpt) || "reg".equals(serviceOpt) || "getCode".equals(serviceOpt) || "codeLogin".equals(serviceOpt)) {
+            if ("exit".equals(serviceOpt) || "login".equals(serviceOpt) || "reg".equals(serviceOpt)
+                    || "getCode".equals(serviceOpt) || "codeLogin".equals(serviceOpt) || "pwforget".equals(serviceOpt)) {
                 //这里不处理，表示正常放行
                 httpPost.setHeader("method", serviceOpt);
                 httpPost.setHeader("authType", "");
