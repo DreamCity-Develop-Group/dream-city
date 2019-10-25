@@ -39,7 +39,7 @@ public class InvestRuleServiceImpl implements InvestRuleService {
         List<InvestRule> rules = investRuleMapper.getRulesByItem(ruleItem.getItemId());
         BigDecimal rate = new BigDecimal(1.00);
         for (InvestRule rule : rules){
-            if (rule.getRuleLevel() == level){
+            if (rule.getRuleLevel().intValue() == level.intValue()){
                 rate = rule.getRuleRatePre();
             }
         }

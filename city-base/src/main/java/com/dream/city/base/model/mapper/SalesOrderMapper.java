@@ -69,9 +69,6 @@ public interface SalesOrderMapper {
             "#{orderState},#{createTime} ) ")
     int createSalesOrder(SalesOrder order);
 
-    @Select("select * from sales_order where 1=1 and ")
-    SalesOrder findSalesOrder();
-
     @Select("select * from `sales_order` where 1=1 and order_id = #{orderId} limit 1 ")
     @ResultMap("BaseSalesOrderResultMap")
     SalesOrder getSalesOrderByOrderId(String orderId);
@@ -82,9 +79,9 @@ public interface SalesOrderMapper {
     @Update({"<script>" +
             "<foreach collection=\"orderList\" item=\"item\" separator=\";\">" +
             " UPDATE" +
-            " `sales_order0`" +
+            " `sales_order`" +
             " SET order_state = #{item.orderState, jdbcType=TINYINT} " +
-            "  WHERE " +
+            "  WHERE 1=1 " +
             "  AND order_id = #{item.orderId, jdbcType=VARCHAR} " +
             "</foreach>" +
             "</script>"})
