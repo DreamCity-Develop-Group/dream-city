@@ -98,9 +98,11 @@ public class ConsumerPropertyHandleServiceImpl implements ConsumerPropertyHandle
                     resultMap.put("expectIncome", invest.getInLimit()
                             .multiply(BigDecimal.valueOf(Long.parseLong(String.valueOf(invest.getInEarning())))));
 
-                    String resultTime = DateUtils.date2Str(invest.getVerifyTime());
+                    String resultTime = "";
                     if (invest.getVerifyTime() == null){
                         resultTime ="9:30";
+                    }else {
+                        resultTime = DateUtils.date2Str(invest.getVerifyTime(),"HH:mm");
                     }
                     resultMap.put("resultTime",resultTime);
 
