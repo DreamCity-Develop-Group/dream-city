@@ -19,5 +19,7 @@ public class CityInvestReq implements Serializable {
     private String playerName;
     private String playerNick;
 
+    private String friendId;
+
 
 }

@@ -165,6 +165,7 @@ public class DataUtils {
         String isValid = map.containsKey("isValid")?String.valueOf(map.get("isValid")):null;
         String playerId = map.containsKey("playerId")?String.valueOf(map.get("playerId")):null;
         String username = map.containsKey("username")?String.valueOf(map.get("username")):null;
+        String friendId = map.containsKey("friendId")?String.valueOf(map.get("friendId")):null;
 
         CityInvestReq result = new CityInvestReq();
         result.setInId(inId);
@@ -172,6 +173,7 @@ public class DataUtils {
         result.setIsValid(isValid);
         result.setPlayerId(playerId);
         result.setPlayerName(username);
+        result.setFriendId(friendId);
         return result;
     }
 
