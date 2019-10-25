@@ -350,7 +350,10 @@ public class ConsumerTreeController {
         Message message = new Message("server", "client", new MessageData("sendOrder", "/consumer/tree"), "发货成功");
         if (result.getSuccess()) {
             message.getData().setCode(ReturnStatus.SUCCESS.getStatus());
-            message.getData().setData(result.getData());
+            Map<String,Object> re = new HashMap<>();
+            re.put("result",result.getData());
+            message.getData().setData(re);
+            message.setDesc(result.getMsg());
             return message;
         } else {
             message.getData().setCode(result.getCode());

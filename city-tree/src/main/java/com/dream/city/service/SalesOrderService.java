@@ -29,7 +29,7 @@ public interface SalesOrderService {
 
     Result buyMtFinish(String playerId, String pass);
 
-    BigDecimal getUsdtToMtRate();
+    BigDecimal getUsdtToMtRate(String playerId);
 
     Result sendOrderMt(List<SalesOrder>orders);
 }

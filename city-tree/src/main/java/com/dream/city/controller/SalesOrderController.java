@@ -116,15 +116,7 @@ public class SalesOrderController {
      */
     @RequestMapping("/get/sales/rate")
     public Result getSalesRate(@RequestParam("playerId") String playerId) {
-        BigDecimal rate = salesOrderService.getUsdtToMtRate();
-        //规则比率
-        Integer level = 0;
-        RelationTree relationTree = treeService.getTreeByPlayerId(playerId);
-        if (relationTree != null) {
-            level = relationTree.getTreeLevel();
-        }
-
-        BigDecimal ruleRate = ruleService.getLevelRuleRate(playerId, level);
+        BigDecimal ruleRate = salesOrderService.getUsdtToMtRate(playerId);
         return Result.result(true, "兑换比率", ReturnStatus.SUCCESS.getStatus(), ruleRate);
     }
 
@@ -144,7 +136,8 @@ public class SalesOrderController {
             return Result.result(false,"购买额度不能小于0", ReturnStatus.INVALID.getStatus());
         }
         //支付比率 USDT 和 MT
-        BigDecimal rate = salesOrderService.getUsdtToMtRate();
+        BigDecimal rate = salesOrderService.getUsdtToMtRate(playerId);
+
         Map<String, String> data = new HashMap<>();
         data.put("empty", "yes");
         //如果额度不足
@@ -215,6 +208,7 @@ public class SalesOrderController {
         String[] orders = ordersId.split("_");
         int size = orders.length;
         int i = 0;
+        Map<String,Boolean> ordersStatus = new HashMap<>();
         for (String order : orders) {
             SalesOrder salesOrder = salesOrderService.getSalesOrder(order);
             BigDecimal amount = salesOrder.getOrderAmount();
@@ -222,10 +216,12 @@ public class SalesOrderController {
             amountMt = amountMt.add(amount);
             //额度检测
             if (availbleMt.compareTo(amountMt) < 0) {
-                break;
+                ordersStatus.put(order,Boolean.FALSE);
+                //break;
             } else {
                 i++;
                 salesOrders.add(salesOrder);
+                ordersStatus.put(order,Boolean.TRUE);
             }
         }
 
@@ -242,7 +238,8 @@ public class SalesOrderController {
             return Result.result(
                     true,
                     message,
-                    ReturnStatus.SUCCESS.getStatus());
+                    ReturnStatus.SUCCESS.getStatus(),
+                    ordersStatus);
         } else {
             return new Result(false, "发货失败", ReturnStatus.NOT_ENOUGH.getStatus());
         }
@@ -263,7 +260,6 @@ public class SalesOrderController {
 
         return new Result("success", ReturnStatus.SUCCESS.getStatus(), orders);
     }
-
 
     /**
      * 取得当前玩家的所有MT购买请求:玩家是买家

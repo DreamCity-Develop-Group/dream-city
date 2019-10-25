@@ -135,20 +135,6 @@ public class RelationTreeController {
         return ret;
     }
 
-
-    /**
-     * 购买MT
-     * @param playerId
-     * @param amount
-     * @return
-     */
-    @RequestMapping("/buy/mt")
-    public Result buyMt(@RequestParam("playerId")String playerId, @RequestParam("amount")BigDecimal amount){
-        BigDecimal rate = salesOrderService.getUsdtToMtRate();
-        Result ret = salesOrderService.buyMtCreate(amount,rate,playerId);
-        return ret;
-    }
-
     /**
      * 获取主页账户数据
      *

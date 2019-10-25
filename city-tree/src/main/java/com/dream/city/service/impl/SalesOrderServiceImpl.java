@@ -9,10 +9,7 @@ import com.dream.city.base.model.enu.OrderState;
 import com.dream.city.base.model.enu.ReturnStatus;
 import com.dream.city.base.model.mapper.SalesOrderMapper;
 import com.dream.city.base.utils.KeyGenerator;
-import com.dream.city.service.PlayerAccountService;
-import com.dream.city.service.PlayerService;
-import com.dream.city.service.RelationTreeService;
-import com.dream.city.service.SalesOrderService;
+import com.dream.city.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +36,8 @@ public class SalesOrderServiceImpl implements SalesOrderService {
     private PlayerService playerService;
     @Autowired
     private PlayerAccountService playerAccountService;
+    @Autowired
+    InvestRuleService ruleService;
 
     @Override
     public List<SalesOrder> selectSalesOrder(String playerId,Integer start,Integer size) {
@@ -88,7 +87,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
     /**
      * 创建支付订单
      *
-     * * 3、冻结购买的玩家的账户相应的额度，减可用额度
+     *      * 3、冻结购买的玩家的账户相应的额度，减可用额度
      *      * 4、如果上家自动发货，扣除上家MT,增加上家USDT收入，扣除购买玩家的总额度和冻结额度
      *      * 5、如果上家未自动发货，不作处理，等待玩家处理或者任务中心调度
      *
@@ -127,8 +126,6 @@ public class SalesOrderServiceImpl implements SalesOrderService {
             order.setOrderId(new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()));
             order.setOrderBuyType("MT");
             order.setOrderPayType("USDT");
-
-
             order.setOrderPayAmount(usdtPay);
             order.setOrderPlayerBuyer(playerId);
             order.setOrderPlayerSeller(parentId);
@@ -139,14 +136,14 @@ public class SalesOrderServiceImpl implements SalesOrderService {
 
             if (insertSalesOrder>0){
                 //TODO 自动发货
-                if (StringUtils.isNotBlank(tree.getSendAuto()) && tree.getSendAuto().equals("1")){
+                if (StringUtils.isNotBlank(tree.getSendAuto()) && "1".equals(tree.getSendAuto())){
                     //TODO 卖家
                     PlayerAccount sellerAccount = playerAccountService.getPlayerAccount(parentId);
                     if (sellerAccount.getAccMtAvailable().compareTo(buyAmount)<0){
                         //TODO 关闭卖家自动发货功能
                         tree.setSendAuto("0");
                         treeService.closeAutoSend(tree);
-                        log.info("卖家[]由于MT备货额度不足被关闭自动发货功能！");
+                        log.info("卖家["+buyerAccount.getAccPlayerId()+"]由于MT备货额度不足被关闭自动发货功能！");
                     }else{
                         //锁定卖家MT
                         sellerAccount.setAccMtAvailable(sellerAccount.getAccMtAvailable().subtract(buyAmount));
@@ -157,23 +154,29 @@ public class SalesOrderServiceImpl implements SalesOrderService {
                             order.setOrderState(OrderState.PAID.getStatus());
                             int finish = salesOrderMapper.updateSalesOrder(order);
 
-                            /*if (finish>0){
-                                //更新卖家和买家数据
+                            if (finish>0){
+                                //更新买家数据
                                 List<PlayerAccount> accounts = new ArrayList<>();
                                 buyerAccount.setAccMt(buyerAccount.getAccMt().add(buyAmount));
                                 buyerAccount.setAccMtAvailable(buyerAccount.getAccMtAvailable().add(buyAmount));
+
+                                buyerAccount.setAccUsdt(buyerAccount.getAccUsdt().subtract(usdtPay));
                                 buyerAccount.setAccUsdtFreeze(buyerAccount.getAccUsdtFreeze().subtract(usdtPay));
                                 accounts.add(buyerAccount);
 
+                                //更新卖家数据
                                 sellerAccount.setAccUsdt(sellerAccount.getAccUsdt().add(usdtPay));
                                 sellerAccount.setAccUsdtAvailable(sellerAccount.getAccUsdtAvailable().add(usdtPay));
+
+                                sellerAccount.setAccMt(sellerAccount.getAccMt().subtract(buyAmount));
                                 sellerAccount.setAccMtFreeze(sellerAccount.getAccMtFreeze().subtract(buyAmount));
                                 accounts.add(sellerAccount);
 
                                 playerAccountService.updatePlayerAccounts(accounts);
 
-                            }*/
-                            return new Result(true, "下单成功", ReturnStatus.SUCCESS.getStatus(), order);
+                                return new Result(true, "下单成功", ReturnStatus.SUCCESS.getStatus(), order);
+                            }
+                            //return new Result(true, "下单成功", ReturnStatus.SUCCESS.getStatus(), order);
                         }
                     }
                 }else{
@@ -278,8 +281,15 @@ public class SalesOrderServiceImpl implements SalesOrderService {
     }
 
     @Override
-    public BigDecimal getUsdtToMtRate() {
-        return new BigDecimal(1.0);
+    public BigDecimal getUsdtToMtRate(String playerId) {
+        //规则比率
+        Integer level = 0;
+        RelationTree relationTree = treeService.getTreeByPlayerId(playerId);
+        if (relationTree != null) {
+            level = relationTree.getTreeLevel();
+        }
+        BigDecimal ruleRate = ruleService.getLevelRuleRate(playerId, level);
+        return ruleRate;
     }
 
     @Override
