@@ -3,6 +3,7 @@
 <mapper namespace="com.dream.city.base.model.mapper.PlayerEarningMapper" >
   <resultMap id="BaseResultMap" type="com.dream.city.base.model.entity.PlayerEarning" >
     <id column="earn_id" property="earnId" jdbcType="INTEGER" />
+    <result column="order_id" property="orderId" jdbcType="VARCHAR" />
     <result column="earn_player_id" property="earnPlayerId" jdbcType="VARCHAR" />
     <result column="earn_max" property="earnMax" jdbcType="DECIMAL" />
     <result column="earn_personal_tax" property="earnPersonalTax" jdbcType="DECIMAL" />
@@ -15,7 +16,7 @@
   </resultMap>
 
   <sql id="Base_Column_List" >
-    earn_id, earn_player_id, earn_max,  is_withdrew,earn_personal_tax,earn_enterprise_tax,earn_current,earn_quota_tax
+    earn_id, order_id, earn_player_id, earn_max,  is_withdrew,earn_personal_tax,earn_enterprise_tax,earn_current,earn_quota_tax
     ,DATE_FORMAT(create_time,'%Y-%m-%d %h:%m:%s') create_time, DATE_FORMAT(update_time,'%Y-%m-%d %h:%m:%s') update_time
   </sql>
 
@@ -29,6 +30,7 @@
 
   <resultMap id="ExtResultMap" type="com.dream.city.base.model.resp.PlayerEarningResp" >
     <id column="earn_id" property="earnId" jdbcType="INTEGER" />
+    <result column="order_id" property="orderId" jdbcType="VARCHAR" />
     <result column="earn_player_id" property="earnPlayerId" jdbcType="VARCHAR" />
     <result column="earn_max" property="earnMax" jdbcType="DECIMAL" />
     <result column="earn_personal_tax" property="earnPersonalTax" jdbcType="DECIMAL" />
@@ -67,6 +69,9 @@
         <if test="earnId != null">
           and earn_id = #{earnId,jdbcType=INTEGER}
         </if>
+        <if test="orderId != null">
+          and order_id = #{orderId,jdbcType=INTEGER}
+        </if>
         <if test="earnPlayerId != null">
           and earn_player_id = #{earnPlayerId,jdbcType=VARCHAR}
         </if>
@@ -101,6 +106,9 @@
       <if test="earnId != null" >
         earn_id,
       </if>
+      <if test="orderId != null" >
+        order_id,
+      </if>
       <if test="earnInvestId != null" >
         earn_invest_id,
       </if>
@@ -131,6 +139,9 @@
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="earnId != null" >
         #{earnId,jdbcType=INTEGER},
+      </if>
+      <if test="orderId != null" >
+        #{orderId,jdbcType=INTEGER},
       </if>
       <if test="earnInvestId != null" >
         #{earnInvestId,jdbcType=VARCHAR},
@@ -170,8 +181,11 @@
       <if test="earnMax != null" >
         earn_max = #{earnMax,jdbcType=DECIMAL},
       </if>
-      <if test="isWithdrew != null" >
+      <if test="isWithdrew != null and isWithdrew > 0" >
         is_withdrew = #{isWithdrew,jdbcType=INTEGER},
+      </if>
+      <if test="orderId != null and orderId > 0" >
+        order_id = #{orderId,jdbcType=INTEGER},
       </if>
       <if test="earnCurrent != null" >
         earn_current= #{earnCurrent,jdbcType=DECIMAL},

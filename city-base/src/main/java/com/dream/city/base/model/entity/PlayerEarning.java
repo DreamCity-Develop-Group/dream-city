@@ -14,6 +14,9 @@ import java.util.Date;
 public class PlayerEarning implements Serializable {
     /**  */
     private Integer earnId;
+
+    private Integer orderId;
+
     /**
      * 投资项目ID
      */

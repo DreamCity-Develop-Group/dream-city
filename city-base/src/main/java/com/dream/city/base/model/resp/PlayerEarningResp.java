@@ -15,6 +15,9 @@ public class PlayerEarningResp implements Serializable {
 
     /**  */
     private Integer earnId;
+
+    private Integer orderId;
+
     /**
      * 投资项目ID
      */

@@ -260,7 +260,7 @@ public class EarningController {
                             result.put("investId",investId);
                             result.put("investMoney",order.getOrderAmount());
                             result.put("extractable",earningResp.getEarnCurrent());
-                            result.put("extract",extract);
+                            result.put("extract",earnTotal);
                             result.put("incomeLeft",incomeLeft);
                             result.put("personTax",earningResp.getEarnPersonalTax());
                             result.put("enterpriseTax",earningResp.getEarnEnterpriseTax());
