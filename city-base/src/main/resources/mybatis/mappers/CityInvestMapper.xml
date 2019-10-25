@@ -3,7 +3,7 @@
 <mapper namespace="com.dream.city.base.model.mapper.CityInvestMapper" >
   <resultMap id="BaseResultMap" type="com.dream.city.base.model.entity.CityInvest" >
     <id column="in_id" property="inId" jdbcType="INTEGER" />
-    <id column="in_type" property="inType" jdbcType="INTEGER" />
+    <result column="in_type" property="inType" jdbcType="INTEGER" />
     <result column="in_name" property="inName" jdbcType="VARCHAR" />
     <result column="in_img" property="inImg" jdbcType="VARCHAR" />
     <result column="in_limit" property="inLimit" jdbcType="DECIMAL" />

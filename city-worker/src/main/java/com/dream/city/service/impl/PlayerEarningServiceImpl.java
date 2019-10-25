@@ -4,6 +4,7 @@ import com.dream.city.base.model.entity.EarnIncomeLog;
 import com.dream.city.base.model.entity.PlayerEarning;
 import com.dream.city.base.model.mapper.EarnIncomeLogMapper;
 import com.dream.city.base.model.mapper.PlayerEarningMapper;
+import com.dream.city.base.model.resp.PlayerEarningResp;
 import com.dream.city.service.PlayerEarningService;
 import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
@@ -26,7 +27,7 @@ public class PlayerEarningServiceImpl  implements PlayerEarningService {
     }
 
     @Override
-    public PlayerEarning getPlayerEarnByPlayerId(String playerId, Integer investId) {
+    public PlayerEarningResp getPlayerEarnByPlayerId(String playerId, Integer investId) {
         PlayerEarning record = new PlayerEarning();
         record.setEarnPlayerId(playerId);
         record.setEarnInvestId(investId);

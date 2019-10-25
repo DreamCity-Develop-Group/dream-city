@@ -4,6 +4,8 @@ import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.*;
 import com.dream.city.base.model.enu.*;
 import com.dream.city.base.model.resp.InvestOrderResp;
+import com.dream.city.base.model.resp.PlayerEarningResp;
+import com.dream.city.base.utils.DataUtils;
 import com.dream.city.base.utils.RedisUtils;
 import com.dream.city.invest.service.*;
 import org.slf4j.Logger;
@@ -172,110 +174,120 @@ public class EarningController {
         boolean b = Boolean.FALSE;
         String msg = "";
         Map<String,Object> result = new HashMap<>();
-        InvestOrder order = orderService.getOrderByPlayerIdInvestId(playerId,investId);
-        if (order != null){
-            PlayerEarning earning = earningService.getPlayerEarningByPlayerId(playerId,investId);
-            if (null != earning && earning.getEarnMax().compareTo(earning.getEarnCurrent())==0 && earning.getIsWithdrew()==2){
-                // 修改账户
-                PlayerAccount account = accountService.getPlayerAccount(playerId);
-                if (account != null){
-                    BigDecimal taxTotal = earning.getEarnEnterpriseTax().add(earning.getEarnPersonalTax()).add(earning.getEarnQuotaTax());
-                    BigDecimal extract = earning.getEarnCurrent().setScale( 0, BigDecimal.ROUND_DOWN );
-                    BigDecimal incomeLeft = earning.getEarnCurrent().subtract(extract);
-                    BigDecimal earnTotal = extract.subtract(taxTotal);
+        try {
+            InvestOrder order = orderService.getOrderByPlayerIdInvestId(playerId,investId);
+            if (order != null){
+                PlayerEarningResp earningResp = earningService.getPlayerEarningByPlayerId(playerId,investId);
+                if (null != earningResp && earningResp.getEarnMax().compareTo(earningResp.getEarnCurrent()) >= 0 && earningResp.getIsWithdrew()==2){
+                    // 修改账户
+                    PlayerAccount account = accountService.getPlayerAccount(playerId);
+                    if (account != null){
+                        BigDecimal taxTotal = earningResp.getEarnEnterpriseTax().add(earningResp.getEarnPersonalTax()).add(earningResp.getEarnQuotaTax());
+                        BigDecimal extract = earningResp.getEarnCurrent().setScale( 0, BigDecimal.ROUND_DOWN );
+                        BigDecimal incomeLeft = earningResp.getEarnCurrent().subtract(extract);
+                        BigDecimal earnTotal = extract.subtract(taxTotal);
 
-                    account.setAccUsdt(account.getAccUsdt().add(earnTotal));
-                    account.setAccUsdtAvailable(account.getAccUsdtAvailable().add(earnTotal));
-                    // 添加累计收益记录
-                    account.setAccIncome(account.getAccIncome().add(taxTotal));
-                    i = accountService.updatePlayerAccountById(account);
+                        account.setAccUsdt(account.getAccUsdt().add(earnTotal));
+                        account.setAccUsdtAvailable(account.getAccUsdtAvailable().add(earnTotal));
+                        // 添加累计收益记录
+                        account.setAccIncome(account.getAccIncome().add(taxTotal));
+                        i = accountService.updatePlayerAccountById(account);
 
 
-                    // 改变earn表记录状态为3
-                    if (i > 0) {
-                        earning.setIsWithdrew(3);
-                        earning.setEarnCurrent(BigDecimal.ZERO);
-                        i = earningService.updateEarningById(earning);
+                        // 改变earn表记录状态为3
+                        if (i > 0) {
+                            PlayerEarning updateEarningReq = new PlayerEarning();
+                            updateEarningReq.setEarnId(earningResp.getEarnId());
+                            updateEarningReq.setIsWithdrew(3);
+                            updateEarningReq.setEarnCurrent(BigDecimal.ZERO);
+                            i = earningService.updateEarningById(updateEarningReq);
+                        }else {
+                            msg = "添加累计收益记录失败";
+                        }
+
+                        // 交易记录
+                        PlayerTrade trade = null;
+                        if (i > 0) {
+                            PlayerTrade insertTradeReq = new PlayerTrade();
+                            insertTradeReq.setTradeAccId(account.getAccId());
+                            insertTradeReq.setTradeOrderId(order.getOrderId());
+                            insertTradeReq.setTradePlayerId(playerId);
+                            insertTradeReq.setTradeStatus(TradeStatus.IN.getCode());
+                            insertTradeReq.setInOutStatus(AmountDynType.IN.getCode());
+                            insertTradeReq.setTradeAmount(earnTotal);
+                            insertTradeReq.setTradeType(TradeType.INVEST_EARNINGS.getCode());
+                            insertTradeReq.setTradeDesc("提取已入账");
+                            trade = tradeService.insertPlayerTrade(insertTradeReq);
+                        }else {
+                            msg = "改变earn表记录状态为3失败";
+                        }
+                        // 交易流水
+                        if (trade != null) {
+                            TradeDetail tradeDetail = new TradeDetail();
+                            tradeDetail.setTradeId(trade.getTradeId());
+                            tradeDetail.setPlayerId(playerId);
+                            tradeDetail.setOrderId(order.getOrderId());
+                            tradeDetail.setTradeAmount(earnTotal);
+                            tradeDetail.setTradeDetailType(TradeDetailType.USDT_EARNINGS.getCode());
+                            tradeDetail.setDescr("投资提取,提取金额：" + extract
+                                    + ",个人所得税:" + earningResp.getEarnPersonalTax()
+                                    + ",企业所得税：" + earningResp.getEarnEnterpriseTax()
+                                    + ",定额税：" + earningResp.getEarnQuotaTax());
+                            i = tradeDetailService.insert(tradeDetail);
+                        }else {
+                            msg = "添加交易记录失败";
+                        }
+
+                        // 添加  账户 记录
+                        if (i > 0){
+                            PlayerAccountLog accountLog = new PlayerAccountLog();
+                            accountLog.setAddress(account.getAccAddr());
+                            accountLog.setAmountMt(BigDecimal.ZERO);
+                            accountLog.setAmountUsdt(earnTotal);
+                            accountLog.setPlayerId(playerId);
+                            accountLog.setType(1);
+                            accountLog.setDesc("收入账户多余的额度");
+                            accountLog.setCreateTime(new Date());
+                            i = accountService.addAccountLog(accountLog);
+                        }else {
+                            msg = "添加交易流水失败";
+                        }
+
+                        if (i > 0) {
+                            b = Boolean.TRUE;
+                            code = ReturnStatus.SUCCESS.getStatus();
+                            msg="提取成功";
+                            result.put("investId",investId);
+                            result.put("investMoney",order.getOrderAmount());
+                            result.put("extractable",earningResp.getEarnCurrent());
+                            result.put("extract",extract);
+                            result.put("incomeLeft",incomeLeft);
+                            result.put("personTax",earningResp.getEarnPersonalTax());
+                            result.put("enterpriseTax",earningResp.getEarnEnterpriseTax());
+                            result.put("quotaTax",earningResp.getEarnQuotaTax());
+                            result.put("state",ReturnStatus.INVEST_SUBSCRIBE.getCode());
+                            result.put("inType", earningResp.getInType());
+                            result.put("openState", "N");
+
+                            //
+
+                        }else {
+                            msg = "添加账户记录失败";
+                        }
                     }else {
-                        msg = "添加累计收益记录失败";
-                    }
-
-                    // 交易记录
-                    PlayerTrade trade = null;
-                    if (i > 0) {
-                        PlayerTrade insertTradeReq = new PlayerTrade();
-                        insertTradeReq.setTradeAccId(account.getAccId());
-                        insertTradeReq.setTradeOrderId(order.getOrderId());
-                        insertTradeReq.setTradePlayerId(playerId);
-                        insertTradeReq.setTradeStatus(TradeStatus.IN.getCode());
-                        insertTradeReq.setInOutStatus(AmountDynType.IN.getCode());
-                        insertTradeReq.setTradeAmount(earnTotal);
-                        insertTradeReq.setTradeType(TradeType.INVEST_EARNINGS.getCode());
-                        insertTradeReq.setTradeDesc("提取已入账");
-                        trade = tradeService.insertPlayerTrade(insertTradeReq);
-                    }else {
-                        msg = "改变earn表记录状态为3失败";
-                    }
-                    // 交易流水
-                    if (trade != null) {
-                        TradeDetail tradeDetail = new TradeDetail();
-                        tradeDetail.setTradeId(trade.getTradeId());
-                        tradeDetail.setPlayerId(playerId);
-                        tradeDetail.setOrderId(order.getOrderId());
-                        tradeDetail.setTradeAmount(earnTotal);
-                        tradeDetail.setTradeDetailType(TradeDetailType.USDT_EARNINGS.getCode());
-                        tradeDetail.setDescr("投资提取,提取金额：" + extract
-                                + ",个人所得税:" + earning.getEarnPersonalTax()
-                                + ",企业所得税：" + earning.getEarnEnterpriseTax()
-                                + ",定额税：" + earning.getEarnQuotaTax());
-                        i = tradeDetailService.insert(tradeDetail);
-                    }else {
-                        msg = "添加交易记录失败";
-                    }
-
-                    // 添加  账户 记录
-                    if (i > 0){
-                        PlayerAccountLog accountLog = new PlayerAccountLog();
-                        accountLog.setAddress(account.getAccAddr());
-                        accountLog.setAmountMt(new BigDecimal(0));
-                        accountLog.setAmountUsdt(earnTotal);
-                        accountLog.setPlayerId(playerId);
-                        accountLog.setType(1);
-                        accountLog.setDesc("收入账户多余的额度");
-                        accountLog.setCreateTime(new Date());
-                        i = accountService.addAccountLog(accountLog);
-                    }else {
-                        msg = "添加交易流水失败";
-                    }
-
-                    if (i > 0) {
-                        b = Boolean.TRUE;
-                        code = ReturnStatus.SUCCESS.getStatus();
-                        msg="提取成功";
-                        result.put("investId",investId);
-                        result.put("investMoney",order.getOrderAmount());
-                        result.put("extractable",earning.getEarnCurrent());
-                        result.put("extract",extract);
-                        result.put("incomeLeft",incomeLeft);
-                        result.put("personTax",earning.getEarnPersonalTax());
-                        result.put("enterpriseTax",earning.getEarnEnterpriseTax());
-                        result.put("quotaTax",earning.getEarnQuotaTax());
-                        result.put("state",ReturnStatus.INVEST_SUBSCRIBE.getCode());
-                        result.put("inType", 11);
-                        result.put("openState", "N");
-                    }else {
-                        msg = "添加账户记录失败";
+                        msg = "没找到用户账户";
                     }
                 }else {
-                    msg = "没找到用户账户";
+                    msg = "没找到投资记录";
                 }
-           }else {
-                msg = "没找到投资记录";
-           }
-        }else {
-            msg = "收益未满，暂不可提取";
-            code = ReturnStatus.NOT_FINISHED.getStatus();
+            }else {
+                msg = "收益未满，暂不可提取";
+                code = ReturnStatus.NOT_FINISHED.getStatus();
+            }
+        }catch (Exception e){
+            logger.error("投资提取异常", e);
         }
+
         return Result.result(b,msg, code,result);
     }
 

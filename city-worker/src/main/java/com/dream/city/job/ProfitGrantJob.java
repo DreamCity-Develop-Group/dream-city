@@ -2,6 +2,7 @@ package com.dream.city.job;
 
 import com.dream.city.base.model.entity.*;
 import com.dream.city.base.model.enu.InvestStatus;
+import com.dream.city.base.model.resp.PlayerEarningResp;
 import com.dream.city.base.utils.RedisUtils;
 import com.dream.city.service.*;
 import io.swagger.models.auth.In;
@@ -226,7 +227,7 @@ public class ProfitGrantJob extends QuartzJobBean {
         return orders;
     }
     public void setProfit(InvestOrder order,BigDecimal everyOneProfit){
-        PlayerEarning playerEarning = playerEarningService.getPlayerEarnByPlayerId(order.getOrderPayerId(), order.getOrderInvestId());
+        PlayerEarningResp playerEarning = playerEarningService.getPlayerEarnByPlayerId(order.getOrderPayerId(), order.getOrderInvestId());
         if (null == playerEarning) {
             PlayerEarning earning = new PlayerEarning();
             CityInvest cityInvest = investService.getCityInvest(order.getOrderInvestId());
