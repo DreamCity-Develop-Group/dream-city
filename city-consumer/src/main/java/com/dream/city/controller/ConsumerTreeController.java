@@ -339,10 +339,10 @@ public class ConsumerTreeController {
             ordersId = ordersId.concat(orderId + "&");
         }*/
 
-        for (int i =0;i<orders.length;i++){
-            if(i == orders.length-1){
-                ordersId+=orders[i];
-            }else {
+        for (int i = 0; i < orders.length; i++) {
+            if (i == orders.length - 1) {
+                ordersId += orders[i];
+            } else {
                 ordersId += orders[i] + "_";
             }
         }
@@ -350,8 +350,8 @@ public class ConsumerTreeController {
         Message message = new Message("server", "client", new MessageData("sendOrder", "/consumer/tree"), "发货成功");
         if (result.getSuccess()) {
             message.getData().setCode(ReturnStatus.SUCCESS.getStatus());
-            Map<String,Object> re = new HashMap<>();
-            re.put("result",result.getData());
+            Map<String, Object> re = new HashMap<>();
+            re.put("result", result.getData());
             message.getData().setData(re);
             message.setDesc(result.getMsg());
             return message;
@@ -376,12 +376,17 @@ public class ConsumerTreeController {
         String username = jsonObject.getString("username");
         String playerId = jsonObject.getString("playerId");
         BigDecimal amount = jsonObject.getBigDecimal("amount");
-
-        Result result = treeService.createOrder(playerId, amount);
-
-        msg.getData().setCode(result.getCode());
-        msg.getData().setData(result.getData());
-        return msg;
+        if (null != amount && StringUtils.isNotBlank(username) && StringUtils.isNotBlank(playerId)) {
+            Result result = treeService.createOrder(playerId, amount);
+            msg.getData().setCode(result.getCode());
+            msg.getData().setData(result.getData());
+            return msg;
+        } else {
+            msg.getData().setCode(ReturnStatus.INVALID.getStatus());
+            msg.setDesc("参数不正确！");
+            msg.getData().setData(null);
+            return msg;
+        }
     }
 
 
