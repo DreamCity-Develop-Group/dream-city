@@ -561,21 +561,23 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
             tradeReq.setQuotaTax(withdrawTax);
             tradeReq.setTradeStatus(TradeStatus.FREEZE.getCode());
             tradeReq.setInOutStatus(AmountDynType.OUT.getCode());
-        }else if (TradeType.TRANSFER_FROM.getCode().equalsIgnoreCase(record.getTradeType())){
-            if (accountTo == null){
-                tradeReq.setQuotaTax(transferTax);
+        }else if (TradeType.TRANSFER.getCode().equalsIgnoreCase(record.getTradeType())){
+            if (TradeType.TRANSFER_FROM.getCode().equalsIgnoreCase(record.getTradeDetailType())){
+                if (accountTo == null){
+                    tradeReq.setQuotaTax(transferTax);
+                }else {
+                    tradeReq.setQuotaTax(insideTransferTax);
+                }
+                tradeReq.setInOutStatus(AmountDynType.OUT.getCode());
+                if (transferVerify) {
+                    tradeReq.setTradeStatus(TradeStatus.FREEZE.getCode());
+                }else {
+                    tradeReq.setTradeStatus(TradeStatus.OUT.getCode());
+                }
             }else {
-                tradeReq.setQuotaTax(insideTransferTax);
+                tradeReq.setTradeStatus(TradeStatus.IN.getCode());
+                tradeReq.setInOutStatus(AmountDynType.IN.getCode());
             }
-            tradeReq.setInOutStatus(AmountDynType.OUT.getCode());
-            if (transferVerify) {
-                tradeReq.setTradeStatus(TradeStatus.FREEZE.getCode());
-            }else {
-                tradeReq.setTradeStatus(TradeStatus.OUT.getCode());
-            }
-        }else if (TradeType.TRANSFER_TO.getCode().equalsIgnoreCase(record.getTradeType())){
-            tradeReq.setTradeStatus(TradeStatus.IN.getCode());
-            tradeReq.setInOutStatus(AmountDynType.IN.getCode());
         }
 
         //生成交易记录
