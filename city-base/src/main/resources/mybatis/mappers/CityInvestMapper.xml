@@ -35,7 +35,7 @@
 
   <resultMap id="ExtResultMap" type="com.dream.city.base.model.resp.InvestResp" >
     <id column="in_id" property="inId" jdbcType="INTEGER" />
-    <id column="in_type" property="inType" jdbcType="INTEGER" />
+    <result column="in_type" property="inType" jdbcType="INTEGER" />
     <result column="in_name" property="inName" jdbcType="VARCHAR" />
     <result column="in_img" property="inImg" jdbcType="VARCHAR" />
     <result column="order_state" property="orderState" jdbcType="VARCHAR" />
@@ -67,13 +67,16 @@
       i.in_img,
       (SELECT e.earn_current FROM player_earning e WHERE e.earn_invest_id = i.in_id AND e.earn_player_id = #{playerId,jdbcType=VARCHAR} ORDER BY e.update_time DESC LIMIT 1) earn_current,
       (SELECT e.is_withdrew FROM player_earning e WHERE e.earn_invest_id = i.in_id AND e.earn_player_id = #{playerId,jdbcType=VARCHAR} ORDER BY e.update_time DESC LIMIT 1) is_withdrew,
-      (SELECT o.order_state FROM invest_order o WHERE o.order_invest_id =i.in_id and o.order_payer_id = #{playerId,jdbcType=VARCHAR} ORDER BY e.update_time DESC LIMIT 1) order_state,
+      (SELECT o.order_state FROM invest_order o WHERE o.order_invest_id =i.in_id and o.order_payer_id = #{playerId,jdbcType=VARCHAR} ORDER BY o.update_time DESC LIMIT 1) order_state,
       (SELECT v.create_time FROM trade_verify v,invest_order o WHERE v.verify_order_id = o.order_id and o.order_invest_id =i.in_id ORDER BY v.create_time DESC LIMIT 1) verify_time
     from city_invest i
     <where>
       1=1
       <if test="inId !=null">
         and i.in_id = #{inId,jdbcType=INTEGER}
+      </if>
+      <if test="inType !=null">
+        and i.in_type = #{inType,jdbcType=INTEGER}
       </if>
       <if test="inName !=null and inName !=''">
         and i.in_name = #{inName,jdbcType=VARCHAR}

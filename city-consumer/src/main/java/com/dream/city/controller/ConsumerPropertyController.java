@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.dream.city.base.model.Message;
 import com.dream.city.base.model.Result;
-import com.dream.city.base.model.entity.CityInvest;
 import com.dream.city.base.model.req.CityInvestReq;
 import com.dream.city.base.utils.DataUtils;
 import com.dream.city.service.ConsumerPropertyHandleService;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Map;
 
 /**
  * 物业/投资项
@@ -45,8 +43,7 @@ public class ConsumerPropertyController {
         logger.info("查询物业", JSONObject.toJSONString(msg));
 
         CityInvestReq investReq = DataUtils.getInvestFromMessage(msg);
-        CityInvest invest = JSON.toJavaObject(JSON.parseObject(JSON.toJSONString(investReq)),CityInvest.class);
-        Result result = investService.getPropertyByIdOrName(invest);
+        Result result = investService.getProperty(investReq);
         msg.getData().setData(JSON.toJSONString(result.getData()));
         msg.setDesc(result.getMsg());
         return msg;

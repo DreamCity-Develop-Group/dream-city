@@ -179,6 +179,7 @@ public class DataUtils {
         Map map = (Map)msg.getData().getData();
         Integer orderId = map.containsKey("orderId")?Integer.parseInt(String.valueOf(map.get("orderId"))):null;
         Integer investId = map.containsKey("investId")?Integer.parseInt(String.valueOf(map.get("investId"))):null;
+        Integer inType = map.containsKey("inType")?Integer.parseInt(String.valueOf(map.get("inType"))):null;
         BigDecimal orderAmount = map.containsKey("orderAmount")?BigDecimal.valueOf(Double.valueOf(String.valueOf(map.get("orderAmount")))):BigDecimal.ZERO;
         String amountType = map.containsKey("amountType")?String.valueOf(map.get("amountType")):null;
         String inName = map.containsKey("inName")?String.valueOf(map.get("inName")):null;
@@ -197,6 +198,7 @@ public class DataUtils {
         result.setPayerName(payerName);
         result.setOrderRepeat(orderRepeat);
         result.setOrderState(orderState);
+        result.setInType(inType);
         return result;
     }
 

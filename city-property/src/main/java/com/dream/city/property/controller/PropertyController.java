@@ -51,18 +51,17 @@ public class PropertyController {
      * @param invest
      * @return
      */
-    @RequestMapping("/getInvestByIdOrName")
-    public Result<CityInvest> getInvestByIdOrName(@RequestBody CityInvest invest) {
+    @RequestMapping("/getInvest")
+    public Result<InvestResp> getInvest(@RequestBody CityInvestReq invest) {
         logger.info("查询物业，{}", invest);
         boolean success = Boolean.FALSE;
-        CityInvest data = investService.getInvestByIdOrName(invest);
+        InvestResp data = investService.getInvest(invest);
         String desc = "查询物业失败";
         if (data != null){
             desc = "查询物业成功";
             success = Boolean.TRUE;
         }
-        Result<CityInvest> result = new Result<>(success,desc,data);
-        return result;
+        return new Result<>(success,desc,data);
     }
 
     /**

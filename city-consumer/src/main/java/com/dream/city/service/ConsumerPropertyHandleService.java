@@ -3,6 +3,7 @@ package com.dream.city.service;
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.CityInvest;
 import com.dream.city.base.model.req.CityInvestReq;
+import com.dream.city.base.model.resp.InvestResp;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
@@ -26,7 +27,7 @@ public interface ConsumerPropertyHandleService {
      * @param record
      * @return
      */
-    Result<CityInvest> getPropertyByIdOrName(@RequestBody CityInvest record);
+    Result<InvestResp> getProperty(CityInvestReq record);
 
     /**
      * 更新物业

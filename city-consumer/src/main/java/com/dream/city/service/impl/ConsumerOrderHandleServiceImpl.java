@@ -6,8 +6,10 @@ import com.dream.city.base.model.MessageData;
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.*;
 import com.dream.city.base.model.enu.*;
+import com.dream.city.base.model.req.CityInvestReq;
 import com.dream.city.base.model.req.InvestOrderReq;
 import com.dream.city.base.model.resp.InvestOrderResp;
+import com.dream.city.base.model.resp.InvestResp;
 import com.dream.city.base.model.resp.PlayerResp;
 import com.dream.city.base.utils.DataUtils;
 import com.dream.city.base.utils.KeyGenerator;
@@ -49,191 +51,193 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
     @Override
     public Message playerInvest(Message msg) {
         logger.info("预约投资:{}",msg);
-        InvestOrderReq orderReq = DataUtils.getInvestOrderReqFromMessage(msg);
-        Player player = null;
-        if (StringUtils.isNotBlank(orderReq.getPlayerId())){
-            player = playerService.getPlayerByPlayerId(orderReq.getPlayerId());
-        }
-        if (player == null && StringUtils.isNotBlank(orderReq.getPayerName())){
-            PlayerResp playerResp = commonsService.getPlayerByStrUserName(orderReq.getPayerName());
-            if (playerResp != null){
-                player = DataUtils.toJavaObject(playerResp,Player.class);
-            }
-        }
-        if (player == null){
-            msg.setCode(ReturnStatus.ERROR.getStatus());
-            msg.setDesc("找不到玩家账号");
-            return msg;
-        }
-        //获取项目数据
-        CityInvest invest = getInvestByIdOrinName(orderReq.getInvestId(),orderReq.getInName());
-        orderReq.setOrderAmount(invest.getInLimit());
-        orderReq.setPersonalInTax(invest.getInPersonalTax());
-        //获取当前时间  后改为数据库时间 TODO
-        Date investTime = new Date();
-
         String desc = "";
         boolean success = Boolean.FALSE;
-        //校验项目投资规则
-        //1是否复投
-        int orderRepeat = 0;
-        InvestOrderReq getOrdersReq = new InvestOrderReq();
-        getOrdersReq.setInvestId(orderReq.getInvestId());
-        getOrdersReq.setPlayerId(player.getPlayerId());
-        Result<List<InvestOrderResp>> getOrdersResult = orderService.getOrders(getOrdersReq);
-        List<InvestOrderResp> orderList= getOrdersResult.getData();
-        if (orderList != null && orderList.size() > 0){
-            orderRepeat = 1;
-        }
-        //2项目开始投资时间
-        if (investTime.before(invest.getInStart())){
-            desc = "项目还未开始投资";
-        }
-        //3项目结束投资时间
-        if (investTime.after(invest.getInEnd())){
-            desc = "项目投资已结束";
-        }
-        //4限额
+        Map<String,Object> result = new HashMap<>();
+        try {
+            InvestOrderReq orderReq = DataUtils.getInvestOrderReqFromMessage(msg);
+            Player player = null;
+            if (StringUtils.isNotBlank(orderReq.getPlayerId())){
+                player = playerService.getPlayerByPlayerId(orderReq.getPlayerId());
+            }
+            if (player == null && StringUtils.isNotBlank(orderReq.getPayerName())){
+                PlayerResp playerResp = commonsService.getPlayerByStrUserName(orderReq.getPayerName());
+                if (playerResp != null){
+                    player = DataUtils.toJavaObject(playerResp,Player.class);
+                }
+            }
+            if (player == null){
+                msg.setCode(ReturnStatus.ERROR.getStatus());
+                msg.setDesc("找不到玩家账号");
+                return msg;
+            }
+            //获取项目数据
+            InvestResp invest = getInvestByIdOrinName(orderReq.getInvestId(),orderReq.getInName(),orderReq.getInType());
+            orderReq.setOrderAmount(invest.getInLimit());
+            orderReq.setPersonalInTax(invest.getPersonalInTax());
+            //获取当前时间  后改为数据库时间 TODO
+            Date investTime = new Date();
+
+            //校验项目投资规则
+            //1是否复投
+            int orderRepeat = 0;
+            InvestOrderReq getOrdersReq = new InvestOrderReq();
+            getOrdersReq.setInvestId(orderReq.getInvestId());
+            getOrdersReq.setPlayerId(player.getPlayerId());
+            Result<List<InvestOrderResp>> getOrdersResult = orderService.getOrders(getOrdersReq);
+            List<InvestOrderResp> orderList= getOrdersResult.getData();
+            if (orderList != null && orderList.size() > 0){
+                orderRepeat = 1;
+            }
+            //2项目开始投资时间
+            if (investTime.before(invest.getInStart())){
+                desc = "项目还未开始投资";
+            }
+            //3项目结束投资时间
+            if (investTime.after(invest.getInEnd())){
+                desc = "项目投资已结束";
+            }
+            //4限额
         /*if (orderReq.getOrderAmount().compareTo(invest.getInLimit())>0){
             desc = "超过项目投资限额，投资限额为：" + invest.getInLimit();
         }*/
-        Result<PlayerAccount> playerAccountResult = accountService.getPlayerAccount(player.getPlayerId());
-        PlayerAccount playerAccount = DataUtils.toJavaObject(playerAccountResult.getData(),PlayerAccount.class);
-        //5USDT不足
-        if (invest.getInLimit().compareTo(playerAccount.getAccUsdtAvailable()) > 0){
-            desc = "USDT不足";
-        }
-        //6MT不足
-        if (BigDecimal.valueOf(Double.parseDouble(String .valueOf(invest.getInPersonalTax()))).compareTo(playerAccount.getAccMtAvailable()) > 0){
-            desc = "MT不足";
-        }
-
-        //返回数据
-        Map<String,Object> result = new HashMap<>();
-        result.put("investId","");
-        result.put("usdtFreeze",BigDecimal.ZERO);
-        result.put("mtFreeze",BigDecimal.ZERO);
-        result.put("state",ReturnStatus.INVEST_SUBSCRIBE.getStatus());
-
-        //生成订单
-        Result<InvestOrder> orderResult = this.orderCreate(invest,player.getPlayerId(),orderRepeat,desc);
-        InvestOrder order = null;
-        if (orderResult != null && orderResult.getData() != null){
-            order = orderResult.getData();
-            result.put("investId",order.getOrderInvestId());
-
-            PlayerEarning insertEarningReq = new PlayerEarning();
-            insertEarningReq.setIsWithdrew(0);
-            insertEarningReq.setEarnMax(invest.getInLimit());
-            insertEarningReq.setEarnCurrent(BigDecimal.ZERO);
-            insertEarningReq.setEarnPlayerId(player.getPlayerId());
-            insertEarningReq.setEarnInvestId(invest.getInId());
-            insertEarningReq.setOrderId(order.getOrderId());
-            insertEarningReq.setEarnEnterpriseTax(invest.getInEnterpriseTax());
-            insertEarningReq.setEarnPersonalTax(invest.getInPersonalTax());
-            insertEarningReq.setEarnQuotaTax(invest.getInQuotaTax());
-            earningService.insertEarning(insertEarningReq);
-        }
-
-        //投资扣减用户账户金额
-        Result updatePlayerAccountResult = null;
-        //String amountType = "";
-        String tradeAmountType = TradeType.INVEST.getCode();
-        //交易金额
-        BigDecimal orderAmount = orderReq.getOrderAmount();
-        //总税金
-        BigDecimal inTax = invest.getInPersonalTax().add(invest.getInEnterpriseTax()).add(invest.getInQuotaTax());
-        if (order != null && order.getOrderId() != null){
-            updatePlayerAccountResult = this.deductPlayerAccountAmount(orderAmount,inTax,playerAccount);
-            success = updatePlayerAccountResult.getSuccess();
-            desc = updatePlayerAccountResult.getMsg();
-        }else {
-            success = orderResult.getSuccess();
-            desc = orderResult.getMsg();
-        }
-
-        //用户交易
-        Result<PlayerTrade> playerTradeResult = null;
-        PlayerTrade trade = null;
-        if (updatePlayerAccountResult != null && updatePlayerAccountResult.getSuccess()){
-            trade = new PlayerTrade();
-            trade.setTradeType(TradeType.INVEST.getCode());
-            trade.setInOutStatus(AmountDynType.OUT.getCode());
-            trade.setTradeStatus(TradeStatus.FREEZE.getCode());
-            trade.setTradePlayerId(player.getPlayerId());
-            trade.setTradeOrderId(order.getOrderId());
-            trade.setTradeAccId(playerAccount.getAccId());
-            trade.setTradeAmount(orderAmount);
-            trade.setPersonalTax(invest.getInPersonalTax());
-            trade.setEnterpriseTax(invest.getInEnterpriseTax());
-            trade.setQuotaTax(invest.getInQuotaTax());
-            trade.setTradeDesc("预约投资");
-            playerTradeResult = tradeService.insertPlayerTrade(trade);
-            trade = playerTradeResult.getData();
-            success = playerTradeResult.getSuccess();
-            desc = playerTradeResult.getMsg();
-        }
-
-        Result<TradeVerify> tradeVerifyResult = null;
-        if (playerTradeResult != null && playerTradeResult.getSuccess()){
-            //生成投资待审核
-            tradeVerifyResult = this.createTradeVerify(trade);
-
-        }
-
-        //交易流水
-        if (playerTradeResult != null && playerTradeResult.getSuccess()){
-            TradeDetail tradeDetail = new TradeDetail();
-            tradeDetail.setTradeId(trade.getTradeId());
-            tradeDetail.setOrderId(order.getOrderId());
-            tradeDetail.setPlayerId(player.getPlayerId());
-            if (tradeVerifyResult != null && tradeVerifyResult.getData() != null
-                    && tradeVerifyResult.getData().getVerifyId() != null){
-                tradeDetail.setVerifyId(tradeVerifyResult.getData().getVerifyId());
-                tradeDetail.setVerifyTime(new Date());
+            Result<PlayerAccount> playerAccountResult = accountService.getPlayerAccount(player.getPlayerId());
+            PlayerAccount playerAccount = DataUtils.toJavaObject(playerAccountResult.getData(),PlayerAccount.class);
+            //5USDT不足
+            if (invest.getInLimit().compareTo(playerAccount.getAccUsdtAvailable()) > 0){
+                desc = "USDT不足";
             }
-            //投资金额
-            tradeDetail.setTradeAmount(orderAmount);
-            tradeDetail.setUsdtSurplus(playerAccount.getAccUsdt().subtract(orderAmount));
-            tradeDetail.setMtSurplus(playerAccount.getAccMt());
-            tradeDetail.setTradeDetailType(TradeDetailType.USDT_INVEST_FREEZE.getCode());
-            tradeDetail.setDescr(TradeDetailType.USDT_INVEST_FREEZE.getDesc());
-            tradeService.insertTradeDetail(tradeDetail);
-            //个人所得税
-            if (trade.getPersonalTax().compareTo(BigDecimal.ZERO) > 0) {
-                tradeDetail.setTradeAmount(trade.getPersonalTax());
-                tradeDetail.setMtSurplus(playerAccount.getAccMt().subtract(trade.getPersonalTax()));
-                tradeDetail.setTradeDetailType(TradeDetailType.MT_INVEST_PERSONAL_TAX.getCode());
-                tradeDetail.setDescr(TradeDetailType.MT_INVEST_PERSONAL_TAX.getDesc());
+            //6MT不足
+            if (BigDecimal.valueOf(Double.parseDouble(String .valueOf(invest.getPersonalInTax()))).compareTo(playerAccount.getAccMtAvailable()) > 0){
+                desc = "MT不足";
+            }
+
+            //返回数据
+            result.put("investId","");
+            result.put("usdtFreeze",BigDecimal.ZERO);
+            result.put("mtFreeze",BigDecimal.ZERO);
+            result.put("state",ReturnStatus.INVEST_SUBSCRIBE.getStatus());
+
+            //生成订单
+            Result<InvestOrder> orderResult = this.orderCreate(invest,player.getPlayerId(),orderRepeat,desc);
+            InvestOrder order = null;
+            if (orderResult != null && orderResult.getData() != null){
+                order = orderResult.getData();
+                result.put("investId",order.getOrderInvestId());
+
+                PlayerEarning insertEarningReq = new PlayerEarning();
+                insertEarningReq.setIsWithdrew(0);
+                insertEarningReq.setEarnMax(invest.getInLimit().multiply(BigDecimal.valueOf(Double.parseDouble(String.valueOf(invest.getInEarning())))));
+                insertEarningReq.setEarnCurrent(BigDecimal.ZERO);
+                insertEarningReq.setEarnPlayerId(player.getPlayerId());
+                insertEarningReq.setEarnInvestId(invest.getInId());
+                insertEarningReq.setOrderId(order.getOrderId());
+                insertEarningReq.setEarnEnterpriseTax(invest.getEnterpriseIntax());
+                insertEarningReq.setEarnPersonalTax(invest.getPersonalInTax());
+                insertEarningReq.setEarnQuotaTax(invest.getInQuotaTax());
+                earningService.insertEarning(insertEarningReq);
+            }
+
+            //投资扣减用户账户金额
+            Result updatePlayerAccountResult = null;
+            //交易金额
+            BigDecimal orderAmount = orderReq.getOrderAmount();
+            //总税金
+            BigDecimal inTax = invest.getPersonalInTax().add(invest.getEnterpriseIntax()).add(invest.getInQuotaTax());
+            if (order != null && order.getOrderId() != null){
+                updatePlayerAccountResult = this.deductPlayerAccountAmount(orderAmount,inTax,playerAccount);
+                success = updatePlayerAccountResult.getSuccess();
+                desc = updatePlayerAccountResult.getMsg();
+            }else {
+                success = orderResult.getSuccess();
+                desc = orderResult.getMsg();
+            }
+
+            //用户交易
+            Result<PlayerTrade> playerTradeResult = null;
+            PlayerTrade trade = null;
+            if (updatePlayerAccountResult != null && updatePlayerAccountResult.getSuccess()){
+                trade = new PlayerTrade();
+                trade.setTradeType(TradeType.INVEST.getCode());
+                trade.setInOutStatus(AmountDynType.OUT.getCode());
+                trade.setTradeStatus(TradeStatus.FREEZE.getCode());
+                trade.setTradePlayerId(player.getPlayerId());
+                trade.setTradeOrderId(order.getOrderId());
+                trade.setTradeAccId(playerAccount.getAccId());
+                trade.setTradeAmount(orderAmount);
+                trade.setPersonalTax(invest.getPersonalInTax());
+                trade.setEnterpriseTax(invest.getEnterpriseIntax());
+                trade.setQuotaTax(invest.getInQuotaTax());
+                trade.setTradeDesc("预约投资");
+                playerTradeResult = tradeService.insertPlayerTrade(trade);
+                trade = playerTradeResult.getData();
+                success = playerTradeResult.getSuccess();
+                desc = playerTradeResult.getMsg();
+            }
+
+            Result<TradeVerify> tradeVerifyResult = null;
+            if (playerTradeResult != null && playerTradeResult.getSuccess()){
+                //生成投资待审核
+                tradeVerifyResult = this.createTradeVerify(trade);
+
+            }
+
+            //交易流水
+            if (playerTradeResult != null && playerTradeResult.getSuccess()){
+                TradeDetail tradeDetail = new TradeDetail();
+                tradeDetail.setTradeId(trade.getTradeId());
+                tradeDetail.setOrderId(order.getOrderId());
+                tradeDetail.setPlayerId(player.getPlayerId());
+                if (tradeVerifyResult != null && tradeVerifyResult.getData() != null
+                        && tradeVerifyResult.getData().getVerifyId() != null){
+                    tradeDetail.setVerifyId(tradeVerifyResult.getData().getVerifyId());
+                    tradeDetail.setVerifyTime(new Date());
+                }
+                //投资金额
+                tradeDetail.setTradeAmount(orderAmount);
+                tradeDetail.setUsdtSurplus(playerAccount.getAccUsdt().subtract(orderAmount));
+                tradeDetail.setMtSurplus(playerAccount.getAccMt());
+                tradeDetail.setTradeDetailType(TradeDetailType.USDT_INVEST_FREEZE.getCode());
+                tradeDetail.setDescr(TradeDetailType.USDT_INVEST_FREEZE.getDesc());
                 tradeService.insertTradeDetail(tradeDetail);
-            }
-            //企业所得税
-            if (trade.getEnterpriseTax().compareTo(BigDecimal.ZERO) > 0) {
-                tradeDetail.setTradeAmount(trade.getEnterpriseTax());
-                tradeDetail.setMtSurplus(playerAccount.getAccMt().subtract(trade.getEnterpriseTax().add(trade.getPersonalTax())));
-                tradeDetail.setTradeDetailType(TradeDetailType.MT_INVEST_ENTERPRISE_TAX.getCode());
-                tradeDetail.setDescr(TradeDetailType.MT_INVEST_ENTERPRISE_TAX.getDesc());
-                tradeService.insertTradeDetail(tradeDetail);
-            }
-            //定额得税
-            if (trade.getQuotaTax().compareTo(BigDecimal.ZERO) > 0) {
-                tradeDetail.setTradeAmount(trade.getQuotaTax());
-                tradeDetail.setMtSurplus(playerAccount.getAccMt().subtract(trade.getEnterpriseTax().add(trade.getPersonalTax()).add(trade.getQuotaTax())));
-                tradeDetail.setTradeDetailType(TradeDetailType.MT_INVEST_QUOTA_TAX.getCode());
-                tradeDetail.setDescr(TradeDetailType.MT_INVEST_QUOTA_TAX.getDesc());
-                tradeService.insertTradeDetail(tradeDetail);
-            }
+                //个人所得税
+                if (trade.getPersonalTax().compareTo(BigDecimal.ZERO) > 0) {
+                    tradeDetail.setTradeAmount(trade.getPersonalTax());
+                    tradeDetail.setMtSurplus(playerAccount.getAccMt().subtract(trade.getPersonalTax()));
+                    tradeDetail.setTradeDetailType(TradeDetailType.MT_INVEST_PERSONAL_TAX.getCode());
+                    tradeDetail.setDescr(TradeDetailType.MT_INVEST_PERSONAL_TAX.getDesc());
+                    tradeService.insertTradeDetail(tradeDetail);
+                }
+                //企业所得税
+                if (trade.getEnterpriseTax().compareTo(BigDecimal.ZERO) > 0) {
+                    tradeDetail.setTradeAmount(trade.getEnterpriseTax());
+                    tradeDetail.setMtSurplus(playerAccount.getAccMt().subtract(trade.getEnterpriseTax().add(trade.getPersonalTax())));
+                    tradeDetail.setTradeDetailType(TradeDetailType.MT_INVEST_ENTERPRISE_TAX.getCode());
+                    tradeDetail.setDescr(TradeDetailType.MT_INVEST_ENTERPRISE_TAX.getDesc());
+                    tradeService.insertTradeDetail(tradeDetail);
+                }
+                //定额得税
+                if (trade.getQuotaTax().compareTo(BigDecimal.ZERO) > 0) {
+                    tradeDetail.setTradeAmount(trade.getQuotaTax());
+                    tradeDetail.setMtSurplus(playerAccount.getAccMt().subtract(trade.getEnterpriseTax().add(trade.getPersonalTax()).add(trade.getQuotaTax())));
+                    tradeDetail.setTradeDetailType(TradeDetailType.MT_INVEST_QUOTA_TAX.getCode());
+                    tradeDetail.setDescr(TradeDetailType.MT_INVEST_QUOTA_TAX.getDesc());
+                    tradeService.insertTradeDetail(tradeDetail);
+                }
 
-            success = Boolean.TRUE;
-            desc = "预约投资成功";
-            msg.getData().setCode(ReturnStatus.SUCCESS.getStatus());
-            result.put("usdtFreeze",trade.getTradeAmount());
-            result.put("mtFreeze",invest.getInPersonalTax().add(invest.getInEnterpriseTax()).add(invest.getInQuotaTax()));
-            result.put("state",ReturnStatus.INVEST_SUBSCRIBED.getStatus());
-        }else {
-            success = Boolean.FALSE;
-            desc = "预约投资失败";
-            msg.getData().setCode(ReturnStatus.ERROR.getStatus());
+                success = Boolean.TRUE;
+                desc = "预约投资成功";
+                msg.getData().setCode(ReturnStatus.SUCCESS.getStatus());
+                result.put("usdtFreeze",trade.getTradeAmount());
+                result.put("mtFreeze",invest.getPersonalInTax().add(invest.getEnterpriseIntax()).add(invest.getInQuotaTax()));
+                result.put("state",ReturnStatus.INVEST_SUBSCRIBED.getStatus());
+            }else {
+                success = Boolean.FALSE;
+                desc = "预约投资失败";
+                msg.getData().setCode(ReturnStatus.ERROR.getStatus());
+            }
+        }catch (Exception e){
+            logger.error("预约投资异常",e);
         }
 
         msg.setDesc(desc);
@@ -282,11 +286,12 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
      * @param inName
      * @return
      */
-    private CityInvest getInvestByIdOrinName(Integer inId,String inName){
-        CityInvest investReq = new CityInvest();
+    private InvestResp getInvestByIdOrinName(Integer inId,String inName,Integer inType){
+        CityInvestReq investReq = new CityInvestReq();
         investReq.setInId(inId);
         investReq.setInName(inName);
-        Result<CityInvest> investResult = propertyService.getInvestByIdOrName(investReq);
+        investReq.setInType(inType);
+        Result<InvestResp> investResult = propertyService.getInvest(investReq);
         return  investResult.getData();
     }
 
@@ -298,7 +303,7 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
      * @param desc
      * @return
      */
-    private Result<InvestOrder> orderCreate(CityInvest invest,String orderPayerId,int orderRepeat,String desc){
+    private Result<InvestOrder> orderCreate(InvestResp invest,String orderPayerId,int orderRepeat,String desc){
         Result<InvestOrder> orderResult = new Result<>();
         if (StringUtils.isEmpty(desc)){
             InvestOrder recordReq =new InvestOrder();
@@ -443,22 +448,22 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
         List<Map> list = new ArrayList<>();
         if (!CollectionUtils.isEmpty(orderList)){
             Map<String,Object> map = null;
-            CityInvest getInvest = null;
+            CityInvestReq getInvest = null;
             for (InvestOrderResp order: orderList){
                 map = new HashMap<>();
-                getInvest = new CityInvest();
+                getInvest = new CityInvestReq();
                 getInvest.setInId(order.getOrderId());
-                Result<CityInvest> investResult = propertyService.getInvestByIdOrName(getInvest);
-                CityInvest invest = investResult.getData();
+                Result<InvestResp> investResult = propertyService.getInvest(getInvest);
+                InvestResp invest = investResult.getData();
 
                 map.put("username",player.getPlayerName());
                 map.put("inImg",invest.getInImg());
                 map.put("inName",invest.getInName());
                 map.put("inId",invest.getInId());
-                map.put("profit",invest.getInPersonalTax());
+                map.put("profit",invest.getPersonalInTax());
                 map.put("orderAmount",invest.getInLimit());
-                map.put("personalInTax",0); //TODO
-                map.put("enterpriseIntax",0); //TODO
+                map.put("personalInTax",invest.getPersonalInTax());
+                map.put("enterpriseIntax",invest.getEnterpriseIntax());
                 map.put("status",0); //TODO
                 list.add(map);
             }

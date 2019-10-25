@@ -32,8 +32,8 @@ public class ConsumerPropertyHandleServiceImpl implements ConsumerPropertyHandle
     }
 
     @Override
-    public Result<CityInvest> getPropertyByIdOrName(CityInvest record) {
-        return propertyService.getInvestByIdOrName(record);
+    public Result<InvestResp> getProperty(CityInvestReq record) {
+        return propertyService.getInvest(record);
     }
 
     @Override

@@ -27,11 +27,8 @@ public class InvestServiceImpl implements InvestService {
     }
 
     @Override
-    public CityInvest getInvestByIdOrName(CityInvest record) {
-        if (record.getInId() == null){
-            return null;
-        }
-        return investMapper.selectByPrimaryKey(record.getInId());
+    public InvestResp getInvest(CityInvestReq record) {
+        return investMapper.selectCityInvest(record);
     }
 
     @Override
