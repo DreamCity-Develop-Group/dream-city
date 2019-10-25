@@ -156,6 +156,13 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
         if(StringUtils.isNotBlank(valByKey2)){
             transferTax = BigDecimal.valueOf(Double.parseDouble(valByKey2));
         }
+        //内部转账税
+        String valByKey4 = dictionaryService.getValByKey("player.inside.transfer.mt.tax");
+        BigDecimal insideTransferTax = BigDecimal.ZERO;
+        if(StringUtils.isNotBlank(valByKey4)){
+            insideTransferTax = BigDecimal.valueOf(Double.parseDouble(valByKey4));
+        }
+        PlayerAccountResp accountByAccAddr = this.getrAccountByAccAddr(record.getAccAddr());
 
         String msg = "";
         boolean success = Boolean.TRUE;
@@ -170,11 +177,24 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
             success = Boolean.FALSE;
             code = ReturnStatus.NOT_ENOUGH_MT.getStatus();
         }
-        if (TradeType.TRANSFER.getCode().equalsIgnoreCase(record.getTradeType()) && transferTax.compareTo(getPlayerAccount.getAccMtAvailable()) > 0){
-            msg = "MT余额不足";
-            success = Boolean.FALSE;
-            code = ReturnStatus.NOT_ENOUGH_MT.getStatus();
+        if (TradeType.TRANSFER.getCode().equalsIgnoreCase(record.getTradeType())){
+            if (accountByAccAddr == null){
+                //外部转账
+                if (transferTax.compareTo(getPlayerAccount.getAccMtAvailable()) > 0){
+                    msg = "MT余额不足";
+                    success = Boolean.FALSE;
+                    code = ReturnStatus.NOT_ENOUGH_MT.getStatus();
+                }
+            }else {
+                //内部转账
+                if (insideTransferTax.compareTo(getPlayerAccount.getAccMtAvailable()) > 0){
+                    msg = "MT余额不足";
+                    success = Boolean.FALSE;
+                    code = ReturnStatus.NOT_ENOUGH_MT.getStatus();
+                }
+            }
         }
+
         return Result.result(success,msg,code);
     }
 
@@ -196,6 +216,12 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
             }
             if(StringUtils.isNotBlank(valByKey2)){
                 transferTax = BigDecimal.valueOf(Double.parseDouble(valByKey2));
+            }
+            //内部转账税
+            String valByKey4 = dictionaryService.getValByKey("player.inside.transfer.mt.tax");
+            BigDecimal insideTransferTax = BigDecimal.ZERO;
+            if(StringUtils.isNotBlank(valByKey4)){
+                insideTransferTax = BigDecimal.valueOf(Double.parseDouble(valByKey4));
             }
 
             recordOut.setInOut(AmountDynType.OUT.name());
@@ -250,22 +276,24 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
             //新增交易流水
             if (createPlayerTradeResult != null && createPlayerTradeResult.getSuccess() && tradeVerify != null){
                 BigDecimal usdtSurplus = getPlayerAccount.getAccUsdt().subtract(createPlayerTradeResult.getData().getTradeAmount());
-                BigDecimal mtSurplus = getPlayerAccount.getAccMt().subtract(transferTax);
+                BigDecimal mtSurplus = getPlayerAccount.getAccMt();
 
                 if (accountTo != null){
+                    mtSurplus = getPlayerAccount.getAccMt().subtract(insideTransferTax);
                     //内部转账
                     if (transferVerify){
                         this.createTradeDetail(createPlayerTradeResult.getData().getTradePlayerId(), createPlayerTradeResult.getData().getTradeId(),
                                 createPlayerTradeResult.getData().getTradeAmount(), usdtSurplus,getPlayerAccount.getAccMt(),null,tradeVerify.getVerifyId(),TradeDetailType.TRANSFER_FREEZE.getCode(), "转账冻结金额");
                         this.createTradeDetail(createPlayerTradeResult.getData().getTradePlayerId(), createPlayerTradeResult.getData().getTradeId(),
-                                transferTax, usdtSurplus,mtSurplus,null,tradeVerify.getVerifyId(),TradeDetailType.TRANSFER_FREEZE.getCode(), "转账冻结税金");
+                                insideTransferTax, usdtSurplus,mtSurplus,null,tradeVerify.getVerifyId(),TradeDetailType.TRANSFER_FREEZE.getCode(), "转账冻结税金");
                     }else {
                         this.createTradeDetail(createPlayerTradeResult.getData().getTradePlayerId(), createPlayerTradeResult.getData().getTradeId(),
                                 createPlayerTradeResult.getData().getTradeAmount(), usdtSurplus,getPlayerAccount.getAccMt(),null,tradeVerify.getVerifyId(),TradeDetailType.TRANSFER_VERIFY.getCode(), "转账扣除金额");
                         this.createTradeDetail(createPlayerTradeResult.getData().getTradePlayerId(), createPlayerTradeResult.getData().getTradeId(),
-                                transferTax, usdtSurplus,mtSurplus,null,tradeVerify.getVerifyId(),TradeDetailType.TRANSFER_VERIFY.getCode(), "转账扣除税金");
+                                insideTransferTax, usdtSurplus,mtSurplus,null,tradeVerify.getVerifyId(),TradeDetailType.TRANSFER_VERIFY.getCode(), "转账扣除税金");
                     }
                 }else {
+                    mtSurplus = getPlayerAccount.getAccMt().subtract(transferTax);
                     //外部转账
                     this.createTradeDetail(createPlayerTradeResult.getData().getTradePlayerId(), createPlayerTradeResult.getData().getTradeId(),
                             createPlayerTradeResult.getData().getTradeAmount(), usdtSurplus,getPlayerAccount.getAccMt(),null,tradeVerify.getVerifyId(),TradeDetailType.TRANSFER_FREEZE.getCode(), "转账冻结金额");
@@ -281,7 +309,7 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
                 msg = "玩家内部转账";
                 if (success && !transferVerify){
                     msg = "玩家内部转账成功";
-                    trade.setQuotaTax(BigDecimal.valueOf(Double.parseDouble(dictionaryService.getValByKey("player.transfer.mt.tax"))));
+                    trade.setQuotaTax(insideTransferTax);
 
                     //内部转账 立即到账 转入账户入账
                     PlayerAccountReq recordIn = new PlayerAccountReq();
@@ -355,20 +383,29 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
         boolean success = Boolean.FALSE;
         String tradeType = null;
         String desc = "失败！";
+        //转账是否需要审核
         String valByKey = dictionaryService.getValByKey("player.inside.transfer.verify");
         BigDecimal transferTax = BigDecimal.ZERO;
         Boolean transferVerify = Boolean.FALSE;
         if(StringUtils.isNotBlank(valByKey)){
             transferVerify = Boolean.parseBoolean(valByKey);
         }
+        //转账税
         String valByKey2 = dictionaryService.getValByKey("player.transfer.mt.tax");
         if(StringUtils.isNotBlank(valByKey2)){
             transferTax = BigDecimal.valueOf(Double.parseDouble(valByKey2));
         }
+        //提现税
         String valByKey3 = dictionaryService.getValByKey("player.withdraw.mt.tax");
         BigDecimal withdrawTax = BigDecimal.ZERO;
         if(StringUtils.isNotBlank(valByKey3)){
             withdrawTax = BigDecimal.valueOf(Double.parseDouble(valByKey3));
+        }
+        //内部转账税
+        String valByKey4 = dictionaryService.getValByKey("player.inside.transfer.mt.tax");
+        BigDecimal insideTransferTax = BigDecimal.ZERO;
+        if(StringUtils.isNotBlank(valByKey4)){
+            insideTransferTax = BigDecimal.valueOf(Double.parseDouble(valByKey4));
         }
 
         PlayerAccount getPlayerAccount = accountService.getPlayerAccount(record.getAccPlayerId());
@@ -428,16 +465,16 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
                     //内部转账
                     if (transferVerify){
                         //要审核 冻结
-                        accMt = getPlayerAccount.getAccMt().subtract(transferTax);
-                        accMtAvailable = getPlayerAccount.getAccMtAvailable().subtract(transferTax);
-                        accMtFreeze = getPlayerAccount.getAccMtFreeze().add(transferTax);
+                        accMt = getPlayerAccount.getAccMt().subtract(insideTransferTax);
+                        accMtAvailable = getPlayerAccount.getAccMtAvailable().subtract(insideTransferTax);
+                        accMtFreeze = getPlayerAccount.getAccMtFreeze().add(insideTransferTax);
                         accUsdt = getPlayerAccount.getAccUsdt().subtract(tradeAmount);
                         accUsdtAvailable = getPlayerAccount.getAccUsdtAvailable().subtract(tradeAmount);
                         accUsdtFreeze = getPlayerAccount.getAccUsdtFreeze().add(tradeAmount);
                     }else {
                         //不用审核 立即到账
-                        accMt = getPlayerAccount.getAccMt().subtract(transferTax);
-                        accMtAvailable = getPlayerAccount.getAccMtAvailable().subtract(transferTax);
+                        accMt = getPlayerAccount.getAccMt().subtract(insideTransferTax);
+                        accMtAvailable = getPlayerAccount.getAccMtAvailable().subtract(insideTransferTax);
                         accMtFreeze = getPlayerAccount.getAccMtFreeze();
                         accUsdt = getPlayerAccount.getAccUsdt().subtract(tradeAmount);
                         accUsdtAvailable = getPlayerAccount.getAccUsdtAvailable().subtract(tradeAmount);
@@ -502,6 +539,14 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
         if(StringUtils.isNotBlank(valByKey3)){
             withdrawTax = BigDecimal.valueOf(Double.parseDouble(valByKey3));
         }
+        //内部转账税
+        String valByKey4 = dictionaryService.getValByKey("player.inside.transfer.mt.tax");
+        BigDecimal insideTransferTax = BigDecimal.ZERO;
+        if(StringUtils.isNotBlank(valByKey4)){
+            insideTransferTax = BigDecimal.valueOf(Double.parseDouble(valByKey4));
+        }
+        //收款用户
+        PlayerAccountResp accountTo = getrAccountByAccAddr(record.getAccAddr());
 
         PlayerTrade tradeReq = new PlayerTrade();
         tradeReq.setTradeType(record.getTradeType());
@@ -517,7 +562,11 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
             tradeReq.setTradeStatus(TradeStatus.FREEZE.getCode());
             tradeReq.setInOutStatus(AmountDynType.OUT.getCode());
         }else if (TradeType.TRANSFER_FROM.getCode().equalsIgnoreCase(record.getTradeType())){
-            tradeReq.setQuotaTax(transferTax);
+            if (accountTo == null){
+                tradeReq.setQuotaTax(transferTax);
+            }else {
+                tradeReq.setQuotaTax(insideTransferTax);
+            }
             tradeReq.setInOutStatus(AmountDynType.OUT.getCode());
             if (transferVerify) {
                 tradeReq.setTradeStatus(TradeStatus.FREEZE.getCode());
