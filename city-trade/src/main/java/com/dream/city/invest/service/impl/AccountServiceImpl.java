@@ -12,6 +12,7 @@ import com.dream.city.invest.service.AccountService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -31,7 +32,7 @@ public class AccountServiceImpl implements AccountService {
     DictionaryService dictionaryService;
 
     @Override
-    @Transactional
+    @Transactional(propagation = Propagation.SUPPORTS)
     public int createPlayerAccount(PlayerAccount record) {
         Integer integer = accountMapper.insertSelective(record);
         return integer ==null?0:integer;
@@ -58,14 +59,14 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    @Transactional
+    @Transactional(propagation = Propagation.SUPPORTS)
     public int updatePlayerAccount(PlayerAccount record) {
         playerAccountMapper.updatePlayerAccount(record);
         return 1;
     }
 
     @Override
-    @Transactional
+    @Transactional(propagation = Propagation.SUPPORTS)
     public int updatePlayerAccountById(PlayerAccount record) {
         Integer integer = accountMapper.updateByPrimaryKeySelective(record);
         return integer == null?0:integer;

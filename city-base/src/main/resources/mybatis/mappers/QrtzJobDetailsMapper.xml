@@ -70,19 +70,19 @@
     <where>
       1=1
       <if test="jobName != null and jobName != ''">
-        and j.JOB_NAME = #{jobName,jdbcType=VARCHAR}
+        and j.JOB_NAME like '%${jobName}%'
       </if>
       <if test="jobGroupName != null and jobGroupName != ''">
-        and j.JOB_GROUP = #{jobGroupName,jdbcType=VARCHAR}
+        and j.JOB_GROUP like '%${jobGroupName}%'
       </if>
       <if test="jobClazz != null and jobClazz != ''">
-        and j.JOB_CLASS_NAME = #{jobClazz,jdbcType=VARCHAR}
+        and j.JOB_CLASS_NAME like '%${jobClazz}%'
       </if>
       <if test="jobTime != null and jobTime != ''">
         and cron.CRON_EXPRESSION = #{jobTime,jdbcType=VARCHAR}
       </if>
       <if test="triggerName != null and triggerName != ''">
-        and t.TRIGGER_NAME = #{triggerName,jdbcType=VARCHAR}
+        and t.TRIGGER_NAME like '%${triggerName}%'
       </if>
       <if test="triggerGroup != null and triggerGroup != ''">
         and t.TRIGGER_GROUP = #{triggerGroup,jdbcType=VARCHAR}
@@ -106,7 +106,7 @@
       and SCHED_NAME = #{schedName,jdbcType=VARCHAR}
     </if>
     <if test="jobName != null and jobName != ''">
-      and JOB_NAME = #{jobName,jdbcType=VARCHAR}
+      and JOB_NAME like '%${jobName}%'
     </if>
     <if test="jobGroup != null and jobGroup != ''">
       and JOB_GROUP = #{jobGroup,jdbcType=VARCHAR}

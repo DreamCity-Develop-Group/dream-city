@@ -75,7 +75,7 @@ public class HttpClientUtil {
 
             httpPost = new HttpPost(url);
 
-            if (serviceOpt.equals("login") || serviceOpt.equals("reg") || serviceOpt.equals("getCode")||serviceOpt.equals("jobPush")) {
+            if (serviceOpt.equals("login") || serviceOpt.equals("reg") || serviceOpt.equals("getCode")||serviceOpt.equals("jobPush") || "pwforget".equals(serviceOpt)) {
                 //这里不处理，表示正常放行
                 httpPost.setHeader("method", serviceOpt);
                 httpPost.setHeader("authType", "");

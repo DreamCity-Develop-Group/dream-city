@@ -8,6 +8,8 @@ import com.dream.city.base.model.resp.InvestOrderResp;
 import com.dream.city.invest.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -22,12 +24,14 @@ public class OrderServiceImpl implements OrderService {
 
 
     @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
     public InvestOrder insertInvestOrder(InvestOrder record) {
         Integer integer = orderMapper.insertSelective(record);
         return integer==null?null:record;
     }
 
     @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
     public int playerInvesting(Integer orderId) {
         InvestOrder record = new InvestOrder();
         record.setOrderId(orderId);
@@ -37,6 +41,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
     public int investOrderInvalid(InvestOrder record) {
         record.setOrderState(InvestStatus.INVALID.name());
         Integer integer = orderMapper.updateByPrimaryKeySelective(record);

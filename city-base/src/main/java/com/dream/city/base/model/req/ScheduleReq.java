@@ -26,6 +26,8 @@ public class ScheduleReq implements Serializable {
 
 
     private String descr;
+    private String jobDescription;
+    private String triggerDescription;
 
     private String editType;
 

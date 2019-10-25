@@ -149,7 +149,7 @@ public class DefaultController {
 
         //消息数量 显示为小红点
         Result<Integer> integerResult = messageService.getUnReadCount(playerId);
-        boolean messages = true;
+        boolean messages = false;
         if (integerResult != null) {
             int count = integerResult.getData();
             messages = count > 0 ? true : false;

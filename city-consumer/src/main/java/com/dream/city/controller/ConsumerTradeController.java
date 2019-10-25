@@ -372,7 +372,7 @@ public class ConsumerTradeController {
                         commonsService.sendMessage(player2.getPlayerId(),null,JSON.toJSONString(resultMap));*/
                     }
                 }
-                resultMap.put("mt",tradeResult.getData().getQuotaTax());
+                resultMap.put("mt",tradeResult.getData().getPersonalTax());
                 resultMap.put("code",tradeResult.getCode());
             }else {
                 msg.setCode(tradeResult.getCode());
@@ -391,7 +391,7 @@ public class ConsumerTradeController {
         return msg;
     }
 
-    @RequestMapping("/trade/invest/collect/earning")
+    /*@RequestMapping("/trade/invest/collect/earning")
     public Message investCollectEarning(@RequestBody Message message){
         Object dataMsg = message.getData().getData();
         JSONObject jsonObject = JsonUtil.parseJsonToObj(JsonUtil.parseObjToJson(dataMsg), JSONObject.class);
@@ -402,7 +402,7 @@ public class ConsumerTradeController {
 
         message.getData().setCode(result.getCode());
         return message;
-    }
+    }*/
 
 
 }
