@@ -41,6 +41,8 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
     private ConsumerCommonsService commonsService;
     @Autowired
     private ConsumerPlayerService playerService;
+    @Autowired
+    private ConsumerEarningService earningService;
 
 
 
@@ -115,9 +117,22 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
 
         //生成订单
         Result<InvestOrder> orderResult = this.orderCreate(invest,player.getPlayerId(),orderRepeat,desc);
-        InvestOrder order = orderResult.getData();
-        if (order != null){
+        InvestOrder order = null;
+        if (orderResult != null && orderResult.getData() != null){
+            order = orderResult.getData();
             result.put("investId",order.getOrderInvestId());
+
+            PlayerEarning insertEarningReq = new PlayerEarning();
+            insertEarningReq.setIsWithdrew(0);
+            insertEarningReq.setEarnMax(invest.getInLimit());
+            insertEarningReq.setEarnCurrent(BigDecimal.ZERO);
+            insertEarningReq.setEarnPlayerId(player.getPlayerId());
+            insertEarningReq.setEarnInvestId(invest.getInId());
+            insertEarningReq.setOrderId(order.getOrderId());
+            insertEarningReq.setEarnEnterpriseTax(invest.getInEnterpriseTax());
+            insertEarningReq.setEarnPersonalTax(invest.getInPersonalTax());
+            insertEarningReq.setEarnQuotaTax(invest.getInQuotaTax());
+            earningService.insertEarning(insertEarningReq);
         }
 
         //投资扣减用户账户金额

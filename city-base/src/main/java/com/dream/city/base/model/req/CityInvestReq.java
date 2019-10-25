@@ -8,6 +8,7 @@ import java.io.Serializable;
 public class CityInvestReq implements Serializable {
 
     private Integer inId;
+    private Integer orderId;
     /** 名称 */
     private String inName;
     private String isValid;
