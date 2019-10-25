@@ -4,6 +4,7 @@ import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.InvestAllow;
 import com.dream.city.base.model.entity.PlayerEarning;
 import com.dream.city.base.model.entity.RelationTree;
+import com.dream.city.base.model.resp.PlayerEarningResp;
 
 import java.math.BigDecimal;
 
@@ -23,7 +24,7 @@ public interface InvestAllowService {
 
     void allowcationUSDTToPlayer(BigDecimal multiply, RelationTree relationTree);
 
-    PlayerEarning investCollectEarning(String playerId, Integer investId);
+    PlayerEarningResp investCollectEarning(String playerId, Integer investId);
 
     void updateEarning(PlayerEarning earning);
 

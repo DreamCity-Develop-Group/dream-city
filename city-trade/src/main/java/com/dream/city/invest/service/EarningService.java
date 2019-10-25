@@ -1,6 +1,7 @@
 package com.dream.city.invest.service;
 
 import com.dream.city.base.model.entity.PlayerEarning;
+import com.dream.city.base.model.resp.PlayerEarningResp;
 
 import java.util.List;
 
@@ -30,7 +31,7 @@ public interface EarningService {
      */
     PlayerEarning getEarning(Integer earnId);
 
-    PlayerEarning getPlayerEarningByPlayerId(String playerId,Integer investId);
+    PlayerEarningResp getPlayerEarningByPlayerId(String playerId, Integer investId);
 
     /**
      * 查询玩家提现收入列表

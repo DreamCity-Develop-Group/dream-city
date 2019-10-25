@@ -4,7 +4,6 @@ package com.dream.city.base.model;
 import com.dream.city.base.model.enu.ReturnStatus;
 import lombok.Data;
 import lombok.ToString;
-import sun.java2d.loops.GeneralRenderer;
 
 import java.io.Serializable;
 

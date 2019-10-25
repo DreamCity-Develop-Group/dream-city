@@ -109,13 +109,13 @@ CREATE TABLE `city_invest` (
 -- ----------------------------
 -- Records of city_invest
 -- ----------------------------
-INSERT INTO `city_invest` VALUES ('1', '小地摊', '11', '30.0000', '2019-09-18 17:56:20', '0000000000000000.1000', '0000000000000000.1000', '0.0000', '2', '2020-01-31 17:56:50', null, 'Y', null, null);
-INSERT INTO `city_invest` VALUES ('2', '玩具摊', '21', '100.0000', '2019-10-01 21:04:25', '0000000000000000.2000', '0000000000000000.1000', '0.0000', '3', '2019-11-30 21:04:53', null, 'Y', null, null);
-INSERT INTO `city_invest` VALUES ('3', '酒吧', '31', '300.0000', '2019-10-01 21:04:25', '0000000000000000.2500', '0000000000000000.1000', '0.0000', '3', '2019-11-30 21:04:53', null, 'N', null, null);
-INSERT INTO `city_invest` VALUES ('4', '医药公司', '41', '500.0000', '2019-10-01 21:04:25', '0000000000000000.3000', '0000000000000000.1000', '0.0000', '4', '2019-11-30 21:04:53', null, 'N', null, null);
-INSERT INTO `city_invest` VALUES ('5', '电影公司', '51', '1000.0000', '2019-10-01 21:04:25', '0000000000000000.3500', '0000000000000000.1000', '0.0000', '4', '2019-11-30 21:04:53', null, 'N', null, null);
-INSERT INTO `city_invest` VALUES ('6', '汽车集团', '61', '3000.0000', '2019-10-01 21:04:25', '0000000000000000.2000', '0000000000000000.1000', '0.0000', '5', '2019-11-30 21:04:53', null, 'N', null, null);
-INSERT INTO `city_invest` VALUES ('7', '投资集团', '71', '5000.0000', '2019-10-01 21:04:25', '0000000000000000.1000', '0000000000000000.1000', '0.0000', '5', '2019-11-30 21:04:53', null, 'N', null, null);
+INSERT INTO `dreamcity`.`city_invest` (`in_id`, `in_name`, `in_type`, `in_limit`, `in_start`, `in_personal_tax`, `in_enterprise_tax`, `in_quota_tax`, `in_earning`, `in_end`, `in_img`, `is_valid`, `create_time`, `update_time`) VALUES ('1', '小吃摊', '11', '30.0000', '2019-09-18 17:56:20', '0000000000000000.0000', '0000000000000000.0000', '0.1000', '2', '2020-01-31 17:56:50', NULL, 'Y', NULL, NULL);
+INSERT INTO `dreamcity`.`city_invest` (`in_id`, `in_name`, `in_type`, `in_limit`, `in_start`, `in_personal_tax`, `in_enterprise_tax`, `in_quota_tax`, `in_earning`, `in_end`, `in_img`, `is_valid`, `create_time`, `update_time`) VALUES ('2', '玩具摊', '21', '100.0000', '2019-10-01 21:04:25', '0000000000000000.0000', '0000000000000000.2000', '0.2000', '3', '2019-11-30 21:04:53', NULL, 'Y', NULL, NULL);
+INSERT INTO `dreamcity`.`city_invest` (`in_id`, `in_name`, `in_type`, `in_limit`, `in_start`, `in_personal_tax`, `in_enterprise_tax`, `in_quota_tax`, `in_earning`, `in_end`, `in_img`, `is_valid`, `create_time`, `update_time`) VALUES ('3', '酒吧', '31', '300.0000', '2019-10-01 21:04:25', '0000000000000000.2000', '0000000000000000.0500', '0.0000', '3', '2019-11-30 21:04:53', NULL, 'N', NULL, NULL);
+INSERT INTO `dreamcity`.`city_invest` (`in_id`, `in_name`, `in_type`, `in_limit`, `in_start`, `in_personal_tax`, `in_enterprise_tax`, `in_quota_tax`, `in_earning`, `in_end`, `in_img`, `is_valid`, `create_time`, `update_time`) VALUES ('4', '医药公司', '41', '500.0000', '2019-10-01 21:04:25', '0000000000000000.2000', '0000000000000000.1000', '0.0000', '4', '2019-11-30 21:04:53', NULL, 'N', NULL, NULL);
+INSERT INTO `dreamcity`.`city_invest` (`in_id`, `in_name`, `in_type`, `in_limit`, `in_start`, `in_personal_tax`, `in_enterprise_tax`, `in_quota_tax`, `in_earning`, `in_end`, `in_img`, `is_valid`, `create_time`, `update_time`) VALUES ('5', '电影公司', '51', '1000.0000', '2019-10-01 21:04:25', '0000000000000000.2000', '0000000000000000.1500', '0.0000', '4', '2019-11-30 21:04:53', NULL, 'N', NULL, NULL);
+INSERT INTO `dreamcity`.`city_invest` (`in_id`, `in_name`, `in_type`, `in_limit`, `in_start`, `in_personal_tax`, `in_enterprise_tax`, `in_quota_tax`, `in_earning`, `in_end`, `in_img`, `is_valid`, `create_time`, `update_time`) VALUES ('6', '汽车集团', '61', '3000.0000', '2019-10-01 21:04:25', '0000000000000000.0000', '0000000000000000.2000', '0.0000', '5', '2019-11-30 21:04:53', NULL, 'N', NULL, NULL);
+INSERT INTO `dreamcity`.`city_invest` (`in_id`, `in_name`, `in_type`, `in_limit`, `in_start`, `in_personal_tax`, `in_enterprise_tax`, `in_quota_tax`, `in_earning`, `in_end`, `in_img`, `is_valid`, `create_time`, `update_time`) VALUES ('7', '投资集团', '71', '5000.0000', '2019-10-01 21:04:25', '0000000000000000.0000', '0000000000000000.1000', '0.0000', '5', '2019-11-30 21:04:53', NULL, 'N', NULL, NULL);
 
 -- ----------------------------
 -- Table structure for city_message
@@ -450,6 +450,7 @@ CREATE TABLE `player_account_log` (
 DROP TABLE IF EXISTS `player_earning`;
 CREATE TABLE `player_earning` (
   `earn_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `order_id` int(10) unsigned DEFAULT NULL COMMENT '订单id(表invest_order)',
   `earn_invest_id` int(11) DEFAULT NULL COMMENT '投资项目ID',
   `earn_player_id` varchar(64) DEFAULT NULL COMMENT '玩家ID',
   `earn_max` decimal(20,4) unsigned DEFAULT '0.0000' COMMENT '最大提取额度（预计最大收益）',
@@ -462,7 +463,8 @@ CREATE TABLE `player_earning` (
   `update_time` datetime DEFAULT NULL,
   PRIMARY KEY (`earn_id`) USING BTREE,
   KEY `index_earn_player_id` (`earn_player_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='玩家收益';
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='玩家收益';
+
 
 -- ----------------------------
 -- Table structure for player_ext

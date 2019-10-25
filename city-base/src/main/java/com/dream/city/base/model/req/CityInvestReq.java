@@ -8,6 +8,7 @@ import java.io.Serializable;
 public class CityInvestReq implements Serializable {
 
     private Integer inId;
+    private Integer orderId;
     /** 名称 */
     private String inName;
     private String isValid;
@@ -17,6 +18,8 @@ public class CityInvestReq implements Serializable {
     private String playerId;
     private String playerName;
     private String playerNick;
+
+    private String friendId;
 
 
 }

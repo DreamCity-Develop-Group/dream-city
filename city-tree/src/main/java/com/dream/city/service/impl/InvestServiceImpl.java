@@ -4,6 +4,7 @@ import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.*;
 import com.dream.city.base.model.enu.ReturnStatus;
 import com.dream.city.base.model.mapper.*;
+import com.dream.city.base.model.resp.PlayerEarningResp;
 import com.dream.city.service.InvestAllowService;
 import com.dream.city.service.PlayerAccountService;
 import com.dream.city.service.RelationTreeService;
@@ -123,11 +124,11 @@ public class InvestServiceImpl implements InvestAllowService {
     }
 
     @Override
-    public PlayerEarning investCollectEarning(String playerId, Integer investId) {
+    public PlayerEarningResp investCollectEarning(String playerId, Integer investId) {
         PlayerEarning earning = new PlayerEarning();
         earning.setEarnInvestId(investId);
         earning.setEarnPlayerId(playerId);
-        PlayerEarning earn = earningMapper.getPlayerEarning(earning);
+        PlayerEarningResp earn = earningMapper.getPlayerEarning(earning);
         return earn;
     }
 

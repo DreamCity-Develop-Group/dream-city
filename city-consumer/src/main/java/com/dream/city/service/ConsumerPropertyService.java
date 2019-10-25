@@ -30,8 +30,8 @@ public interface ConsumerPropertyService {
      * @param invest
      * @return
      */
-    @RequestMapping("/property/getInvestByIdOrName")
-    Result<CityInvest> getInvestByIdOrName(@RequestBody CityInvest invest);
+    @RequestMapping("/property/getInvest")
+    Result<InvestResp> getInvest(@RequestBody CityInvestReq invest);
 
     /**
      * 更新物业

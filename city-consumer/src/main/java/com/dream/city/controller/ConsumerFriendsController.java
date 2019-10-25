@@ -2,6 +2,7 @@ package com.dream.city.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.dream.city.base.model.*;
+import com.dream.city.base.model.entity.Likes;
 import com.dream.city.base.model.req.FriendsReq;
 import com.dream.city.base.model.resp.FriendsResp;
 import com.dream.city.base.utils.DataUtils;
@@ -56,7 +57,7 @@ public class ConsumerFriendsController {
         JSONObject jsonObject = JsonUtil.parseJsonToObj(data,JSONObject.class);
         String playerId = jsonObject.getString("playerId");
 
-        Result result = consumerFriendsService.getInvestLikes(playerId);
+        Result<List<Likes>> result = consumerFriendsService.getInvestLikes(playerId);
 
 
         return Message.generateMessage(msg,result);
