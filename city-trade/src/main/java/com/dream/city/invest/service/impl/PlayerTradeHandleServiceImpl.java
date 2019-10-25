@@ -129,12 +129,12 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
                         VerifyStatus.WAIT.name(), updateAccountResult.getMsg());
             }
 
-            if (createPlayerTradeResult != null && createPlayerTradeResult.getSuccess() && tradeVerify != null){
-                BigDecimal usdtSurplus = getPlayerAccount.getAccUsdt().subtract(createPlayerTradeResult.getData().getTradeAmount());
-                this.createTradeDetail(createPlayerTradeResult.getData().getTradePlayerId(), createPlayerTradeResult.getData().getTradeId(),
-                        createPlayerTradeResult.getData().getTradeAmount(), usdtSurplus,getPlayerAccount.getAccMt(),null,tradeVerify.getVerifyId(),TradeDetailType.WITHDRAW_FREEZE.getCode(), "提现冻结金额");
+            if (createPlayerTradeResult != null && createPlayerTradeResult.getSuccess() && trade != null && tradeVerify != null){
+                BigDecimal usdtSurplus = getPlayerAccount.getAccUsdt().subtract(trade.getTradeAmount());
+                this.createTradeDetail(trade.getTradePlayerId(), trade.getTradeId(),
+                        trade.getTradeAmount(), usdtSurplus,getPlayerAccount.getAccMt(),null,tradeVerify.getVerifyId(),TradeDetailType.WITHDRAW_FREEZE.getCode(), "提现冻结金额");
                 BigDecimal mtSurplus = getPlayerAccount.getAccMt().subtract(withdrawTax);
-                this.createTradeDetail(createPlayerTradeResult.getData().getTradePlayerId(), createPlayerTradeResult.getData().getTradeId(),
+                this.createTradeDetail(trade.getTradePlayerId(), trade.getTradeId(),
                         withdrawTax, usdtSurplus,mtSurplus,null,tradeVerify.getVerifyId(),TradeDetailType.WITHDRAW_FREEZE.getCode(), "提现冻结税金");
             }
         }catch (Exception e){
@@ -309,7 +309,7 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
                 msg = "玩家内部转账";
                 if (success && !transferVerify){
                     msg = "玩家内部转账成功";
-                    trade.setQuotaTax(insideTransferTax);
+                    trade.setPersonalTax(insideTransferTax);
 
                     //内部转账 立即到账 转入账户入账
                     PlayerAccountReq recordIn = new PlayerAccountReq();
@@ -558,15 +558,15 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
             tradeReq.setTradeStatus(TradeStatus.IN.getCode());
             tradeReq.setInOutStatus(AmountDynType.IN.getCode());
         }else if (TradeType.WITHDRAW.getCode().equalsIgnoreCase(record.getTradeType())){
-            tradeReq.setQuotaTax(withdrawTax);
+            tradeReq.setPersonalTax(withdrawTax);
             tradeReq.setTradeStatus(TradeStatus.FREEZE.getCode());
             tradeReq.setInOutStatus(AmountDynType.OUT.getCode());
         }else if (TradeType.TRANSFER.getCode().equalsIgnoreCase(record.getTradeType())){
             if (TradeType.TRANSFER_FROM.getCode().equalsIgnoreCase(record.getTradeDetailType())){
                 if (accountTo == null){
-                    tradeReq.setQuotaTax(transferTax);
+                    tradeReq.setPersonalTax(transferTax);
                 }else {
-                    tradeReq.setQuotaTax(insideTransferTax);
+                    tradeReq.setPersonalTax(insideTransferTax);
                 }
                 tradeReq.setInOutStatus(AmountDynType.OUT.getCode());
                 if (transferVerify) {

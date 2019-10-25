@@ -372,7 +372,7 @@ public class ConsumerTradeController {
                         commonsService.sendMessage(player2.getPlayerId(),null,JSON.toJSONString(resultMap));*/
                     }
                 }
-                resultMap.put("mt",tradeResult.getData().getQuotaTax());
+                resultMap.put("mt",tradeResult.getData().getPersonalTax());
                 resultMap.put("code",tradeResult.getCode());
             }else {
                 msg.setCode(tradeResult.getCode());
