@@ -199,7 +199,7 @@
           a.acc_mt accMt,a.acc_mt_available accMtAvailable,a.acc_mt_freeze accMtFreeze,a.create_time createTime,p.player_name playerName
         from player_account a ,city_player p
         <where>
-            a.acc_player_id = p.player_id and a.acc_player_id not in(#{platformAccIds,jdbcType=VARCHAR})
+            a.acc_player_id = p.player_id and a.acc_addr not in(${platformAccIds})
             <if test="accId != null">
                 and a.acc_id = #{accId,jdbcType=INTEGER}
             </if>
@@ -302,7 +302,7 @@
         a.acc_mt accMt,a.acc_mt_available accMtAvailable,a.acc_mt_freeze accMtFreeze,a.create_time createTime,p.player_name playerName
         from player_account a ,city_player p
         <where>
-            a.acc_player_id = p.player_id and a.acc_player_id not in(#{platformAccIds,jdbcType=VARCHAR})
+            a.acc_player_id = p.player_id and a.acc_addr not in(${platformAccIds})
             <if test="accId != null">
                 and a.acc_id = #{accId,jdbcType=INTEGER}
             </if>
