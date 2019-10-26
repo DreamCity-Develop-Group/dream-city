@@ -10,13 +10,15 @@
     <result column="earn_enterprise_tax" property="earnEnterpriseTax" jdbcType="DECIMAL" />
     <result column="earn_quota_tax" property="earnQuotaTax" jdbcType="DECIMAL" />
     <result column="earn_current" property="earnCurrent" jdbcType="DECIMAL" />
+    <result column="withdrew_total" property="withdrewTotal" jdbcType="DECIMAL" />
+    <result column="withdrew_times" property="withdrewTimes" jdbcType="INTEGER" />
     <result column="is_withdrew" property="isWithdrew" jdbcType="INTEGER" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
     <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
   </resultMap>
 
   <sql id="Base_Column_List" >
-    earn_id, order_id, earn_player_id, earn_max,  is_withdrew,earn_personal_tax,earn_enterprise_tax,earn_current,earn_quota_tax
+    earn_id, order_id, earn_player_id, earn_max,  is_withdrew,earn_personal_tax,earn_enterprise_tax,earn_current,earn_quota_tax,withdrew_total,withdrew_times
     ,DATE_FORMAT(create_time,'%Y-%m-%d %h:%m:%s') create_time, DATE_FORMAT(update_time,'%Y-%m-%d %h:%m:%s') update_time
   </sql>
 
@@ -37,6 +39,8 @@
     <result column="earn_enterprise_tax" property="earnEnterpriseTax" jdbcType="DECIMAL" />
     <result column="earn_quota_tax" property="earnQuotaTax" jdbcType="DECIMAL" />
     <result column="earn_current" property="earnCurrent" jdbcType="DECIMAL" />
+    <result column="withdrew_total" property="withdrewTotal" jdbcType="DECIMAL" />
+    <result column="withdrew_times" property="withdrewTimes" jdbcType="INTEGER" />
     <result column="is_withdrew" property="isWithdrew" jdbcType="INTEGER" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
     <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
@@ -130,9 +134,6 @@
       <if test="earnQuotaTax != null" >
         earn_quota_tax,
       </if>
-      <if test="isWithdrew != null" >
-        is_withdrew,
-      </if>
       create_time,
       update_time,
     </trim>
@@ -164,9 +165,6 @@
       <if test="earnQuotaTax != null" >
         #{earnQuotaTax,jdbcType=DECIMAL},
       </if>
-      <if test="isWithdrew != null" >
-        #{isWithdrew,jdbcType=CHAR},
-      </if>
       now(),
       now(),
     </trim>
@@ -175,17 +173,8 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.dream.city.base.model.entity.PlayerEarning" >
     update player_earning
     <set >
-      <if test="earnPlayerId != null" >
-        earn_player_id = #{earnPlayerId,jdbcType=VARCHAR},
-      </if>
       <if test="earnMax != null" >
         earn_max = #{earnMax,jdbcType=DECIMAL},
-      </if>
-      <if test="isWithdrew != null and isWithdrew > 0" >
-        is_withdrew = #{isWithdrew,jdbcType=INTEGER},
-      </if>
-      <if test="orderId != null and orderId > 0" >
-        order_id = #{orderId,jdbcType=INTEGER},
       </if>
       <if test="earnCurrent != null" >
         earn_current= #{earnCurrent,jdbcType=DECIMAL},
@@ -198,6 +187,15 @@
       </if>
       <if test="earnQuotaTax != null" >
         earn_quota_tax = #{earnQuotaTax,jdbcType=DECIMAL},
+      </if>
+      <if test="withdrewTotal != null" >
+        withdrew_total = #{withdrewTotal,jdbcType=DECIMAL},
+      </if>
+      <if test="withdrewTimes != null and withdrewTimes > 0" >
+        withdrew_times = #{withdrewTimes,jdbcType=INTEGER},
+      </if>
+      <if test="isWithdrew != null and isWithdrew > 0" >
+        is_withdrew = #{isWithdrew,jdbcType=INTEGER},
       </if>
       update_time = now(),
     </set>

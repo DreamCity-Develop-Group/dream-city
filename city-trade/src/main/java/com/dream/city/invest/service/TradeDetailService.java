@@ -10,7 +10,7 @@ import java.util.List;
 public interface TradeDetailService {
 
 
-    int insert(TradeDetail record);
+    TradeDetail insert(TradeDetail record);
 
     TradeDetail getById(Integer id);
 

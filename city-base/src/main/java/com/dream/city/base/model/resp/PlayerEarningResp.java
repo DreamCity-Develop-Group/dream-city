@@ -47,6 +47,15 @@ public class PlayerEarningResp implements Serializable {
     private BigDecimal earnEnterpriseTax;
 
     /**
+     * 已提取总额
+     */
+    private BigDecimal withdrewTotal;
+    /**
+     * 已提取次数
+     */
+    private Integer withdrewTimes;
+
+    /**
      * 是否已经可以提取 状态：0投资中1可提取2有掉落3提取完成
      */
     private Integer isWithdrew;
