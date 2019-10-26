@@ -181,7 +181,7 @@ public class ConsumerTreeController {
         if (ret.getSuccess()) {
             //设置推荐二维码生效，即用户可用状态
             Player player1 = playerService.getPlayerByPlayerId(playerId);
-            player1.setIsValid("1");
+            player1.setIsValid(1);
             playerService.updatePlayer(player1);
 
             msg.getData().setCode(ReturnStatus.SUCCESS.getStatus());

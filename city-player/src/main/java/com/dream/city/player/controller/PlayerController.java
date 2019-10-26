@@ -115,7 +115,7 @@ public class PlayerController {
             playerSave.setPlayerInvite(inviteCode);
             playerSave.setPlayerNick(nick);
             //默认设置为不可用，标识推荐码不可用
-            playerSave.setIsValid("0");
+            playerSave.setIsValid(0);
 
             boolean ret = playerHandleService.createPlayer(playerSave);
 
