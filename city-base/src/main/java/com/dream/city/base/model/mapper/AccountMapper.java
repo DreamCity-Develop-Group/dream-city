@@ -50,6 +50,8 @@ public interface AccountMapper {
      */
     List<PlayerAccount> getPlatformAccounts(PlayerAccountReq record);
 
+    List<PlayerAccountResp> getPlatformAccountList(PlayerAccountReq record);
+
     List<PlayerAccountResp> getPlayerAccountList(PlayerAccountReq record);
 
     PlayerAccount getPlayerAccount(@Param("accPlayerId") String accPlayerId);

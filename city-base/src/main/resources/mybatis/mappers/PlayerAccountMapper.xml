@@ -217,6 +217,30 @@
     </select>
 
 
+    <select id="getPlatformAccountList" resultType="com.dream.city.base.model.resp.PlayerAccountResp"
+            parameterType="com.dream.city.base.model.req.PlayerAccountReq">
+        select a.acc_id accId,a.acc_player_id playerId,a.acc_addr accAddr,a.acc_income totalIncome,a.acc_usdt accUsdt,a.acc_usdt_available accUsdtAvailable,a.acc_usdt_freeze accUsdtFreeze,
+        a.acc_mt accMt,a.acc_mt_available accMtAvailable,a.acc_mt_freeze accMtFreeze,a.create_time createTime,p.player_name playerName
+        from player_account a ,city_player p
+        <where>
+            a.acc_player_id = p.player_id and a.acc_addr in(${platformAccIds})
+            <if test="accId != null">
+                and a.acc_id = #{accId,jdbcType=INTEGER}
+            </if>
+            <if test="accPlayerId != null and accPlayerId != '' ">
+                and a.acc_player_id = #{accPlayerId,jdbcType=VARCHAR}
+            </if>
+            <if test="username != null and username != '' ">
+                and p.player_name = #{username,jdbcType=VARCHAR}
+            </if>
+            <if test="accAddr != null and accAddr != '' ">
+                and a.acc_addr = #{accAddr,jdbcType=VARCHAR}
+            </if>
+        </where>
+        order by a.update_time desc
+    </select>
+
+
     <!--<select id="getAccountByPlayerIds" resultMap="BasePlayerAccountResultMap"
                 parameterType="java.lang.String">
             select
@@ -302,7 +326,10 @@
         a.acc_mt accMt,a.acc_mt_available accMtAvailable,a.acc_mt_freeze accMtFreeze,a.create_time createTime,p.player_name playerName
         from player_account a ,city_player p
         <where>
-            a.acc_player_id = p.player_id and a.acc_addr not in(${platformAccIds})
+            a.acc_player_id = p.player_id
+            <if test="platformAccIds != null and platformAccIds != ''">
+                and a.acc_addr not in(${platformAccIds})
+            </if>
             <if test="accId != null">
                 and a.acc_id = #{accId,jdbcType=INTEGER}
             </if>
