@@ -452,20 +452,21 @@ CREATE TABLE `player_earning` (
   `earn_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `order_id` int(10) unsigned DEFAULT NULL COMMENT '订单id(表invest_order)',
   `earn_invest_id` int(11) DEFAULT NULL COMMENT '投资项目ID',
+  `in_type` smallint(6) unsigned DEFAULT NULL,
   `earn_player_id` varchar(64) DEFAULT NULL COMMENT '玩家ID',
-  `earn_max` decimal(50,9) unsigned DEFAULT '0.0000' COMMENT '最大提取额度（预计最大收益）',
-  `earn_current` decimal(50,9) unsigned DEFAULT '0.0000' COMMENT '当前获得额度',
-  `earn_personal_tax` decimal(50,9) unsigned DEFAULT '0.0000' COMMENT '个人税金',
-  `earn_enterprise_tax` decimal(50,9) DEFAULT '0.0000' COMMENT '企业税金',
-  `earn_quota_tax` decimal(50,9) unsigned DEFAULT '0.0000' COMMENT '定额税',
-  `withdrew_total` decimal(50,9) unsigned DEFAULT '0.0000' COMMENT '已提取总额',
+  `earn_max` decimal(20,4) unsigned DEFAULT '0.0000' COMMENT '最大提取额度（预计最大收益）',
+  `earn_current` decimal(20,4) unsigned DEFAULT '0.0000' COMMENT '当前获得额度',
+  `earn_personal_tax` decimal(20,4) unsigned DEFAULT '0.0000' COMMENT '个人税金',
+  `earn_enterprise_tax` decimal(20,4) DEFAULT '0.0000' COMMENT '企业税金',
+  `earn_quota_tax` decimal(20,4) unsigned DEFAULT '0.0000' COMMENT '定额税',
+  `withdrew_total` decimal(20,4) unsigned DEFAULT '0.0000' COMMENT '已提取总额',
   `withdrew_times` smallint(6) unsigned DEFAULT '0' COMMENT '已提取次数',
   `is_withdrew` tinyint(4) unsigned DEFAULT '0' COMMENT '是否可以提取(0新增,1，收益中，2可提取，3已提取)',
   `create_time` datetime DEFAULT NULL,
   `update_time` datetime DEFAULT NULL,
   PRIMARY KEY (`earn_id`) USING BTREE,
   KEY `index_earn_player_id` (`earn_player_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='玩家收益';
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='玩家收益';
 
 
 -- ----------------------------

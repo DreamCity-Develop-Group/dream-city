@@ -131,6 +131,7 @@ public class ConsumerOrderHandleServiceImpl implements ConsumerOrderHandleServic
                 insertEarningReq.setEarnCurrent(BigDecimal.ZERO);
                 insertEarningReq.setEarnPlayerId(player.getPlayerId());
                 insertEarningReq.setEarnInvestId(invest.getInId());
+                insertEarningReq.setInType(invest.getInType());
                 insertEarningReq.setOrderId(order.getOrderId());
                 insertEarningReq.setEarnEnterpriseTax(invest.getEnterpriseIntax());
                 insertEarningReq.setEarnPersonalTax(invest.getPersonalInTax());
