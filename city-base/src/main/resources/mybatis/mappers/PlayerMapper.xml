@@ -9,7 +9,7 @@
     <result column="player_pass" jdbcType="VARCHAR" property="playerPass" />
     <result column="player_trade_pass" jdbcType="VARCHAR" property="playerTradePass" />
     <result column="player_invite" jdbcType="VARCHAR" property="playerInvite" />
-    <result column="is_valid" jdbcType="CHAR" property="isValid" />
+    <result column="is_valid" jdbcType="INTEGER" property="isValid" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
@@ -31,7 +31,7 @@
     DATE_FORMAT(p.create_time,"%Y-%m-%d %h:%m:%s") createTime,
     (SELECT e.imgurl FROM player_ext e WHERE p.player_id=e.player_id) imgurl
     from city_player p
-    where 1=1
+    where p.is_valid = 1
     <if test="playerId != null and playerId != ''">
     and p.player_id = #{playerId,jdbcType=VARCHAR}
     </if>
@@ -47,7 +47,7 @@
     select
     <include refid="Base_Column_List" />
     from city_player
-    where 1=1
+    where is_valid = 1
     <if test="invite != null and invite != ''">
       and player_invite = #{invite,jdbcType=VARCHAR}
     </if>
@@ -58,7 +58,7 @@
     select
     <include refid="Base_Column_List" />
     from city_player
-    where 1=1
+    where is_valid = 1
     <if test="account != null and account != ''">
       and player_name = #{account,jdbcType=VARCHAR}
     </if>
@@ -71,7 +71,9 @@
       (SELECT e.imgurl FROM player_ext e WHERE p.player_id=e.player_id) imgurl
     from city_player p
     <where>
-      1=1
+      <if test="isValid != null">
+        and p.is_valid = #{isValid,jdbcType=INTEGER}
+      </if>
       <if test="playerName != null and playerName != ''">
         and p.player_name like '%${playerName}%'
       </if>
@@ -92,7 +94,8 @@
         (SELECT f1.agree FROM player_friends f1 WHERE f1.friend_id=p.player_id and f1.player_id = #{playerId} order by f1.update_time desc limit 1) agree
       from city_player p inner join player_ext e on p.player_id = e.player_id
       <where>
-        p.player_id != #{playerId}
+        p.is_valid = 1
+        and p.player_id != #{playerId}
         <if test="playerName != null and playerName != ''">
           AND p.player_name like '%${playerName}%'
         </if>
@@ -112,7 +115,8 @@
         (SELECT f1.agree FROM player_friends f1 WHERE f1.friend_id=p.player_id and f1.player_id = #{playerId} order by f1.update_time desc limit 1) agree
       from city_player p inner join player_ext e on p.player_id = e.player_id
       <where>
-        p.player_id != #{playerId}
+        p.is_valid = 1
+        and p.player_id != #{playerId}
         <if test="playerName != null and playerName != ''">
           AND p.player_name like '%${playerName}%'
         </if>
@@ -136,7 +140,7 @@
     (SELECT IFNULL(f.agree,0) FROM player_friends f WHERE f.friend_id=p.player_id and f.player_id=#{playerId}) agree
     from city_player p
     <where>
-      1=1
+      p.is_valid = 1
       <!--<if test="playerId != null and playerId != ''">
         AND p.player_id != #{playerId}
       </if>-->
@@ -177,7 +181,8 @@
     from city_player p INNER JOIN player_ext e ON p.player_id=e.player_id
     INNER JOIN player_grade g ON p.player_id=g.player_id
     <where>
-      p.player_id=e.player_id and p.player_id=g.player_id
+      p.is_valid = 1
+      and p.player_id=e.player_id and p.player_id=g.player_id
       <if test="condition.nick != null and condition.nick != ''">
         and p.player_nick = #{condition.nick}
       </if>
@@ -192,7 +197,8 @@
     from city_player p INNER JOIN player_ext e ON p.player_id=e.player_id
     INNER JOIN player_grade g ON p.player_id=g.player_id
     <where>
-      p.player_id=e.player_id and p.player_id=g.player_id
+      p.is_valid = 1
+      and p.player_id=e.player_id and p.player_id=g.player_id
       <if test="condition.nick != null and condition.nick != ''">
         and p.player_nick = #{condition.nick}
       </if>
@@ -303,7 +309,7 @@
       select
       <include refid="Base_Column_List" />
       from city_player
-      where 1=1
+      where is_valid = 1
       <if test="account != null and account != ''">
         and id = #{accId,jdbcType=INTEGER}
       </if>
