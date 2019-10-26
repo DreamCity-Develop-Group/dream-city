@@ -13,6 +13,7 @@
     <result column="earn_quota_tax" property="earnQuotaTax" jdbcType="DECIMAL" />
     <result column="earn_current" property="earnCurrent" jdbcType="DECIMAL" />
     <result column="withdrew_total" property="withdrewTotal" jdbcType="DECIMAL" />
+    <result column="drop_total" property="dropTotal" jdbcType="DECIMAL" />
     <result column="withdrew_times" property="withdrewTimes" jdbcType="INTEGER" />
     <result column="is_withdrew" property="isWithdrew" jdbcType="INTEGER" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
@@ -21,7 +22,7 @@
 
   <sql id="Base_Column_List" >
     earn_id, order_id, earn_player_id, earn_max,  is_withdrew,earn_personal_tax,earn_enterprise_tax,earn_current,earn_quota_tax,withdrew_total,withdrew_times
-    ,DATE_FORMAT(create_time,'%Y-%m-%d %h:%m:%s') create_time, DATE_FORMAT(update_time,'%Y-%m-%d %h:%m:%s') update_time,earn_invest_id,in_type
+    ,DATE_FORMAT(create_time,'%Y-%m-%d %h:%m:%s') create_time, DATE_FORMAT(update_time,'%Y-%m-%d %h:%m:%s') update_time,earn_invest_id,in_type,drop_total
   </sql>
 
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
@@ -42,6 +43,7 @@
     <result column="earn_quota_tax" property="earnQuotaTax" jdbcType="DECIMAL" />
     <result column="earn_current" property="earnCurrent" jdbcType="DECIMAL" />
     <result column="withdrew_total" property="withdrewTotal" jdbcType="DECIMAL" />
+    <result column="drop_total" property="dropTotal" jdbcType="DECIMAL" />
     <result column="withdrew_times" property="withdrewTimes" jdbcType="INTEGER" />
     <result column="is_withdrew" property="isWithdrew" jdbcType="INTEGER" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
@@ -231,6 +233,9 @@
       </if>
       <if test="withdrewTotal != null" >
         withdrew_total = #{withdrewTotal,jdbcType=DECIMAL},
+      </if>
+      <if test="dropTotal != null" >
+        drop_total = #{dropTotal,jdbcType=DECIMAL},
       </if>
       <if test="withdrewTimes != null and withdrewTimes > 0" >
         withdrew_times = #{withdrewTimes,jdbcType=INTEGER},

@@ -205,7 +205,7 @@ public class EarningController {
                         BigDecimal incomeLeft = earningResp.getEarnCurrent().subtract(extract);
                         //BigDecimal earnTotal = extract.subtract(taxTotal);
 
-                        if (earningResp.getEarnMax().compareTo(earningResp.getWithdrewTotal().add(extract)) < 0){
+                        if (earningResp.getEarnMax().compareTo(earningResp.getWithdrewTotal().add(earningResp.getDropTotal()).add(earningResp.getEarnCurrent())) < 0){
                             result.put("state",ReturnStatus.INVEST_SUBSCRIBE.getCode());
                             msg = "已达到最大提取限额";
                             return Result.result(b,msg, code,result);
@@ -217,15 +217,19 @@ public class EarningController {
                         account.setAccIncome(account.getAccIncome().add(extract));
                         i = accountService.updatePlayerAccountById(account);
 
-
-                        // 改变earn表记录状态为3
                         if (i > 0) {
                             PlayerEarning updateEarningReq = new PlayerEarning();
                             updateEarningReq.setEarnId(earningResp.getEarnId());
-                            updateEarningReq.setIsWithdrew(3);
                             updateEarningReq.setWithdrewTotal(earningResp.getWithdrewTotal().add(extract));
                             updateEarningReq.setWithdrewTimes(earningResp.getWithdrewTimes()+1);
                             updateEarningReq.setEarnCurrent(BigDecimal.ZERO);
+                            if (earningResp.getEarnMax().compareTo(earningResp.getWithdrewTotal().add(earningResp.getDropTotal()).add(earningResp.getEarnCurrent())) == 0){
+                                //已出局
+                                updateEarningReq.setIsWithdrew(4);
+                            }else {
+                                //已提取
+                                updateEarningReq.setIsWithdrew(3);
+                            }
                             i = earningService.updateEarningById(updateEarningReq);
                         }else {
                             msg = "添加累计收益记录失败";

@@ -50,6 +50,12 @@ public class PlayerEarning implements Serializable {
      * 已提取总额
      */
     private BigDecimal withdrewTotal;
+
+    /**
+     * 掉落累计金额
+     */
+    private BigDecimal dropTotal;
+
     /**
      * 已提取次数
      */
