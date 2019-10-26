@@ -124,11 +124,7 @@ public class Result<T> {
         super();
         this.success = success;
         this.msg = msg;
-        if (success) {
-            this.code = ReturnStatus.SUCCESS.getStatus();
-        }else {
-            this.code = ReturnStatus.FAILED.getStatus();
-        }
+        this.code = code;
         this.data = data;
     }
 

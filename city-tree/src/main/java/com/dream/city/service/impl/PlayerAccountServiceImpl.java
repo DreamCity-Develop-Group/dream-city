@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -88,6 +89,18 @@ public class PlayerAccountServiceImpl implements PlayerAccountService {
         playerAccount.setAccUsdtFreeze(playerAccount.getAccUsdtFreeze().add(amount));
 
         int num = playerAccountMapper.updatePlayerAccount(playerAccount);
+        if (num>0){
+            PlayerAccountLog accountLog = new PlayerAccountLog();
+            accountLog.setDesc("锁定玩家额度");
+            accountLog.setType(2);
+            accountLog.setAmountUsdt(amount);
+            accountLog.setPlayerId(playerId);
+            accountLog.setAccId(playerAccount.getAccId());
+            accountLog.setCreateTime(new Date());
+            accountLog.setAddress(playerAccount.getAccAddr());
+            accountLog.setAmountMt(new BigDecimal(0));
+            playerAccountLogMapper.insert(accountLog);
+        }
         return Result.result(num>0);
     }
 
@@ -100,7 +113,18 @@ public class PlayerAccountServiceImpl implements PlayerAccountService {
         playerAccount.setAccUsdtFreeze(playerAccount.getAccUsdtFreeze().subtract(amount));
 
         int num = playerAccountMapper.updatePlayerAccount(playerAccount);
-
+        if (num>0){
+            PlayerAccountLog accountLog = new PlayerAccountLog();
+            accountLog.setDesc("释放锁定玩家额度");
+            accountLog.setType(2);
+            accountLog.setAmountUsdt(amount);
+            accountLog.setPlayerId(playerId);
+            accountLog.setAccId(playerAccount.getAccId());
+            accountLog.setCreateTime(new Date());
+            accountLog.setAddress(playerAccount.getAccAddr());
+            accountLog.setAmountMt(new BigDecimal(0));
+            playerAccountLogMapper.insert(accountLog);
+        }
         return Result.result(num>0);
     }
 
