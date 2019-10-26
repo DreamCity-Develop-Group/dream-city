@@ -21,6 +21,7 @@ public class PlayerEarning implements Serializable {
      * 投资项目ID
      */
     private Integer earnInvestId;
+    private Integer inType;
 
     /** 玩家ID */
     private String earnPlayerId;

@@ -168,14 +168,15 @@ public class EarningController {
      * @return
      */
     @RequestMapping("/extract")
-    public Result<Map<String,Object>> extract(@RequestParam("playerId")String playerId,@RequestParam("investId")Integer investId, @RequestParam("inType")Integer inType){
+    public Result<Map<String,Object>> extract(@RequestParam("playerId")String playerId,@RequestParam("inType")Integer inType){
         int i = 0;
         int code = ReturnStatus.FAILED.getStatus();
         boolean b = Boolean.FALSE;
         String msg = "";
         Map<String,Object> result = new HashMap<>();
         try {
-            result.put("investId",investId);
+            result.put("investId","");
+            result.put("inType", inType);
             result.put("investMoney",0);
             result.put("extractable",0);
             result.put("extract",0);
@@ -185,19 +186,20 @@ public class EarningController {
             result.put("enterpriseTax",0);
             result.put("quotaTax",0);
             result.put("state",ReturnStatus.INVEST_MANAGEMENT.getCode());
-            result.put("openState", "N");
+            result.put("openState", "Y");
 
-            InvestOrder order = orderService.getOrderByPlayerIdInvestId(playerId,investId);
-            if (order != null){
-                PlayerEarningResp earningResp = earningService.getPlayerEarningByPlayerId(playerId,investId);
-                result.put("inType", earningResp.getInType());
-                result.put("investMoney",order.getOrderAmount());
+            PlayerEarningResp earningResp = earningService.getPlayerEarningByPlayerId(playerId,inType);
+            if (earningResp != null){
+                result.put("investId",earningResp.getEarnInvestId());
                 result.put("extractable",earningResp.getEarnCurrent());
                 result.put("personTax",earningResp.getEarnPersonalTax());
                 result.put("enterpriseTax",earningResp.getEarnEnterpriseTax());
                 result.put("quotaTax",earningResp.getEarnQuotaTax());
 
-                if (null != earningResp && earningResp.getEarnMax().compareTo(earningResp.getEarnCurrent()) >= 0 && earningResp.getIsWithdrew()==2){
+                InvestOrder order = orderService.getOrderByPlayerIdInvestId(playerId,earningResp.getEarnInvestId());
+                result.put("investMoney",order.getOrderAmount());
+
+                if (earningResp.getEarnMax().compareTo(earningResp.getEarnCurrent()) >= 0 && earningResp.getIsWithdrew()==2){
                     // 修改账户
                     PlayerAccount account = accountService.getPlayerAccount(playerId);
                     if (account != null){
@@ -206,7 +208,7 @@ public class EarningController {
                         BigDecimal incomeLeft = earningResp.getEarnCurrent().subtract(extract);
                         //BigDecimal earnTotal = extract.subtract(taxTotal);
 
-                        if (earningResp.getEarnMax().compareTo(earningResp.getWithdrewTotal().add(extract)) > 0){
+                        if (earningResp.getEarnMax().compareTo(earningResp.getWithdrewTotal().add(extract)) < 0){
                             result.put("state",ReturnStatus.INVEST_SUBSCRIBE.getCode());
                             msg = "已达到最大提取限额";
                             return Result.result(b,msg, code,result);
@@ -327,18 +329,10 @@ public class EarningController {
                             b = Boolean.TRUE;
                             code = ReturnStatus.SUCCESS.getStatus();
                             msg="提取成功";
-                            result.put("investId",investId);
-                            result.put("investMoney",order.getOrderAmount());
-                            result.put("extractable",earningResp.getEarnCurrent());
                             result.put("extract",extract);
                             result.put("incomeLeft",incomeLeft);
                             result.put("totalTax",taxTotal);
-                            result.put("personTax",earningResp.getEarnPersonalTax());
-                            result.put("enterpriseTax",earningResp.getEarnEnterpriseTax());
-                            result.put("quotaTax",earningResp.getEarnQuotaTax());
                             result.put("state",ReturnStatus.INVEST_MANAGEMENT.getCode());
-                            result.put("inType", earningResp.getInType());
-                            result.put("openState", "N");
                         }else {
                             msg = "添加账户记录失败";
                         }

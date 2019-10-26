@@ -50,7 +50,7 @@
         select
         player_account.*
         from player_account,city_player
-        where 1=1 and city_player.id = #{accId,jdbcType=INTEGER} and  player_account.acc_player_id = city_player.player_id
+        where city_player.id = #{accId,jdbcType=INTEGER} and  player_account.acc_player_id = city_player.player_id
     </select>
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
@@ -246,7 +246,7 @@
         create_time,
         update_time
         from player_account
-        where 1=1 and acc_player_id = #{accPlayerId,jdbcType=VARCHAR}
+        where acc_player_id = #{accPlayerId,jdbcType=VARCHAR}
     </select>
 
     <update id="updateByPlayerId" parameterType="com.dream.city.base.model.entity.PlayerAccount" >

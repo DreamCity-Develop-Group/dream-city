@@ -42,10 +42,9 @@ public class ConsumerEarningController {
         Object dataMsg = msg.getData().getData();
         JSONObject jsonObject = JsonUtil.parseJsonToObj(JsonUtil.parseObjToJson(dataMsg), JSONObject.class);
         String playerId = jsonObject.getString("playerId");
-        Integer investId = Integer.parseInt(jsonObject.getString("investId"));
         Integer inType = Integer.parseInt(jsonObject.getString("inType"));
 
-        Result<Map<String,Object>> result = earningService.extract(playerId,investId,inType);
+        Result<Map<String,Object>> result = earningService.extract(playerId,inType);
         msg.setCode(result.getCode());
         msg.setDesc(result.getMsg());
         msg.getData().setData(result.getData());
