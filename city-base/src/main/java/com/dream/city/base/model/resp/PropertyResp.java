@@ -31,6 +31,8 @@ public class PropertyResp implements Serializable {
     /** 税金 */
     private BigDecimal inEnterpriseTax;
 
+    private BigDecimal inQuotaTax;
+
     /** 收益倍数 */
     private Integer inEarning;
 
@@ -41,7 +43,7 @@ public class PropertyResp implements Serializable {
     private String inEnd;
 
 
-
+    private Integer inType;
 
 
 }
