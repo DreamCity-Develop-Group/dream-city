@@ -67,6 +67,8 @@ public class PlayerEarningResp implements Serializable {
     private String inName;
     private Integer inType;
     private BigDecimal inLimit;
+    /** 投资结束时间 */
+    private Date inEnd;
 
-
+    private String playerName;
 }

@@ -50,9 +50,11 @@
     <result column="in_type" property="inType" jdbcType="INTEGER" />
     <result column="earn_invest_id" property="earnInvestId" jdbcType="INTEGER" />
     <result column="in_limit" property="inLimit" jdbcType="VARCHAR" />
+    <result column="in_end" property="inEnd" jdbcType="TIMESTAMP" />
+    <result column="player_name" property="playerName" jdbcType="VARCHAR" />
   </resultMap>
   <select id="getPlayerEarning" resultMap="ExtResultMap"  parameterType="com.dream.city.base.model.entity.PlayerEarning" >
-    select e.*,i.in_name,i.in_type,i.in_limit
+    select e.*,i.in_name,i.in_type,i.in_limit,i.in_end
     from player_earning e,city_invest i
     where e.earn_invest_id = i.in_id
     <if test="earnId != null">
@@ -68,6 +70,22 @@
       and e.earn_player_id = #{earnPlayerId,jdbcType=VARCHAR}
     </if>
     order by e.update_time desc limit 1
+  </select>
+
+  <select id="getEarningList" resultMap="ExtResultMap"  parameterType="com.dream.city.base.model.req.EarningReq" >
+    select e.*,i.in_name,i.in_type,i.in_limit,i.in_end,p.player_name
+    from player_earning e,city_invest i,city_player p
+    where e.earn_invest_id = i.in_id and e.earn_player_id=p.player_id
+    <if test="earnId != null">
+      and e.earn_id = #{earnId,jdbcType=INTEGER}
+    </if>
+    <if test="inType != null">
+      and e.in_type = #{inType,jdbcType=INTEGER}
+    </if>
+    <if test="playerName != null and playerName != ''">
+      and p.player_name = #{playerName,jdbcType=VARCHAR}
+    </if>
+    order by e.update_time desc
   </select>
 
   <select id="selectPlayerEarningList" resultMap="BaseResultMap" parameterType="com.dream.city.base.model.entity.PlayerEarning" >
@@ -106,9 +124,8 @@
         <if test="inType != null">
           and in_type = #{inType,jdbcType=INTEGER}
         </if>
-
     </where>
-    order by create_time desc
+    order by update_time desc
   </select>
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
