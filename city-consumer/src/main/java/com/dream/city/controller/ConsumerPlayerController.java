@@ -497,7 +497,9 @@ public class ConsumerPlayerController {
 
         MessageData data = new MessageData(msg.getData().getType(), msg.getData().getModel());
         data.setData(t);
+        data.setCode(result.getCode());
         Message message = new Message(msg.getSource(), msg.getTarget(), data);
+        message.setCode(result.getCode());
         return message;
     }
 
