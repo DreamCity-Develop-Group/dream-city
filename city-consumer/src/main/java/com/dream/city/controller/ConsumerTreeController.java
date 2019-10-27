@@ -92,12 +92,14 @@ public class ConsumerTreeController {
         String parentId = "";
         if (!"system".equals(invite)) {
             Map parent = (Map) playerService.getPlayerByInvite(invite).getData();
-            parentId = parent.get("playerId").toString();
+            //成员不存在，错误的邀请码
             if (parent == null) {
                 message.getData().setCode(ReturnStatus.ERROR_INVITE.getStatus());
                 message.setDesc(ReturnStatus.ERROR_INVITE.getDesc());
                 return message;
             }
+            parentId = parent.get("playerId").toString();
+
         } else {
             RelationTree tree = treeService.getTreeByRelation(invite);
             if (tree != null) {
