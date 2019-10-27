@@ -1,5 +1,6 @@
 package com.dream.city;
 
+import com.codingapi.txlcn.tc.config.EnableDistributedTransaction;
 import com.dream.city.base.config.RedisConfig;
 import de.codecentric.boot.admin.server.config.EnableAdminServer;
 import org.springframework.boot.SpringApplication;
@@ -19,6 +20,7 @@ import org.springframework.context.annotation.Import;
 @EnableFeignClients
 @EnableCaching
 @Import({RedisConfig.class})
+@EnableDistributedTransaction
 public class CityAdminApplication {
 
     public static void main(String[] args) {

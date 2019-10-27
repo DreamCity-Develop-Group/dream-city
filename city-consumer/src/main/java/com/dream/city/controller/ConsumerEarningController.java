@@ -7,7 +7,7 @@ import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.PlayerEarning;
 import com.dream.city.base.utils.DataUtils;
 import com.dream.city.base.utils.JsonUtil;
-import com.dream.city.service.ConsumerEarningService;
+import com.dream.city.service.consumer.ConsumerEarningService;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
