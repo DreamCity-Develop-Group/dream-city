@@ -24,9 +24,12 @@ public class TradeDetailServiceImpl implements TradeDetailService {
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
-    public int insert(TradeDetail record) {
+    public TradeDetail insert(TradeDetail record) {
         Integer integer = detailMapper.insertSelective(record);
-        return integer == null?0:integer;
+        if (integer == null || integer < 1){
+            return null;
+        }
+        return record;
     }
 
     @Override

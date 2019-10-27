@@ -393,8 +393,7 @@ public class ConsumerPlayerController {
             msg.getData().setCode(ReturnStatus.PARAM_ERROR.getStatus());
             msg.setDesc("新密码不能为空 ！");
             return msg;
-        }
-        if (StringUtils.isBlank(oldPwd)){
+        }else if (StringUtils.isBlank(oldPwd)){
             oldPwd = "";
             result = consumerPlayerService.resetTraderPwd(username,oldPwd,newPwd);
 
@@ -497,7 +496,9 @@ public class ConsumerPlayerController {
 
         MessageData data = new MessageData(msg.getData().getType(), msg.getData().getModel());
         data.setData(t);
+        data.setCode(result.getCode());
         Message message = new Message(msg.getSource(), msg.getTarget(), data);
+        message.setCode(result.getCode());
         return message;
     }
 

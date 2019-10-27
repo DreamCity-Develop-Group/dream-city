@@ -3,20 +3,26 @@
 <mapper namespace="com.dream.city.base.model.mapper.PlayerEarningMapper" >
   <resultMap id="BaseResultMap" type="com.dream.city.base.model.entity.PlayerEarning" >
     <id column="earn_id" property="earnId" jdbcType="INTEGER" />
+    <result column="order_id" property="orderId" jdbcType="INTEGER" />
+    <result column="earn_invest_id" property="earnInvestId" jdbcType="INTEGER" />
+    <result column="in_type" property="inType" jdbcType="INTEGER" />
     <result column="earn_player_id" property="earnPlayerId" jdbcType="VARCHAR" />
     <result column="earn_max" property="earnMax" jdbcType="DECIMAL" />
     <result column="earn_personal_tax" property="earnPersonalTax" jdbcType="DECIMAL" />
     <result column="earn_enterprise_tax" property="earnEnterpriseTax" jdbcType="DECIMAL" />
     <result column="earn_quota_tax" property="earnQuotaTax" jdbcType="DECIMAL" />
     <result column="earn_current" property="earnCurrent" jdbcType="DECIMAL" />
+    <result column="withdrew_total" property="withdrewTotal" jdbcType="DECIMAL" />
+    <result column="drop_total" property="dropTotal" jdbcType="DECIMAL" />
+    <result column="withdrew_times" property="withdrewTimes" jdbcType="INTEGER" />
     <result column="is_withdrew" property="isWithdrew" jdbcType="INTEGER" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
     <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
   </resultMap>
 
   <sql id="Base_Column_List" >
-    earn_id, earn_player_id, earn_max,  is_withdrew,earn_personal_tax,earn_enterprise_tax,earn_current,earn_quota_tax
-    ,DATE_FORMAT(create_time,'%Y-%m-%d %h:%m:%s') create_time, DATE_FORMAT(update_time,'%Y-%m-%d %h:%m:%s') update_time
+    earn_id, order_id, earn_player_id, earn_max,  is_withdrew,earn_personal_tax,earn_enterprise_tax,earn_current,earn_quota_tax,withdrew_total,withdrew_times
+    ,DATE_FORMAT(create_time,'%Y-%m-%d %h:%m:%s') create_time, DATE_FORMAT(update_time,'%Y-%m-%d %h:%m:%s') update_time,earn_invest_id,in_type,drop_total
   </sql>
 
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
@@ -26,21 +32,62 @@
     where earn_id = #{earnId,jdbcType=INTEGER}
   </select>
 
-  <select id="getPlayerEarning" resultMap="BaseResultMap"  parameterType="com.dream.city.base.model.entity.PlayerEarning" >
-    select
-    <include refid="Base_Column_List" />
-    from player_earning
-    where 1=1
+
+  <resultMap id="ExtResultMap" type="com.dream.city.base.model.resp.PlayerEarningResp" >
+    <id column="earn_id" property="earnId" jdbcType="INTEGER" />
+    <result column="order_id" property="orderId" jdbcType="VARCHAR" />
+    <result column="earn_player_id" property="earnPlayerId" jdbcType="VARCHAR" />
+    <result column="earn_max" property="earnMax" jdbcType="DECIMAL" />
+    <result column="earn_personal_tax" property="earnPersonalTax" jdbcType="DECIMAL" />
+    <result column="earn_enterprise_tax" property="earnEnterpriseTax" jdbcType="DECIMAL" />
+    <result column="earn_quota_tax" property="earnQuotaTax" jdbcType="DECIMAL" />
+    <result column="earn_current" property="earnCurrent" jdbcType="DECIMAL" />
+    <result column="withdrew_total" property="withdrewTotal" jdbcType="DECIMAL" />
+    <result column="drop_total" property="dropTotal" jdbcType="DECIMAL" />
+    <result column="withdrew_times" property="withdrewTimes" jdbcType="INTEGER" />
+    <result column="is_withdrew" property="isWithdrew" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="in_name" property="inName" jdbcType="VARCHAR" />
+    <result column="in_type" property="inType" jdbcType="INTEGER" />
+    <result column="earn_invest_id" property="earnInvestId" jdbcType="INTEGER" />
+    <result column="in_limit" property="inLimit" jdbcType="VARCHAR" />
+    <result column="in_end" property="inEnd" jdbcType="TIMESTAMP" />
+    <result column="player_name" property="playerName" jdbcType="VARCHAR" />
+  </resultMap>
+  <select id="getPlayerEarning" resultMap="ExtResultMap"  parameterType="com.dream.city.base.model.entity.PlayerEarning" >
+    select e.*,i.in_name,i.in_type,i.in_limit,i.in_end
+    from player_earning e,city_invest i
+    where e.earn_invest_id = i.in_id
     <if test="earnId != null">
-      and earn_id = #{earnId,jdbcType=INTEGER}
+      and e.earn_id = #{earnId,jdbcType=INTEGER}
     </if>
     <if test="earnInvestId != null">
-      and earn_invest_id = #{earnInvestId,jdbcType=VARCHAR}
+      and e.earn_invest_id = #{earnInvestId,jdbcType=INTEGER}
+    </if>
+    <if test="inType != null">
+      and e.in_type = #{inType,jdbcType=INTEGER}
     </if>
     <if test="earnPlayerId != null and earnPlayerId != ''">
-      and earn_player_id = #{earnPlayerId,jdbcType=VARCHAR}
+      and e.earn_player_id = #{earnPlayerId,jdbcType=VARCHAR}
     </if>
-    order by update_time desc limit 1
+    order by e.update_time desc limit 1
+  </select>
+
+  <select id="getEarningList" resultMap="ExtResultMap"  parameterType="com.dream.city.base.model.req.EarningReq" >
+    select e.*,i.in_name,i.in_type,i.in_limit,i.in_end,p.player_name
+    from player_earning e,city_invest i,city_player p
+    where e.earn_invest_id = i.in_id and e.earn_player_id=p.player_id
+    <if test="earnId != null">
+      and e.earn_id = #{earnId,jdbcType=INTEGER}
+    </if>
+    <if test="inType != null">
+      and e.in_type = #{inType,jdbcType=INTEGER}
+    </if>
+    <if test="playerName != null and playerName != ''">
+      and p.player_name = #{playerName,jdbcType=VARCHAR}
+    </if>
+    order by e.update_time desc
   </select>
 
   <select id="selectPlayerEarningList" resultMap="BaseResultMap" parameterType="com.dream.city.base.model.entity.PlayerEarning" >
@@ -51,6 +98,9 @@
         1=1
         <if test="earnId != null">
           and earn_id = #{earnId,jdbcType=INTEGER}
+        </if>
+        <if test="orderId != null">
+          and order_id = #{orderId,jdbcType=INTEGER}
         </if>
         <if test="earnPlayerId != null">
           and earn_player_id = #{earnPlayerId,jdbcType=VARCHAR}
@@ -70,9 +120,14 @@
         <if test="isWithdrew != null">
           and is_withdrew = #{isWithdrew,jdbcType=INTEGER}
         </if>
-
+        <if test="earnInvestId != null">
+          and earn_invest_id = #{earnInvestId,jdbcType=INTEGER}
+        </if>
+        <if test="inType != null">
+          and in_type = #{inType,jdbcType=INTEGER}
+        </if>
     </where>
-    order by create_time desc
+    order by update_time desc
   </select>
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
@@ -85,6 +140,9 @@
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="earnId != null" >
         earn_id,
+      </if>
+      <if test="orderId != null" >
+        order_id,
       </if>
       <if test="earnInvestId != null" >
         earn_invest_id,
@@ -107,8 +165,11 @@
       <if test="earnQuotaTax != null" >
         earn_quota_tax,
       </if>
-      <if test="isWithdrew != null" >
-        is_withdrew,
+      <if test="earnInvestId != null">
+        earn_invest_id,
+      </if>
+      <if test="inType != null">
+        in_type,
       </if>
       create_time,
       update_time,
@@ -116,6 +177,9 @@
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="earnId != null" >
         #{earnId,jdbcType=INTEGER},
+      </if>
+      <if test="orderId != null" >
+        #{orderId,jdbcType=INTEGER},
       </if>
       <if test="earnInvestId != null" >
         #{earnInvestId,jdbcType=VARCHAR},
@@ -138,8 +202,11 @@
       <if test="earnQuotaTax != null" >
         #{earnQuotaTax,jdbcType=DECIMAL},
       </if>
-      <if test="isWithdrew != null" >
-        #{isWithdrew,jdbcType=CHAR},
+      <if test="earnInvestId != null">
+        #{earnInvestId,jdbcType=INTEGER},
+      </if>
+      <if test="inType != null">
+        #{inType,jdbcType=INTEGER},
       </if>
       now(),
       now(),
@@ -149,14 +216,8 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.dream.city.base.model.entity.PlayerEarning" >
     update player_earning
     <set >
-      <if test="earnPlayerId != null" >
-        earn_player_id = #{earnPlayerId,jdbcType=VARCHAR},
-      </if>
       <if test="earnMax != null" >
         earn_max = #{earnMax,jdbcType=DECIMAL},
-      </if>
-      <if test="isWithdrew != null" >
-        is_withdrew = #{isWithdrew,jdbcType=INTEGER},
       </if>
       <if test="earnCurrent != null" >
         earn_current= #{earnCurrent,jdbcType=DECIMAL},
@@ -169,6 +230,24 @@
       </if>
       <if test="earnQuotaTax != null" >
         earn_quota_tax = #{earnQuotaTax,jdbcType=DECIMAL},
+      </if>
+      <if test="withdrewTotal != null" >
+        withdrew_total = #{withdrewTotal,jdbcType=DECIMAL},
+      </if>
+      <if test="dropTotal != null" >
+        drop_total = #{dropTotal,jdbcType=DECIMAL},
+      </if>
+      <if test="withdrewTimes != null and withdrewTimes > 0" >
+        withdrew_times = #{withdrewTimes,jdbcType=INTEGER},
+      </if>
+      <if test="isWithdrew != null and isWithdrew > 0" >
+        is_withdrew = #{isWithdrew,jdbcType=INTEGER},
+      </if>
+      <if test="earnInvestId != null">
+        earn_invest_id = #{earnInvestId,jdbcType=INTEGER},
+      </if>
+      <if test="inType != null">
+        in_type = #{inType,jdbcType=INTEGER},
       </if>
       update_time = now(),
     </set>

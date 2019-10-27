@@ -43,12 +43,12 @@ public class InvestOrderReq implements Serializable {
     /** 企业所得税 */
     private BigDecimal enterpriseIntax;
     /** 收益倍数 */
-    private String inEarning;
+    private Integer inEarning;
     /** 开始时间 */
     private Date inStart;
     /** 投资结束时间 */
     private Date inEnd;
-
+    private Integer inType;
 
 
     /** 玩家ID */

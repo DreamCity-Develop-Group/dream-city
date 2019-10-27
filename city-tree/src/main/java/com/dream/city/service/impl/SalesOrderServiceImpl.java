@@ -188,7 +188,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
                 return Result.result(false,"购买失败",ReturnStatus.ERROR.getStatus());
             }
 
-            return Result.result(false,"购买失败",ReturnStatus.ERROR.getStatus());
+            return Result.result(false,"购买失败",ReturnStatus.FAILED.getStatus());
         }else{
             return Result.result(false,"购买失败",ReturnStatus.ERROR.getStatus());
         }

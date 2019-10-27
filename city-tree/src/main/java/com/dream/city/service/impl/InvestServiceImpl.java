@@ -2,24 +2,21 @@ package com.dream.city.service.impl;
 
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.*;
-import com.dream.city.base.model.enu.ReturnStatus;
 import com.dream.city.base.model.mapper.*;
+import com.dream.city.base.model.resp.PlayerEarningResp;
 import com.dream.city.service.InvestAllowService;
 import com.dream.city.service.PlayerAccountService;
 import com.dream.city.service.RelationTreeService;
-import io.swagger.models.Model;
-import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import sun.rmi.runtime.Log;
 
 import java.math.BigDecimal;
-import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -123,11 +120,11 @@ public class InvestServiceImpl implements InvestAllowService {
     }
 
     @Override
-    public PlayerEarning investCollectEarning(String playerId, Integer investId) {
+    public PlayerEarningResp investCollectEarning(String playerId, Integer investId) {
         PlayerEarning earning = new PlayerEarning();
         earning.setEarnInvestId(investId);
         earning.setEarnPlayerId(playerId);
-        PlayerEarning earn = earningMapper.getPlayerEarning(earning);
+        PlayerEarningResp earn = earningMapper.getPlayerEarning(earning);
         return earn;
     }
 
@@ -155,12 +152,25 @@ public class InvestServiceImpl implements InvestAllowService {
                 BigDecimal total = amount;
                 if (parents.size() > 1) {
                     for (Map.Entry<Integer, RelationTree> entry : parents.entrySet()) {
-                        Integer key = entry.getKey();
+                        int key = entry.getKey();
                         RelationTree tree = entry.getValue();
                         BigDecimal allocation = new BigDecimal(0);
 
                         if (key > 1) {
-                            allocation = total.multiply(rateInterpolation);
+                            //超出9级
+                            if(key>9){
+                                break;
+                            }else {
+                                //直接推的人数是否符合
+                                List<RelationTree> trees = relationTreeService.getChilds(tree.getTreePlayerId());
+                                //int pushers = key;
+                                if (trees.size() >= key) {
+                                    allocation = total.multiply(rateInterpolation);
+                                }else {
+                                    //不符合跳过
+                                    continue;
+                                }
+                            }
                         } else {
                             allocation = total.multiply(rateDirection);
                         }
@@ -217,6 +227,7 @@ public class InvestServiceImpl implements InvestAllowService {
 
             accountLog.setType(1);
             accountLog.setDesc("获取印记收益");
+            accountLog.setCreateTime(new Date());
             accountLogMapper.insert(accountLog);
             return true;
         } catch (Exception e) {

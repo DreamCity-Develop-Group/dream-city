@@ -92,12 +92,14 @@ public class ConsumerTreeController {
         String parentId = "";
         if (!"system".equals(invite)) {
             Map parent = (Map) playerService.getPlayerByInvite(invite).getData();
-            parentId = parent.get("playerId").toString();
+            //成员不存在，错误的邀请码
             if (parent == null) {
                 message.getData().setCode(ReturnStatus.ERROR_INVITE.getStatus());
                 message.setDesc(ReturnStatus.ERROR_INVITE.getDesc());
                 return message;
             }
+            parentId = parent.get("playerId").toString();
+
         } else {
             RelationTree tree = treeService.getTreeByRelation(invite);
             if (tree != null) {
@@ -181,7 +183,7 @@ public class ConsumerTreeController {
         if (ret.getSuccess()) {
             //设置推荐二维码生效，即用户可用状态
             Player player1 = playerService.getPlayerByPlayerId(playerId);
-            player1.setIsValid("1");
+            player1.setIsValid(1);
             playerService.updatePlayer(player1);
 
             msg.getData().setCode(ReturnStatus.SUCCESS.getStatus());
@@ -339,10 +341,10 @@ public class ConsumerTreeController {
             ordersId = ordersId.concat(orderId + "&");
         }*/
 
-        for (int i =0;i<orders.length;i++){
-            if(i == orders.length-1){
-                ordersId+=orders[i];
-            }else {
+        for (int i = 0; i < orders.length; i++) {
+            if (i == orders.length - 1) {
+                ordersId += orders[i];
+            } else {
                 ordersId += orders[i] + "_";
             }
         }
@@ -350,8 +352,8 @@ public class ConsumerTreeController {
         Message message = new Message("server", "client", new MessageData("sendOrder", "/consumer/tree"), "发货成功");
         if (result.getSuccess()) {
             message.getData().setCode(ReturnStatus.SUCCESS.getStatus());
-            Map<String,Object> re = new HashMap<>();
-            re.put("result",result.getData());
+            Map<String, Object> re = new HashMap<>();
+            re.put("result", result.getData());
             message.getData().setData(re);
             message.setDesc(result.getMsg());
             return message;
@@ -376,12 +378,17 @@ public class ConsumerTreeController {
         String username = jsonObject.getString("username");
         String playerId = jsonObject.getString("playerId");
         BigDecimal amount = jsonObject.getBigDecimal("amount");
-
-        Result result = treeService.createOrder(playerId, amount);
-
-        msg.getData().setCode(result.getCode());
-        msg.getData().setData(result.getData());
-        return msg;
+        if (null != amount && StringUtils.isNotBlank(username) && StringUtils.isNotBlank(playerId)) {
+            Result result = treeService.createOrder(playerId, amount);
+            msg.getData().setCode(result.getCode());
+            msg.getData().setData(result.getData());
+            return msg;
+        } else {
+            msg.getData().setCode(ReturnStatus.INVALID.getStatus());
+            msg.setDesc("参数不正确！");
+            msg.getData().setData(null);
+            return msg;
+        }
     }
 
 

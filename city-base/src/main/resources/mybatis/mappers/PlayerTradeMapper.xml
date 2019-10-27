@@ -57,10 +57,10 @@
         and trade_amount = #{tradeAmount,jdbcType=DECIMAL}
       </if>
       <if test="tradeType != null and tradeType != ''" >
-        and trade_type = #{tradeType,jdbcType=VARCHAR},
+        and trade_type = #{tradeType,jdbcType=VARCHAR}
       </if>
       <if test="tradeStatus != null and tradeStatus != ''" >
-        and trade_status = #{tradeStatus,jdbcType=VARCHAR},
+        and trade_status = #{tradeStatus,jdbcType=VARCHAR}
       </if>
     </where>
       order by update_time desc limit 1

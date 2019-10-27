@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -37,15 +36,15 @@ public class ConsumerEarningController {
      * @param msg
      * @return
      */
-    @ApiOperation(value = "投资提取", httpMethod = "POST", notes = "t入参playerId,investId", response = Message.class)
+    @ApiOperation(value = "投资提取", httpMethod = "POST", notes = "t入参playerId,inType", response = Message.class)
     @RequestMapping("/extract")
     public Message extract(@RequestBody Message msg){
         Object dataMsg = msg.getData().getData();
         JSONObject jsonObject = JsonUtil.parseJsonToObj(JsonUtil.parseObjToJson(dataMsg), JSONObject.class);
         String playerId = jsonObject.getString("playerId");
-        Integer investId = Integer.parseInt(jsonObject.getString("investId"));
+        Integer inType = Integer.parseInt(jsonObject.getString("inType"));
 
-        Result<Map<String,Object>> result = earningService.extract(playerId,investId);
+        Result<Map<String,Object>> result = earningService.extract(playerId,inType);
         msg.setCode(result.getCode());
         msg.setDesc(result.getMsg());
         msg.getData().setData(result.getData());

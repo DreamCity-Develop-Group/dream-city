@@ -3,6 +3,7 @@ package com.dream.city.controller;
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.*;
 import com.dream.city.base.model.enu.ReturnStatus;
+import com.dream.city.base.model.resp.PlayerEarningResp;
 import com.dream.city.service.InvestAllowService;
 import com.dream.city.service.PlayerAccountService;
 import com.dream.city.service.RelationTreeService;
@@ -55,10 +56,10 @@ public class InvestController {
      * @param playerId
      * @return
      */
-    @RequestMapping("/invest/collect/earning")
+    /*@RequestMapping("/invest/collect/earning")
     public Result InvestCollect(@RequestParam("playerId")String playerId,@RequestParam("investId")Integer investId){
 
-        PlayerEarning earning = investService.investCollectEarning(playerId,investId);
+        PlayerEarningResp earning = investService.investCollectEarning(playerId,investId);
 
         if (null != earning && earning.getEarnMax().compareTo(earning.getEarnCurrent())==0 && earning.getIsWithdrew()==1){
             //1、修改账户
@@ -93,7 +94,7 @@ public class InvestController {
 
         }
         return Result.result(false,"收益未满，暂不可提取", ReturnStatus.NOT_FINISHED.getStatus());
-    }
+    }*/
 
 
     @RequestMapping("/invest/join")

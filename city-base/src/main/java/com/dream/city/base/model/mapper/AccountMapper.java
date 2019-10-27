@@ -31,7 +31,7 @@ public interface AccountMapper {
 
 
     //cityPlayId
-    PlayerAccount selectByPrimaryPlayerId(Integer accId);
+    PlayerAccount selectByPrimaryPlayerId(@Param("accId")Integer accId);
 
     /**
      * 获取平台账户
@@ -50,9 +50,11 @@ public interface AccountMapper {
      */
     List<PlayerAccount> getPlatformAccounts(PlayerAccountReq record);
 
+    List<PlayerAccountResp> getPlatformAccountList(PlayerAccountReq record);
+
     List<PlayerAccountResp> getPlayerAccountList(PlayerAccountReq record);
 
-    PlayerAccount getPlayerAccount(String accPlayerId);
+    PlayerAccount getPlayerAccount(@Param("accPlayerId") String accPlayerId);
 
    int insertPlayAccountLog(PlayerAccount playerAccount);
 

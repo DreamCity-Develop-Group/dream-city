@@ -165,6 +165,7 @@ public class DataUtils {
         String isValid = map.containsKey("isValid")?String.valueOf(map.get("isValid")):null;
         String playerId = map.containsKey("playerId")?String.valueOf(map.get("playerId")):null;
         String username = map.containsKey("username")?String.valueOf(map.get("username")):null;
+        String friendId = map.containsKey("friendId")?String.valueOf(map.get("friendId")):null;
 
         CityInvestReq result = new CityInvestReq();
         result.setInId(inId);
@@ -172,6 +173,7 @@ public class DataUtils {
         result.setIsValid(isValid);
         result.setPlayerId(playerId);
         result.setPlayerName(username);
+        result.setFriendId(friendId);
         return result;
     }
 
@@ -179,6 +181,7 @@ public class DataUtils {
         Map map = (Map)msg.getData().getData();
         Integer orderId = map.containsKey("orderId")?Integer.parseInt(String.valueOf(map.get("orderId"))):null;
         Integer investId = map.containsKey("investId")?Integer.parseInt(String.valueOf(map.get("investId"))):null;
+        Integer inType = map.containsKey("inType")?Integer.parseInt(String.valueOf(map.get("inType"))):null;
         BigDecimal orderAmount = map.containsKey("orderAmount")?BigDecimal.valueOf(Double.valueOf(String.valueOf(map.get("orderAmount")))):BigDecimal.ZERO;
         String amountType = map.containsKey("amountType")?String.valueOf(map.get("amountType")):null;
         String inName = map.containsKey("inName")?String.valueOf(map.get("inName")):null;
@@ -197,6 +200,7 @@ public class DataUtils {
         result.setPayerName(payerName);
         result.setOrderRepeat(orderRepeat);
         result.setOrderState(orderState);
+        result.setInType(inType);
         return result;
     }
 

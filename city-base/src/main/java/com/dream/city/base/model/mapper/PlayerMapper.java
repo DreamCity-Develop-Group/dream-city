@@ -62,7 +62,7 @@ public interface PlayerMapper {
             @Result(property = "createTime", column = "createtime"),
             @Result(property = "updateTime", column = "updatetime")
     })
-    @Select({"select * from `city_player` where 1=1 and player_id = #{playerId}"})
+    @Select({"select * from `city_player` where is_valid = 1 and player_id = #{playerId}"})
     Player getPlayer(String playerId);
 
 

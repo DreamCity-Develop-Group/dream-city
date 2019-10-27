@@ -311,9 +311,9 @@ public class RelationTreeServiceImpl implements RelationTreeService {
         RelationTree self = this.getTreeByPlayerId(playerId);
         String selfRef = self.getTreeRelation();
         String[] relations = selfRef.split("/");
-        Integer levels = relations.length;
-        Integer level = 0;
-        while (levels > 0 && (level + 1) < 9) {
+        int levels = relations.length;
+        int level = 0;
+        while (levels > 0 && (level + 1) < 10) {
             level = level + 1;
 
             int start = 0;
@@ -325,6 +325,13 @@ public class RelationTreeServiceImpl implements RelationTreeService {
             RelationTree parent = getPlayerByRef(parentRef);
             trees.put(level, parent);
         }
+
+        return trees;
+    }
+
+    @Override
+    public List<RelationTree> getChilds(String playerId) {
+        List<RelationTree> trees = treeMapper.getChilds(playerId);
 
         return trees;
     }

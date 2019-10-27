@@ -1,4 +1,4 @@
-package com.dream.city.base.model.entity;
+package com.dream.city.base.model.resp;
 
 import lombok.Data;
 
@@ -11,7 +11,8 @@ import java.util.Date;
  * 玩家项目收益
  */
 @Data
-public class PlayerEarning implements Serializable {
+public class PlayerEarningResp implements Serializable {
+
     /**  */
     private Integer earnId;
 
@@ -21,7 +22,6 @@ public class PlayerEarning implements Serializable {
      * 投资项目ID
      */
     private Integer earnInvestId;
-    private Integer inType;
 
     /** 玩家ID */
     private String earnPlayerId;
@@ -69,4 +69,12 @@ public class PlayerEarning implements Serializable {
     private Date createTime;
     private Date updateTime;
 
+
+    private String inName;
+    private Integer inType;
+    private BigDecimal inLimit;
+    /** 投资结束时间 */
+    private Date inEnd;
+
+    private String playerName;
 }

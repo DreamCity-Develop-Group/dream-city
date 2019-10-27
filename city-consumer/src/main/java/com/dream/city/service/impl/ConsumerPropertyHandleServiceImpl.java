@@ -32,8 +32,8 @@ public class ConsumerPropertyHandleServiceImpl implements ConsumerPropertyHandle
     }
 
     @Override
-    public Result<CityInvest> getPropertyByIdOrName(CityInvest record) {
-        return propertyService.getInvestByIdOrName(record);
+    public Result<InvestResp> getProperty(CityInvestReq record) {
+        return propertyService.getInvest(record);
     }
 
     @Override
@@ -55,7 +55,8 @@ public class ConsumerPropertyHandleServiceImpl implements ConsumerPropertyHandle
                     //resultMap = JSON.parseObject(JSON.toJSONString(invest),Map.class);
                     resultMap = new HashMap<>();
                     //物业投资按钮
-                        int status = ReturnStatus.ERROR.getStatus();
+                    int status = ReturnStatus.INVEST_SUBSCRIBE.getStatus();
+                    logger.info("物业状态",invest.getOrderState());
                     if (StringUtils.isBlank(invest.getOrderState())){
                         //预约
                         status = ReturnStatus.INVEST_SUBSCRIBE.getStatus();
@@ -98,9 +99,9 @@ public class ConsumerPropertyHandleServiceImpl implements ConsumerPropertyHandle
                     resultMap.put("expectIncome", invest.getInLimit()
                             .multiply(BigDecimal.valueOf(Long.parseLong(String.valueOf(invest.getInEarning())))));
 
-                    String resultTime = DateUtils.date2Str(invest.getVerifyTime());
-                    if (invest.getVerifyTime() == null){
-                        resultTime ="9:30";
+                    String resultTime = "9:30";
+                    if (invest.getVerifyTime() != null){
+                        resultTime = DateUtils.date2Str(invest.getVerifyTime(),"HH:mm");
                     }
                     resultMap.put("resultTime",resultTime);
 
@@ -108,6 +109,8 @@ public class ConsumerPropertyHandleServiceImpl implements ConsumerPropertyHandle
                 }
                 success = Boolean.TRUE;
                 desc = "获取物业列表成功";
+            }else {
+                desc = "获取物业列表为空";
             }
         }catch (Exception e){
             logger.error("获取物业列表异常",e);

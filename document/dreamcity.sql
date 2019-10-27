@@ -92,11 +92,11 @@ CREATE TABLE `city_invest` (
   `in_id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '标识',
   `in_name` varchar(50) DEFAULT NULL COMMENT '名称',
   `in_type` int(4) unsigned DEFAULT NULL COMMENT '物业类型',
-  `in_limit` decimal(20,4) unsigned DEFAULT '0.0000' COMMENT '限额',
+  `in_limit` decimal(50,9) unsigned DEFAULT '0.0000' COMMENT '限额',
   `in_start` datetime DEFAULT NULL COMMENT '开始时间',
-  `in_personal_tax` decimal(20,4) unsigned zerofill DEFAULT '0000000000000000.0000' COMMENT '个人税金',
-  `in_enterprise_tax` decimal(20,4) unsigned zerofill DEFAULT '0000000000000000.0000' COMMENT '企业税金',
-  `in_quota_tax` decimal(20,4) unsigned DEFAULT '0.0000' COMMENT '定额税',
+  `in_personal_tax` decimal(50,9) unsigned zerofill DEFAULT '0.0000' COMMENT '个人税金',
+  `in_enterprise_tax` decimal(50,9) unsigned zerofill DEFAULT '0.0000' COMMENT '企业税金',
+  `in_quota_tax` decimal(50,9) unsigned DEFAULT '0.0000' COMMENT '定额税',
   `in_earning` tinyint(4) unsigned DEFAULT '0' COMMENT '收益倍数',
   `in_end` datetime DEFAULT NULL COMMENT '投资结束时间',
   `in_img` varchar(100) DEFAULT NULL COMMENT '项目图片地址(默认主图)',
@@ -109,13 +109,13 @@ CREATE TABLE `city_invest` (
 -- ----------------------------
 -- Records of city_invest
 -- ----------------------------
-INSERT INTO `city_invest` VALUES ('1', '小地摊', '11', '30.0000', '2019-09-18 17:56:20', '0000000000000000.1000', '0000000000000000.1000', '0.0000', '2', '2020-01-31 17:56:50', null, 'Y', null, null);
-INSERT INTO `city_invest` VALUES ('2', '玩具摊', '21', '100.0000', '2019-10-01 21:04:25', '0000000000000000.2000', '0000000000000000.1000', '0.0000', '3', '2019-11-30 21:04:53', null, 'Y', null, null);
-INSERT INTO `city_invest` VALUES ('3', '酒吧', '31', '300.0000', '2019-10-01 21:04:25', '0000000000000000.2500', '0000000000000000.1000', '0.0000', '3', '2019-11-30 21:04:53', null, 'N', null, null);
-INSERT INTO `city_invest` VALUES ('4', '医药公司', '41', '500.0000', '2019-10-01 21:04:25', '0000000000000000.3000', '0000000000000000.1000', '0.0000', '4', '2019-11-30 21:04:53', null, 'N', null, null);
-INSERT INTO `city_invest` VALUES ('5', '电影公司', '51', '1000.0000', '2019-10-01 21:04:25', '0000000000000000.3500', '0000000000000000.1000', '0.0000', '4', '2019-11-30 21:04:53', null, 'N', null, null);
-INSERT INTO `city_invest` VALUES ('6', '汽车集团', '61', '3000.0000', '2019-10-01 21:04:25', '0000000000000000.2000', '0000000000000000.1000', '0.0000', '5', '2019-11-30 21:04:53', null, 'N', null, null);
-INSERT INTO `city_invest` VALUES ('7', '投资集团', '71', '5000.0000', '2019-10-01 21:04:25', '0000000000000000.1000', '0000000000000000.1000', '0.0000', '5', '2019-11-30 21:04:53', null, 'N', null, null);
+INSERT INTO `dreamcity`.`city_invest` (`in_id`, `in_name`, `in_type`, `in_limit`, `in_start`, `in_personal_tax`, `in_enterprise_tax`, `in_quota_tax`, `in_earning`, `in_end`, `in_img`, `is_valid`, `create_time`, `update_time`) VALUES ('1', '小吃摊', '11', '30.0000', '2019-09-18 17:56:20', '0000000000000000.0000', '0000000000000000.0000', '0.1000', '2', '2020-01-31 17:56:50', NULL, 'Y', NULL, NULL);
+INSERT INTO `dreamcity`.`city_invest` (`in_id`, `in_name`, `in_type`, `in_limit`, `in_start`, `in_personal_tax`, `in_enterprise_tax`, `in_quota_tax`, `in_earning`, `in_end`, `in_img`, `is_valid`, `create_time`, `update_time`) VALUES ('2', '玩具摊', '21', '100.0000', '2019-10-01 21:04:25', '0000000000000000.0000', '0000000000000000.2000', '0.2000', '3', '2019-11-30 21:04:53', NULL, 'Y', NULL, NULL);
+INSERT INTO `dreamcity`.`city_invest` (`in_id`, `in_name`, `in_type`, `in_limit`, `in_start`, `in_personal_tax`, `in_enterprise_tax`, `in_quota_tax`, `in_earning`, `in_end`, `in_img`, `is_valid`, `create_time`, `update_time`) VALUES ('3', '酒吧', '31', '300.0000', '2019-10-01 21:04:25', '0000000000000000.2000', '0000000000000000.0500', '0.0000', '3', '2019-11-30 21:04:53', NULL, 'N', NULL, NULL);
+INSERT INTO `dreamcity`.`city_invest` (`in_id`, `in_name`, `in_type`, `in_limit`, `in_start`, `in_personal_tax`, `in_enterprise_tax`, `in_quota_tax`, `in_earning`, `in_end`, `in_img`, `is_valid`, `create_time`, `update_time`) VALUES ('4', '医药公司', '41', '500.0000', '2019-10-01 21:04:25', '0000000000000000.2000', '0000000000000000.1000', '0.0000', '4', '2019-11-30 21:04:53', NULL, 'N', NULL, NULL);
+INSERT INTO `dreamcity`.`city_invest` (`in_id`, `in_name`, `in_type`, `in_limit`, `in_start`, `in_personal_tax`, `in_enterprise_tax`, `in_quota_tax`, `in_earning`, `in_end`, `in_img`, `is_valid`, `create_time`, `update_time`) VALUES ('5', '电影公司', '51', '1000.0000', '2019-10-01 21:04:25', '0000000000000000.2000', '0000000000000000.1500', '0.0000', '4', '2019-11-30 21:04:53', NULL, 'N', NULL, NULL);
+INSERT INTO `dreamcity`.`city_invest` (`in_id`, `in_name`, `in_type`, `in_limit`, `in_start`, `in_personal_tax`, `in_enterprise_tax`, `in_quota_tax`, `in_earning`, `in_end`, `in_img`, `is_valid`, `create_time`, `update_time`) VALUES ('6', '汽车集团', '61', '3000.0000', '2019-10-01 21:04:25', '0000000000000000.0000', '0000000000000000.2000', '0.0000', '5', '2019-11-30 21:04:53', NULL, 'N', NULL, NULL);
+INSERT INTO `dreamcity`.`city_invest` (`in_id`, `in_name`, `in_type`, `in_limit`, `in_start`, `in_personal_tax`, `in_enterprise_tax`, `in_quota_tax`, `in_earning`, `in_end`, `in_img`, `is_valid`, `create_time`, `update_time`) VALUES ('7', '投资集团', '71', '5000.0000', '2019-10-01 21:04:25', '0000000000000000.0000', '0000000000000000.1000', '0.0000', '5', '2019-11-30 21:04:53', NULL, 'N', NULL, NULL);
 
 -- ----------------------------
 -- Table structure for city_message
@@ -224,7 +224,7 @@ CREATE TABLE `earn_falldown_log` (
   `fall_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
   `fall_invest_id` int(11) DEFAULT NULL COMMENT '掉落的项目',
   `fall_player_id` varchar(64) DEFAULT NULL COMMENT '掉落的玩家',
-  `fall_amount` decimal(20,4) DEFAULT NULL COMMENT '掉落的额度',
+  `fall_amount` decimal(50,9) DEFAULT NULL COMMENT '掉落的额度',
   `create_time` datetime DEFAULT NULL COMMENT '掉落的时间',
   PRIMARY KEY (`fall_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
@@ -241,7 +241,7 @@ CREATE TABLE `earn_income_log` (
   `in_log_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `in_invest_id` int(11) DEFAULT NULL COMMENT '投资的ID',
   `in_player_id` varchar(64) DEFAULT NULL COMMENT '玩家的ID',
-  `in_amount` decimal(20,4) DEFAULT NULL COMMENT '本次收益',
+  `in_amount` decimal(50,9) DEFAULT NULL COMMENT '本次收益',
   `create_time` datetime DEFAULT NULL COMMENT '收益时间',
   PRIMARY KEY (`in_log_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
@@ -257,8 +257,8 @@ DROP TABLE IF EXISTS `invest_allow`;
 CREATE TABLE `invest_allow` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `player_id` varchar(50) DEFAULT NULL,
-  `allowed` varchar(255) DEFAULT NULL COMMENT '0b表示新建，1表示完成',
-  `amount` decimal(20,4) DEFAULT NULL,
+  `allowed`  tinyint(4) unsigned DEFAULT '0' COMMENT '0b表示新建，1表示完成',
+  `amount` decimal(50,9) DEFAULT NULL,
   `create_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
@@ -274,7 +274,7 @@ CREATE TABLE `invest_order` (
   `order_payer_id` varchar(64) DEFAULT NULL COMMENT '玩家ID',
   `order_name` varchar(50) DEFAULT NULL,
   `order_num` varchar(64) DEFAULT NULL,
-  `order_amount` decimal(20,4) unsigned DEFAULT '0.0000' COMMENT '投资金额',
+  `order_amount` decimal(50,9) unsigned DEFAULT '0.0000' COMMENT '投资金额',
   `order_state` varchar(60) DEFAULT NULL COMMENT '状态(SUBSCRIBE预约，SUBSCRIBED已预约,MANAGEMENT经营中,EXTRACT可提取,FINISHED已完成,CANCEL取消,SUBSCRIBE_VERIFY_FAIL预约审核不通过，INVALID作废)',
   `order_repeat` tinyint(4) unsigned DEFAULT '0' COMMENT '是否复投（0否，1是）',
   `create_time` datetime DEFAULT NULL,
@@ -298,8 +298,8 @@ CREATE TABLE `invest_rule` (
   `rule_desc` varchar(200) DEFAULT NULL COMMENT '规则描述',
   `rule_item` int(11) unsigned DEFAULT NULL COMMENT '规则项目',
   `rule_rate_pre` tinyint(4) unsigned DEFAULT '0',
-  `rule_rate` decimal(20,4) unsigned DEFAULT '0.0000',
-  `rule_level` decimal(20,4) unsigned DEFAULT NULL COMMENT '规则优先级别',
+  `rule_rate` decimal(50,9) unsigned DEFAULT '0.0000',
+  `rule_level` decimal(50,9) unsigned DEFAULT NULL COMMENT '规则优先级别',
   `create_time` datetime DEFAULT NULL,
   `update_time` datetime DEFAULT NULL,
   PRIMARY KEY (`rule_id`) USING BTREE,
@@ -408,13 +408,13 @@ CREATE TABLE `player_account` (
   `acc_player_id` varchar(64) DEFAULT NULL COMMENT '账户玩家',
   `acc_addr` varchar(255) DEFAULT NULL COMMENT '账户地址',
   `acc_pass` varchar(255) DEFAULT NULL COMMENT '账户密码',
-  `acc_usdt` decimal(20,4) DEFAULT '0.0000' COMMENT '账户usdt额度',
-  `acc_usdt_available` decimal(20,4) unsigned DEFAULT '0.0000' COMMENT 'usdt可用金额',
-  `acc_usdt_freeze` decimal(20,4) unsigned DEFAULT '0.0000' COMMENT 'usdt冻结金额',
-  `acc_mt` decimal(20,4) DEFAULT '0.0000' COMMENT '账户mt额度',
-  `acc_mt_available` decimal(20,4) unsigned DEFAULT '0.0000' COMMENT 'mt可用金额',
-  `acc_mt_freeze` decimal(20,4) unsigned DEFAULT '0.0000' COMMENT 'mt冻结金额',
-  `acc_income` decimal(20,4) DEFAULT '0.0000',
+  `acc_usdt` decimal(50,9) DEFAULT '0.0000' COMMENT '账户usdt额度',
+  `acc_usdt_available` decimal(50,9) unsigned DEFAULT '0.0000' COMMENT 'usdt可用金额',
+  `acc_usdt_freeze` decimal(50,9) unsigned DEFAULT '0.0000' COMMENT 'usdt冻结金额',
+  `acc_mt` decimal(50,9) DEFAULT '0.0000' COMMENT '账户mt额度',
+  `acc_mt_available` decimal(50,9) unsigned DEFAULT '0.0000' COMMENT 'mt可用金额',
+  `acc_mt_freeze` decimal(50,9) unsigned DEFAULT '0.0000' COMMENT 'mt冻结金额',
+  `acc_income` decimal(50,9) DEFAULT '0.0000',
   `version` int(10) unsigned DEFAULT '0',
   `create_time` datetime DEFAULT NULL,
   `update_time` datetime DEFAULT NULL,
@@ -436,8 +436,8 @@ CREATE TABLE `player_account_log` (
   `acc_id` int(11) NOT NULL COMMENT '交易ID号',
   `player_id` varchar(64) DEFAULT NULL COMMENT '玩家',
   `address` varchar(50) DEFAULT NULL COMMENT '地址',
-  `amount_mt` decimal(20,4) DEFAULT '0.0000',
-  `account_usdt` decimal(20,4) DEFAULT '0.0000',
+  `amount_mt` decimal(50,9) DEFAULT '0.0000',
+  `account_usdt` decimal(50,9) DEFAULT '0.0000',
   `type` varchar(50) DEFAULT NULL COMMENT '1入账2出账',
   `desc` varchar(255) DEFAULT NULL COMMENT '说明',
   `create_time` datetime DEFAULT NULL,
@@ -450,19 +450,24 @@ CREATE TABLE `player_account_log` (
 DROP TABLE IF EXISTS `player_earning`;
 CREATE TABLE `player_earning` (
   `earn_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `order_id` int(10) unsigned DEFAULT NULL COMMENT '订单id(表invest_order)',
   `earn_invest_id` int(11) DEFAULT NULL COMMENT '投资项目ID',
+  `in_type` smallint(6) unsigned DEFAULT NULL,
   `earn_player_id` varchar(64) DEFAULT NULL COMMENT '玩家ID',
   `earn_max` decimal(20,4) unsigned DEFAULT '0.0000' COMMENT '最大提取额度（预计最大收益）',
   `earn_current` decimal(20,4) unsigned DEFAULT '0.0000' COMMENT '当前获得额度',
   `earn_personal_tax` decimal(20,4) unsigned DEFAULT '0.0000' COMMENT '个人税金',
   `earn_enterprise_tax` decimal(20,4) DEFAULT '0.0000' COMMENT '企业税金',
   `earn_quota_tax` decimal(20,4) unsigned DEFAULT '0.0000' COMMENT '定额税',
-  `is_withdrew` tinyint(4) DEFAULT '0' COMMENT '是否可以提取(0新增,1，收益中，2可提取，3已提取)',
+  `withdrew_total` decimal(20,4) unsigned DEFAULT '0.0000' COMMENT '已提取总额',
+  `withdrew_times` smallint(6) unsigned DEFAULT '0' COMMENT '已提取次数',
+  `is_withdrew` tinyint(4) unsigned DEFAULT '0' COMMENT '是否可以提取(0新增,1，收益中，2可提取，3已提取)',
   `create_time` datetime DEFAULT NULL,
   `update_time` datetime DEFAULT NULL,
   PRIMARY KEY (`earn_id`) USING BTREE,
   KEY `index_earn_player_id` (`earn_player_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='玩家收益';
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='玩家收益';
+
 
 -- ----------------------------
 -- Table structure for player_ext
@@ -592,10 +597,10 @@ CREATE TABLE `player_trade` (
   `trade_acc_id` int(10) unsigned DEFAULT NULL COMMENT '账户id',
   `trade_player_id` varchar(64) DEFAULT NULL COMMENT '交易人id',
   `trade_order_id` int(11) unsigned DEFAULT NULL COMMENT '订单id',
-  `trade_amount` decimal(20,4) DEFAULT '0.0000' COMMENT '交易金额',
-  `personal_tax` decimal(20,4) unsigned DEFAULT '0.0000' COMMENT '个人所得税',
-  `enterprise_tax` decimal(20,4) unsigned DEFAULT '0.0000' COMMENT '企业所得税',
-  `quota_tax` decimal(20,4) unsigned DEFAULT '0.0000' COMMENT '定额税',
+  `trade_amount` decimal(50,9) DEFAULT '0.0000' COMMENT '交易金额',
+  `personal_tax` decimal(50,9) unsigned DEFAULT '0.0000' COMMENT '个人所得税',
+  `enterprise_tax` decimal(50,9) unsigned DEFAULT '0.0000' COMMENT '企业所得税',
+  `quota_tax` decimal(50,9) unsigned DEFAULT '0.0000' COMMENT '定额税',
   `trade_status` varchar(30) DEFAULT NULL COMMENT '交易状态(FREEZE冻结,OUT已出账,IN已入账)',
   `in_out` varchar(10) DEFAULT NULL COMMENT '入账还是出账(入账in,出账out)',
   `trade_type` varchar(30) DEFAULT NULL COMMENT '交易类型（充值:recharge,转账:transfer,提现:withdraw,购买mt:buy_mt,投资invest,投资收益:invest_earnings)',
@@ -943,10 +948,10 @@ DROP TABLE IF EXISTS `sales_order`;
 CREATE TABLE `sales_order` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `order_id` varchar(255) DEFAULT NULL COMMENT '订单ID',
-  `order_amount` decimal(20,0) DEFAULT NULL COMMENT '订单额度',
+  `order_amount` decimal(50,9) DEFAULT NULL COMMENT '订单额度',
   `order_buy_type` varchar(50) DEFAULT NULL COMMENT '订单购买类型',
   `order_pay_type` varchar(50) DEFAULT NULL COMMENT '订单支付类型',
-  `order_pay_amount` decimal(20,0) DEFAULT NULL COMMENT '支付额度',
+  `order_pay_amount` decimal(50,9) DEFAULT NULL COMMENT '支付额度',
   `order_player_buyer` varchar(64) DEFAULT NULL COMMENT '订单玩家',
   `order_player_seller` varchar(64) DEFAULT NULL COMMENT '订单卖家',
   `order_state` tinyint(10) DEFAULT NULL COMMENT '订单状态：0创建,1:待支付2完成支付，已通过3支付成功等待处理4超时5拒绝',
@@ -967,9 +972,9 @@ CREATE TABLE `trade_detail` (
   `order_id` int(11) unsigned DEFAULT NULL COMMENT '订单id',
   `player_id` varchar(64) DEFAULT NULL COMMENT '交易人',
   `trade_detail_type` varchar(50) DEFAULT NULL COMMENT '交易明细类型（充值:recharge,usdt投资收益:usdt_earnings,mt投资收益:mt_earnings,usdt投资税金:usdt_invest_tax,mt投资税金:mt_invest_tax,个人所得税:personal_tax,企业所得税:enterprise_tax,转账所得税:transfer_tax,转账冻结:transfer_freeze,提现冻结:withdraw_freeze,购买mt冻结:buy_mt_freeze,usdt投资冻结:usdt_invest_freeze,mt投资冻结:mt_inves_freeze,转账审核通过扣款:transfer_verify,提现审核通过扣款:withdraw_verify,usdt投资审核通过扣款:usdt_invest_verify',
-  `trade_amount` decimal(20,4) DEFAULT '0.0000' COMMENT '交易金额',
-  `usdt_surplus` decimal(20,4) DEFAULT '0.0000' COMMENT '余额',
-  `mt_surplus` decimal(20,4) DEFAULT '0.0000' COMMENT '余额',
+  `trade_amount` decimal(50,9) DEFAULT '0.0000' COMMENT '交易金额',
+  `usdt_surplus` decimal(50,9) DEFAULT '0.0000' COMMENT '余额',
+  `mt_surplus` decimal(50,9) DEFAULT '0.0000' COMMENT '余额',
   `verify_time` datetime DEFAULT NULL COMMENT '交易审核时间',
   `descr` varchar(255) DEFAULT NULL,
   `create_time` datetime DEFAULT NULL,

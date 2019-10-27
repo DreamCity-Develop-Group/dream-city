@@ -2,6 +2,8 @@ package com.dream.city.base.model.mapper;
 
 
 import com.dream.city.base.model.entity.PlayerEarning;
+import com.dream.city.base.model.req.EarningReq;
+import com.dream.city.base.model.resp.PlayerEarningResp;
 import io.swagger.models.auth.In;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -23,9 +25,11 @@ public interface PlayerEarningMapper {
 
     PlayerEarning selectByPrimaryKey(Integer earnId);
 
-    PlayerEarning getPlayerEarning(PlayerEarning record);
+    PlayerEarningResp getPlayerEarning(PlayerEarning record);
 
     List<PlayerEarning> selectPlayerEarningList(PlayerEarning record);
+
+    List<PlayerEarningResp> getEarningList(EarningReq record);
 
     Integer updateByPrimaryKeySelective(PlayerEarning record);
 

@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -64,6 +63,6 @@ public interface ConsumerEarningService {
      * @return
      */
     @RequestMapping("/extract")
-    Result<Map<String,Object>> extract(@RequestParam("playerId")String playerId, @RequestParam("investId")Integer investId);
+    Result<Map<String,Object>> extract(@RequestParam("playerId")String playerId, @RequestParam("inType")Integer inType);
 
 }

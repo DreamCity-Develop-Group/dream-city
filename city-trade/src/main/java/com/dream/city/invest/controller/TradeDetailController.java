@@ -31,11 +31,11 @@ public class TradeDetailController {
      * @return
      */
     @RequestMapping("/insertTradeDetail")
-    public Result<Integer> insertTradeDetail(@RequestBody TradeDetail record){
+    public Result<TradeDetail> insertTradeDetail(@RequestBody TradeDetail record){
         logger.info("新增交易明细，{}", record);
         boolean success = Boolean.FALSE;
         String desc = "新增交易明细失败";
-        int resultDate = 0;
+        TradeDetail resultDate = null;
         try {
             resultDate = detailService.insert(record);
             desc = "新增交易明细成功";

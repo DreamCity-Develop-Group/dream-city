@@ -149,15 +149,10 @@ public class SalesOrderController {
         //获取未完成的订单
         SalesOrder salesOrder = salesOrderService.getBuyerNoPayOrder(playerId);
         if (salesOrder != null) {
-            Result result = Result.result(
-                    false,
-                    ReturnStatus.NOT_FINISHED.getDesc(),
-                    ReturnStatus.NOT_FINISHED.getStatus(),
-                    data
-            );
+            Result result = Result.result(false,ReturnStatus.NOT_FINISHED.getDesc(),ReturnStatus.NOT_FINISHED.getStatus(),data);
             return result;
         }
-
+        //创建订单
         return salesOrderService.buyMtCreate(buyAmount, rate, playerId);
 
     }

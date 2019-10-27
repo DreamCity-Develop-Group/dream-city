@@ -11,6 +11,7 @@ public enum TradeType {
 
     INVEST("INVEST","USDT投资"),
     INVEST_EARNINGS("INVEST_EARNINGS","投资收益"),
+    INVEST_TAX("INVEST_TAX","提取扣税"),
 
     BUY_MT("BUY_MT","购买MT"),
 

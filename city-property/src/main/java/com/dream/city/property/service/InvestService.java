@@ -24,7 +24,7 @@ public interface InvestService {
      * @param record: inId 、inName
      * @return
      */
-    CityInvest getInvestByIdOrName(CityInvest record);
+    InvestResp getInvest(CityInvestReq record);
 
     /**
      * 更新物业

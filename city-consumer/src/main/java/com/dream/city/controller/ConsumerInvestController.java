@@ -11,6 +11,7 @@ import com.dream.city.service.ConsumerPropertyHandleService;
 import com.dream.city.service.ConsumerTradeVerifyService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +48,7 @@ public class ConsumerInvestController {
      * @param msg
      * @return
      */
-    @ApiOperation(value = "预约投资",httpMethod = "POST", notes = "t参数:investId,playerId", response = Message.class)
+    @ApiOperation(value = "预约投资",httpMethod = "POST", notes = "t参数:inType,playerId", response = Message.class)
     @RequestMapping("/playerInvest")
     public Message playerInvest(@RequestBody Message msg){
         logger.info("预约投资", JSONObject.toJSONString(msg));
@@ -94,7 +95,11 @@ public class ConsumerInvestController {
         Result<List<Map<String,Object>>> result = investService.getPropertyLsit(invest);
         Map<String,Object>  dataResult = new HashMap<>();
         dataResult.put("investList",result.getData());
-        dataResult.put("playerId",invest.getPlayerId());
+        if (StringUtils.isNotBlank(invest.getFriendId())){
+            dataResult.put("playerId",invest.getFriendId());
+        }else {
+            dataResult.put("playerId",invest.getPlayerId());
+        }
         msg.getData().setData(dataResult);
         msg.setDesc(result.getMsg());
         msg.setCode(result.getSuccess()? ReturnStatus.SUCCESS.getStatus():ReturnStatus.ERROR.getStatus());

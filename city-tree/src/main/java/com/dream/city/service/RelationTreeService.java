@@ -37,6 +37,8 @@ public interface RelationTreeService {
 
     Map<Integer,RelationTree> getParents(String playerId);
 
+    List<RelationTree> getChilds(String playerId);
+
     boolean hasParent(String playerId);
 
     RelationTree getTreeByPlayerId(String playerId);

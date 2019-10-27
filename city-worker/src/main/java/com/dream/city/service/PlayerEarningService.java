@@ -2,6 +2,7 @@ package com.dream.city.service;
 
 import com.dream.city.base.model.entity.EarnIncomeLog;
 import com.dream.city.base.model.entity.PlayerEarning;
+import com.dream.city.base.model.resp.PlayerEarningResp;
 
 import java.util.List;
 
@@ -12,7 +13,7 @@ public interface PlayerEarningService {
 
     List<PlayerEarning> getPlayerEarnByPlayerId(String playerId);
 
-    PlayerEarning getPlayerEarnByPlayerId(String playerId,Integer investId);
+    PlayerEarningResp getPlayerEarnByPlayerId(String playerId, Integer investId);
 
     void add(PlayerEarning earning);
 

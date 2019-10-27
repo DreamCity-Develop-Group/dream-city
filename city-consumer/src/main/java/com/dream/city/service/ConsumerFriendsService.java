@@ -2,6 +2,7 @@ package com.dream.city.service;
 
 import com.dream.city.base.model.Page;
 import com.dream.city.base.model.Result;
+import com.dream.city.base.model.entity.Likes;
 import com.dream.city.base.model.req.FriendsReq;
 import com.dream.city.base.model.resp.FriendsResp;
 import com.github.pagehelper.PageInfo;
@@ -9,6 +10,8 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
 
 @FeignClient(value = "city-player")
 @RequestMapping("/friends")
@@ -54,5 +57,5 @@ public interface ConsumerFriendsService {
      * @param playerId
      */
     @RequestMapping("/to/friend/main")
-    Result getInvestLikes(@RequestParam("playerId") String playerId);
+    Result<List<Likes>> getInvestLikes(@RequestParam("playerId") String playerId);
 }

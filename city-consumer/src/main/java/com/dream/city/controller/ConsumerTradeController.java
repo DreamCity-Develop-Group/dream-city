@@ -7,7 +7,6 @@ import com.dream.city.base.model.Message;
 import com.dream.city.base.model.MessageData;
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.Player;
-import com.dream.city.base.model.entity.PlayerAccount;
 import com.dream.city.base.model.entity.PlayerTrade;
 import com.dream.city.base.model.enu.ReturnStatus;
 import com.dream.city.base.model.req.PlayerAccountReq;
@@ -16,7 +15,6 @@ import com.dream.city.base.model.resp.PlayerAccountResp;
 import com.dream.city.base.model.resp.PlayerResp;
 import com.dream.city.base.model.resp.PlayerTradeResp;
 import com.dream.city.base.utils.DataUtils;
-import com.dream.city.base.utils.JsonUtil;
 import com.dream.city.base.utils.RedisKeys;
 import com.dream.city.base.utils.RedisUtils;
 import com.dream.city.service.ConsumerAccountService;
@@ -217,23 +215,6 @@ public class ConsumerTradeController {
         accountReq.setAccPlayerId(playerId);
 
         Result<PlayerTrade>  tradeResult = tradeService.playerRecharge(accountReq);
-        /*String sendMessage = "玩家充值";
-        if (tradeResult.getSuccess()){
-            if (accountReq.getAccMt() != null && accountReq.getAccMt().compareTo(BigDecimal.ZERO) > 0){
-                sendMessage = sendMessage + accountReq.getAccMt() + "MT成功";
-            }
-            if (accountReq.getAccUsdt() != null && accountReq.getAccUsdt().compareTo(BigDecimal.ZERO) > 0){
-                sendMessage = sendMessage + accountReq.getAccUsdt() + "USDT成功";
-            }
-        }else {
-            if (accountReq.getAccMt() != null && accountReq.getAccMt().compareTo(BigDecimal.ZERO) > 0){
-                sendMessage = sendMessage + accountReq.getAccMt() + "MT失败";
-            }
-            if (accountReq.getAccUsdt() != null && accountReq.getAccUsdt().compareTo(BigDecimal.ZERO) > 0){
-                sendMessage = sendMessage + accountReq.getAccUsdt() + "USDT失败";
-            }
-        }
-        commonsService.sendMessage(playerId,null,sendMessage);*/
         Map resultMap = JSON.parseObject(JSON.toJSONString(tradeResult.getData()));
         resultMap.put("username",accountReq.getUsername());
         msg.getData().setData(resultMap);
@@ -261,23 +242,6 @@ public class ConsumerTradeController {
         accountReq.setAccPlayerId(playerId);
 
         Result<PlayerTrade>  tradeResult = tradeService.playerWithdraw(accountReq);
-        /*String sendMessage = "玩家提现";
-        if (tradeResult.getSuccess()){
-            if (accountReq.getAccMt() != null && accountReq.getAccMt().compareTo(BigDecimal.ZERO) > 0){
-                sendMessage = sendMessage + accountReq.getAccMt() + "MT扣款成功，请耐心等待审核";
-            }
-            if (accountReq.getAccUsdt() != null && accountReq.getAccUsdt().compareTo(BigDecimal.ZERO) > 0){
-                sendMessage = sendMessage + accountReq.getAccUsdt() + "USDT扣款成功，请耐心等待审核";
-            }
-        }else {
-            if (accountReq.getAccMt() != null && accountReq.getAccMt().compareTo(BigDecimal.ZERO) > 0){
-                sendMessage = sendMessage + accountReq.getAccMt() + "MT失败";
-            }
-            if (accountReq.getAccUsdt() != null && accountReq.getAccUsdt().compareTo(BigDecimal.ZERO) > 0){
-                sendMessage = sendMessage + accountReq.getAccUsdt() + "USDT失败";
-            }
-        }
-        commonsService.sendMessage(playerId,null,sendMessage);*/
         Map resultMap = JSON.parseObject(JSON.toJSONString(tradeResult.getData()));
         resultMap.put("username",accountReq.getUsername());
         msg.getData().setData(resultMap);
@@ -322,7 +286,8 @@ public class ConsumerTradeController {
         PlayerAccountReq playerAccountReq = new PlayerAccountReq();
         playerAccountReq.setAccAddr(accountReq.getAccAddr());
         Result<PlayerAccountResp> playerAccountResult = accountService.getPlayerAccount(playerAccountReq);
-        if (playerAccountResult != null && playerId.equalsIgnoreCase(playerAccountResult.getData().getPlayerId())){
+        if (playerAccountResult != null && playerAccountResult.getData() != null && StringUtils.isNotBlank(playerId)
+                && StringUtils.isNotBlank(playerAccountResult.getData().getPlayerId()) && playerId.equalsIgnoreCase(playerAccountResult.getData().getPlayerId())){
             msg.setCode(ReturnStatus.ERROR_PASS.getStatus());
             msg.getData().setCode(ReturnStatus.ERROR_PASS.getStatus());
             msg.setDesc("不能给自己转账");
@@ -340,6 +305,7 @@ public class ConsumerTradeController {
 
                 PlayerAccountResp playerAccount = null;
                 if (playerAccountResult!= null){
+                    //内部转账发消息
                     playerAccount = playerAccountResult.getData();
                     if (playerAccount != null && StringUtils.isNotBlank(playerAccount.getPlayerId())){
                         Player player2 = playerService.getPlayerByPlayerId(playerAccount.getPlayerId());
@@ -391,18 +357,6 @@ public class ConsumerTradeController {
         return msg;
     }
 
-    /*@RequestMapping("/trade/invest/collect/earning")
-    public Message investCollectEarning(@RequestBody Message message){
-        Object dataMsg = message.getData().getData();
-        JSONObject jsonObject = JsonUtil.parseJsonToObj(JsonUtil.parseObjToJson(dataMsg), JSONObject.class);
-        String playerId = jsonObject.getString("playerId");
-        int investId = jsonObject.getInteger("investId");
-
-        Result result = tradeService.investCollectEarning(playerId,investId);
-
-        message.getData().setCode(result.getCode());
-        return message;
-    }*/
 
 
 }
