@@ -2,7 +2,6 @@ package com.dream.city.service.consumer;
 
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.RelationTree;
-import com.dream.city.service.consumer.impl.FallBackPusherUser;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,7 +12,7 @@ import java.math.BigDecimal;
 /**
  * @author wvv
  */
-@FeignClient(value = "city-tree", fallback = FallBackPusherUser.class)
+@FeignClient(value = "city-tree")
 public interface ConsumerTreeService {
 
     /**

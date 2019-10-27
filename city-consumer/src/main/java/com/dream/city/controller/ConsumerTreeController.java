@@ -1,7 +1,7 @@
 package com.dream.city.controller;
 
 import com.dream.city.base.model.Message;
-import com.dream.city.service.routes.TreeService;
+import com.dream.city.service.handler.TreeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;

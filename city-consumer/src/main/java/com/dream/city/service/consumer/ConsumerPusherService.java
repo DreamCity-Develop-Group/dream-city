@@ -19,6 +19,4 @@ public interface ConsumerPusherService {
     @RequestMapping("/comm/job/push/notice")
     Result noticePush(Message message);
 
-
-    void receive(Player player, int type);
 }

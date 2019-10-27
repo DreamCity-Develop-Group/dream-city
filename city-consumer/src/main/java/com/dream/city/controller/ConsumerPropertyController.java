@@ -1,12 +1,7 @@
 package com.dream.city.controller;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.dream.city.base.model.Message;
-import com.dream.city.base.model.Result;
-import com.dream.city.base.model.req.CityInvestReq;
-import com.dream.city.base.utils.DataUtils;
-import com.dream.city.service.consumer.ConsumerPropertyHandleService;
+import com.dream.city.service.handler.PropertyService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
@@ -19,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * 物业/投资项
+ * @author Wvv
  */
 @Api(value = "物业/投资项", description = "物业/投资项")
 @RestController
@@ -28,7 +24,7 @@ public class ConsumerPropertyController {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    private ConsumerPropertyHandleService investService;
+    private PropertyService propertyService;
 
 
 
@@ -40,13 +36,11 @@ public class ConsumerPropertyController {
     @ApiOperation(value = "查询物业", httpMethod = "POST", notes = "查询物业", response = Message.class)
     @RequestMapping("/getProperty")
     public Message getProperty(@RequestBody Message msg){
-        logger.info("查询物业", JSONObject.toJSONString(msg));
-
-        CityInvestReq investReq = DataUtils.getInvestFromMessage(msg);
-        Result result = investService.getProperty(investReq);
-        msg.getData().setData(JSON.toJSONString(result.getData()));
-        msg.setDesc(result.getMsg());
-        return msg;
+        try {
+            return propertyService.getProperty(msg);
+        }catch (Exception e){
+            return msg;
+        }
     }
 
     /**
@@ -57,13 +51,11 @@ public class ConsumerPropertyController {
     @ApiOperation(value = "物业列表", httpMethod = "POST", notes = "物业列表", response = Message.class)
     @RequestMapping("/getPropertyLsit")
     public Message getPropertyLsit(@RequestBody Message msg){
-        logger.info("物业列表", JSONObject.toJSONString(msg));
-
-        CityInvestReq invest = DataUtils.getInvestFromMessage(msg);
-        Result result = investService.getPropertyLsit(invest);
-        msg.getData().setData(JSON.toJSONString(result.getData()));
-        msg.setDesc(result.getMsg());
-        return msg;
+        try {
+            return propertyService.getProperty(msg);
+        }catch (Exception e){
+            return msg;
+        }
     }
 
     /**
@@ -73,13 +65,11 @@ public class ConsumerPropertyController {
      */
     /*@RequestMapping("/")
     public Message insertInvest(@RequestBody Message msg){
-        logger.info("用户取消下单", JSONObject.toJSONString(msg));
-
-
-
-        msg.getData().setData(JSON.toJSONString(""));
-        msg.setDesc("");
-        return msg;
+        try {
+            return propertyService.getProperty(msg);
+        }catch (Exception e){
+            return msg;
+        }
     }*/
 
 
@@ -91,13 +81,11 @@ public class ConsumerPropertyController {
      */
     /*@RequestMapping("/")
     public Message updateInvest(@RequestBody Message msg){
-        logger.info("用户取消下单", JSONObject.toJSONString(msg));
-
-
-
-        msg.getData().setData(JSON.toJSONString(""));
-        msg.setDesc("");
-        return msg;
+        try {
+            return propertyService.getProperty(msg);
+        }catch (Exception e){
+            return msg;
+        }
     }*/
 
 

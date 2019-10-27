@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 物业/投资项
@@ -16,6 +17,11 @@ import java.util.List;
 @FeignClient(value = "city-property")
 public interface ConsumerPropertyService {
 
+    @RequestMapping("/property/getProperty")
+    Result getProperty(@RequestBody CityInvestReq investReq);
+
+    @RequestMapping("/property/getPropertyLsit")
+    Result getPropertyLsit(@RequestBody CityInvestReq investReq);
     /**
      * 新建物业
      * @param invest
@@ -30,8 +36,8 @@ public interface ConsumerPropertyService {
      * @param invest
      * @return
      */
-    @RequestMapping("/property/getInvest")
-    Result<InvestResp> getInvest(@RequestBody CityInvestReq invest);
+    @RequestMapping("/property/getInvestByIdOrName")
+    Result<CityInvest> getInvestByIdOrName(@RequestBody CityInvest invest);
 
     /**
      * 更新物业
@@ -48,8 +54,6 @@ public interface ConsumerPropertyService {
      */
     @RequestMapping("/property/getInvestLsit")
     Result<List<InvestResp>> getInvestLsit(@RequestBody CityInvestReq invest);
-
-
 
 
 

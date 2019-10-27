@@ -3,7 +3,7 @@ package com.dream.city.controller;
 import com.dream.city.base.exception.BusinessException;
 import com.dream.city.base.model.Message;
 import com.dream.city.base.model.Result;
-import com.dream.city.service.routes.AccountService;
+import com.dream.city.service.handler.AccountService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;

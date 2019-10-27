@@ -1,23 +1,12 @@
 package com.dream.city.controller;
 
-import com.alibaba.fastjson.JSONObject;
 import com.dream.city.base.model.Message;
 import com.dream.city.base.model.Result;
-import com.dream.city.base.model.entity.*;
-import com.dream.city.base.model.enu.ReturnStatus;
-import com.dream.city.base.utils.JsonUtil;
-import com.dream.city.base.utils.RedisUtils;
-import com.dream.city.service.consumer.*;
-import com.dream.city.service.consumer.impl.ConsumerNoticeServiceImpl;
-import com.dream.city.service.routes.DefaultService;
+import com.dream.city.service.handler.DefaultService;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.math.BigDecimal;
-import java.util.*;
 
 @Api(value = "API-Consumer Main Default Page", tags = "主页数据接口")
 @RestController

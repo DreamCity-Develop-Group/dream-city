@@ -44,6 +44,9 @@
         <module>city-property</module>
         <!-- 玩家投资交易 -->
         <module>city-trade</module>
+
+        <!-- 事务管理 -->
+        <module>city-tm</module>
     </modules>
 
     <properties>

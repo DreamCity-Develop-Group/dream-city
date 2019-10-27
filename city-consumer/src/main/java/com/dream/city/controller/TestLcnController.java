@@ -2,7 +2,7 @@ package com.dream.city.controller;
 
 import com.dream.city.base.exception.BusinessException;
 import com.dream.city.base.model.Result;
-import com.dream.city.service.routes.TestLcnService;
+import com.dream.city.service.handler.TestLcnService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;

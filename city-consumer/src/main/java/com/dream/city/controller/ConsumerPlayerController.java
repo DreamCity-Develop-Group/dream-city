@@ -1,36 +1,14 @@
 package com.dream.city.controller;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.dream.city.base.model.*;
-import com.dream.city.base.model.entity.*;
-import com.dream.city.base.model.enu.*;
-import com.dream.city.base.model.req.FriendsReq;
-import com.dream.city.base.model.req.PlayerAccountReq;
-import com.dream.city.base.model.req.PlayerReq;
-import com.dream.city.base.model.req.UserReq;
-import com.dream.city.base.model.resp.PlayerAccountResp;
-import com.dream.city.base.model.resp.PlayerResp;
-import com.dream.city.base.service.DictionaryService;
-import com.dream.city.base.utils.DataUtils;
-import com.dream.city.base.utils.JsonUtil;
-import com.dream.city.base.utils.RedisKeys;
-import com.dream.city.base.utils.RedisUtils;
-import com.dream.city.service.consumer.*;
-import com.dream.city.service.routes.PlayerService;
-import com.github.pagehelper.PageInfo;
+import com.dream.city.service.handler.PlayerService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.math.BigDecimal;
-import java.util.*;
 
 /**
  * 玩家Controller
