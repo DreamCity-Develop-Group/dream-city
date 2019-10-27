@@ -3,15 +3,12 @@ package com.dream.city.controller;
 import com.dream.city.base.model.Message;
 import com.dream.city.base.model.MessageData;
 import com.dream.city.base.model.Result;
-import com.dream.city.service.ConsumerWorkerService;
+import com.dream.city.service.consumer.ConsumerWorkerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import sun.rmi.runtime.Log;
-
-import javax.annotation.Resource;
 
 /**
  * @author Wvv

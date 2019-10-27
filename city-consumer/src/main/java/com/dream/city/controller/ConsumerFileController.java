@@ -4,7 +4,7 @@ import com.dream.city.base.model.Message;
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.CityFile;
 import com.dream.city.base.utils.DataUtils;
-import com.dream.city.service.ConsumerFileService;
+import com.dream.city.service.consumer.ConsumerFileService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

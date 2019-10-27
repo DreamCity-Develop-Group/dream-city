@@ -52,6 +52,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <spring-boot-admin.version>2.1.5</spring-boot-admin.version>
         <spring-cloud.version>Greenwich.SR2</spring-cloud.version>
+        <codingapi.txlcn.version>5.0.2.RELEASE</codingapi.txlcn.version>
         <skipTests>true</skipTests>
     </properties>
 
@@ -97,6 +98,23 @@
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
             <version>4.5.9</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.codingapi.txlcn</groupId>
+            <artifactId>txlcn-tc</artifactId>
+            <version>${codingapi.txlcn.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.codingapi.txlcn</groupId>
+            <artifactId>txlcn-tm</artifactId>
+            <version>${codingapi.txlcn.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.codingapi.txlcn</groupId>
+            <artifactId>txlcn-txmsg-netty</artifactId>
+            <version>${codingapi.txlcn.version}</version>
         </dependency>
 
     </dependencies>

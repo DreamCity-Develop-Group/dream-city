@@ -1,6 +1,7 @@
 package com.dream.city.player.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.codingapi.txlcn.tc.annotation.LcnTransaction;
 import com.dream.city.base.model.CityGlobal;
 import com.dream.city.base.model.Page;
 import com.dream.city.base.model.Result;
@@ -32,6 +33,7 @@ import java.util.*;
  */
 @Slf4j
 @Service
+@Transactional
 public class PlayerServiceImpl implements PlayerService {
 
     @Autowired
@@ -45,49 +47,54 @@ public class PlayerServiceImpl implements PlayerService {
     private String appName;
 
 
+    @LcnTransaction
+    @Transactional
     @Override
     public Result forgetPwd(String username, String newPwd) {
-        PlayerResp player = getPlayerByName(username,null);
-        if (player == null){
+        PlayerResp player = getPlayerByName(username, null);
+        if (player == null) {
             return Result.result(Boolean.FALSE, CityGlobal.Constant.USER_NOT_EXIT);
         }
 
         return changePwd(player.getPlayerId(), newPwd);
     }
 
+    @LcnTransaction
+    @Transactional
     @Override
     public Result resetLoginPwd(String username, String oldPwd, String newPwd) {
         String pwdType = "resetLoginPwd";
-        PlayerResp player = getPlayerByName(username,null);
-        Result result = changePwdValid(username, oldPwd,pwdType);
-        if (!result.getSuccess()){
+        PlayerResp player = getPlayerByName(username, null);
+        Result result = changePwdValid(username, oldPwd, pwdType);
+        if (!result.getSuccess()) {
             return result;
         }
 
         return changePwd(player.getPlayerId(), newPwd);
     }
 
-    private Result changePwd(String playerId, String newPwd){
+    private Result changePwd(String playerId, String newPwd) {
         Player player = new Player();
         player.setPlayerId(playerId);
         player.setPlayerPass(newPwd);
         int i = playerMapper.updateByPlayerId(player);
-        if (i>0){
+        if (i > 0) {
             // 修改密码成功
             return Result.result(Boolean.TRUE, CityGlobal.Constant.USER_CHANGE_PWD_SUCCESS);
         }
         return Result.result(Boolean.FALSE, CityGlobal.Constant.USER_CHANGE_PWD_FAIL);
     }
 
-
+    @LcnTransaction
+    @Transactional
     @Override
     public Result resetTraderPwd(String username, String oldpwshop, String newpwshop) {
         String pwdType = "resetTraderPwd";
-        if (StringUtils.isBlank(oldpwshop)){
+        if (StringUtils.isBlank(oldpwshop)) {
             pwdType = "setTraderPwd";
         }
-        Result result = changePwdValid(username, oldpwshop,pwdType);
-        if (!result.getSuccess()){
+        Result result = changePwdValid(username, oldpwshop, pwdType);
+        if (!result.getSuccess()) {
             return result;
         }
 
@@ -95,40 +102,40 @@ public class PlayerServiceImpl implements PlayerService {
         player.setPlayerName(username);
         player.setPlayerTradePass(newpwshop);
         int i = playerMapper.updatePassByName(player);
-        if (i>0){
+        if (i > 0) {
             // 修改密码成功
-            return Result.result(Boolean.TRUE, CityGlobal.Constant.USER_CHANGE_TRADERPWD_SUCCESS,ReturnStatus.SUCCESS.getStatus());
+            return Result.result(Boolean.TRUE, CityGlobal.Constant.USER_CHANGE_TRADERPWD_SUCCESS, ReturnStatus.SUCCESS.getStatus());
         }
-        return Result.result(Boolean.FALSE, CityGlobal.Constant.USER_CHANGE_TRADERPWD_FAIL,ReturnStatus.FAILED.getStatus());
+        return Result.result(Boolean.FALSE, CityGlobal.Constant.USER_CHANGE_TRADERPWD_FAIL, ReturnStatus.FAILED.getStatus());
     }
 
-    private Result changePwdValid(String username, String oldpwshop,String pwdType){
+    private Result changePwdValid(String username, String oldpwshop, String pwdType) {
         Player player = new Player();
         player.setPlayerName(username);
         PlayerResp playerExit = playerMapper.getPlayerById(player);
 
         // 用户不存在
-        if(playerExit == null){
-            return Result.result(Boolean.FALSE, CityGlobal.Constant.USER_NOT_EXIT,ReturnStatus.ERROR_NOTEXISTS.getStatus());
+        if (playerExit == null) {
+            return Result.result(Boolean.FALSE, CityGlobal.Constant.USER_NOT_EXIT, ReturnStatus.ERROR_NOTEXISTS.getStatus());
         }
 
         // 旧密码不正确
-        if ("resetLoginPwd".equalsIgnoreCase(pwdType) && !playerExit.getPlayerPass().equals(oldpwshop)){
+        if ("resetLoginPwd".equalsIgnoreCase(pwdType) && !playerExit.getPlayerPass().equals(oldpwshop)) {
             return Result.result(Boolean.FALSE, CityGlobal.Constant.USER_OLD_PWD_ERROR, ReturnStatus.ERROR_PASS.getStatus());
         }
         // 交易密码 没有交易密码的设置交易密码，有交易密码的修改交易密码
-        if ("setTraderPwd".equalsIgnoreCase(pwdType)){
-            return Result.result(Boolean.TRUE, CityGlobal.Constant.USER_CHANGE_PWD_SUCCESS,ReturnStatus.SUCCESS.getStatus());
+        if ("setTraderPwd".equalsIgnoreCase(pwdType)) {
+            return Result.result(Boolean.TRUE, CityGlobal.Constant.USER_CHANGE_PWD_SUCCESS, ReturnStatus.SUCCESS.getStatus());
         }
 
         // 交易密码 没有交易密码的设置交易密码，有交易密码的修改交易密码
         if ("resetTraderPwd".equalsIgnoreCase(pwdType)
                 && StringUtils.isNotBlank(playerExit.getPlayerTradePass())
-                && !playerExit.getPlayerTradePass().equals(oldpwshop)){
-            return Result.result(Boolean.FALSE, CityGlobal.Constant.USER_OLD_PWD_ERROR,ReturnStatus.ERROR_PASS.getStatus());
+                && !playerExit.getPlayerTradePass().equals(oldpwshop)) {
+            return Result.result(Boolean.FALSE, CityGlobal.Constant.USER_OLD_PWD_ERROR, ReturnStatus.ERROR_PASS.getStatus());
         }
 
-        return Result.result(Boolean.TRUE, CityGlobal.Constant.USER_CHANGE_PWD_SUCCESS,ReturnStatus.SUCCESS.getStatus());
+        return Result.result(Boolean.TRUE, CityGlobal.Constant.USER_CHANGE_PWD_SUCCESS, ReturnStatus.SUCCESS.getStatus());
     }
 
     @Override
@@ -136,7 +143,7 @@ public class PlayerServiceImpl implements PlayerService {
     public boolean save(Player player) {
         player.setCreateTime(new Date());
         Integer integer = playerMapper.insertSelective(player);
-        return (integer != null && integer>0)?Boolean.TRUE:Boolean.FALSE;
+        return (integer != null && integer > 0) ? Boolean.TRUE : Boolean.FALSE;
     }
 
     @Override
@@ -144,41 +151,48 @@ public class PlayerServiceImpl implements PlayerService {
         return playerMapper.deleteByPlayerId(playerId);
     }
 
+    @LcnTransaction
+    @Transactional
     @Override
     public Player update(Player player) {
         int i = playerMapper.updateByPlayerId(player);
-        return i > 0? player: null;
+        return i > 0 ? player : null;
     }
 
+    @LcnTransaction
+    @Transactional
     @Override
     public PlayerResp getPlayer(Player player) {
         return playerMapper.getPlayerById(player);
     }
 
+    @LcnTransaction
+    @Transactional
     @Override
     public PlayerResp getPlayerById(String playerId) {
         Player player = new Player();
-        if (StringUtils.isBlank(playerId)){
+        if (StringUtils.isBlank(playerId)) {
             return null;
         }
         player.setPlayerId(playerId);
         return playerMapper.getPlayerById(player);
     }
 
-
+    @LcnTransaction
+    @Transactional
     @Override
     public PageInfo<PlayerResp> getPlayers(Page pageReq) {
         List<PlayerResp> players = null;
         try {
             PlayerReq playerReq = DataUtils.toJavaObject(pageReq.getCondition(), PlayerReq.class);
-            PageHelper.startPage(pageReq.getPageNum(),pageReq.getPageSize(),pageReq.isCount());
+            PageHelper.startPage(pageReq.getPageNum(), pageReq.getPageSize(), pageReq.isCount());
             //List<PlayerResp> players = playerMapper.searchPlayers(playerReq);
             players = playerMapper.getPlayers(playerReq);
-            if (!CollectionUtils.isEmpty(players)){
+            if (!CollectionUtils.isEmpty(players)) {
                 String getFriendAgree = "添加";
-                for (int i=0;i<players.size();i++){
-                    if (StringUtils.isNotBlank(playerReq.getPlayerId())){
-                        getFriendAgree = this.getFriendAgree(playerReq.getPlayerId(),players.get(i));
+                for (int i = 0; i < players.size(); i++) {
+                    if (StringUtils.isNotBlank(playerReq.getPlayerId())) {
+                        getFriendAgree = this.getFriendAgree(playerReq.getPlayerId(), players.get(i));
                     }
                     players.get(i).setAddfriend(getFriendAgree);
                 /*if (players.get(i).getAgree() == null){
@@ -186,20 +200,22 @@ public class PlayerServiceImpl implements PlayerService {
                 }*/
                 }
             }
-        }catch (Exception e){
-            log.error("",e);
+        } catch (Exception e) {
+            log.error("", e);
         }
 
         return new PageInfo<>(players);
     }
 
+    @LcnTransaction
+    @Transactional
     @Override
     public Integer getPlayersCount(PlayerReq record) {
         Integer playersCount = playerMapper.getPlayersCount(record);
-        return playersCount==null?0:playersCount;
+        return playersCount == null ? 0 : playersCount;
     }
 
-    private String getFriendAgree(String playerId,PlayerResp player){
+    private String getFriendAgree(String playerId, PlayerResp player) {
         String friendId = player.getPlayerId();
         Friends record = new Friends();
         record.setPlayerId(playerId);
@@ -207,20 +223,22 @@ public class PlayerServiceImpl implements PlayerService {
         Integer getFriendAgree = friendsService.getFriendAgree(record);
 
         String result = "添加";
-        if (getFriendAgree == null){
+        if (getFriendAgree == null) {
             result = "添加";
-        }else {
-            if (getFriendAgree == 0){
+        } else {
+            if (getFriendAgree == 0) {
                 result = "已申请";
-            } else if (getFriendAgree == 1){
+            } else if (getFriendAgree == 1) {
                 result = "已添加";
             }
         }
         return result;
     }
 
+    @LcnTransaction
+    @Transactional
     @Override
-    public PlayerResp getPlayerByName(String playerName,String playerNick) {
+    public PlayerResp getPlayerByName(String playerName, String playerNick) {
         Player player = new Player();
         if (StringUtils.isNotBlank(playerName)) {
             player.setPlayerName(playerName);
@@ -233,8 +251,8 @@ public class PlayerServiceImpl implements PlayerService {
             playerByName = playerMapper.getPlayerById(player);
         }
         PlayerResp playerResp = null;
-        if (playerByName != null){
-            playerResp = JSON.toJavaObject(JSON.parseObject(JSON.toJSONString(playerByName)),PlayerResp.class);
+        if (playerByName != null) {
+            playerResp = JSON.toJavaObject(JSON.parseObject(JSON.toJSONString(playerByName)), PlayerResp.class);
 
             /*这里不用查询级别
             PlayerGrade playerGrade = getPlayerGradeByPlayerId(player.getPlayerId());
@@ -246,18 +264,24 @@ public class PlayerServiceImpl implements PlayerService {
         return playerResp;
     }
 
+    @LcnTransaction
+    @Transactional
     @Override
-    public Player getPlayerByInvite(String invite){
+    public Player getPlayerByInvite(String invite) {
         Player player = playerMapper.getPlayerByInvite(invite);
         return player;
     }
 
+    @LcnTransaction
+    @Transactional
     @Override
-    public Player getPlayerByAccount(String account){
+    public Player getPlayerByAccount(String account) {
         Player player = playerMapper.getPlayerByAccount(account);
         return player;
     }
 
+    @LcnTransaction
+    @Transactional
     @Override
     public PlayerGrade getPlayerGradeByPlayerId(String playerId) {
         PlayerGrade record = new PlayerGrade();
@@ -265,19 +289,23 @@ public class PlayerServiceImpl implements PlayerService {
         return gradeMapper.getPlayerGradeByPlayerId(record);
     }
 
+    @LcnTransaction
+    @Transactional
     @Override
     public Player getPlayerByPlayerId(String playerId) {
         return playerMapper.getPlayer(playerId);
     }
 
+    @LcnTransaction
+    @Transactional
     @Override
-    public boolean setTraderPwd(String playerId, String tradePass){
+    public boolean setTraderPwd(String playerId, String tradePass) {
         try {
             Player player = playerMapper.getPlayer(playerId);
             player.setPlayerTradePass(tradePass);
             playerMapper.updateByPlayerId(player);
             return true;
-        }catch (Exception e){
+        } catch (Exception e) {
             return false;
         }
     }

@@ -1,5 +1,6 @@
 package com.dream.city;
 
+import com.codingapi.txlcn.tc.config.EnableDistributedTransaction;
 import com.dream.city.base.config.RedisConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -18,6 +19,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @EnableFeignClients
 @EnableCaching
 @EnableAsync
+@EnableDistributedTransaction
 @Import({RedisConfig.class})
 public class CityConsumerApplication {
 

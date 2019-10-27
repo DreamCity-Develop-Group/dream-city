@@ -1,0 +1,19 @@
+server:
+  port: 4562
+  servlet:
+    context-path: /
+spring:
+  application:
+    name: city-locker
+  profiles:
+    active: dev
+  main:
+    allow-bean-definition-overriding: true
+
+eureka:
+  instance:
+    hostname: localhost
+    instance-id: ${spring.application.name}-${server.port}
+  client:
+    service-url:
+      defaultZone: http://${eureka.instance.hostname}:8888/eureka/,http://${eureka.instance.hostname}:9999/eureka/

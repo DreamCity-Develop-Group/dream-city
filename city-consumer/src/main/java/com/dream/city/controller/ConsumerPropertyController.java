@@ -6,7 +6,7 @@ import com.dream.city.base.model.Message;
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.req.CityInvestReq;
 import com.dream.city.base.utils.DataUtils;
-import com.dream.city.service.ConsumerPropertyHandleService;
+import com.dream.city.service.consumer.ConsumerPropertyHandleService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;

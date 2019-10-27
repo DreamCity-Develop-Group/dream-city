@@ -1,5 +1,6 @@
 package com.dream.city;
 
+import com.codingapi.txlcn.tc.config.EnableDistributedTransaction;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -15,6 +16,7 @@ import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBr
 //@MapperScan("com.dream.city.base.model.mapper")
 //@EnableZuulServer
 @EnableZuulProxy
+@EnableDistributedTransaction
 public class CityGatewayApplication {
 
     public static void main(String[] args) {
