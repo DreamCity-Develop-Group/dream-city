@@ -143,36 +143,41 @@ public class ValiCodeController {
      */
     @RequestMapping("/getCode")
     public Result getCode(@RequestBody Message message) {
-        String code = String.valueOf(new Random().nextInt(999999));
-        MessageData data = new MessageData("getcode", "message");
-        data.setData(null);
-        Message msg = new Message("source", "server",
-                data,
-                "获取认证码",
-                String.valueOf(System.currentTimeMillis()));
+        try {
+            String code = String.valueOf(new Random().nextInt(999999));
+            MessageData data = new MessageData("getcode", "message");
+            data.setData(null);
+            Message msg = new Message("source", "server",
+                    data,
+                    "获取认证码",
+                    String.valueOf(System.currentTimeMillis()));
 
-        Map map = (Map) message.getData().getData();
-        boolean insertCode = Boolean.FALSE;
-        if (null != map && map.containsKey("username")) {
-            String account = (String) map.get("username");
-            insertCode = coderService.insertCode(account, code);
-            if (insertCode) {
-                msg.getData().setData(code);
-                logger.info("############################## 用户[{}]获取认证码: {}", (String) map.get("username"), code);
+            Map map = (Map) message.getData().getData();
+            boolean insertCode = Boolean.FALSE;
+            if (null != map && map.containsKey("username")) {
+                String account = (String) map.get("username");
+                insertCode = coderService.insertCode(account, code);
+                if (insertCode) {
+                    msg.getData().setData(code);
+                    logger.info("############################## 用户[{}]获取认证码: {}", (String) map.get("username"), code);
 
-                try {
-                    //保存10分钟
-                    redisUtils.set(RedisKeys.REDIS_KEY_VALIDCODE + account, code);
-                    redisUtils.expire(RedisKeys.REDIS_KEY_VALIDCODE + account,600);
-                    return Result.result(true,"获取验证码成功",ReturnStatus.SUCCESS.getStatus(),code);
-                } catch (Exception e) {
-                    logger.error("getCode Exception !", e);
+                    try {
+                        //保存10分钟
+                        redisUtils.set(RedisKeys.REDIS_KEY_VALIDCODE + account, code);
+                        redisUtils.expire(RedisKeys.REDIS_KEY_VALIDCODE + account,600);
+                        return Result.result(true,"获取验证码成功",ReturnStatus.SUCCESS.getStatus(),code);
+                    } catch (Exception e) {
+                        logger.error("getCode Exception !", e);
+                    }
                 }
+                return Result.result(false,"获取验证码失败",ReturnStatus.FAILED.getStatus(),null);
+            }else{
+                return Result.result(false,"账号/手机号不能为空",ReturnStatus.INVALID.getStatus(),null);
             }
-            return Result.result(false,"获取验证码失败",ReturnStatus.FAILED.getStatus(),null);
-        }else{
-            return Result.result(false,"账号/手机号不能为空",ReturnStatus.INVALID.getStatus(),null);
+        }catch (Exception e){
+            return  Result.result(false,"获取验证码失败:"+e.getMessage(),ReturnStatus.FAILED.getStatus(),null);
         }
+
     }
 
 }

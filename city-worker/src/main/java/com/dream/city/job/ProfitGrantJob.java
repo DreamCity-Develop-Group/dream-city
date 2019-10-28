@@ -1,5 +1,6 @@
 package com.dream.city.job;
 
+import com.codingapi.txlcn.tc.annotation.LcnTransaction;
 import com.dream.city.base.model.entity.*;
 import com.dream.city.base.model.enu.InvestStatus;
 import com.dream.city.base.model.resp.PlayerEarningResp;
@@ -11,6 +12,7 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.quartz.QuartzJobBean;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -226,6 +228,8 @@ public class ProfitGrantJob extends QuartzJobBean {
         List<InvestOrder> orders = source.subList(0, (int) sum);
         return orders;
     }
+    @LcnTransaction
+    @Transactional
     public void setProfit(InvestOrder order,BigDecimal everyOneProfit){
         PlayerEarningResp playerEarning = playerEarningService.getPlayerEarnByPlayerId(order.getOrderPayerId(), order.getOrderInvestId());
         if (null == playerEarning) {
