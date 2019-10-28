@@ -1,0 +1,62 @@
+[1mdiff --git a/city-comm/src/main/java/com/dream/city/service/impl/HttpClientServiceImpl.java b/city-comm/src/main/java/com/dream/city/service/impl/HttpClientServiceImpl.java[m
+[1mindex 78b50d2..a8e9062 100644[m
+[1m--- a/city-comm/src/main/java/com/dream/city/service/impl/HttpClientServiceImpl.java[m
+[1m+++ b/city-comm/src/main/java/com/dream/city/service/impl/HttpClientServiceImpl.java[m
+[36m@@ -311,6 +311,10 @@[m [mpublic class HttpClientServiceImpl implements HttpClientService {[m
+                     WebSocketServer.sendInfo(message);[m
+                     /**TODO**********完*************************************/[m
+                 }else if (responseCode == ReturnStatus.ERROR_CODE.getStatus()){[m
+[32m+[m[32m                    //TODO : 如果超时，可将请求缓存，并重新提交到业务去执行，索取请求结果，再次将结果发送给客户端[m
+[32m+[m[32m                    /*new Thread(()->{[m
+[32m+[m[32m                        getResult(msg);[m
+[32m+[m[32m                    },"Try-thread");*/[m
+                     log.info("超时....");[m
+                 }else if(responseCode == ReturnStatus.GATEWAY_TOKEN_ERROR.getStatus()){[m
+                     Message message = new Message();[m
+[36m@@ -389,4 +393,9 @@[m [mpublic class HttpClientServiceImpl implements HttpClientService {[m
+         jobMsg.setCreatetime(String.valueOf(System.currentTimeMillis()));[m
+         send(jobMsg);[m
+     }[m
+[32m+[m
+[32m+[m[32m    private Message getResult(Message message){[m
+[32m+[m
+[32m+[m[32m        return message;[m
+[32m+[m[32m    }[m
+ }[m
+[1mdiff --git a/city-consumer/src/main/resources/application.yml b/city-consumer/src/main/resources/application.yml[m
+[1mindex 0550d29..2ce4c9a 100644[m
+[1m--- a/city-consumer/src/main/resources/application.yml[m
+[1m+++ b/city-consumer/src/main/resources/application.yml[m
+[36m@@ -22,3 +22,16 @@[m [mmybatis:[m
+   configuration:[m
+     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl[m
+ [m
+[32m+[m[32m#全局配置[m
+[32m+[m[32m# 请求连接的超时时间 默认的时间为 1 秒[m
+[32m+[m[32m# 请求处理的超时时间[m
+[32m+[m[32mribbon:[m
+[32m+[m[32m  ConnectTimeout: 5000[m
+[32m+[m[32m  ReadTimeout: 5000[m
+[32m+[m[32mfeign:[m
+[32m+[m[32m  client:[m
+[32m+[m[32m    config:[m
+[32m+[m[32m      default:[m
+[32m+[m[32m          connectTimeout: 5000[m
+[32m+[m[32m          readTimeout: 5000[m
+[32m+[m[32m          loggerLevel: basic[m
+[1mdiff --git a/city-server/src/main/resources/application.yml b/city-server/src/main/resources/application.yml[m
+[1mindex 0801a7f..1334593 100644[m
+[1m--- a/city-server/src/main/resources/application.yml[m
+[1m+++ b/city-server/src/main/resources/application.yml[m
+[36m@@ -1,9 +1,9 @@[m
+ server:[m
+[31m-  port: 8888[m
+[32m+[m[32m  port: 9999[m
+ spring:[m
+   application:[m
+     name: city-server[m
+[31m-    port: 9999[m
+[32m+[m[32m    port: 8888[m
+   profiles:[m
+     active: ${spring.profiles.active}[m
+ [m

@@ -311,6 +311,10 @@ public class HttpClientServiceImpl implements HttpClientService {
                     WebSocketServer.sendInfo(message);
                     /**TODO**********完*************************************/
                 }else if (responseCode == ReturnStatus.ERROR_CODE.getStatus()){
+                    //TODO : 如果超时，可将请求缓存，并重新提交到业务去执行，索取请求结果，再次将结果发送给客户端
+                    /*new Thread(()->{
+                        getResult(msg);
+                    },"Try-thread");*/
                     log.info("超时....");
                 }else if(responseCode == ReturnStatus.GATEWAY_TOKEN_ERROR.getStatus()){
                     Message message = new Message();
@@ -388,5 +392,10 @@ public class HttpClientServiceImpl implements HttpClientService {
         jobMsg.setDesc("递交任务，创建业务执行任务");
         jobMsg.setCreatetime(String.valueOf(System.currentTimeMillis()));
         send(jobMsg);
+    }
+
+    private Message getResult(Message message){
+
+        return message;
     }
 }
