@@ -2,6 +2,7 @@ package com.dream.city.service;
 
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.InvestAllow;
+import com.dream.city.base.model.entity.PlayerAccount;
 import com.dream.city.base.model.entity.PlayerEarning;
 import com.dream.city.base.model.entity.RelationTree;
 import com.dream.city.base.model.resp.PlayerEarningResp;
@@ -29,4 +30,6 @@ public interface InvestAllowService {
     void updateEarning(PlayerEarning earning);
 
     Result allocationToPlayer(String playerId,BigDecimal amount);
+
+    boolean addAccountLog(PlayerAccount account, BigDecimal amount, String type);
 }

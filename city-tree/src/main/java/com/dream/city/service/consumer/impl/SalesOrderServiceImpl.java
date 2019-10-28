@@ -1,5 +1,7 @@
 package com.dream.city.service.consumer.impl;
 
+import com.codingapi.txlcn.tc.annotation.LcnTransaction;
+import com.dream.city.base.exception.BusinessException;
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.Player;
 import com.dream.city.base.model.entity.PlayerAccount;
@@ -39,44 +41,60 @@ public class SalesOrderServiceImpl implements SalesOrderService {
     @Autowired
     InvestRuleService ruleService;
 
+    @LcnTransaction
+    @Transactional
     @Override
-    public List<SalesOrder> selectSalesOrder(String playerId,Integer start,Integer size) {
+    public List<SalesOrder> selectSalesOrder(String playerId,Integer start,Integer size)  throws BusinessException {
         return salesOrderMapper.selectSalesSellerOrder(playerId,start,size);
     }
 
+    @LcnTransaction
+    @Transactional
     @Override
-    public List<SalesOrder> selectSalesOrderUnSend(String playerId) {
+    public List<SalesOrder> selectSalesOrderUnSend(String playerId)  throws BusinessException{
         return salesOrderMapper.selectPlayerSalesOrdersByState(playerId,OrderState.PAY.getStatus());
     }
 
+    @LcnTransaction
+    @Transactional
     @Override
-    public List<SalesOrder> selectSalesOrderOvertime(String playerId) {
+    public List<SalesOrder> selectSalesOrderOvertime(String playerId)  throws BusinessException{
         return salesOrderMapper.selectPlayerSalesOrdersByState(playerId,OrderState.EXPIRED.getStatus());
     }
 
+    @LcnTransaction
+    @Transactional
     @Override
-    public SalesOrder getSalesOrder(Long id) {
+    public SalesOrder getSalesOrder(Long id) throws BusinessException {
         return salesOrderMapper.selectSalesOrderByPrimaryKey(id);
     }
 
+    @LcnTransaction
+    @Transactional
     @Override
-    public SalesOrder getSalesOrder(String orderId) {
+    public SalesOrder getSalesOrder(String orderId) throws BusinessException {
         return salesOrderMapper.getSalesOrderByOrderId(orderId);
     }
 
+    @LcnTransaction
+    @Transactional
     @Override
-    public List<SalesOrder> selectSalesSellerOrder(String playerId) {
+    public List<SalesOrder> selectSalesSellerOrder(String playerId) throws BusinessException {
 
         return salesOrderMapper.selectSalesSellerOrders(playerId);
     }
 
+    @LcnTransaction
+    @Transactional
     @Override
-    public List<SalesOrder> selectSalesBuyerOrder(String playerId) {
+    public List<SalesOrder> selectSalesBuyerOrder(String playerId) throws BusinessException {
         return salesOrderMapper.selectSalesBuyerOrder(playerId);
     }
 
+    @LcnTransaction
+    @Transactional
     @Override
-    public SalesOrder getBuyerNoPayOrder(String playerId) {
+    public SalesOrder getBuyerNoPayOrder(String playerId) throws BusinessException {
         List<SalesOrder> orders = salesOrderMapper.selectPlayerSalesOrdersByState(playerId,OrderState.PAID.getStatus());
         if (orders.size()>0){
             return orders.get(0);
@@ -96,9 +114,10 @@ public class SalesOrderServiceImpl implements SalesOrderService {
      * @param playerId
      * @return
      */
+    @LcnTransaction
     @Transactional
     @Override
-    public Result buyMtCreate(BigDecimal buyAmount, BigDecimal rate, String playerId) {
+    public Result buyMtCreate(BigDecimal buyAmount, BigDecimal rate, String playerId)  throws BusinessException{
         //判断是否有足够的支付USDT:剩余额度
         //TODO 买家
         PlayerAccount buyerAccount = playerAccountService.getPlayerAccount(playerId);
@@ -203,9 +222,10 @@ public class SalesOrderServiceImpl implements SalesOrderService {
      * @param pass
      * @return
      */
+    @LcnTransaction
     @Transactional
     @Override
-    public Result buyMtFinish(String playerId, String pass) {
+    public Result buyMtFinish(String playerId, String pass) throws BusinessException {
         Player player = playerService.getPlayer(playerId);
         if (player != null) {
             //没有密码或密码为空
@@ -280,8 +300,10 @@ public class SalesOrderServiceImpl implements SalesOrderService {
         return Result.result(false, "验证失败", ReturnStatus.SET_FAILED.getStatus());
     }
 
+    @LcnTransaction
+    @Transactional
     @Override
-    public BigDecimal getUsdtToMtRate(String playerId) {
+    public BigDecimal getUsdtToMtRate(String playerId) throws BusinessException {
         //规则比率
         Integer level = 0;
         RelationTree relationTree = treeService.getTreeByPlayerId(playerId);
@@ -292,8 +314,10 @@ public class SalesOrderServiceImpl implements SalesOrderService {
         return ruleRate;
     }
 
+    @LcnTransaction
+    @Transactional
     @Override
-    public Result sendOrderMt(List<SalesOrder> orders) {
+    public Result sendOrderMt(List<SalesOrder> orders) throws BusinessException {
         List<PlayerAccount> accounts = new ArrayList<>();
         for (SalesOrder order : orders) {
             PlayerAccount account = playerAccountService.getPlayerAccount(order.getOrderPlayerBuyer());

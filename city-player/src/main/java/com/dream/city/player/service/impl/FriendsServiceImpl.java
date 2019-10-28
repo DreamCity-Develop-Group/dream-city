@@ -1,5 +1,7 @@
 package com.dream.city.player.service.impl;
 
+import com.codingapi.txlcn.tc.annotation.LcnTransaction;
+import com.dream.city.base.exception.BusinessException;
 import com.dream.city.base.model.Page;
 import com.dream.city.base.model.entity.Friends;
 import com.dream.city.base.model.mapper.FriendsMapper;
@@ -11,6 +13,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -25,15 +28,19 @@ public class FriendsServiceImpl implements FriendsService {
     private FriendsMapper friendsMapper;
 
 
+    @LcnTransaction
+    @Transactional
     @Override
-    public boolean addFriend(Friends friend) {
+    public boolean addFriend(Friends friend) throws BusinessException {
         friend.setAgree(0);
 
         return friendsMapper.insertSelective(friend)>0?Boolean.TRUE:Boolean.FALSE;
     }
 
+    @LcnTransaction
+    @Transactional
     @Override
-    public boolean agreeAddFriend(Friends friend) {
+    public boolean agreeAddFriend(Friends friend) throws BusinessException {
         return friendsMapper.agreeAddFriend(friend)>0?Boolean.TRUE:Boolean.FALSE;
     }
 
@@ -49,16 +56,21 @@ public class FriendsServiceImpl implements FriendsService {
         return page;
     }*/
 
+    @LcnTransaction
+    @Transactional
     @Override
-    public PageInfo<FriendsResp> friendList(Page pageReq) {// TODO
+    public PageInfo<FriendsResp> friendList(Page pageReq)  throws BusinessException{// TODO
         FriendsReq friendsReq = DataUtils.toJavaObject(pageReq.getCondition(),FriendsReq.class);
         PageHelper.startPage(pageReq.getPageNum(),pageReq.getPageSize());
         List<FriendsResp> friendList = friendsMapper.friendList(friendsReq);
         return new PageInfo(friendList);
     }
 
-    /*@Override
-    public Page applyFriendList(Page pageReq) {
+    /*
+    @LcnTransaction
+    @Transactional
+    @Override
+    public Page applyFriendList(Page pageReq) throws BusinessException {
         Page<Map> page = new Page<>();
         page.setCondition(pageReq.getCondition());
 
@@ -68,26 +80,34 @@ public class FriendsServiceImpl implements FriendsService {
         page.setTotal( count== null?0:count);
         return page;
     }*/
+    @LcnTransaction
+    @Transactional
     @Override
-    public PageInfo<FriendsResp> applyFriendList(Page pageReq) {// TODO
+    public PageInfo<FriendsResp> applyFriendList(Page pageReq) throws BusinessException {// TODO
         FriendsReq friendsReq = DataUtils.toJavaObject(pageReq.getCondition(),FriendsReq.class);
         PageHelper.startPage(pageReq.getPageNum(),pageReq.getPageSize());
         List<FriendsResp> friendList = friendsMapper.applyFriendList(friendsReq);
         return new PageInfo(friendList);
     }
 
+    @LcnTransaction
+    @Transactional
     @Override
-    public Friends selectByPlayerIdFriendId(Friends record) {
+    public Friends selectByPlayerIdFriendId(Friends record) throws BusinessException {
         return friendsMapper.selectByPlayerIdFriendId(record);
     }
 
+    @LcnTransaction
+    @Transactional
     @Override
-    public Integer getFriendAgree(Friends record) {
+    public Integer getFriendAgree(Friends record) throws BusinessException {
         return friendsMapper.getFriendAgree(record);
     }
 
+    @LcnTransaction
+    @Transactional
     @Override
-    public int isApplyCount(Friends record) {
+    public int isApplyCount(Friends record) throws BusinessException {
         Integer count = friendsMapper.isApplyCount(record);
         return count == null?0:count;
     }

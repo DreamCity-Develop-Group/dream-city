@@ -1,16 +1,14 @@
 server:
-  port: 8070
+  port: 8061
   servlet:
     context-path: /
-
 spring:
   application:
     name: city-worker
-
+    profiles:
+      active: ${spring.profiles.active}
   main:
     allow-bean-definition-overriding: true
-  profiles:
-    active: ${spring.profiles.active}
 
 
 # 打印日志

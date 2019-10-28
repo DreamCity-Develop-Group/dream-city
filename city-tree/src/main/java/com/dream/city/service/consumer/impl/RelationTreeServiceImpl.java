@@ -2,6 +2,7 @@ package com.dream.city.service.consumer.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.codingapi.txlcn.tc.annotation.LcnTransaction;
+import com.dream.city.base.exception.BusinessException;
 import com.dream.city.base.model.CityGlobal;
 import com.dream.city.base.model.Message;
 import com.dream.city.base.model.MessageData;
@@ -55,18 +56,21 @@ public class RelationTreeServiceImpl implements RelationTreeService {
     @LcnTransaction
     @Transactional
     @Override
-    public Result save(String parent, String child, String invite) {
+    public Result save(String parent, String child, String invite) throws BusinessException {
         try {
             RelationTree tree = new RelationTree();
             RelationTree parentTree = treeMapper.getTreeByPlayerId(parent);
             RelationTree playerTree = treeMapper.getTreeByPlayerId(child);
+            //参数判断
             if (StringUtils.isBlank(parent) || StringUtils.isBlank(child) || StringUtils.isBlank(invite)) {
                 return Result.result(false, CityGlobal.Constant.TREE_PARAMS_ERROR, 501);
             }
+            //上级玩家空判断
             if (null == parentTree) {
                 log.info("玩家上级邀请码关系不存在");
                 return Result.result(false, "失败", 201);
             }
+            //存在判断
             if (null == playerTree) {
                 tree.setTreeId(0);
                 tree.setTreeParentId(parent);
@@ -83,7 +87,140 @@ public class RelationTreeServiceImpl implements RelationTreeService {
              *TODO
              * 保存商会成员时根据成员数量变更商会等级
              *
+             * 1、首先是上级玩家
+             * 2、然后是上上级玩家至上N级玩家
+             *
              */
+            RuleItem ruleItem = investRuleService.getRuleItemByFlag(PlAYER_FLAG);
+            List<InvestRule> rules = investRuleService.getRulesByItem(ruleItem.getItemId());
+
+            //找出所有上级，不包括自己
+            Map<Integer, RelationTree> parents = getAllParents(playerTree);
+            parents.forEach((key, value) -> {
+                try {
+                    //直接下级
+                    if (playerTree.getTreeParentId().equalsIgnoreCase(value.getTreePlayerId())) {
+                        value.setTreeChilds(value.getTreeChilds() + 1);
+                    } else {
+                        value.setTreeGrandson(value.getTreeGrandson() + 1);
+                    }
+                    //下级人员总数
+                    int childsSize = value.getTreeChilds() + value.getTreeGrandson();
+
+                    RelationTree currentParentTree = upgradeParent(value, childsSize,rules);
+
+                    Result result = updateTree(currentParentTree);
+                    if (!result.getSuccess()){
+                        throw new BusinessException("升级玩家["+value.getTreePlayerId()+"]出错");
+                    }
+                } catch (Exception e) {
+                    throw new BusinessException("升级出错");
+                }
+            });
+
+            return Result.result(true, "成功", ReturnStatus.SUCCESS.getStatus());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.result(false, CityGlobal.Constant.TREE_RELATION_EXISTS, ReturnStatus.EXISTS.getStatus());
+        }
+
+    }
+
+    public Map getAllParents(RelationTree childTree) {
+        Map<Integer, RelationTree> parents = new HashMap<>();
+        String relation = childTree.getTreeRelation();
+        int length = (relation.length() + 1) / 7; //==>8
+
+        for (int i = 0; i < length - 1; i++) {
+            String parentRelation = relation.substring(0, 7 * (length - 1 - i) - 1);
+
+            RelationTree parent = getByPlayer(parentRelation);
+            parents.put(i + 1, parent);
+        }
+
+        return parents;
+    }
+
+    public void pushToParent(RelationTree parentTree, int stars, RelationTree child) {
+        Message message = new Message(
+                "server",
+                "client",
+                new MessageData("push", "comm", new JSONObject(), ReturnStatus.SUCCESS.getStatus()),
+                "升级成功"
+        );
+        Player playerTo = playerAccountService.getPlayerByPlayerId(parentTree.getTreePlayerId());
+        boolean isPresent = redisUtils.get(RedisKeys.PLAYER_ONLINE_STATE_KEY + playerTo.getPlayerName()).isPresent();
+        String clientId = "";
+        if (isPresent) {
+            clientId = redisUtils.get(RedisKeys.PLAYER_ONLINE_STATE_KEY + playerTo.getPlayerName()).get();
+            message.setTarget(clientId);
+            message.getData().setCode(ReturnStatus.UPGRADE_TIP.getStatus());
+            message.setDesc(ReturnStatus.UPGRADE_TIP.getDesc());
+
+
+            log.info("改变商会等级成功!");
+            //message.setTarget(playerTo.getPlayerName());
+            //主动推送消息，升级成功
+            JSONObject upgrade = new JSONObject();
+            upgrade.put("level", stars);
+            upgrade.put("toPlayerId", parentTree.getTreePlayerId());
+            upgrade.put("username", playerTo.getPlayerName());
+            upgrade.put("fromPlayerId", child.getTreePlayerId());
+            message.getData().setData(upgrade);
+            String json = JsonUtil.parseObjToJson(message);
+            log.info("升级：》" + json);
+            JSONObject ret = JSONObject.parseObject(json);
+            redisUtils.publishMsg(PlAYER_UPGRADE, json);
+
+        }
+    }
+
+    /**
+     * 更新上级级别
+     *
+     * @param parent
+     * @param childsSize
+     * @return
+     */
+    @LcnTransaction
+    @Transactional
+    @Override
+    public RelationTree upgradeParent(RelationTree parent, int childsSize,List<InvestRule> rules) throws BusinessException {
+        try {
+            int stars = 0;
+
+            for (InvestRule rule : rules) {
+                if ("OPT_NUM".equals(rule.getRuleOpt())) {
+                    if (rule.getRuleRate().compareTo(new BigDecimal(childsSize)) != 1) {
+                        stars = rule.getRuleLevel();
+                    }
+                }
+            }
+            if (stars > 0 && stars > parent.getTreeLevel()) {
+                parent.setTreeLevel(stars);
+            }
+            return parent;
+        } catch (Exception e) {
+            return parent;
+        }
+    }
+
+    /**
+     * 更新上级级别
+     *
+     * @param parent
+     * @param child
+     * @return
+     */
+    @LcnTransaction
+    @Transactional
+    @Override
+    public boolean upgradeParent(String parent, String child) throws BusinessException {
+        try {
+            RelationTree parentTree = getTreeByPlayerId(parent);
+            RelationTree childTree = getTreeByPlayerId(child);
+
             List<RelationTree> childs = treeMapper.getChilds(parent);
             int childsSize = childs.size();
             int stars = 0;
@@ -100,83 +237,30 @@ public class RelationTreeServiceImpl implements RelationTreeService {
                 parentTree.setTreeLevel(stars);
                 Result result = updateTree(parentTree);
                 playerAccountService.updatePlayerLevel(parent, stars);
-                Message message = new Message(
-                        "server",
-                        "client",
-                        new MessageData("push", "comm", new JSONObject(), ReturnStatus.SUCCESS.getStatus()),
-                        "升级成功"
-                );
 
-                Player playerTo = playerAccountService.getPlayerByPlayerId(parentTree.getTreePlayerId());
-                boolean isPresent = redisUtils.get(RedisKeys.PLAYER_ONLINE_STATE_KEY + playerTo.getPlayerName()).isPresent();
-                String clientId = "";
-                if (isPresent) {
-                    clientId = redisUtils.get(RedisKeys.PLAYER_ONLINE_STATE_KEY + playerTo.getPlayerName()).get();
-                    message.setTarget(clientId);
-                    message.getData().setCode(ReturnStatus.UPGRADE_TIP.getStatus());
-                    message.setDesc(ReturnStatus.UPGRADE_TIP.getDesc());
-
+                if (result.getSuccess()) {
+                    pushToParent(parentTree, stars, childTree);
+                } else {
+                    result = updateTree(parentTree);
                     if (result.getSuccess()) {
-                        log.info("改变商会等级成功!");
-                        //message.setTarget(playerTo.getPlayerName());
-                        //主动推送消息，升级成功
-                        JSONObject upgrade = new JSONObject();
-                        upgrade.put("level", stars);
-                        upgrade.put("toPlayerId", parent);
-                        upgrade.put("username", playerTo.getPlayerName());
-                        upgrade.put("fromPlayerId", child);
-                        message.getData().setData(upgrade);
-                        String json = JsonUtil.parseObjToJson(message);
-                        log.info("升级：》" + json);
-                        JSONObject ret = JSONObject.parseObject(json);
-                        redisUtils.publishMsg(PlAYER_UPGRADE, json);
+                        pushToParent(parentTree, stars, childTree);
                     } else {
                         result = updateTree(parentTree);
-                        if (result.getSuccess()) {
-                            //message.setTarget(playerTo.getPlayerName());
-                            log.info("改变商会等级成功!");
-                            //主动推送消息，升级成功
-                            JSONObject upgrade = new JSONObject();
-                            upgrade.put("level", stars);
-                            upgrade.put("toPlayerId", parent);
-                            upgrade.put("username", playerTo.getPlayerName());
-                            upgrade.put("fromPlayerId", child);
-                            message.getData().setData(upgrade);
-                            String json = JsonUtil.parseObjToJson(message);
-                            JSONObject ret = JSONObject.parseObject(json);
-                            redisUtils.publishMsg(PlAYER_UPGRADE, json);
-                        } else {
-                            result = updateTree(parentTree);
-                            if (result.getSuccess()) {
-                                //message.setTarget(playerTo.getPlayerName());
-                                //主动推送消息，升级成功
-                                JSONObject upgrade = new JSONObject();
-                                upgrade.put("level", stars);
-                                upgrade.put("toPlayerId", parent);
-                                upgrade.put("username", playerTo.getPlayerName());
-                                upgrade.put("fromPlayerId", child);
-                                message.getData().setData(upgrade);
-                                String json = JsonUtil.parseObjToJson(message);
-                                JSONObject ret = JSONObject.parseObject(json);
-                                redisUtils.publishMsg(PlAYER_UPGRADE, json);
-                            }
-                        }
+
                     }
                 }
 
             }
-            return Result.result(true, "成功", ReturnStatus.SUCCESS.getStatus());
+            return true;
         } catch (Exception e) {
-            e.printStackTrace();
-            return Result.result(false, CityGlobal.Constant.TREE_RELATION_EXISTS, ReturnStatus.EXISTS.getStatus());
+            return false;
         }
-
     }
 
     @LcnTransaction
     @Transactional
     @Override
-    public RelationTree get(String parent, String child) {
+    public RelationTree get(String parent, String child) throws BusinessException {
         return treeMapper.get(parent, child);
     }
 
@@ -189,21 +273,21 @@ public class RelationTreeServiceImpl implements RelationTreeService {
     @LcnTransaction
     @Transactional
     @Override
-    public RelationTree getByPlayer(String playerId) {
+    public RelationTree getByPlayer(String playerId) throws BusinessException {
         return treeMapper.getByPlayer(playerId);
     }
 
     @LcnTransaction
     @Transactional
     @Override
-    public RelationTree getPlayerByRef(String relation) {
+    public RelationTree getPlayerByRef(String relation) throws BusinessException {
         return treeMapper.getTreeByRef(relation);
     }
 
     @LcnTransaction
     @Transactional
     @Override
-    public Result updateTree(RelationTree tree) {
+    public Result updateTree(RelationTree tree) throws BusinessException {
         treeMapper.updateTree(tree);
         return Result.result(true);
     }
@@ -218,7 +302,7 @@ public class RelationTreeServiceImpl implements RelationTreeService {
     @LcnTransaction
     @Transactional
     @Override
-    public List<RelationTree> findLevel(String playerId, Integer level) {
+    public List<RelationTree> findLevel(String playerId, Integer level) throws BusinessException {
         String like = "";
         for (int i = 0; i < level; i++) {
             like += "/______";
@@ -242,7 +326,7 @@ public class RelationTreeServiceImpl implements RelationTreeService {
     @LcnTransaction
     @Transactional
     @Override
-    public Map<String, Object> getLevelChildTreesMap(String playerId, int level) {
+    public Map<String, Object> getLevelChildTreesMap(String playerId, int level) throws BusinessException {
         Map<Integer, List<RelationTree>> treeListMap = new Hashtable<>();
         for (int i = 0; i < level; i++) {
             List<RelationTree> levelTree = this.findLevel(playerId, i + 1);
@@ -286,7 +370,7 @@ public class RelationTreeServiceImpl implements RelationTreeService {
     @LcnTransaction
     @Transactional
     @Override
-    public RelationTree getParent(String playerId) {
+    public RelationTree getParent(String playerId) throws BusinessException {
         RelationTree player = treeMapper.getByPlayer(playerId);
         return treeMapper.getByPlayer(player.getTreeParentId());
     }
@@ -294,7 +378,7 @@ public class RelationTreeServiceImpl implements RelationTreeService {
     @LcnTransaction
     @Transactional
     @Override
-    public List<RelationTree> getTrees() {
+    public List<RelationTree> getTrees() throws BusinessException {
         return treeMapper.getTrees();
     }
 
@@ -309,14 +393,14 @@ public class RelationTreeServiceImpl implements RelationTreeService {
     @LcnTransaction
     @Transactional
     @Override
-    public RelationTree getTreeByPlayerId(String playerId) {
+    public RelationTree getTreeByPlayerId(String playerId) throws BusinessException {
         return treeMapper.getTreeByPlayerId(playerId);
     }
 
     @LcnTransaction
     @Transactional
     @Override
-    public void closeAutoSend(RelationTree tree) {
+    public void closeAutoSend(RelationTree tree) throws BusinessException {
         treeMapper.updateTree(tree);
     }
 
@@ -329,7 +413,7 @@ public class RelationTreeServiceImpl implements RelationTreeService {
     @LcnTransaction
     @Transactional
     @Override
-    public Map<Integer, RelationTree> getParents(String playerId) {
+    public Map<Integer, RelationTree> getParents(String playerId) throws BusinessException {
         Map<Integer, RelationTree> trees = new Hashtable<>();
 
         RelationTree self = this.getTreeByPlayerId(playerId);
@@ -356,7 +440,7 @@ public class RelationTreeServiceImpl implements RelationTreeService {
     @LcnTransaction
     @Transactional
     @Override
-    public List<RelationTree> getChilds(String playerId) {
+    public List<RelationTree> getChilds(String playerId) throws BusinessException {
         List<RelationTree> trees = treeMapper.getChilds(playerId);
 
         return trees;

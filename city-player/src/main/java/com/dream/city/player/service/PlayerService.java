@@ -35,6 +35,10 @@ public interface PlayerService {
      */
     Result resetTraderPwd(String username, String oldpwshop, String newpwshop);
 
+    Result changePwdValid(String username, String oldpwshop, String pwdType);
+
+    Result changePwd(String playerId, String newPwd);
+
     boolean save(Player player);
 
     Integer delete(String playerId);
@@ -52,6 +56,8 @@ public interface PlayerService {
      */
     PageInfo<PlayerResp> getPlayers(Page pageReq);
     Integer getPlayersCount(PlayerReq record);
+
+    String getFriendAgree(String playerId, PlayerResp player);
 
     PlayerResp getPlayerByName(String username, String playerNick);
 

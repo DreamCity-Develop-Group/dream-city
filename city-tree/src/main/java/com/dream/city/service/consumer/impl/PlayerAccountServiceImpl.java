@@ -1,5 +1,7 @@
 package com.dream.city.service.consumer.impl;
 
+import com.codingapi.txlcn.tc.annotation.LcnTransaction;
+import com.dream.city.base.exception.BusinessException;
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.Player;
 import com.dream.city.base.model.entity.PlayerAccount;
@@ -12,6 +14,7 @@ import com.dream.city.service.PlayerService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -21,7 +24,7 @@ import java.util.List;
  * @author Wvv
  */
 @Service
-public class PlayerAccountServiceImpl implements PlayerAccountService {
+public class PlayerAccountServiceImpl implements PlayerAccountService  {
     @Autowired
     private PlayerAccountMapper playerAccountMapper;
 
@@ -31,18 +34,24 @@ public class PlayerAccountServiceImpl implements PlayerAccountService {
     @Autowired
     PlayerService playerService;
 
+    @LcnTransaction
+    @Transactional
     @Override
-    public BigDecimal getPlayerAccountUSDTAvailble(String playerId) {
+    public BigDecimal getPlayerAccountUSDTAvailble(String playerId)  throws BusinessException {
         PlayerAccount account = playerAccountMapper.getPlayerAccount(playerId);
         return account == null?new BigDecimal(0.00):account.getAccUsdtAvailable();
     }
 
+    @LcnTransaction
+    @Transactional
     @Override
-    public BigDecimal getPlayerAccountMTAvailble(String playerId) {
+    public BigDecimal getPlayerAccountMTAvailble(String playerId)  throws BusinessException{
         PlayerAccount account = playerAccountMapper.getPlayerAccount(playerId);
         return account == null?new BigDecimal(0.00):account.getAccMtAvailable();
     }
 
+    @LcnTransaction
+    @Transactional
     @Override
     public Result checkPayPass(String playerId, String payPass) {
         Player player = playerService.getPlayer(playerId);
@@ -57,29 +66,39 @@ public class PlayerAccountServiceImpl implements PlayerAccountService {
 
     }
 
+    @LcnTransaction
+    @Transactional
     @Override
-    public PlayerAccount getPlayerAccount(String playerId){
+    public PlayerAccount getPlayerAccount(String playerId) throws BusinessException{
         PlayerAccount account = playerAccountMapper.getAccountByPlayerId(playerId);
         return account;
     }
 
+    @LcnTransaction
+    @Transactional
     @Override
-    public void createAccount(String playerId,String address){
+    public void createAccount(String playerId,String address) throws BusinessException{
          playerAccountMapper.createAccount(playerId,address);
     }
 
+    @LcnTransaction
+    @Transactional
     @Override
-    public void updatePlayerLevel(String playerId,Integer level){
+    public void updatePlayerLevel(String playerId,Integer level) throws BusinessException{
         playerService.updatePlayerLevel(playerId,level);
     }
 
+    @LcnTransaction
+    @Transactional
     @Override
-    public Player getPlayerByPlayerId(String playerId) {
+    public Player getPlayerByPlayerId(String playerId) throws BusinessException {
         return playerService.getPlayer(playerId);
     }
 
+    @LcnTransaction
+    @Transactional
     @Override
-    public Result lockUstdAmount(String playerId, BigDecimal amount) {
+    public Result lockUstdAmount(String playerId, BigDecimal amount) throws BusinessException {
         PlayerAccount playerAccount = playerAccountMapper.getPlayerAccount(playerId);
         //减可用额度
         playerAccount.setAccUsdtAvailable(playerAccount.getAccUsdtAvailable().subtract(amount));
@@ -102,8 +121,10 @@ public class PlayerAccountServiceImpl implements PlayerAccountService {
         return Result.result(num>0);
     }
 
+    @LcnTransaction
+    @Transactional
     @Override
-    public Result unlockUstdAmount(String playerId, BigDecimal amount){
+    public Result unlockUstdAmount(String playerId, BigDecimal amount) throws BusinessException{
         PlayerAccount playerAccount = playerAccountMapper.getPlayerAccount(playerId);
         //减可用额度
         playerAccount.setAccUsdt(playerAccount.getAccUsdt().subtract(amount));
@@ -126,23 +147,31 @@ public class PlayerAccountServiceImpl implements PlayerAccountService {
         return Result.result(num>0);
     }
 
+    @LcnTransaction
+    @Transactional
     @Override
-    public void subtractAmount(BigDecimal orderPayAmount, String playerId) {
+    public void subtractAmount(BigDecimal orderPayAmount, String playerId) throws BusinessException {
         playerAccountMapper.subtractAmount(orderPayAmount,playerId);
     }
 
+    @LcnTransaction
+    @Transactional
     @Override
-    public int updatePlayerAccount(PlayerAccount account) {
+    public int updatePlayerAccount(PlayerAccount account) throws BusinessException {
         return playerAccountMapper.updatePlayerAccount(account);
     }
 
+    @LcnTransaction
+    @Transactional
     @Override
-    public void updatePlayerAccounts(List<PlayerAccount> accounts) {
+    public void updatePlayerAccounts(List<PlayerAccount> accounts)  throws BusinessException{
         playerAccountMapper.updatePlayerAccounts(accounts);
     }
 
+    @LcnTransaction
+    @Transactional
     @Override
-    public void addAccountLog(PlayerAccountLog accountLog) {
+    public void addAccountLog(PlayerAccountLog accountLog)  throws BusinessException{
         playerAccountLogMapper.insert(accountLog);
     }
 

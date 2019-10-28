@@ -1,0 +1,31 @@
+server:
+  port: 7979
+spring:
+  application:
+    name: TransactionManager
+  profiles:
+    active: dev
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/dreamcity?serverTimezone=UTC&useUnicode=true&characterEncoding=UTF-8&transformedBitIsBoolean=true&autoReconnect=true&failOverReadOnly=false&allowMultiQueries=true&useSSL=false
+    username: dreamcity
+    password: Root@123
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+  cache:
+    type: redis
+  redis:
+    host: 127.0.0.1
+    database: 0
+    port: 6379
+    password: 123456
+    timeout: 5000
+    ssl: false
+    jedis:
+      pool:
+        max-active: 200
+        max-idle: 100
+        max-wait: -1
+        min-idle: 1

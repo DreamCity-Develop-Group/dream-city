@@ -72,18 +72,22 @@ public class TreeServiceImpl implements TreeService {
             Player player = playerService.getPlayerByPlayerId(playerId);
             playerInvite = player.getPlayerInvite();
         }
-
+        //获取玩家关系树，如果存在，表示玩家已经加入树关系
         Result treeRet = treeService.getTree(playerId);
         if (treeRet.getSuccess() && treeRet.getData() != null) {
             Result allowed = treeService.getInvestAllowed(playerId);
-
+            //如果存在允许认可
             if (!allowed.getSuccess()) {
                 message.getData().setCode(ReturnStatus.NEXT_OPT.getStatus());
                 message.setDesc("尚未获得投资许可，设置交易密码");
                 return message;
+            }else{
+                message.getData().setCode(ReturnStatus.NEXT_OPT.getStatus());
+                message.setDesc("已经获得投资许可，无需重复设置");
+                return message;
             }
         }
-
+        //找出上级玩家ID
         //如果是系统的不使用玩家表判断
         String parentId = "";
         if (!"system".equals(invite)) {

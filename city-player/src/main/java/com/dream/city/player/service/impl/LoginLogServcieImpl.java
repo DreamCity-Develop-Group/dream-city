@@ -1,5 +1,7 @@
 package com.dream.city.player.service.impl;
 
+import com.codingapi.txlcn.tc.annotation.LcnTransaction;
+import com.dream.city.base.exception.BusinessException;
 import com.dream.city.base.model.entity.LoginLog;
 import com.dream.city.base.model.mapper.LoginLogMapper;
 import com.dream.city.player.service.LoginLogServcie;
@@ -7,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 
@@ -18,8 +21,10 @@ public class LoginLogServcieImpl implements LoginLogServcie {
     @Autowired
     LoginLogMapper loginLogMapper;
 
+    @LcnTransaction
+    @Transactional
     @Override
-    public int insertLoginLog(LoginLog record) {
+    public int insertLoginLog(LoginLog record) throws BusinessException {
         int i = 0;
         try {
             record.setCreateTime(new Date());

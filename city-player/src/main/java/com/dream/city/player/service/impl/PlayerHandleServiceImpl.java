@@ -1,5 +1,7 @@
 package com.dream.city.player.service.impl;
 
+import com.codingapi.txlcn.tc.annotation.LcnTransaction;
+import com.dream.city.base.exception.BusinessException;
 import com.dream.city.base.model.entity.Player;
 import com.dream.city.base.model.entity.PlayerExt;
 import com.dream.city.base.model.entity.PlayerGrade;
@@ -24,9 +26,10 @@ public class PlayerHandleServiceImpl implements PlayerHandleService {
     private PlayerGradeMapper gradeMapper;
 
 
-    @Override
+    @LcnTransaction
     @Transactional
-    public boolean createPlayer(Player player) {
+    @Override
+    public boolean createPlayer(Player player) throws BusinessException {
         String playerId = KeyGenerator.getUUID();
 
         player.setPlayerId(playerId);

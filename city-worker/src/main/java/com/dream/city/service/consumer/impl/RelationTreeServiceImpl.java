@@ -1,8 +1,11 @@
 package com.dream.city.service.consumer.impl;
 
+import com.codingapi.txlcn.tc.annotation.LcnTransaction;
+import com.dream.city.base.exception.BusinessException;
 import com.dream.city.base.model.entity.RelationTree;
 import com.dream.city.service.RelationTreeService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -15,8 +18,10 @@ import java.util.*;
 @Service
 public class RelationTreeServiceImpl implements RelationTreeService {
 
+    @LcnTransaction
+    @Transactional
     @Override
-    public int getMembersIncrement(String orderPayerId, Date date) {
+    public int getMembersIncrement(String orderPayerId, Date date) throws BusinessException {
         Map<Integer, List<RelationTree>> trees = getLevelChildTreesMap(orderPayerId, 9);
 
         List<RelationTree> relationTrees = new ArrayList<>();
@@ -71,8 +76,10 @@ public class RelationTreeServiceImpl implements RelationTreeService {
      * @param level
      * @return
      */
+    @LcnTransaction
+    @Transactional
     @Override
-    public Map<Integer, List<RelationTree>> getLevelChildTreesMap(String playerId, int level) {
+    public Map<Integer, List<RelationTree>> getLevelChildTreesMap(String playerId, int level) throws BusinessException {
         Map<Integer, List<RelationTree>> treeListMap = new Hashtable<>();
         for (int i = 0; i < level; i++) {
             List<RelationTree> levelTree = this.findLevel(playerId, i + 1);

@@ -584,9 +584,16 @@ public class RedisUtils {
         }
     }
 
+
+
     public boolean addOnlinePlayer(String playerName,Integer id) {
         boolean success = redisTemplate.opsForZSet().add("ONLINE_PLAYERS",playerName,id);
         return success;
+    }
+
+    public long getOnlinePlayerCount(){
+        long count = redisTemplate.opsForZSet().zCard("ONLINE_PLAYERS");
+        return count;
     }
 
     public boolean rmOnlinePlayer(String playerName) {

@@ -2,6 +2,7 @@ package com.dream.city.player.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.codingapi.txlcn.tc.annotation.LcnTransaction;
+import com.dream.city.base.exception.BusinessException;
 import com.dream.city.base.model.CityGlobal;
 import com.dream.city.base.model.Page;
 import com.dream.city.base.model.Result;
@@ -50,7 +51,7 @@ public class PlayerServiceImpl implements PlayerService {
     @LcnTransaction
     @Transactional
     @Override
-    public Result forgetPwd(String username, String newPwd) {
+    public Result forgetPwd(String username, String newPwd) throws BusinessException {
         PlayerResp player = getPlayerByName(username, null);
         if (player == null) {
             return Result.result(Boolean.FALSE, CityGlobal.Constant.USER_NOT_EXIT);
@@ -62,7 +63,7 @@ public class PlayerServiceImpl implements PlayerService {
     @LcnTransaction
     @Transactional
     @Override
-    public Result resetLoginPwd(String username, String oldPwd, String newPwd) {
+    public Result resetLoginPwd(String username, String oldPwd, String newPwd)  throws BusinessException{
         String pwdType = "resetLoginPwd";
         PlayerResp player = getPlayerByName(username, null);
         Result result = changePwdValid(username, oldPwd, pwdType);
@@ -73,7 +74,10 @@ public class PlayerServiceImpl implements PlayerService {
         return changePwd(player.getPlayerId(), newPwd);
     }
 
-    private Result changePwd(String playerId, String newPwd) {
+    @LcnTransaction
+    @Transactional
+    @Override
+    public Result changePwd(String playerId, String newPwd)  throws BusinessException{
         Player player = new Player();
         player.setPlayerId(playerId);
         player.setPlayerPass(newPwd);
@@ -88,7 +92,7 @@ public class PlayerServiceImpl implements PlayerService {
     @LcnTransaction
     @Transactional
     @Override
-    public Result resetTraderPwd(String username, String oldpwshop, String newpwshop) {
+    public Result resetTraderPwd(String username, String oldpwshop, String newpwshop)  throws BusinessException{
         String pwdType = "resetTraderPwd";
         if (StringUtils.isBlank(oldpwshop)) {
             pwdType = "setTraderPwd";
@@ -109,7 +113,10 @@ public class PlayerServiceImpl implements PlayerService {
         return Result.result(Boolean.FALSE, CityGlobal.Constant.USER_CHANGE_TRADERPWD_FAIL, ReturnStatus.FAILED.getStatus());
     }
 
-    private Result changePwdValid(String username, String oldpwshop, String pwdType) {
+    @LcnTransaction
+    @Transactional
+    @Override
+    public Result changePwdValid(String username, String oldpwshop, String pwdType)  throws BusinessException{
         Player player = new Player();
         player.setPlayerName(username);
         PlayerResp playerExit = playerMapper.getPlayerById(player);
@@ -138,23 +145,26 @@ public class PlayerServiceImpl implements PlayerService {
         return Result.result(Boolean.TRUE, CityGlobal.Constant.USER_CHANGE_PWD_SUCCESS, ReturnStatus.SUCCESS.getStatus());
     }
 
-    @Override
+    @LcnTransaction
     @Transactional
-    public boolean save(Player player) {
+    @Override
+    public boolean save(Player player)  throws BusinessException{
         player.setCreateTime(new Date());
         Integer integer = playerMapper.insertSelective(player);
         return (integer != null && integer > 0) ? Boolean.TRUE : Boolean.FALSE;
     }
 
+    @LcnTransaction
+    @Transactional
     @Override
-    public Integer delete(String playerId) {
+    public Integer delete(String playerId) throws BusinessException {
         return playerMapper.deleteByPlayerId(playerId);
     }
 
     @LcnTransaction
     @Transactional
     @Override
-    public Player update(Player player) {
+    public Player update(Player player) throws BusinessException {
         int i = playerMapper.updateByPlayerId(player);
         return i > 0 ? player : null;
     }
@@ -162,14 +172,14 @@ public class PlayerServiceImpl implements PlayerService {
     @LcnTransaction
     @Transactional
     @Override
-    public PlayerResp getPlayer(Player player) {
+    public PlayerResp getPlayer(Player player) throws BusinessException {
         return playerMapper.getPlayerById(player);
     }
 
     @LcnTransaction
     @Transactional
     @Override
-    public PlayerResp getPlayerById(String playerId) {
+    public PlayerResp getPlayerById(String playerId) throws BusinessException {
         Player player = new Player();
         if (StringUtils.isBlank(playerId)) {
             return null;
@@ -181,7 +191,7 @@ public class PlayerServiceImpl implements PlayerService {
     @LcnTransaction
     @Transactional
     @Override
-    public PageInfo<PlayerResp> getPlayers(Page pageReq) {
+    public PageInfo<PlayerResp> getPlayers(Page pageReq) throws BusinessException {
         List<PlayerResp> players = null;
         try {
             PlayerReq playerReq = DataUtils.toJavaObject(pageReq.getCondition(), PlayerReq.class);
@@ -210,12 +220,15 @@ public class PlayerServiceImpl implements PlayerService {
     @LcnTransaction
     @Transactional
     @Override
-    public Integer getPlayersCount(PlayerReq record) {
+    public Integer getPlayersCount(PlayerReq record) throws BusinessException {
         Integer playersCount = playerMapper.getPlayersCount(record);
         return playersCount == null ? 0 : playersCount;
     }
 
-    private String getFriendAgree(String playerId, PlayerResp player) {
+    @LcnTransaction
+    @Transactional
+    @Override
+    public String getFriendAgree(String playerId, PlayerResp player)  throws BusinessException{
         String friendId = player.getPlayerId();
         Friends record = new Friends();
         record.setPlayerId(playerId);
@@ -238,7 +251,7 @@ public class PlayerServiceImpl implements PlayerService {
     @LcnTransaction
     @Transactional
     @Override
-    public PlayerResp getPlayerByName(String playerName, String playerNick) {
+    public PlayerResp getPlayerByName(String playerName, String playerNick) throws BusinessException {
         Player player = new Player();
         if (StringUtils.isNotBlank(playerName)) {
             player.setPlayerName(playerName);
@@ -267,7 +280,7 @@ public class PlayerServiceImpl implements PlayerService {
     @LcnTransaction
     @Transactional
     @Override
-    public Player getPlayerByInvite(String invite) {
+    public Player getPlayerByInvite(String invite) throws BusinessException {
         Player player = playerMapper.getPlayerByInvite(invite);
         return player;
     }
@@ -275,7 +288,7 @@ public class PlayerServiceImpl implements PlayerService {
     @LcnTransaction
     @Transactional
     @Override
-    public Player getPlayerByAccount(String account) {
+    public Player getPlayerByAccount(String account)  throws BusinessException{
         Player player = playerMapper.getPlayerByAccount(account);
         return player;
     }
@@ -283,7 +296,7 @@ public class PlayerServiceImpl implements PlayerService {
     @LcnTransaction
     @Transactional
     @Override
-    public PlayerGrade getPlayerGradeByPlayerId(String playerId) {
+    public PlayerGrade getPlayerGradeByPlayerId(String playerId)  throws BusinessException{
         PlayerGrade record = new PlayerGrade();
         record.setPlayerId(playerId);
         return gradeMapper.getPlayerGradeByPlayerId(record);
@@ -292,14 +305,14 @@ public class PlayerServiceImpl implements PlayerService {
     @LcnTransaction
     @Transactional
     @Override
-    public Player getPlayerByPlayerId(String playerId) {
+    public Player getPlayerByPlayerId(String playerId) throws BusinessException {
         return playerMapper.getPlayer(playerId);
     }
 
     @LcnTransaction
     @Transactional
     @Override
-    public boolean setTraderPwd(String playerId, String tradePass) {
+    public boolean setTraderPwd(String playerId, String tradePass) throws BusinessException {
         try {
             Player player = playerMapper.getPlayer(playerId);
             player.setPlayerTradePass(tradePass);

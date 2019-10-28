@@ -39,5 +39,15 @@ public class RelationTree {
      *   商会等级
      */
     Integer treeLevel;
+
+    /**
+     *   成员数
+     */
+    Integer treeChilds;
+    /**
+     *   间接成员数
+     */
+    Integer treeGrandson;
+
     Timestamp createTime;
 }

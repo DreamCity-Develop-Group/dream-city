@@ -66,4 +66,8 @@ public interface LikesService {
      * @return
      */
     List<Likes> getPlayerInvestLikes(String playerId);
+
+    int getLikeCount(Integer likedId);
+
+    void savePlayerLikesLog(PlayerLikesReq playerLikes);
 }

@@ -1,5 +1,7 @@
 package com.dream.city.service.consumer.impl;
 
+import com.codingapi.txlcn.tc.annotation.LcnTransaction;
+import com.dream.city.base.exception.BusinessException;
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.Notice;
 import com.dream.city.base.model.enu.GameSettingType;
@@ -11,6 +13,7 @@ import com.dream.city.base.utils.RedisUtils;
 import com.dream.city.service.GameSettingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -29,8 +32,10 @@ public class GameSettingServiceImpl implements GameSettingService {
 
 
 
+    @LcnTransaction
+    @Transactional
     @Override
-    public boolean settingGameVioce(String playerId,boolean isOpen) {
+    public boolean settingGameVioce(String playerId,boolean isOpen)throws BusinessException {
         PlayerGameSetting gameSetting = gameSettingMapper.selectByType(GameSettingType.GAME.name());
         gameSetting.setPlayerId(playerId);
         gameSetting.setType(GameSettingType.GAME.name());
@@ -39,8 +44,10 @@ public class GameSettingServiceImpl implements GameSettingService {
         return gameSettingMapper.updateByPrimaryKeySelective(gameSetting)>0?Boolean.TRUE:Boolean.FALSE;
     }
 
+    @LcnTransaction
+    @Transactional
     @Override
-    public boolean settingBgVioce(String playerId,boolean isOpen) {
+    public boolean settingBgVioce(String playerId,boolean isOpen) throws BusinessException{
         PlayerGameSetting gameSetting = gameSettingMapper.selectByType(GameSettingType.BG.name());
         gameSetting.setPlayerId(playerId);
         gameSetting.setType(GameSettingType.BG.name());
@@ -49,8 +56,10 @@ public class GameSettingServiceImpl implements GameSettingService {
         return gameSettingMapper.updateByPrimaryKeySelective(gameSetting)>0?Boolean.TRUE:Boolean.FALSE;
     }
 
+    @LcnTransaction
+    @Transactional
     @Override
-    public Result getGameNotices(){
+    public Result getGameNotices() throws BusinessException {
         //取出公告
         List<Notice> notices = new ArrayList<>();
         Map<Object,Object> gameMap = redisUtils.hmget("game_default");

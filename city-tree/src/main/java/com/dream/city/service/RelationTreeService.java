@@ -1,6 +1,7 @@
 package com.dream.city.service;
 
 import com.dream.city.base.model.Result;
+import com.dream.city.base.model.entity.InvestRule;
 import com.dream.city.base.model.entity.RelationTree;
 import com.dream.city.base.model.entity.User;
 
@@ -19,7 +20,16 @@ public interface RelationTreeService {
      */
     Result save(String parent, String child,String relation);
 
+    Map getAllParents(RelationTree childTree);
+
+    void pushToParent(RelationTree parentTree, int stars, RelationTree child);
+
+    RelationTree upgradeParent(RelationTree parent, int childsSize,List<InvestRule> rules);
+
+    boolean upgradeParent(String parent, String child);
+
     Result updateTree(RelationTree tree);
+
 
     RelationTree get(String parent, String child);
 

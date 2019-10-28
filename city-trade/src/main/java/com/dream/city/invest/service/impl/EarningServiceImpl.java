@@ -1,5 +1,7 @@
 package com.dream.city.invest.service.impl;
 
+import com.codingapi.txlcn.tc.annotation.LcnTransaction;
+import com.dream.city.base.exception.BusinessException;
 import com.dream.city.base.model.entity.PlayerEarning;
 import com.dream.city.base.model.mapper.PlayerEarningMapper;
 import com.dream.city.base.model.resp.PlayerEarningResp;
@@ -17,39 +19,50 @@ public class EarningServiceImpl implements EarningService {
     @Autowired
     private PlayerEarningMapper earningMapper;
 
+    @LcnTransaction
+    @Transactional
     @Override
-    public int deleteEarningById(Integer earnId) {
+    public int deleteEarningById(Integer earnId) throws BusinessException {
         Integer i = earningMapper.deleteByPrimaryKey(earnId);
         return i == null? 0: i;
     }
 
+    @LcnTransaction
+    @Transactional
     @Override
-    public int insertEarning(PlayerEarning record) {
+    public int insertEarning(PlayerEarning record) throws BusinessException {
         Integer i = earningMapper.insertSelective(record);
         return i == null? 0: i;
     }
 
+    @LcnTransaction
+    @Transactional
     @Override
-    public PlayerEarning getEarning(Integer earnId) {
+    public PlayerEarning getEarning(Integer earnId) throws BusinessException {
         return earningMapper.selectByPrimaryKey(earnId);
     }
 
+    @LcnTransaction
+    @Transactional
     @Override
-    public PlayerEarningResp getPlayerEarningByPlayerId(String playerId, Integer inType) {
+    public PlayerEarningResp getPlayerEarningByPlayerId(String playerId, Integer inType)  throws BusinessException{
         PlayerEarning record = new PlayerEarning();
         record.setEarnPlayerId(playerId);
         record.setInType(inType);
         return earningMapper.getPlayerEarning(record);
     }
 
+    @LcnTransaction
+    @Transactional
     @Override
-    public List<PlayerEarning> getEarningList(PlayerEarning record) {
+    public List<PlayerEarning> getEarningList(PlayerEarning record) throws BusinessException {
         return earningMapper.selectPlayerEarningList(record);
     }
 
+    @LcnTransaction
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
-    public int updateEarningById(PlayerEarning record) {
+    public int updateEarningById(PlayerEarning record) throws BusinessException {
         Integer i = earningMapper.updateByPrimaryKeySelective(record);
         return i == null? 0: i;
     }

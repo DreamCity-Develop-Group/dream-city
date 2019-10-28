@@ -5,6 +5,7 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.codingapi.txlcn.tc.annotation.LcnTransaction;
 import com.dream.city.base.utils.RedisKeys;
 import com.dream.city.base.utils.RedisUtils;
 import com.dream.city.service.AuthService;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.io.UnsupportedEncodingException;
@@ -44,6 +46,8 @@ public class AuthServiceImpl implements AuthService {
      * @param username
      * @return
      */
+    @LcnTransaction
+    @Transactional
     @Override
     public String generiteToken(String username) {
         String token="";
@@ -87,6 +91,8 @@ public class AuthServiceImpl implements AuthService {
      * @return
      * @throws Exception
      */
+    @LcnTransaction
+    @Transactional
     @Override
     public  Map<String, Claim> verifyToken(String token) {
         DecodedJWT jwt = null;

@@ -1,11 +1,4 @@
 spring:
-  devtools:
-    restart:
-      #添加那个目录的文件需要restart
-      additional-paths: src/main/java
-      #排除那个目录的文件不需要restart
-      exclude: static/**
-
   redis:
     host: localhost
     database: 0
@@ -39,9 +32,22 @@ mybatis:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
+
+
 worker:
   channel:
     topics: topic1,topic2,topic3
 
 
 tasks: "{listenerAdapterLogin: 'listenerAdapterLogin', listenerAdapterPlatTrans: 'listenerAdapterPlatTrans', listenerAdapterServerPush: 'listenerAdapterServerPush'}"
+
+
+
+
+eureka:
+  instance:
+    hostname: localhost
+    instance-id: ${spring.application.name}-${server.port}
+  client:
+    service-url:
+      defaultZone: http://${eureka.instance.hostname}:8888/eureka/,http://${eureka.instance.hostname}:9999/eureka/

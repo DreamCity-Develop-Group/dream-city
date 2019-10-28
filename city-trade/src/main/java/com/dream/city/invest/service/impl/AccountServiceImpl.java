@@ -1,11 +1,13 @@
 package com.dream.city.invest.service.impl;
 
+import com.codingapi.txlcn.tc.annotation.LcnTransaction;
+import com.dream.city.base.exception.BusinessException;
 import com.dream.city.base.model.entity.PlayerAccount;
 import com.dream.city.base.model.entity.PlayerAccountLog;
 import com.dream.city.base.model.mapper.AccountMapper;
 import com.dream.city.base.model.mapper.PlayerAccountLogMapper;
-import com.dream.city.base.model.req.PlayerAccountReq;
 import com.dream.city.base.model.mapper.PlayerAccountMapper;
+import com.dream.city.base.model.req.PlayerAccountReq;
 import com.dream.city.base.model.resp.PlayerAccountResp;
 import com.dream.city.base.service.DictionaryService;
 import com.dream.city.invest.service.AccountService;
@@ -20,7 +22,7 @@ import java.util.List;
 @Service
 public class AccountServiceImpl implements AccountService {
 
-//    @Value("${dreamcity.platform.account.accIds}")
+    //    @Value("${dreamcity.platform.account.accIds}")
 //    String platformAccIds;
     @Autowired
     private PlayerAccountMapper playerAccountMapper;
@@ -31,50 +33,61 @@ public class AccountServiceImpl implements AccountService {
     @Autowired
     DictionaryService dictionaryService;
 
+    @LcnTransaction
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
-    public int createPlayerAccount(PlayerAccount record) {
+    public int createPlayerAccount(PlayerAccount record) throws BusinessException {
         Integer integer = accountMapper.insertSelective(record);
-        return integer ==null?0:integer;
+        return integer == null ? 0 : integer;
     }
 
+    @LcnTransaction
+    @Transactional
     @Override
-    public PlayerAccount getPlayerAccount(String playerId) {
-        if (StringUtils.isBlank(playerId)){
+    public PlayerAccount getPlayerAccount(String playerId) throws BusinessException {
+        if (StringUtils.isBlank(playerId)) {
             return null;
         }
         return playerAccountMapper.getPlayerAccount(playerId);
     }
 
+    @LcnTransaction
+    @Transactional
     @Override
-    public PlayerAccountResp getPlayerAccount(PlayerAccountReq record) {
+    public PlayerAccountResp getPlayerAccount(PlayerAccountReq record) throws BusinessException {
         record.setPlatformAccIds(dictionaryService.getValByKey("platform.account.accIds"));
         return accountMapper.getPlayerAccountSelective(record);
     }
 
+    @LcnTransaction
+    @Transactional
     @Override
-    public List<PlayerAccountResp> getPlayerAccountList(PlayerAccountReq record) {
+    public List<PlayerAccountResp> getPlayerAccountList(PlayerAccountReq record) throws BusinessException {
         record.setPlatformAccIds(dictionaryService.getValByKey("platform.account.accIds"));
         return accountMapper.getPlayerAccountList(record);
     }
 
+    @LcnTransaction
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
-    public int updatePlayerAccount(PlayerAccount record) {
+    public int updatePlayerAccount(PlayerAccount record) throws BusinessException {
         playerAccountMapper.updatePlayerAccount(record);
         return 1;
     }
 
+    @LcnTransaction
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
-    public int updatePlayerAccountById(PlayerAccount record) {
+    public int updatePlayerAccountById(PlayerAccount record) throws BusinessException {
         Integer integer = accountMapper.updateByPrimaryKeySelective(record);
-        return integer == null?0:integer;
+        return integer == null ? 0 : integer;
     }
 
 
+    @LcnTransaction
+    @Transactional
     @Override
-    public List<PlayerAccount> getPlatformAccounts(PlayerAccountReq record) {
+    public List<PlayerAccount> getPlatformAccounts(PlayerAccountReq record) throws BusinessException {
         if (record == null || (record != null && StringUtils.isBlank(record.getPlatformAccIds()))) {
             record.setPlatformAccIds(dictionaryService.getValByKey("platform.account.accIds"));
             //record.setAccAddr(dictionaryService.getValByKey("platform.account.accIds"));
@@ -82,15 +95,19 @@ public class AccountServiceImpl implements AccountService {
         return accountMapper.getPlatformAccounts(record);
     }
 
+    @LcnTransaction
+    @Transactional
     @Override
-    public PlayerAccount getPlayerAccountByPlayerId(String playerId){
+    public PlayerAccount getPlayerAccountByPlayerId(String playerId) throws BusinessException {
         return playerAccountMapper.getPlayerAccountByPlayerId(playerId);
     }
 
+    @LcnTransaction
+    @Transactional
     @Override
-    public int addAccountLog(PlayerAccountLog accountLog) {
+    public int addAccountLog(PlayerAccountLog accountLog) throws BusinessException {
         Integer integer = playerAccountLogMapper.insert(accountLog);
-        return integer == null?0:integer;
+        return integer == null ? 0 : integer;
     }
 
 }

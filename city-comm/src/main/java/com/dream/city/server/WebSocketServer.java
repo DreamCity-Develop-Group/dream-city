@@ -14,8 +14,10 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import javax.websocket.*;
 import javax.websocket.server.PathParam;
@@ -34,6 +36,8 @@ import java.util.concurrent.CopyOnWriteArraySet;
 @ServerEndpoint("/dream/city/{topic}/{name}")
 @Component
 public class WebSocketServer {
+    @Value("${server.port}")
+    private String server;
 
     private StringRedisTemplate redisTampate = SpringUtils.getBean(StringRedisTemplate.class);
 
@@ -86,10 +90,14 @@ public class WebSocketServer {
     @OnOpen
     public void onOpen(Session session, @PathParam("topic") String topic, @PathParam("name") String name) {
         sid = session.getId();
-        log.info("有新窗口[" + name + "@" + topic + "]开始监听:" + sid + ",当前在线人数为" + getOnlineCount());
+        log.info(
+                "有新窗口[" + name +
+                        "@" + topic + "]开始监听:" + sid +
+                        ",当前在线人数为" + getOnlineCount()+"||"+getOnlinePlayerCount());
         this.session = session;
         //加入set中
         webSocketSet.add(this);
+        redisUtils.addOnlinePlayer("clientID_"+server+"_"+session.getId(),1);
         //将连接加入到redis
         //redisUtils.set();
 
@@ -448,6 +456,10 @@ public class WebSocketServer {
 
     public static synchronized int getOnlineCount() {
         return onlineCount;
+    }
+
+    public static synchronized long getOnlinePlayerCount() {
+        return redisUtils.getOnlinePlayerCount();
     }
 
     public static synchronized void addOnlineCount() {

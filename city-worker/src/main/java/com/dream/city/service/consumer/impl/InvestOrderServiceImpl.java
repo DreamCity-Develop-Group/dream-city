@@ -1,5 +1,7 @@
 package com.dream.city.service.consumer.impl;
 
+import com.codingapi.txlcn.tc.annotation.LcnTransaction;
+import com.dream.city.base.exception.BusinessException;
 import com.dream.city.base.model.entity.InvestOrder;
 import com.dream.city.base.model.entity.InvestRule;
 import com.dream.city.base.model.enu.InvestStatus;
@@ -10,6 +12,7 @@ import com.dream.city.service.PlayerLikesService;
 import com.dream.city.service.RelationTreeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -39,8 +42,10 @@ public class InvestOrderServiceImpl implements InvestOrderService {
      * @param rules
      * @return
      */
+    @LcnTransaction
+    @Transactional
     @Override
-    public Map<String, List<InvestOrder>> getInvestOrdersByCurrentDay(Integer investId, List<InvestRule> rules,int[] states) {
+    public Map<String, List<InvestOrder>> getInvestOrdersByCurrentDay(Integer investId, List<InvestRule> rules,int[] states)throws BusinessException {
         List<InvestOrder> investOrders = investOrderMapper.getInvestOrdersByCurrentDay(investId, InvestStatus.SUBSCRIBED.getStatus());
         //final List<InvestOrder>[] investOrdersSucess = new List[]{new ArrayList<>()};
         final Map<String, List<InvestOrder>> investOrdersSucess = new Hashtable<>();
@@ -123,8 +128,10 @@ public class InvestOrderServiceImpl implements InvestOrderService {
      * @param first
      * @return
      */
+    @LcnTransaction
+    @Transactional
     @Override
-    public List<InvestOrder> getFirstTimeOrders(List<InvestOrder> investOrders, long first) {
+    public List<InvestOrder> getFirstTimeOrders(List<InvestOrder> investOrders, long first) throws BusinessException{
         List<InvestOrder> firstOders = new ArrayList<>();
         //根据在投资记录中成功的订单是否唯一
         investOrders.forEach(order -> {
@@ -145,8 +152,10 @@ public class InvestOrderServiceImpl implements InvestOrderService {
      * @param orderPayerId
      * @return
      */
+    @LcnTransaction
+    @Transactional
     @Override
-    public boolean isFirstTime(String orderPayerId) {
+    public boolean isFirstTime(String orderPayerId) throws BusinessException{
         int[] states = new int[]{1, 2, 3};
         List<InvestOrder> orders = investOrderMapper.getSuccessInvestOrdersByPlayerId(orderPayerId, states);
         return orders.size() > 1;
@@ -159,8 +168,10 @@ public class InvestOrderServiceImpl implements InvestOrderService {
      * @param likes
      * @return
      */
+    @LcnTransaction
+    @Transactional
     @Override
-    public List<InvestOrder> getLiksGatherOrders(List<InvestOrder> investOrders, long likes) {
+    public List<InvestOrder> getLiksGatherOrders(List<InvestOrder> investOrders, long likes)throws BusinessException {
         List<InvestOrder> success = new ArrayList<>();
         //点赞数比结果数多
         investOrders.sort((o1, o2) -> {
@@ -177,8 +188,10 @@ public class InvestOrderServiceImpl implements InvestOrderService {
      * @param longs
      * @return
      */
+    @LcnTransaction
+    @Transactional
     @Override
-    public List<InvestOrder> getInvestLongOrders(Integer investId,long longs) {
+    public List<InvestOrder> getInvestLongOrders(Integer investId,long longs)throws BusinessException {
         if(longs == 0){
             return new ArrayList<>();
         }
@@ -196,8 +209,10 @@ public class InvestOrderServiceImpl implements InvestOrderService {
      * @param longs
      * @return
      */
+    @LcnTransaction
+    @Transactional
     @Override
-    public List<InvestOrder> getInvestLongTimeOrders(List<InvestOrder> orders,long longs) {
+    public List<InvestOrder> getInvestLongTimeOrders(List<InvestOrder> orders,long longs)throws BusinessException {
         if(longs == 0){
             return new ArrayList<>();
         }
@@ -213,8 +228,10 @@ public class InvestOrderServiceImpl implements InvestOrderService {
      * @param other
      * @return
      */
+    @LcnTransaction
+    @Transactional
     @Override
-    public List<InvestOrder> getOtherOrders(List<InvestOrder> investOrders, long other) {
+    public List<InvestOrder> getOtherOrders(List<InvestOrder> investOrders, long other) throws BusinessException{
         if (other == 0) {
             return new ArrayList<>();
         }
@@ -230,8 +247,10 @@ public class InvestOrderServiceImpl implements InvestOrderService {
      *
      * @param orders
      */
+    @LcnTransaction
+    @Transactional
     @Override
-    public void setOrderState(List<InvestOrder> orders, InvestStatus status) {
+    public void setOrderState(List<InvestOrder> orders, InvestStatus status)throws BusinessException {
         orders.forEach((order) -> {
             order.setOrderState(String.valueOf(status.getStatus()));
         });
@@ -243,8 +262,10 @@ public class InvestOrderServiceImpl implements InvestOrderService {
      *
      * @param order
      */
+    @LcnTransaction
+    @Transactional
     @Override
-    public void updateOrderState(InvestOrder order, InvestStatus status) {
+    public void updateOrderState(InvestOrder order, InvestStatus status) throws BusinessException{
         order.setOrderState(String.valueOf(status.getStatus()));
         investOrderMapper.updateOrder(order);
     }
@@ -257,8 +278,10 @@ public class InvestOrderServiceImpl implements InvestOrderService {
      * @param required
      * @return
      */
+    @LcnTransaction
+    @Transactional
     @Override
-    public List<InvestOrder> getRandomOrders(List<InvestOrder> orders, long required) {
+    public List<InvestOrder> getRandomOrders(List<InvestOrder> orders, long required)throws BusinessException {
         List<InvestOrder> investOrdersSucess = new ArrayList<>();
         AtomicLong success = new AtomicLong();
 
@@ -278,8 +301,10 @@ public class InvestOrderServiceImpl implements InvestOrderService {
         return investOrdersSucess;
     }
 
+    @LcnTransaction
+    @Transactional
     @Override
-    public List<InvestOrder> getTopMembersOrders(List<InvestOrder> orders, long top) {
+    public List<InvestOrder> getTopMembersOrders(List<InvestOrder> orders, long top)throws BusinessException {
         orders.sort(((o2, o1) -> {
             return relationTreeService.getMembersIncrement(
                     o2.getOrderPayerId(), investService.getEndTimeAt(o2.getOrderInvestId())
@@ -301,27 +326,35 @@ public class InvestOrderServiceImpl implements InvestOrderService {
      * @param end
      * @return
      */
+    @LcnTransaction
+    @Transactional
     @Override
-    public List<InvestOrder> getInvestOrdersAmountByDayInterval(Integer inId, String start, String end) {
+    public List<InvestOrder> getInvestOrdersAmountByDayInterval(Integer inId, String start, String end)throws BusinessException {
         int state = 2;
         List<InvestOrder> orders = investOrderMapper.getInvestOrdersAmountByDayInterval(inId, state,start, end);
         return orders;
     }
 
+    @LcnTransaction
+    @Transactional
     @Override
-    public List<InvestOrder> getInvestOrdersByCurrent(Integer inId, int[] state,int start,int end) {
+    public List<InvestOrder> getInvestOrdersByCurrent(Integer inId, int[] state,int start,int end)throws BusinessException {
         List<InvestOrder> orders = investOrderMapper.getInvestOrdersByCurrent(inId,state,start,end);
         return orders;
     }
 
+    @LcnTransaction
+    @Transactional
     @Override
-    public int getInvestOrdersSum(Integer investId, int[] states) {
+    public int getInvestOrdersSum(Integer investId, int[] states) throws BusinessException{
 
         return investOrderMapper.getInvestOrdersSum(investId,states);
     }
 
+    @LcnTransaction
+    @Transactional
     @Override
-    public List<InvestOrder> getInvestOrdersFirstTime(Integer inId) {
+    public List<InvestOrder> getInvestOrdersFirstTime(Integer inId)throws BusinessException {
         //有包含预约成功的
         //预约中的
         int state = InvestStatus.MANAGEMENT.getStatus();

@@ -1,5 +1,6 @@
 package com.dream.city.invest.service.impl;
 
+import com.codingapi.txlcn.tc.annotation.LcnTransaction;
 import com.dream.city.base.exception.BusinessException;
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.PlayerAccount;
@@ -39,9 +40,10 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
 
 
 
-    @Override
+    @LcnTransaction
     @Transactional
-    public Result<PlayerTrade>  playerRecharge(PlayerAccountReq record) {
+    @Override
+    public Result<PlayerTrade>  playerRecharge(PlayerAccountReq record)throws BusinessException {
         boolean success = Boolean.FALSE;
         String msg = null;
         record.setTradeType(TradeType.RECHARGE.name());
@@ -84,9 +86,10 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
 
 
 
-    @Override
+    @LcnTransaction
     @Transactional
-    public Result<PlayerTrade>  playerWithdraw(PlayerAccountReq record) {
+    @Override
+    public Result<PlayerTrade>  playerWithdraw(PlayerAccountReq record)throws BusinessException {
         boolean success = Boolean.FALSE;
         String msg = "玩家提现";
         record.setInOut(AmountDynType.OUT.name());
@@ -145,7 +148,10 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
     }
 
 
-    private Result checkAmount(PlayerAccountReq record,PlayerAccount getPlayerAccount){
+    @LcnTransaction
+    @Transactional
+    @Override
+    public Result checkAmount(PlayerAccountReq record,PlayerAccount getPlayerAccount)throws BusinessException{
         String valByKey = dictionaryService.getValByKey("player.withdraw.mt.tax");
         String valByKey2 = dictionaryService.getValByKey("player.transfer.mt.tax");
         BigDecimal withdrawTax = BigDecimal.ZERO;
@@ -199,9 +205,10 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
     }
 
 
-    @Override
+    @LcnTransaction
     @Transactional
-    public Result<PlayerTrade>  playerTransfer(PlayerAccountReq recordOut) {
+    @Override
+    public Result<PlayerTrade>  playerTransfer(PlayerAccountReq recordOut) throws BusinessException{
         boolean success = Boolean.FALSE;
         String msg = "玩家转账";
         Result<BigDecimal> updateAccountResult = null;
@@ -346,7 +353,10 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
      * @param accAddr 玩家账户地址
      * @return TRUE：内部地址，FALSE外部地址
      */
-    private PlayerAccountResp getrAccountByAccAddr(String accAddr){
+    @LcnTransaction
+    @Transactional
+    @Override
+    public PlayerAccountResp getrAccountByAccAddr(String accAddr)throws BusinessException{
         PlayerAccountReq record = new PlayerAccountReq();
         record.setAccAddr(accAddr);
         PlayerAccountResp playerAccount = accountService.getPlayerAccount(record);
@@ -354,8 +364,12 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
     }
 
 
-    private void createTradeDetail(String playerId,Integer tradeId,BigDecimal tradeAmount,BigDecimal usdtSurplus,
-                                   BigDecimal mtSurplus,Integer orderId,Integer verifyId,String tradeDetailType,String descr){
+    @LcnTransaction
+    @Transactional
+    @Override
+    public void createTradeDetail(String playerId,Integer tradeId,BigDecimal tradeAmount,BigDecimal usdtSurplus,
+                                   BigDecimal mtSurplus,Integer orderId,Integer verifyId,
+                                  String tradeDetailType,String descr)throws BusinessException{
         TradeDetail tradeDetail = new TradeDetail();
         tradeDetail.setTradeId(tradeId);
         tradeDetail.setTradeAmount(tradeAmount);
@@ -379,7 +393,10 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
      * @param record
      * @return 交易金额
      */
-    private Result<BigDecimal> updatePlayerAccount(PlayerAccountReq record) throws Exception{
+    @LcnTransaction
+    @Transactional
+    @Override
+    public Result<BigDecimal> updatePlayerAccount(PlayerAccountReq record) throws BusinessException{
         boolean success = Boolean.FALSE;
         String tradeType = null;
         String desc = "失败！";
@@ -523,7 +540,10 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
      * 新增交易记录
      * @param record
      */
-    private Result<PlayerTrade> createPlayerTrade(PlayerAccountReq record,BigDecimal tradeAmount,String desc) throws Exception{
+    @LcnTransaction
+    @Transactional
+    @Override
+    public Result<PlayerTrade> createPlayerTrade(PlayerAccountReq record,BigDecimal tradeAmount,String desc) throws BusinessException{
         String valByKey = dictionaryService.getValByKey("player.inside.transfer.verify");
         String valByKey2 = dictionaryService.getValByKey("player.transfer.mt.tax");
         BigDecimal transferTax = BigDecimal.ZERO;
@@ -597,7 +617,10 @@ public class PlayerTradeHandleServiceImpl implements PlayerTradeHandleService {
      * @param verifyStatus
      * @param verifyDesc
      */
-    private TradeVerify createTradeVerify(Integer tradeId,String verifyStatus,String verifyDesc){
+    @LcnTransaction
+    @Transactional
+    @Override
+    public TradeVerify createTradeVerify(Integer tradeId,String verifyStatus,String verifyDesc)throws BusinessException{
         TradeVerify verifyReq = new TradeVerify();
         verifyReq.setVerifyDesc(verifyDesc);
         verifyReq.setVerifyStatus(verifyStatus);

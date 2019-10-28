@@ -5,12 +5,20 @@ server:
 spring:
   application:
     name: city-comm
-    port: 8888
   profiles:
     active: ${spring.profiles.active}
   main:
     allow-bean-definition-overriding: true
 
+
+# 打印日志
+logging:
+  level:
+    root: INFO
+    org.hibernate: INFO
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    org.hibernate.type.descriptor.sql.BasicExtractor: TRACE
+    com.springms: DEBUG
 
 #datasource
 mybatis:
@@ -18,6 +26,3 @@ mybatis:
   mapper-locations: classpath:/mybatis/mappers/*.xml
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-
-
-

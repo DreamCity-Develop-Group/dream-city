@@ -1,5 +1,7 @@
 package com.dream.city.service.consumer.impl;
 
+import com.codingapi.txlcn.tc.annotation.LcnTransaction;
+import com.dream.city.base.exception.BusinessException;
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.*;
 import com.dream.city.base.model.mapper.*;
@@ -49,14 +51,18 @@ public class InvestServiceImpl implements InvestAllowService {
     RelationTreeService relationTreeService;
 
 
+    @LcnTransaction
+    @Transactional
     @Override
-    public InvestAllow getInvestAllowByPlayerId(String playerId) {
+    public InvestAllow getInvestAllowByPlayerId(String playerId)  throws BusinessException{
 
         return investMapper.getInvestAllowByPlayerId(playerId);
     }
 
+    @LcnTransaction
+    @Transactional
     @Override
-    public boolean addInvestAllow(String playerId, BigDecimal amount) {
+    public boolean addInvestAllow(String playerId, BigDecimal amount) throws BusinessException {
         InvestAllow allow = new InvestAllow();
         allow.setAmount(amount);
         allow.setPlayerId(playerId);
@@ -68,14 +74,18 @@ public class InvestServiceImpl implements InvestAllowService {
         return true;
     }
 
+    @LcnTransaction
+    @Transactional
     @Override
-    public BigDecimal getRateDirection() {
+    public BigDecimal getRateDirection()  throws BusinessException{
 
         return new BigDecimal(0.35);
     }
 
+    @LcnTransaction
+    @Transactional
     @Override
-    public BigDecimal getRateInterpolation() {
+    public BigDecimal getRateInterpolation() throws BusinessException {
         return new BigDecimal(0.05);
     }
 
@@ -84,8 +94,10 @@ public class InvestServiceImpl implements InvestAllowService {
      *
      * @param amount
      */
+    @LcnTransaction
+    @Transactional
     @Override
-    public void allowcationUSDTToPlatform(BigDecimal amount) {
+    public void allowcationUSDTToPlatform(BigDecimal amount) throws BusinessException {
         PlayerAccount accountPlatform = accountMapper.getPlayerAccountByAddr(platformAccount);
 
         accountPlatform.setAccUsdt(accountPlatform.getAccUsdt().add(amount));
@@ -104,8 +116,10 @@ public class InvestServiceImpl implements InvestAllowService {
      * @param amount
      * @param relationTree
      */
+    @LcnTransaction
+    @Transactional
     @Override
-    public void allowcationUSDTToPlayer(BigDecimal amount, RelationTree relationTree) {
+    public void allowcationUSDTToPlayer(BigDecimal amount, RelationTree relationTree) throws BusinessException {
         PlayerAccount accountPlayer = accountMapper.getPlayerAccount(relationTree.getTreePlayerId());
 
         accountPlayer.setAccUsdt(accountPlayer.getAccUsdt().add(amount));
@@ -119,8 +133,10 @@ public class InvestServiceImpl implements InvestAllowService {
 
     }
 
+    @LcnTransaction
+    @Transactional
     @Override
-    public PlayerEarningResp investCollectEarning(String playerId, Integer investId) {
+    public PlayerEarningResp investCollectEarning(String playerId, Integer investId)  throws BusinessException{
         PlayerEarning earning = new PlayerEarning();
         earning.setEarnInvestId(investId);
         earning.setEarnPlayerId(playerId);
@@ -128,14 +144,17 @@ public class InvestServiceImpl implements InvestAllowService {
         return earn;
     }
 
+    @LcnTransaction
+    @Transactional
     @Override
-    public void updateEarning(PlayerEarning earning) {
+    public void updateEarning(PlayerEarning earning) throws BusinessException {
         earningMapper.updateByPrimaryKeySelective(earning);
     }
 
+    @LcnTransaction
     @Transactional
     @Override
-    public Result allocationToPlayer(String playerId, BigDecimal amount) {
+    public Result allocationToPlayer(String playerId, BigDecimal amount) throws BusinessException {
         try {
             //TODO锁定付费额度
             Result result = accountService.lockUstdAmount(playerId, amount);
@@ -206,7 +225,10 @@ public class InvestServiceImpl implements InvestAllowService {
 
     }
 
-    private boolean addAccountLog(PlayerAccount account, BigDecimal amount,String type) {
+    @LcnTransaction
+    @Transactional
+    @Override
+    public boolean addAccountLog(PlayerAccount account, BigDecimal amount,String type) throws BusinessException {
         try {
             PlayerAccountLog accountLog = new PlayerAccountLog();
             accountLog.setId(0L);
