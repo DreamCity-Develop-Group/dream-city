@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpEntity;
 import org.apache.http.ParseException;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
@@ -112,6 +113,12 @@ public class HttpClientServiceImpl implements HttpClientService {
         httpPost.setHeader("Content-Type", "application/json;charset=utf8");
         httpPost.setHeader("method", serviceOpt);
         httpPost.setHeader("authType", "");
+        RequestConfig config = RequestConfig.custom()
+                .setConnectTimeout(5000)
+                .setConnectionRequestTimeout(5000)
+                .setSocketTimeout(5000)
+                .build();
+        httpPost.setConfig(config);
 
         //响应模型
         CloseableHttpResponse response = null;
