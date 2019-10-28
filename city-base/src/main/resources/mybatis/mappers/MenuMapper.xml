@@ -19,7 +19,7 @@
   </resultMap>
   <sql id="Base_Column_List">
     id, parent_id, name, sort, href, icon, type, permission,
-    create_by, update_by, update_date, remarks, del_flag,DATE_FORMAT(create_date,'%Y-%m-%d %h:%m:%s') create_date,DATE_FORMAT(update_time,'%Y-%m-%d %h:%m:%s') update_time
+    create_by, update_by, update_date, remarks, del_flag,DATE_FORMAT(create_date,'%Y-%m-%d %h:%m:%s') create_date,DATE_FORMAT(update_date,'%Y-%m-%d %h:%m:%s') update_time
   </sql>
   <sql id="Simple_Column_List">
     menu.id, menu.parent_id, menu.name, menu.sort, menu.icon, menu.type, menu.permission

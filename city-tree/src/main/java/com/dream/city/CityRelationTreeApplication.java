@@ -1,5 +1,6 @@
 package com.dream.city;
 
+import com.codingapi.txlcn.tc.config.EnableDistributedTransaction;
 import com.dream.city.base.config.RedisConfig;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
@@ -14,6 +15,7 @@ import org.springframework.context.annotation.Import;
 @SpringBootApplication
 @EnableCaching
 @EnableEurekaClient
+@EnableDistributedTransaction
 @MapperScan("com.dream.city.base.model.mapper")
 @Import({RedisConfig.class})
 public class CityRelationTreeApplication {

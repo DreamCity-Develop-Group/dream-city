@@ -1,25 +1,15 @@
 package com.dream.city.controller;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.dream.city.base.model.Message;
 import com.dream.city.base.model.MessageData;
-import com.dream.city.base.model.Result;
-import com.dream.city.base.model.entity.CityMessage;
-import com.dream.city.service.ConsumerMessageService;
+import com.dream.city.base.model.enu.ReturnStatus;
+import com.dream.city.service.handler.MessageService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author Wvv
@@ -30,7 +20,7 @@ import java.util.Map;
 @Slf4j
 public class ConsumerMessageController {
     @Autowired
-    private ConsumerMessageService messageService;
+    private MessageService messageService;
 
 
     /**
@@ -41,16 +31,11 @@ public class ConsumerMessageController {
      */
     @RequestMapping("/getCode")
     public Message getCode(@RequestBody Message msg) {
-        log.info("获取认证码:"+JSONObject.toJSONString(msg));
-        Map<String, Object> map = new HashMap<>();
-        Result code = messageService.getCode(msg);
-        MessageData messageData = new MessageData(msg.getData().getType(),msg.getData().getModel());
-        Message message = new Message(msg.getSource(), msg.getTarget(), messageData);
-
-        map.put("code", code.getData());
-        messageData.setData(map);
-        message.setDesc(code.getMsg());
-       return message;
+        try {
+            return messageService.getCode(msg);
+        }catch (Exception e){
+            return msg;
+        }
     }
 
     /**
@@ -61,25 +46,17 @@ public class ConsumerMessageController {
      */
     @RequestMapping("/checkCode")
     public Message checkCode(@RequestParam("code")String code,@RequestParam("phone")String account) {
-        MessageData messageData = new MessageData("checkCode","consumer/message");
-        Message message = new Message();
-        if (StringUtils.isBlank(code) || StringUtils.isBlank(account)){
-            message.setDesc("参数为空");
-            message.setData(messageData);
-            message.setCreatetime(String.valueOf(System.currentTimeMillis()));
-            message.setTarget("");
-            message.setSource("server");
-            return message;
+        Message msg = new Message("Server","client",new MessageData(
+                "checkCode",
+                "consumer/message",
+                ReturnStatus.FAILED.getStatus()
+        ));
+        try {
+            return messageService.checkCode(code,account);
+        }catch (Exception e){
+            msg.setDesc(e.getMessage());
+            return msg;
         }
-        Result result = messageService.checkCode(code,account);
-
-        message.setDesc(result.getMsg());
-        message.setData(messageData);
-        message.setCreatetime(String.valueOf(System.currentTimeMillis()));
-        message.setTarget("");
-        message.setSource("server");
-
-        return message;
     }
 
 

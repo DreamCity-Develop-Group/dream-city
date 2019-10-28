@@ -1,17 +1,12 @@
 package com.dream.city.controller;
 
 import com.dream.city.base.model.Message;
-import com.dream.city.base.model.MessageData;
-import com.dream.city.base.model.Result;
-import com.dream.city.service.ConsumerWorkerService;
+import com.dream.city.service.handler.WorkerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import sun.rmi.runtime.Log;
-
-import javax.annotation.Resource;
 
 /**
  * @author Wvv
@@ -23,36 +18,14 @@ import javax.annotation.Resource;
 public class ConsumerWorkerController {
 
     @Autowired
-    ConsumerWorkerService workerService;
+    WorkerService workerService;
 
     @RequestMapping("/createWorker")
-    public Message createWorker(@RequestBody Message message) {
-        Message ret;
-        String task = message.getData().getType();
-        Result result = workerService.createWorker(message);
-
-        MessageData data = new MessageData(message.getData().getType(), message.getData().getModel(), result);
-        ret = new Message(
-                "city-worker",
-                "city-comm",
-                 data,
-                "创建任务[" + task + "]失败",
-                String.valueOf(System.currentTimeMillis())
-        );
-
-        if (result.getSuccess()) {
-            log.info("创建任务成功");
-            ret = new Message(
-                    "city-worker",
-                    "city-comm",
-                     data,
-                    "创建任务[" + task + "]成功",
-                    String.valueOf(System.currentTimeMillis())
-            );
+    public Message createWorker(@RequestBody Message msg) {
+        try {
+            return workerService.createWorker(msg);
+        }catch (Exception e){
+            return msg;
         }
-        log.info("创建任务失败");
-
-
-        return ret;
     }
 }
