@@ -1,6 +1,7 @@
 package com.dream.city.service.consumer.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.codingapi.txlcn.tc.annotation.DTXPropagation;
 import com.codingapi.txlcn.tc.annotation.LcnTransaction;
 import com.dream.city.base.exception.BusinessException;
 import com.dream.city.base.model.CityGlobal;
@@ -23,6 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
@@ -53,7 +55,7 @@ public class RelationTreeServiceImpl implements RelationTreeService {
     RedisUtils redisUtils;
 
 
-    @LcnTransaction
+    @LcnTransaction(propagation = DTXPropagation.REQUIRED)
     @Transactional
     @Override
     public Result save(String parent, String child, String invite) throws BusinessException {
@@ -361,7 +363,9 @@ public class RelationTreeServiceImpl implements RelationTreeService {
 
             }
         }
-        data.put("num", num);
+        RelationTree tree = getByPlayer(playerId);
+        data.put("core",tree.getTreeChilds());
+        data.put("num", tree.getTreeGrandson());
         data.put("members", members);
 
         return data;

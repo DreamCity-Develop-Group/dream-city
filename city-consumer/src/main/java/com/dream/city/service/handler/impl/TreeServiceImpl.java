@@ -214,16 +214,22 @@ public class TreeServiceImpl implements TreeService {
         String username = jsonObject.getString("username");
         String playerId = jsonObject.getString("playerId");
 
-        if (StringUtils.isNotBlank(playerId)) {
+        if(StringUtils.isEmpty(playerId)){
+            msg.getData().setCode(ReturnStatus.PARAM_ERROR.getStatus());
+            msg.setDesc(ReturnStatus.PARAM_ERROR.getDesc());
+            return msg;
+        }
+
+        /*if (StringUtils.isNotBlank(playerId)) {
             playerId = jsonObject.getString("playerId");
         } else {
-            LinkedHashMap ppid = (LinkedHashMap) playerService.getPlayerByAccount(username).getData();
-            playerId = ppid.get("playerId").toString();
-            String json = JsonUtil.parseObjToJson(playerService.getPlayerByAccount(username).getData());
+            //LinkedHashMap ppid = (LinkedHashMap) playerService.getPlayerByAccount(username).getData();
+            //playerId = ppid.get("playerId").toString();
+            //String json = JsonUtil.parseObjToJson(playerService.getPlayerByAccount(username).getData());
 
 
             //playerId = player.getPlayerId();
-        }
+        }*/
         //@RequestParam("playerId")String playerId
         Integer level = 9;
         Result result = treeService.getMembers(playerId, level);

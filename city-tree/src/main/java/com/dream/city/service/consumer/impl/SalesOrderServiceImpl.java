@@ -162,10 +162,11 @@ public class SalesOrderServiceImpl implements SalesOrderService {
                         //TODO 关闭卖家自动发货功能
                         tree.setSendAuto("0");
                         treeService.closeAutoSend(tree);
-                        log.info("卖家["+buyerAccount.getAccPlayerId()+"]由于MT备货额度不足被关闭自动发货功能！");
+                        log.info("卖家["+sellerAccount.getAccPlayerId()+"]由于MT备货额度不足被关闭自动发货功能！");
                     }else{
+                        //TODO 此处不更新数据，创建订单时虽然卖家设置了自动发货，但是尚未验证密码,待密码确认再处理
                         //锁定卖家MT
-                        sellerAccount.setAccMtAvailable(sellerAccount.getAccMtAvailable().subtract(buyAmount));
+                        /*sellerAccount.setAccMtAvailable(sellerAccount.getAccMtAvailable().subtract(buyAmount));
                         sellerAccount.setAccMtFreeze(sellerAccount.getAccMtFreeze().add(buyAmount));
                         int lock = playerAccountService.updatePlayerAccount(sellerAccount);
                         if (lock>0){
@@ -174,6 +175,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
                             int finish = salesOrderMapper.updateSalesOrder(order);
 
                             if (finish>0){
+
                                 //更新买家数据
                                 List<PlayerAccount> accounts = new ArrayList<>();
                                 buyerAccount.setAccMt(buyerAccount.getAccMt().add(buyAmount));
@@ -191,12 +193,13 @@ public class SalesOrderServiceImpl implements SalesOrderService {
                                 sellerAccount.setAccMtFreeze(sellerAccount.getAccMtFreeze().subtract(buyAmount));
                                 accounts.add(sellerAccount);
 
-                                playerAccountService.updatePlayerAccounts(accounts);
+                                playerAccountService.updatePlayerAccounts(accounts);*//*
 
-                                return new Result(true, "下单成功", ReturnStatus.SUCCESS.getStatus(), order);
+                                return Result.result(true, "下单成功", ReturnStatus.SUCCESS.getStatus(), order);
                             }
                             //return new Result(true, "下单成功", ReturnStatus.SUCCESS.getStatus(), order);
-                        }
+                        }*/
+                        return Result.result(true, "下单成功", ReturnStatus.SUCCESS.getStatus(), order);
                     }
                 }else{
                     order.setOrderState(OrderState.PAID.getStatus());
@@ -247,44 +250,61 @@ public class SalesOrderServiceImpl implements SalesOrderService {
         SalesOrder order = this.getBuyerNoPayOrder(playerId);
         if (order != null && OrderState.PAID.getStatus()==Integer.valueOf(order.getOrderState())) {
             //找出上家
-            RelationTree tree = treeService.getTreeByPlayerId(playerId);
+            RelationTree tree = treeService.getParent(playerId);
             String parentId = tree.getTreeParentId();
 
+            PlayerAccount sellerAccount ;
+            if (parentId.equalsIgnoreCase("system")){
+                sellerAccount = playerAccountService.getPlayerAccount(tree.getTreePlayerId());
+            }else {
+                sellerAccount = playerAccountService.getPlayerAccount(parentId);
+            }
+
             if (StringUtils.isNotBlank(tree.getSendAuto()) && tree.getSendAuto().equals("1")){
-                //改变订单状态==》[TODO 完成状态]
-                order.setOrderState(OrderState.FINISHED.getStatus());
-                //order.setUpdateTime(Timestamp.valueOf(new SimpleDateFormat("yyyy-mm-dd hh:mm:ss").format(new Date())));
-                order.setUpdateTime(new Timestamp(System.currentTimeMillis()));
-                int up = salesOrderMapper.updateSalesOrder(order);
-                if (up>0){
-                    List<PlayerAccount> accounts = new ArrayList<>();
+                //判断卖家是否有货可以出售
+                if(sellerAccount.getAccMtAvailable().compareTo(order.getOrderAmount())<0){
+                    //TODO 关闭卖家自动发货功能
+                    tree.setSendAuto("0");
+                    treeService.closeAutoSend(tree);
+                    log.info("卖家["+sellerAccount.getAccPlayerId()+"]由于MT备货额度不足被关闭自动发货功能！");
+                }else {
+
+                    //改变订单状态==》[TODO 完成状态]
+                    order.setOrderState(OrderState.FINISHED.getStatus());
+                    //order.setUpdateTime(Timestamp.valueOf(new SimpleDateFormat("yyyy-mm-dd hh:mm:ss").format(new Date())));
+                    order.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+                    int up = salesOrderMapper.updateSalesOrder(order);
+                    if (up>0){
+                        List<PlayerAccount> accounts = new ArrayList<>();
 
 
-                    PlayerAccount buyerAccount = playerAccountService.getPlayerAccount(playerId);
-                    //增加买家MT额度
-                    buyerAccount.setAccMt(buyerAccount.getAccMt().add(order.getOrderAmount()));
-                    buyerAccount.setAccMtAvailable(buyerAccount.getAccMtAvailable().add(order.getOrderAmount()));
-                    //扣除买家USDT额度
-                    buyerAccount.setAccUsdt(buyerAccount.getAccUsdt().subtract(order.getOrderPayAmount()));
-                    buyerAccount.setAccUsdtFreeze(buyerAccount.getAccUsdtFreeze().subtract(order.getOrderPayAmount()));
+                        PlayerAccount buyerAccount = playerAccountService.getPlayerAccount(playerId);
+                        //增加买家MT额度
+                        buyerAccount.setAccMt(buyerAccount.getAccMt().add(order.getOrderAmount()));
+                        buyerAccount.setAccMtAvailable(buyerAccount.getAccMtAvailable().add(order.getOrderAmount()));
+                        //扣除买家USDT额度
+                        buyerAccount.setAccUsdt(buyerAccount.getAccUsdt().subtract(order.getOrderPayAmount()));
+                        buyerAccount.setAccUsdtFreeze(buyerAccount.getAccUsdtFreeze().subtract(order.getOrderPayAmount()));
 
-                    accounts.add(buyerAccount);
+                        accounts.add(buyerAccount);
 
-                    PlayerAccount sellerAccount = playerAccountService.getPlayerAccount(parentId);
-                    //增加卖家USDT额度
-                    sellerAccount.setAccUsdt(sellerAccount.getAccUsdt().add(order.getOrderPayAmount()));
-                    sellerAccount.setAccUsdtAvailable(sellerAccount.getAccUsdtAvailable().add(order.getOrderPayAmount()));
-                    //扣除卖家USDT额度
-                    sellerAccount.setAccMt(sellerAccount.getAccMt().subtract(order.getOrderAmount()));
-                    sellerAccount.setAccMtFreeze(sellerAccount.getAccMtFreeze().subtract(order.getOrderAmount()));
 
-                    accounts.add(sellerAccount);
+                        //增加卖家USDT额度
+                        sellerAccount.setAccUsdt(sellerAccount.getAccUsdt().add(order.getOrderPayAmount()));
+                        sellerAccount.setAccUsdtAvailable(sellerAccount.getAccUsdtAvailable().add(order.getOrderPayAmount()));
+                        //扣除卖家MT额度
+                        sellerAccount.setAccMt(sellerAccount.getAccMt().subtract(order.getOrderAmount()));
+                        sellerAccount.setAccMtAvailable(sellerAccount.getAccMtAvailable().subtract(order.getOrderAmount()));
 
-                    playerAccountService.updatePlayerAccounts(accounts);
+                        accounts.add(sellerAccount);
 
-                    //TODO 订单支付成功
-                    return Result.result(true, "订单已支付成功", ReturnStatus.SUCCESS.getStatus());
+                        playerAccountService.updatePlayerAccounts(accounts);
+
+                        //TODO 订单支付成功
+                        return Result.result(true, "订单已支付成功", ReturnStatus.SUCCESS.getStatus());
+                    }
                 }
+
             }else{
                 //TODO 订单支付成功,等发货
                 //改变订单状态 =>[TODO 已支付]
@@ -318,19 +338,37 @@ public class SalesOrderServiceImpl implements SalesOrderService {
     @Transactional
     @Override
     public Result sendOrderMt(List<SalesOrder> orders) throws BusinessException {
-        List<PlayerAccount> accounts = new ArrayList<>();
         for (SalesOrder order : orders) {
-            PlayerAccount account = playerAccountService.getPlayerAccount(order.getOrderPlayerBuyer());
-            account.setAccMt(account.getAccMt().add(order.getOrderAmount()));
-            account.setAccMtAvailable(account.getAccUsdtAvailable().add(order.getOrderAmount()));
-            accounts.add(account);
+            List<PlayerAccount> accounts = new ArrayList<>();
+            //更新买家数据
+            PlayerAccount buyerAccount = playerAccountService.getPlayerAccount(order.getOrderPlayerBuyer());
+
+            buyerAccount.setAccMt(buyerAccount.getAccMt().add(order.getOrderAmount()));
+            buyerAccount.setAccMtAvailable(buyerAccount.getAccMtAvailable().add(order.getOrderAmount()));
+
+            buyerAccount.setAccUsdt(buyerAccount.getAccUsdt().subtract(order.getOrderPayAmount()));
+            buyerAccount.setAccUsdtFreeze(buyerAccount.getAccUsdtFreeze().subtract(order.getOrderPayAmount()));
+            accounts.add(buyerAccount);
+
+            //更新卖家数据
+            PlayerAccount sellerAccount = playerAccountService.getPlayerAccount(order.getOrderPlayerSeller());
+            sellerAccount.setAccMt(sellerAccount.getAccMt().subtract(order.getOrderAmount()));
+            sellerAccount.setAccMtAvailable(sellerAccount.getAccMtAvailable().subtract(order.getOrderAmount()));
+
+            sellerAccount.setAccUsdt(sellerAccount.getAccUsdt().add(order.getOrderPayAmount()));
+            sellerAccount.setAccUsdtAvailable(sellerAccount.getAccUsdtAvailable().add(order.getOrderPayAmount()));
+            accounts.add(sellerAccount);
+
+            //更新账户数据
+            playerAccountService.updatePlayerAccounts(accounts);
+
             //设置订单状态
             order.setOrderState(OrderState.SHIPPED.getStatus());
+
+            //更新订单状态
+            salesOrderMapper.sendOrderMt(orders);
         }
-        //更新订单状态
-        salesOrderMapper.sendOrderMt(orders);
-        //更新账户数据
-        playerAccountService.updatePlayerAccounts(accounts);
+
         return new Result(true, "发货成功", ReturnStatus.SUCCESS.getStatus());
     }
 

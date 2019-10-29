@@ -223,7 +223,7 @@ public class SalesOrderController {
 
         //额度检测
         if (i == 0) {
-            return new Result(false, "可用MT额度不足，请及时备货", ReturnStatus.NOT_ENOUGH.getStatus());
+            return Result.result(false, "可用MT额度不足，请及时备货", ReturnStatus.NOT_ENOUGH.getStatus());
         }
         //修改订单状态和修改玩家账户额度
         Result result = salesOrderService.sendOrderMt(salesOrders);
@@ -236,7 +236,7 @@ public class SalesOrderController {
                     ReturnStatus.SUCCESS.getStatus(),
                     ordersStatus);
         } else {
-            return new Result(false, "发货失败", ReturnStatus.NOT_ENOUGH.getStatus());
+            return Result.result(false, "发货失败", ReturnStatus.NOT_ENOUGH.getStatus());
         }
     }
 
@@ -272,22 +272,6 @@ public class SalesOrderController {
         return new Result("sucess", ReturnStatus.SUCCESS.getStatus(), orders);
     }
 
-    /**
-     * 账户创建
-     *
-     * @param playerId
-     * @param address
-     * @return
-     */
-    @RequestMapping("/account/create")
-    public Result createAccount(@RequestParam("playerId") String playerId, @RequestParam("address") String address) {
-        accountService.createAccount(playerId, address);
-        PlayerAccount account = accountService.getPlayerAccount(playerId);
-        if (null != account) {
-            return Result.result(true, "玩家账户开设成功", ReturnStatus.SUCCESS.getStatus(), account);
-        }
 
-        return Result.result(false, "玩家账户开设失败", ReturnStatus.FAILED.getStatus(), null);
-    }
 
 }

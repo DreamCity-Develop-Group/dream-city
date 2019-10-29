@@ -33,6 +33,8 @@ public interface RelationTreeMapper {
             @Result(property = "treeRelation", column = "tree_relation"),
             @Result(property = "sendAuto", column = "send_auto"),
             @Result(property = "treeLevel", column = "tree_level"),
+            @Result(property = "treeChilds", column = "tree_childs"),
+            @Result(property = "treeGrandson", column = "tree_grandson"),
             @Result(property = "createTime", column = "create_time"),
             @Result(property = "updateTime", column = "update_time"),
     })
@@ -54,7 +56,11 @@ public interface RelationTreeMapper {
     @Select("select * from city_tree where 1=1 limit 0,10")
     List<RelationTree> getTrees();
 
-    @Update(" update city_tree set tree_parent_id=#{treeParentId},tree_player_id=#{treePlayerId},tree_relation=#{treeRelation},send_auto=#{sendAuto},tree_level=#{treeLevel} where 1=1 and tree_id = #{treeId}")
+    @Update(" update city_tree set tree_parent_id=#{treeParentId}," +
+            "tree_player_id=#{treePlayerId},tree_relation=#{treeRelation}," +
+            "tree_childs=#{treeChilds},tree_grandson=#{treeGrandson}," +
+            "send_auto=#{sendAuto},tree_level=#{treeLevel} " +
+            "where 1=1 and tree_id = #{treeId}")
     void updateTree(RelationTree tree);
 
     /**

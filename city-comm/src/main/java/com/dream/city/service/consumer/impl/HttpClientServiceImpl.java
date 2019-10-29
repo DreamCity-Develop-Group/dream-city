@@ -328,10 +328,10 @@ public class HttpClientServiceImpl implements HttpClientService {
 
                     }
                     /**TODO**********完*************************************/
-                    if( map != null && map.containsKey("token")){
-                        map.remove("token");
-                    }
-                    message.getData().setData(map);
+                    //if( map != null && map.containsKey("token")){
+                    //    map.remove("token");
+                    //}
+                    //message.getData().setData(map);
                     /**TODO**********完成请求，推送最终数据******************************/
 
                     WebSocketServer.sendInfo(message);

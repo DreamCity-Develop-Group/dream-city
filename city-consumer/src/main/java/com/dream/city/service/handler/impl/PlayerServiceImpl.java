@@ -622,6 +622,7 @@ public class PlayerServiceImpl implements PlayerService {
                 /*todo************************************************************/
                 // TODO [[todo 2、创建用户USDT钱包账户]]
                 /*todo************************************************************/
+                //获取钱包地址
                 Result accRet = playerBlockChainService.createBlockChainAccount(username);
                 if (accRet.getSuccess()) {
                     String address = accRet.getData().toString();
@@ -632,15 +633,15 @@ public class PlayerServiceImpl implements PlayerService {
                             log.info("玩家账户创建成功");
                         } else {
                             log.info("玩家账户创建失败，重试一次");
-                            create = playerAccountService.createAccount(playerId, address);
+                            playerAccountService.createAccount(playerId, address);
                         }
                     }
                 } else {
-                    log.info("玩家账户创建不成功，重试一次");
+                    log.info("获取钱包地址不成功，重试一次");
                     accRet = playerBlockChainService.createBlockChainAccount(username);
                     if (accRet.getSuccess()) {
                         String address = accRet.getData().toString();
-                        log.info("玩家账户地址：[" + address + "]创建成功");
+                        log.info("玩家账户地址：[" + address + "]获取成功");
                         if (!StringUtils.isBlank(address)) {
                             Result create = playerAccountService.createAccount(playerId, address);
                             if (create.getSuccess()) {
