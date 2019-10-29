@@ -16,7 +16,6 @@ import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBr
 //@MapperScan("com.dream.city.base.model.mapper")
 //@EnableZuulServer
 @EnableZuulProxy
-@EnableDistributedTransaction
 public class CityGatewayApplication {
 
     public static void main(String[] args) {

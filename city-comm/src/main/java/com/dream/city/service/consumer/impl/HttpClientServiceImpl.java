@@ -114,9 +114,9 @@ public class HttpClientServiceImpl implements HttpClientService {
         httpPost.setHeader("method", serviceOpt);
         httpPost.setHeader("authType", "");
         RequestConfig config = RequestConfig.custom()
-                .setConnectTimeout(5000)
-                .setConnectionRequestTimeout(5000)
-                .setSocketTimeout(5000)
+                .setConnectTimeout(30000)
+                .setConnectionRequestTimeout(30000)
+                .setSocketTimeout(30000)
                 .build();
         httpPost.setConfig(config);
 
@@ -218,6 +218,15 @@ public class HttpClientServiceImpl implements HttpClientService {
                 //这里不处理，表示正常放行
                 httpPost.setHeader("method", serviceOpt);
                 httpPost.setHeader("authType", "");
+
+                RequestConfig config = RequestConfig.custom()
+                        .setConnectTimeout(30000)
+                        .setConnectionRequestTimeout(30000)
+                        .setSocketTimeout(30000)
+                        .build();
+                httpPost.setConfig(config);
+
+
             } else {
                 if (data.getData() != null) {
                     String dataStr = JsonUtil.parseObjToJson(data.getData());
