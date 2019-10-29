@@ -15,6 +15,7 @@ import com.dream.city.service.consumer.ConsumerOrderService;
 import com.dream.city.service.consumer.ConsumerPropertyService;
 import com.dream.city.service.consumer.ConsumerTradeVerifyService;
 import com.dream.city.service.handler.InvestService;
+import com.dream.city.service.handler.PropertyService;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,14 +39,9 @@ public class InvestServiceImpl implements InvestService {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    ConsumerTradeVerifyService verifyService;
-    @Autowired
     private ConsumerInvestService investService;
     @Autowired
-    ConsumerPropertyService propertyService;
-    @Autowired
-    ConsumerOrderService orderService;
-
+    PropertyService propertyService;
 
     /**
      * 预约投资

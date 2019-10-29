@@ -42,9 +42,11 @@ public class PropertyServiceImpl implements PropertyService {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    private ConsumerPropertyService propertyService;
+    private ConsumerPropertyService consumerPropertyService;
     @Autowired
     ConsumerInvestService investService;
+    @Autowired
+    PropertyService propertyService;
 
 
     @LcnTransaction
@@ -127,7 +129,7 @@ public class PropertyServiceImpl implements PropertyService {
                     resultMap.put("inType", invest.getInType());
                     resultMap.put("expectIncome", invest.getInLimit()
                             .multiply(BigDecimal.valueOf(Long.parseLong(String.valueOf(invest.getInEarning())))));
-
+                    resultMap.put("likeCount",0);
                     String resultTime = "9:30";
                     if (invest.getVerifyTime() != null){
                         resultTime = DateUtils.date2Str(invest.getVerifyTime(),"HH:mm");
@@ -158,7 +160,7 @@ public class PropertyServiceImpl implements PropertyService {
         logger.info("查询物业", JSONObject.toJSONString(msg));
 
         CityInvestReq investReq = DataUtils.getInvestFromMessage(msg);
-        Result result = propertyService.getProperty(investReq);
+        Result result = consumerPropertyService.getProperty(investReq);
         msg.getData().setData(JSON.toJSONString(result.getData()));
         msg.setDesc(result.getMsg());
         return msg;
@@ -176,7 +178,7 @@ public class PropertyServiceImpl implements PropertyService {
         logger.info("物业列表", JSONObject.toJSONString(msg));
 
         CityInvestReq invest = DataUtils.getInvestFromMessage(msg);
-        Result result = propertyService.getPropertyLsit(invest);
+        Result result = getPropertyLsit(invest);
         msg.getData().setData(JSON.toJSONString(result.getData()));
         msg.setDesc(result.getMsg());
         return msg;

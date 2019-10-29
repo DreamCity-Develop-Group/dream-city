@@ -110,6 +110,28 @@ public class PropertyController {
 
 
 
+/**
+ * 物业列表
+ * @param invest
+ * @return
+ */
+    @RequestMapping("/getPropertyLsit")
+    public Result<List<InvestResp>> getPropertyLsit(@RequestBody CityInvestReq invest) {
+        logger.info("物业列表，{}", invest);
+        boolean success = Boolean.FALSE;
+        String desc = "查询物业列表失败";
+        List<InvestResp> data = null;
+        try {
+            data = investService.getInvestLsit(invest);
+            desc = "查询物业列表成功";
+            success = Boolean.TRUE;
+        }catch (Exception e){
+            logger.error("查询物业列表异常",e);
+        }
+        return new Result<>(success,desc,data);
+    }
+
+
 
 
 

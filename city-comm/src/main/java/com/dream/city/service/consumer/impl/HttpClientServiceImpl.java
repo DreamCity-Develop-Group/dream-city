@@ -254,7 +254,12 @@ public class HttpClientServiceImpl implements HttpClientService {
 
             // 由客户端执行(发送)Post请求
             /**TODO**********完成客户端请求逻辑******************************/
+            long start = System.nanoTime();
+            log.error("Start:"+start);
             response = client.execute(httpPost);
+            long end = System.nanoTime();
+            log.error("End:"+end);
+            log.error("Spent:["+(end-start)+"]");
             /**TODO**********完成客户端请求逻辑******************************/
 
             // 从响应模型中获取响应实体
@@ -294,21 +299,24 @@ public class HttpClientServiceImpl implements HttpClientService {
                     if (resp.contains("data")) {
                         String json = JSON.toJSONString(JSON.parseObject(resp).get("data"));
                         JSONObject jsonObject = JSON.parseObject(json);
-
+                        String dataStr = jsonObject.getString("data");
                         log.info("=================================message==================================");
                         log.info(message.toString());
-                        log.info(jsonObject.getString("data"));
+                        log.info("Inner-Data:"+dataStr);
                         log.info("===========================^^^^==message======^^^^^=====================");
+
+
                     }
+                    Object dataGet = message.getData().getData();
+                    String json = JsonUtil.parseObjToJson(dataGet);
+                    JSONObject map = JsonUtil.parseJsonToObj(json,JSONObject.class);
                     /**TODO**********如果是登陆成功，加入在线有序列表******************************/
                     if (message.getData().getType().equals("login") || message.getData().getType().equals("codeLogin")){
-                        if (message.getData().getCode() == ReturnStatus.SUCCESS.getStatus()){
-                            Object dataGet = message.getData().getData();
-                            String json = JsonUtil.parseObjToJson(dataGet);
-                            Map map = JsonUtil.parseJsonToObj(json,Map.class);
-                            String playerId = map.get("playerId").toString();
-                            String playerName = map.get("playerName").toString();
-                            Integer id = Integer.valueOf(map.get("id").toString());
+                        if (message.getData().getCode() == ReturnStatus.SUCCESS.getStatus() && map != null){
+
+                            String playerId = map.getString("playerId").toString();
+                            String playerName = map.getString("playerName").toString();
+                            Integer id = map.getInteger("id");
                             boolean success = redisUtils.addOnlinePlayer(playerName,id);
                             if (!success){
                                 success = redisUtils.addOnlinePlayer(playerName,id);
@@ -320,9 +328,12 @@ public class HttpClientServiceImpl implements HttpClientService {
 
                     }
                     /**TODO**********完*************************************/
-
-
+                    if( map != null && map.containsKey("token")){
+                        map.remove("token");
+                    }
+                    message.getData().setData(map);
                     /**TODO**********完成请求，推送最终数据******************************/
+
                     WebSocketServer.sendInfo(message);
                     /**TODO**********完*************************************/
                 }else if (responseCode == ReturnStatus.ERROR_CODE.getStatus()){
