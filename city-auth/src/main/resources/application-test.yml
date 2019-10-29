@@ -53,3 +53,11 @@ dreamcity:
   register:
     password:
       salt: DREAM_CITY_890@#$%
+
+
+tx-lcn:
+  client:
+    manager-address: localhost:8070
+  springcloud:
+    loadbalance:
+      enabled: true

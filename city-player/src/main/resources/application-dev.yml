@@ -41,4 +41,7 @@ eureka:
 tx-lcn:
   client:
     manager-address: localhost:8070
+  springcloud:
+    loadbalance:
+      enabled: true
 

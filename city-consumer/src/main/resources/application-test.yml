@@ -62,4 +62,9 @@ dreamcity:
       accIds: 4E2EE556055042AB80E3D164E51DDD1A
 
 
-
+tx-lcn:
+  client:
+    manager-address: localhost:8070
+  springcloud:
+    loadbalance:
+      enabled: true
