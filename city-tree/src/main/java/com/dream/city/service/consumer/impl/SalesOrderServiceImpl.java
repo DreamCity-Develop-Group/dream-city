@@ -251,7 +251,7 @@ public class SalesOrderServiceImpl implements SalesOrderService {
         if (order != null && OrderState.PAID.getStatus()==Integer.valueOf(order.getOrderState())) {
             //找出上家
             RelationTree tree = treeService.getParent(playerId);
-            String parentId = tree.getTreeParentId();
+            String parentId = tree.getTreePlayerId();
 
             PlayerAccount sellerAccount ;
             if (parentId.equalsIgnoreCase("system")){

@@ -294,7 +294,7 @@ public class TradeServiceImpl implements TradeService {
 
         PlayerAccountReq playerAccountReq = new PlayerAccountReq();
         playerAccountReq.setAccAddr(accountReq.getAccAddr());
-        Result<PlayerAccountResp> playerAccountResult = accountService.getPlayerAccount(playerAccountReq);
+        Result<PlayerAccountResp> playerAccountResult = accountService.getPlayerAccounts(playerAccountReq);
         if (playerAccountResult != null && playerAccountResult.getData() != null && StringUtils.isNotBlank(playerId)
                 && StringUtils.isNotBlank(playerAccountResult.getData().getPlayerId()) && playerId.equalsIgnoreCase(playerAccountResult.getData().getPlayerId())){
             msg.setCode(ReturnStatus.ERROR_PASS.getStatus());

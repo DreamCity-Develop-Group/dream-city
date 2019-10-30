@@ -425,7 +425,7 @@ public class PlayerServiceImpl implements PlayerService {
                 String plafortAddr = dictionaryService.getValByKey("platform.account.accIds");
                 PlayerAccountReq plafortAccountReq = new PlayerAccountReq();
                 plafortAccountReq.setAccAddr(plafortAddr);
-                Result<PlayerAccountResp> plafortAccountResult = accountService.getPlayerAccount(plafortAccountReq);
+                Result<PlayerAccountResp> plafortAccountResult = accountService.getPlayerAccounts(plafortAccountReq);
 
                 //扣除玩家MT
                 Result<Integer> updatePlayerAccount = null;

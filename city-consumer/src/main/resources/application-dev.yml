@@ -49,7 +49,7 @@ dreamcity:
 eureka:
   instance:
     hostname: localhost
-    instance-id: ${spring.application.name}
+    instance-id: ${spring.application.name}-${server.port}
   client:
     eureka-server-read-timeout-seconds: 10
     eureka-connection-idle-timeout-seconds: 5

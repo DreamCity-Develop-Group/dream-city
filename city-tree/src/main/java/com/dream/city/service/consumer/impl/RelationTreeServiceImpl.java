@@ -83,6 +83,7 @@ public class RelationTreeServiceImpl implements RelationTreeService {
                 tree.setCreateTime(new Timestamp(System.currentTimeMillis()));
                 treeMapper.saveTree(tree);
                 log.info("保存树成功");
+                //playerTree = tree;
             }
 
             /**
@@ -95,10 +96,44 @@ public class RelationTreeServiceImpl implements RelationTreeService {
              */
             RuleItem ruleItem = investRuleService.getRuleItemByFlag(PlAYER_FLAG);
             List<InvestRule> rules = investRuleService.getRulesByItem(ruleItem.getItemId());
-
+            Map<Integer, RelationTree> parents;
             //找出所有上级，不包括自己
-            Map<Integer, RelationTree> parents = getAllParents(playerTree);
-            parents.forEach((key, value) -> {
+            if(playerTree==null){
+                playerTree = tree;
+                parents = getAllParents(playerTree);
+
+            }else{
+                parents = getAllParents(playerTree);
+            }
+
+            for(Map.Entry<Integer,RelationTree> entry : parents.entrySet()){
+                try {
+                    RelationTree value = entry.getValue();
+                    //直接下级
+                    int childNum = value.getTreeChilds()==null?0:value.getTreeChilds();
+                    int gNum =  value.getTreeGrandson()==null?0:value.getTreeGrandson();
+                    if (playerTree.getTreeParentId().equalsIgnoreCase(value.getTreePlayerId())) {
+
+                        value.setTreeChilds( childNum + 1);
+                        value.setTreeGrandson( gNum);
+                    } else {
+                        value.setTreeChilds( childNum);
+                        value.setTreeGrandson( gNum+ 1);
+                    }
+                    //下级人员总数
+                    int childsSize = value.getTreeChilds() + value.getTreeGrandson();
+
+                    RelationTree currentParentTree = upgradeParent(value, childsSize,rules);
+
+                    Result result = updateTree(currentParentTree);
+                    if (!result.getSuccess()){
+                        throw new BusinessException("升级玩家["+value.getTreePlayerId()+"]出错");
+                    }
+                } catch (Exception e) {
+                    throw new BusinessException("升级出错");
+                }
+            }
+            /*parents.forEach((key, value) -> {
                 try {
                     //直接下级
                     if (playerTree.getTreeParentId().equalsIgnoreCase(value.getTreePlayerId())) {
@@ -118,7 +153,7 @@ public class RelationTreeServiceImpl implements RelationTreeService {
                 } catch (Exception e) {
                     throw new BusinessException("升级出错");
                 }
-            });
+            });*/
 
             return Result.result(true, "成功", ReturnStatus.SUCCESS.getStatus());
 
@@ -137,7 +172,7 @@ public class RelationTreeServiceImpl implements RelationTreeService {
         for (int i = 0; i < length - 1; i++) {
             String parentRelation = relation.substring(0, 7 * (length - 1 - i) - 1);
 
-            RelationTree parent = getByPlayer(parentRelation);
+            RelationTree parent = getPlayerByRef(parentRelation);
             parents.put(i + 1, parent);
         }
 
@@ -364,8 +399,8 @@ public class RelationTreeServiceImpl implements RelationTreeService {
             }
         }
         RelationTree tree = getByPlayer(playerId);
-        data.put("core",tree.getTreeChilds());
-        data.put("num", tree.getTreeGrandson());
+        data.put("core",tree.getTreeChilds()==null?0:tree.getTreeChilds());
+        data.put("num", tree.getTreeGrandson()==null?0:tree.getTreeGrandson());
         data.put("members", members);
 
         return data;

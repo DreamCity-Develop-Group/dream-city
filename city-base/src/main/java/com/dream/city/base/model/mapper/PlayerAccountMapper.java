@@ -62,8 +62,8 @@ public interface PlayerAccountMapper {
     @Update("update player_account set acc_usdt = acc_usdt-#{payAmount} ,acc_usdt_availble=acc_usdt_availble-#{payAmount} where 1=1 adnd acc_player_id=#{playerId}")
     void subtractAmount(BigDecimal payAmount, String playerId);
 
-    @Insert("insert into `player_account`(acc_id,acc_player_id,acc_addr)value(0,#{playerId},#{address})")
-    void createAccount(@Param("playerId")String playerId,@Param("address")String address);
+    @Insert("insert into `player_account`(acc_id,acc_player_id,acc_addr)value(0,#{accPlayerId},#{accAddr})")
+    void createAccount(@Param("accPlayerId")String accPlayerId,@Param("accAddr")String accAddr);
 
 
     @Select("select * from player_account where 1=1 and  acc_player_id = #{playerId}")
@@ -101,4 +101,18 @@ public interface PlayerAccountMapper {
             "  WHERE 1=1 " +
             "  AND acc_player_id = #{accPlayerId} "})
     int updatePlayerAccount(PlayerAccount payAmount);
+
+
+    @Insert("insert into `player_account`(" +
+            "  acc_id ," +
+            "  acc_player_id ," +
+            "  acc_addr ," +
+            "  acc_usdt , " +
+            "  acc_usdt_freeze , " +
+            "  acc_usdt_available , " +
+            "  acc_mt , " +
+            "  acc_mt_freeze ," +
+            "  acc_mt_available " +
+            ")value(0,#{accPlayerId},#{accAddr},#{accUsdt},#{accUsdtFreeze},#{accUsdtAvailable},#{accMt},#{accMtFreeze},#{accMtAvailable})")
+    void insertAccount(PlayerAccount payAmount);
 }

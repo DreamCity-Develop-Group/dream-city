@@ -23,7 +23,7 @@ public interface ConsumerAccountService {
 
 
     @RequestMapping("/getPlatformAccounts")
-    Result<PlayerAccountResp> getPlayerAccount(@RequestBody PlayerAccountReq record);
+    Result<PlayerAccountResp> getPlayerAccounts(@RequestBody PlayerAccountReq record);
 
 
     /**
@@ -31,7 +31,7 @@ public interface ConsumerAccountService {
      * @param playerId
      * @return
      */
-    @ApiOperation(value = "获取玩家账户", httpMethod = "POST", notes = "t入参playerId", response = Result.class)
+    @ApiOperation(value = "获取玩家账户", httpMethod = "POST", notes = "入参playerId", response = Result.class)
     @RequestMapping("/getPlayerAccount/{playerId}")
     Result<PlayerAccount> getPlayerAccount(@PathVariable("playerId") String playerId);
 
@@ -40,7 +40,7 @@ public interface ConsumerAccountService {
      * @param playerId
      * @return
      */
-    @ApiOperation(value = "获取玩家账户", httpMethod = "POST", notes = "t入参username", response = Result.class)
+    @ApiOperation(value = "获取玩家账户", httpMethod = "POST", notes = "入参username", response = Result.class)
     @RequestMapping("/getByPlayerId")
     PlayerAccount getPlayerAccountByPlayerId(@RequestParam("playerId")String playerId);
 

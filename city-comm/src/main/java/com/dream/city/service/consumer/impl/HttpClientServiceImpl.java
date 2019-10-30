@@ -309,10 +309,14 @@ public class HttpClientServiceImpl implements HttpClientService {
                     }
                     Object dataGet = message.getData().getData();
                     String json = JsonUtil.parseObjToJson(dataGet);
+                    if (json == null ){
+                        log.info("请求出错,数据为空 ... ");
+                        return;
+                    }
                     JSONObject map = JsonUtil.parseJsonToObj(json,JSONObject.class);
                     /**TODO**********如果是登陆成功，加入在线有序列表******************************/
                     if (message.getData().getType().equals("login") || message.getData().getType().equals("codeLogin")){
-                        if (message.getData().getCode() == ReturnStatus.SUCCESS.getStatus() && map != null){
+                        if (message.getData().getCode() == ReturnStatus.SUCCESS.getStatus() && map != null && map != null){
 
                             String playerId = map.getString("playerId").toString();
                             String playerName = map.getString("playerName").toString();

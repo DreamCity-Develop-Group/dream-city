@@ -79,23 +79,37 @@ public class AccountServiceImpl implements AccountService {
         }
 
         Result<PlayerAccount> playerAccountResult = accountService.getPlayerAccount(playerId);
-        PlayerAccount account = JsonUtil.parseJsonToObj(JsonUtil.parseObjToJson(playerAccountResult.getData()), PlayerAccount.class);
         Map data = new HashMap();
-        data.put("total_income",new BigDecimal(0));
-        data.put("total_property",new BigDecimal(0));
-        data.put("total_usdt",account.getAccUsdt());
-        data.put("total_mt",account.getAccMt());
-        data.put("available_usdt",account.getAccUsdtAvailable());
-        data.put("available_mt",account.getAccMtAvailable());
-        data.put("frozen_usdt",account.getAccUsdtFreeze());
-        data.put("frozen_mt",account.getAccMtFreeze());
-        data.put("commerce_member",total);
-        data.put("invite",player1.getPlayerInvite());
+        if (playerAccountResult.getSuccess()) {
+            PlayerAccount account = JsonUtil.parseJsonToObj(JsonUtil.parseObjToJson(playerAccountResult.getData()), PlayerAccount.class);
 
-        MessageData resultData = new MessageData(msg.getData().getType(),msg.getData().getModel());
-        resultData.setData(data);
-        msg.setData(resultData);
-        msg.setDesc(playerAccountResult.getMsg());
+            data.put("total_income", new BigDecimal(0));
+            data.put("total_property", new BigDecimal(0));
+            data.put("total_usdt", account.getAccUsdt());
+            data.put("total_mt", account.getAccMt());
+            data.put("available_usdt", account.getAccUsdtAvailable());
+            data.put("available_mt", account.getAccMtAvailable());
+            data.put("frozen_usdt", account.getAccUsdtFreeze());
+            data.put("frozen_mt", account.getAccMtFreeze());
+            data.put("commerce_member", total);
+            data.put("invite", player1.getPlayerInvite());
+            msg.setDesc(playerAccountResult.getMsg());
+        }else{
+            data.put("total_income", new BigDecimal(0));
+            data.put("total_property", new BigDecimal(0));
+            data.put("total_usdt", new BigDecimal(0));
+            data.put("total_mt", new BigDecimal(0));
+            data.put("available_usdt", new BigDecimal(0));
+            data.put("available_mt", new BigDecimal(0));
+            data.put("frozen_usdt", new BigDecimal(0));
+            data.put("frozen_mt", new BigDecimal(0));
+            data.put("commerce_member", total);
+            data.put("invite", player1.getPlayerInvite());
+            msg.setDesc(playerAccountResult.getMsg());
+        }
+
+        msg.getData().setData(data);
+
         return msg;
     }
 }

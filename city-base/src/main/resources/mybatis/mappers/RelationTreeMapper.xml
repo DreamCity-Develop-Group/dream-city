@@ -8,10 +8,12 @@
     <result column="tree_relation" property="treeRelation" jdbcType="VARCHAR" />
     <result column="send_auto" property="sendAuto" jdbcType="VARCHAR" />
     <result column="tree_level" property="treeLevel" jdbcType="INTEGER" />
+    <result column="tree_childs" property="treeChilds" jdbcType="INTEGER" />
+    <result column="tree_grandson" property="treeGrandson" jdbcType="INTEGER" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    tree_id, tree_parent_id, tree_player_id, tree_relation,send_auto,tree_level,DATE_FORMAT(create_time,'%Y-%m-%d %h:%m:%s') create_time 
+    tree_id, tree_parent_id, tree_player_id, tree_relation,send_auto,tree_level,tree_childs,tree_grandson,DATE_FORMAT(create_time,'%Y-%m-%d %h:%m:%s') create_time
   </sql>
   <select id="selectByPrimaryKey" resultMap="TreeBaseResultMap" parameterType="java.lang.Integer" >
     select
