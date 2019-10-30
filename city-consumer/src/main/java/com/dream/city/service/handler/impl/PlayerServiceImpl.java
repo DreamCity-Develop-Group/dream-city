@@ -695,12 +695,14 @@ public class PlayerServiceImpl implements PlayerService {
                 end = System.currentTimeMillis();
                 return msg;
             } else {
+                //注册失败
                 msg.getData().setCode(reg.getCode());
                 msg.setDesc(reg.getMsg());
                 end = System.currentTimeMillis();
                 return msg;
             }
         } else {
+            //验证码验证不通过
             msg.getData().setCode(ret.getCode());
             msg.setDesc(ret.getMsg());
             return msg;
