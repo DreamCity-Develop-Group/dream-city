@@ -71,6 +71,7 @@ public interface PlayerAccountMapper {
     PlayerAccount getPlayerAccountByPlayerId(String playerId);
 
 
+
     @Update({"<script>" +
             "<foreach collection=\"accounts\" item=\"item\" separator=\";\">" +
             " UPDATE" +

@@ -502,7 +502,6 @@ public class PlayerController {
     public Player getPlayerByPlayerId(@RequestParam("playerId")String playerId){
         Player player = playerService.getPlayerByPlayerId(playerId);
 
-
         return player;
     }
 

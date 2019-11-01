@@ -55,7 +55,9 @@ public class AccountServiceImpl implements AccountService {
     @Transactional
     @Override
     public PlayerAccountResp getPlayerAccount(PlayerAccountReq record) throws BusinessException {
-        record.setPlatformAccIds(dictionaryService.getValByKey("platform.account.accIds"));
+        String ids = dictionaryService.getValByKey("platform.account.accIds");
+        record.setPlatformAccIds(ids);
+
         return accountMapper.getPlayerAccountSelective(record);
     }
 
@@ -63,7 +65,9 @@ public class AccountServiceImpl implements AccountService {
     @Transactional
     @Override
     public List<PlayerAccountResp> getPlayerAccountList(PlayerAccountReq record) throws BusinessException {
-        record.setPlatformAccIds(dictionaryService.getValByKey("platform.account.accIds"));
+        String ids = dictionaryService.getValByKey("platform.account.accIds");
+        record.setPlatformAccIds(ids);
+
         return accountMapper.getPlayerAccountList(record);
     }
 
@@ -100,6 +104,13 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public PlayerAccount getPlayerAccountByPlayerId(String playerId) throws BusinessException {
         return playerAccountMapper.getPlayerAccountByPlayerId(playerId);
+    }
+
+    @LcnTransaction
+    @Transactional
+    @Override
+    public PlayerAccount getPlayerAccountByAddr(String addr) throws BusinessException {
+        return playerAccountMapper.getPlayerAccountByAddr(addr);
     }
 
     @LcnTransaction

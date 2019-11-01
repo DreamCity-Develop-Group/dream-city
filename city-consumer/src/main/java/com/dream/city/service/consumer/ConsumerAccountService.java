@@ -44,6 +44,16 @@ public interface ConsumerAccountService {
     @RequestMapping("/getByPlayerId")
     PlayerAccount getPlayerAccountByPlayerId(@RequestParam("playerId")String playerId);
 
+
+    /**
+     * 获取玩家账户
+     * @param addr
+     * @return
+     */
+    @ApiOperation(value = "获取玩家账户", httpMethod = "POST", notes = "入参username", response = Result.class)
+    @RequestMapping("/getPlayerAccountByAddr")
+    PlayerAccount getPlayerAccountByAddr(@RequestParam("addr")String addr);
+
     /**
      * 玩家账户列表
      * @param record

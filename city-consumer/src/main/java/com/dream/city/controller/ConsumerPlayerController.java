@@ -1,6 +1,7 @@
 package com.dream.city.controller;
 
 import com.dream.city.base.model.*;
+import com.dream.city.base.model.enu.ReturnStatus;
 import com.dream.city.service.handler.PlayerService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -222,6 +223,7 @@ public class ConsumerPlayerController {
             return playerService.login(msg);
         }catch (Exception e){
             //throw new BusinessException("setplayertree");
+            msg.getData().setCode(ReturnStatus.FAILED.getStatus());
             return msg;
         }
     }

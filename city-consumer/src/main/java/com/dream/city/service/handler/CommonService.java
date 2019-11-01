@@ -1,6 +1,7 @@
 package com.dream.city.service.handler;
 
 import com.dream.city.base.model.Message;
+import com.dream.city.base.model.entity.CityMessage;
 import com.dream.city.base.model.resp.PlayerResp;
 
 import java.util.Map;
@@ -23,6 +24,8 @@ public interface CommonService {
     String getFriendIdByNick(Message msg);
 
     boolean sendMessage(String playerId, String friendId, String content);
+
+    boolean sendMessage(CityMessage message);
 
 
 }

@@ -152,4 +152,9 @@ public class AccountController {
     public PlayerAccount getByPlayerId(@RequestParam("playerId")String playerId){
         return accountService.getPlayerAccountByPlayerId(playerId);
     }
+
+    @RequestMapping("/getPlayerAccountByAddr")
+    public PlayerAccount getPlayerAccountByAddr(@RequestParam("addr")String addr){
+        return accountService.getPlayerAccountByAddr(addr);
+    }
 }
