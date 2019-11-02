@@ -129,13 +129,18 @@ public class WebSocketServer {
             //sendMessage(data);
             String redisKey = RedisKeys.LOGIN_USER_TOKEN + username;
             boolean token = redisUtils.hasKey(redisKey);
+            String newVersion  = redisUtils.hasKey("APP_VERSION")?redisUtils.getStr("APP_VERSION"):"1.0.0";
+            if(Objects.isNull(newVersion)){
+                newVersion = "1.0.0";
+            }
             String connect = token ? "重连成功" : "连接成功";
             log.info(connect);
-
+            Map version = new HashMap();
+            version.put("version",newVersion);
             Message message = new Message(
                     "server",
                     clientId,
-                    new MessageData("init", "socket", ReturnStatus.SUCCESS.getStatus()),
+                    new MessageData("init", "socket", version,ReturnStatus.SUCCESS.getStatus()),
                     connect,
                     new Date().toString()
             );

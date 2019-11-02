@@ -1,12 +1,12 @@
 package com.dream.city.invest.controller;
 
+import com.dream.city.base.exception.BusinessException;
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.PlayerTrade;
 import com.dream.city.base.model.enu.ReturnStatus;
 import com.dream.city.base.model.req.PlayerAccountReq;
 import com.dream.city.base.model.req.PlayerTradeReq;
 import com.dream.city.base.model.resp.PlayerTradeResp;
-import com.dream.city.invest.service.PlayerTradeHandleService;
 import com.dream.city.invest.service.PlayerTradeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,8 +29,6 @@ public class TradeController {
 
     @Autowired
     PlayerTradeService tradeService;
-    @Autowired
-    PlayerTradeHandleService tradeHandleService;
 
 
     /**
@@ -141,7 +139,7 @@ public class TradeController {
     @RequestMapping("/playerRecharge")
     public Result<PlayerTrade> playerRecharge(@RequestBody PlayerAccountReq record) {
         logger.info("玩家充值，{}", record);
-        return tradeHandleService.playerRecharge(record);
+        return tradeService.playerRecharge(record);
     }
 
     /**
@@ -152,7 +150,7 @@ public class TradeController {
     @RequestMapping("/playerWithdraw")
     public Result<PlayerTrade> playerWithdraw(@RequestBody PlayerAccountReq record) {
         logger.info("玩家提现，{}", record);
-        return tradeHandleService.playerWithdraw(record);
+        return tradeService.playerWithdraw(record);
     }
 
     /**
@@ -161,8 +159,13 @@ public class TradeController {
      * @return
      */
     @RequestMapping("/playerTransfer")
-    public Result<PlayerTrade> playerTransfer(@RequestBody PlayerAccountReq record) {
+    public Result<PlayerTrade> playerTransfer(@RequestBody PlayerAccountReq record) throws BusinessException {
         logger.info("玩家转账，{}", record);
-        return tradeHandleService.playerTransfer(record);
+        try {
+            return tradeService.playerTransfer(record);
+        }catch (Exception e){
+            e.printStackTrace();
+            return Result.result(false);
+        }
     }
 }

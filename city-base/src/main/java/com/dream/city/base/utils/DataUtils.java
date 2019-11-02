@@ -216,8 +216,8 @@ public class DataUtils {
         String accPass = map.containsKey("accPass")?String.valueOf(map.get("accPass")):null;
         BigDecimal accUsdt = map.containsKey("accUsdt")?BigDecimal.valueOf(Double.parseDouble(String.valueOf(map.get("accUsdt")))):null;
         BigDecimal accMt = map.containsKey("accMt")?BigDecimal.valueOf(Double.parseDouble(String.valueOf(map.get("accMt")))):null;
-        BigDecimal money = map.containsKey("money")?BigDecimal.valueOf(Double.parseDouble(String.valueOf(map.get("money")))):null;
-        String oldpwshop = map.containsKey("oldpwshop")?String.valueOf(map.get("oldpwshop")):null;
+        BigDecimal amount = map.containsKey("amount")?BigDecimal.valueOf(Double.parseDouble(String.valueOf(map.get("amount")))):null;
+        String tradePass = map.containsKey("tradePass")?String.valueOf(map.get("tradePass")):null;
 
         PlayerAccountReq result = new PlayerAccountReq();
         result.setAccId(accId);
@@ -229,8 +229,8 @@ public class DataUtils {
         result.setAccUsdt(accUsdt);
         result.setAccAddr(accAddr);
         result.setTradeType(tradeType);
-        result.setMoney(money);
-        result.setOldpwshop(oldpwshop);
+        result.setAmount(amount);
+        result.setTradePass(tradePass);
         return result;
     }
 

@@ -5,6 +5,7 @@ import com.dream.city.base.model.Result;
 import com.dream.city.service.handler.DefaultService;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 public class DefaultController {
     @Autowired
     DefaultService defaultService;
+
 
 
 
@@ -49,6 +51,20 @@ public class DefaultController {
         }catch (Exception e){
             msg.setDesc(e.getMessage());
             return msg;
+        }
+    }
+
+    @RequestMapping(value = "/version", method = RequestMethod.POST)
+    public String version(@RequestParam("version") String version) {
+        try {
+            if (StringUtils.isBlank(version)){
+                return defaultService.getAppVersion();
+            }else {
+                defaultService.setAppVersion(version);
+                return "Success:"+defaultService.getAppVersion();
+            }
+        }catch (Exception e){
+            return e.getMessage();
         }
     }
 

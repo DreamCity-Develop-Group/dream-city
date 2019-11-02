@@ -163,4 +163,15 @@ public class DefaultServiceImpl implements DefaultService {
         pusherService.receive(player, 2);
         return message;
     }
+
+    @Override
+    public void setAppVersion(String version) {
+        redisUtils.set("APP_VERSION",version);
+    }
+
+    @Override
+    public String getAppVersion() {
+        return redisUtils.getStr("APP_VERSION");
+    }
+
 }

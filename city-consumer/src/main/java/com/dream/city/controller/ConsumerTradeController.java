@@ -1,6 +1,7 @@
 package com.dream.city.controller;
 
 
+import com.dream.city.base.exception.BusinessException;
 import com.dream.city.base.model.Message;
 import com.dream.city.service.handler.TradeService;
 import io.swagger.annotations.Api;
@@ -136,12 +137,8 @@ public class ConsumerTradeController {
      */
     @ApiOperation(value = "玩家转账", httpMethod = "POST", notes = "t参数:playerId,username,nick,accUsdt,accMt", response = Message.class)
     @RequestMapping("/trade/transfer")
-    public Message playerTransfer(@RequestBody Message msg) {
-        try {
-            return tradeService.playerTransfer(msg);
-        } catch (Exception e) {
-            return msg;
-        }
+    public Message playerTransfer(@RequestBody Message msg) throws BusinessException {
+        return tradeService.playerTransfer(msg);
     }
 
 

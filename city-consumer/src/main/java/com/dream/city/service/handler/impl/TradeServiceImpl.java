@@ -270,13 +270,15 @@ public class TradeServiceImpl implements TradeService {
     @Override
     public Message playerTransfer(@RequestBody Message msg)throws BusinessException {
         logger.info("玩家转账", JSONObject.toJSONString(msg));
-        String json = JSONObject.toJSONString(msg);
+        MessageData data = msg.getData();
+        Object object = data.getData();
+        String json = JSONObject.toJSONString(object);
 
         JSONObject jsonObject = JsonUtil.parseJsonToObj(json,JSONObject.class);
 
         String playerId = jsonObject.getString("playerId");
         BigDecimal amount = jsonObject.getBigDecimal("amount");
-        String addr = jsonObject.getString("amount");
+        String addr = jsonObject.getString("accAddr");
         String tradePass = jsonObject.getString("tradePass");
         //额度不能小于0
         if (amount.compareTo(new BigDecimal(0))<0){
@@ -320,12 +322,12 @@ public class TradeServiceImpl implements TradeService {
         //构造请求
         PlayerAccountReq accountReq = DataUtils.getPlayerAccountReqFromMessage(msg);
         accountReq.setAccPlayerId(playerId);
-        //完成转账
+        //TODO 完成转账
         Result<PlayerTrade>  tradeResult = tradeService.playerTransfer(accountReq);
 
         Map resultMap = new HashMap();
         resultMap.put("playerId",accountReq.getAccPlayerId());
-        resultMap.put("amount",accountReq.getMoney());
+        resultMap.put("amount",accountReq.getAmount());
         resultMap.put("mt",0);
         resultMap.put("code",ReturnStatus.SUCCESS.getStatus());
         resultMap.put("desc","转账失败");
@@ -335,7 +337,7 @@ public class TradeServiceImpl implements TradeService {
                 resultMap.put("amount",tradeResult.getData().getTradeAmount());
                 msg.getData().setCode(tradeResult.getCode());
 
-                PlayerAccount receiverAccount = accountService.getPlayerAccountByPlayerId(addr);
+                PlayerAccount receiverAccount = accountService.getPlayerAccountByAddr(addr);
                 //内部转账发消息
                 if (receiverAccount!=null){
                     Player receiver = playerService.getPlayerByPlayerId(receiverAccount.getAccPlayerId());
@@ -361,7 +363,22 @@ public class TradeServiceImpl implements TradeService {
                             message.getData().setData(resultMap);
                             redisUtils.publishMsg(PlAYER_UPGRADE, JSON.toJSONString(message));
                         }
+                    }else {
+                        // TODO 生成相应的记录，留给对方查看
+                        CityMessage cmessage = new CityMessage();
+                        cmessage.setHaveRead(0);
+                        cmessage.setFriendId(playerId);
+                        cmessage.setId(0L);
+                        cmessage.setTitle("入账消息");
+                        cmessage.setContent("你收到一笔来自朋友的转账,额度："+amount+"，请查收！");
+                        cmessage.setPlayerId(receiverAccount.getAccPlayerId());
+                        cmessage.setCreateTime(new Date());
+                        boolean finished = commonService.sendMessage(cmessage);
+                        if(!finished){
+                            commonService.sendMessage(cmessage);
+                        }
                     }
+
                 }
                 //外部转账
                 //生成相应的记录，留给对方查看

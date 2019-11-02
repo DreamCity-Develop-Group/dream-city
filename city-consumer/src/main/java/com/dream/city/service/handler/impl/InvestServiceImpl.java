@@ -15,6 +15,7 @@ import com.dream.city.service.consumer.ConsumerOrderService;
 import com.dream.city.service.consumer.ConsumerPropertyService;
 import com.dream.city.service.consumer.ConsumerTradeVerifyService;
 import com.dream.city.service.handler.InvestService;
+import com.dream.city.service.handler.OrderService;
 import com.dream.city.service.handler.PropertyService;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -39,7 +40,7 @@ public class InvestServiceImpl implements InvestService {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    private ConsumerInvestService investService;
+    private OrderService orderService;
     @Autowired
     PropertyService propertyService;
 
@@ -54,7 +55,7 @@ public class InvestServiceImpl implements InvestService {
     @Override
     public Message playerInvest(Message msg) throws BusinessException {
         logger.info("预约投资", JSONObject.toJSONString(msg));
-        return investService.playerInvest(msg);
+        return orderService.playerInvest(msg);
     }
 
 
@@ -84,7 +85,7 @@ public class InvestServiceImpl implements InvestService {
     @Override
     public Message getInvest(Message msg) throws BusinessException {
         logger.info("查询订单", JSONObject.toJSONString(msg));
-        return investService.getPlayerInvestOrderById(msg);
+        return orderService.getPlayerInvestOrderById(msg);
     }
 
 

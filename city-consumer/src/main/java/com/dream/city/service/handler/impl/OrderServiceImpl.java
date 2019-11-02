@@ -66,7 +66,7 @@ public class OrderServiceImpl implements OrderService {
     @LcnTransaction
     @Transactional
     @Override
-    public Message playerInvest(Message msg) throws BusinessException {
+    public Message  playerInvest(Message msg) throws BusinessException {
         logger.info("预约投资:{}", msg);
         String desc = "";
         boolean success = Boolean.FALSE;
@@ -260,6 +260,7 @@ public class OrderServiceImpl implements OrderService {
 
         msg.setDesc(desc);
         msg.getData().setData(result);
+        msg.getData().setCode(ReturnStatus.SUCCESS.getStatus());
         return msg;
     }
 

@@ -1,5 +1,6 @@
 package com.dream.city.service.consumer;
 
+import com.dream.city.base.exception.BusinessException;
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.PlayerTrade;
 import com.dream.city.base.model.entity.TradeDetail;
@@ -78,7 +79,7 @@ public interface ConsumerTradeService {
      * @return
      */
     @RequestMapping("/playerTransfer")
-    Result<PlayerTrade>  playerTransfer(@RequestBody PlayerAccountReq record);
+    Result<PlayerTrade>  playerTransfer(@RequestBody PlayerAccountReq record) throws BusinessException;
 
     @RequestMapping("/investCollectEarning")
     Result investCollectEarning(@RequestParam("playerId") String playerId, @RequestParam("investId") int investId);
