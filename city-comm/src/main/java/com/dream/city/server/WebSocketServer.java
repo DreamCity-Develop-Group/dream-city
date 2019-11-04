@@ -133,6 +133,7 @@ public class WebSocketServer {
             if(Objects.isNull(newVersion)){
                 newVersion = "1.0.0";
             }
+            newVersion = newVersion.replace("\"","");
             String connect = token ? "重连成功" : "连接成功";
             log.info(connect);
             Map version = new HashMap();

@@ -1,6 +1,7 @@
 package com.dream.city.player.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.codingapi.txlcn.tc.annotation.DTXPropagation;
 import com.codingapi.txlcn.tc.annotation.LcnTransaction;
 import com.dream.city.base.exception.BusinessException;
 import com.dream.city.base.model.CityGlobal;
@@ -34,7 +35,6 @@ import java.util.*;
  */
 @Slf4j
 @Service
-@Transactional
 public class PlayerServiceImpl implements PlayerService {
 
     @Autowired
@@ -113,7 +113,7 @@ public class PlayerServiceImpl implements PlayerService {
         return Result.result(Boolean.FALSE, CityGlobal.Constant.USER_CHANGE_TRADERPWD_FAIL, ReturnStatus.FAILED.getStatus());
     }
 
-    @LcnTransaction
+    @LcnTransaction(propagation = DTXPropagation.SUPPORTS)
     @Transactional
     @Override
     public Result changePwdValid(String username, String oldpwshop, String pwdType)  throws BusinessException{
@@ -126,9 +126,9 @@ public class PlayerServiceImpl implements PlayerService {
             return Result.result(Boolean.FALSE, CityGlobal.Constant.USER_NOT_EXIT, ReturnStatus.ERROR_NOTEXISTS.getStatus());
         }
 
-        // 旧密码不正确
+        // 旧密码不正确 [不进行旧密码判断]
         if ("resetLoginPwd".equalsIgnoreCase(pwdType) && !playerExit.getPlayerPass().equals(oldpwshop)) {
-            return Result.result(Boolean.FALSE, CityGlobal.Constant.USER_OLD_PWD_ERROR, ReturnStatus.ERROR_PASS.getStatus());
+            //return Result.result(Boolean.FALSE, CityGlobal.Constant.USER_OLD_PWD_ERROR, ReturnStatus.ERROR_PASS.getStatus());
         }
         // 交易密码 没有交易密码的设置交易密码，有交易密码的修改交易密码
         if ("setTraderPwd".equalsIgnoreCase(pwdType)) {
@@ -248,7 +248,7 @@ public class PlayerServiceImpl implements PlayerService {
         return result;
     }
 
-    @LcnTransaction
+    @LcnTransaction(propagation = DTXPropagation.SUPPORTS)
     @Transactional
     @Override
     public PlayerResp getPlayerByName(String playerName, String playerNick) throws BusinessException {
@@ -302,7 +302,7 @@ public class PlayerServiceImpl implements PlayerService {
         return gradeMapper.getPlayerGradeByPlayerId(record);
     }
 
-    @LcnTransaction
+    @LcnTransaction(propagation = DTXPropagation.SUPPORTS)
     @Transactional
     @Override
     public Player getPlayerByPlayerId(String playerId) throws BusinessException {

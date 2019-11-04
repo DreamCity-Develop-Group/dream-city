@@ -16,7 +16,7 @@ spring:
   cache:
     type: redis
   redis:
-    host: localhost
+    host: 127.0.0.1
     port: 6379
     database: 0
     password: 123456
@@ -28,10 +28,13 @@ spring:
         max-wait: -1
         max-idle: 300
         min-idle: 1
+
   cloud:
     loadbalancer:
       retry:
         enabled: true
+  jpa:
+    database-platform:
 
 #注册密码salt
 dreamcity:

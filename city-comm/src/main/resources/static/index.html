@@ -72,6 +72,8 @@
     额度：<input name="amountUSDT" id="amountUSDT" size="6" value="0">
     地址：<input name="address" id="address" size="10" value="988A43BEB87E4B2A8C25BD40CDEAEA66">
     <button onclick="transfer()">转账</button><br>
+    版本设置：<input name="version" id="version" size="10">
+    <button onclick="version()">设置</button><br>
 </div>
 <a href="javascript:send()" id="send">状态：[]</a>
 
@@ -158,6 +160,7 @@
                 if("undefined" == typeof reconnect){
                     clearInterval(connect);
                 }
+
                 //socket.send("这是来自客户端的消息" + location.href + new Date());
             };
             //socket.send("这是来自客户端的消息00" + location.href + new Date());
@@ -170,6 +173,11 @@
                 if (data.data.type == "init") {
                     clientId = data.target;
                     document.getElementById("send").innerText = "连接：[" + clientId + "]";
+                    var data = data.data;
+                    console.log(data);
+                    var data =data.data;
+                    console.log(data);
+                    $("version").value=data.version.replace("\"","").replace("\"","");
                 } else if (data.data.type == "getCode") {
                     var msg = data.data.data;
                     console.log(msg);
@@ -711,6 +719,36 @@
 
         socket.send(msg);
     }
+
+    function version() {
+        var username = $("username").value;
+        var token = $("token").value;
+        var playerId = $("playerId").value;
+        var version = $("version").value;
+
+        if(playerId == ""|| token == null){
+            alert("未登录");
+            return;
+        }
+
+        console.log(username+">>"+playerId);
+
+        var msg = "{\"source\":\"" + clientId + "\"," +
+            "\"createtime\":\"Wed Sep 04 14:31:01 CST 2019\"," +
+            "\"data\":{"+
+            "\"type\":\"version\","+
+            "\"model\":\"consumer/main\","+
+            "\"data\":{"+
+            "\"username\":\"" + username + "\","+
+            "\"playerId\":\""+playerId+"\","+
+            "\"version\":\""+version+"\","+
+            "\"token\":\""+token+"\"}"+
+            "}," +
+            "\"desc\":\"设置APP版本\",\"target\":\"server\"}";
+        console.log(msg);
+        socket.send(msg);
+    }
+
 
 
 </script>

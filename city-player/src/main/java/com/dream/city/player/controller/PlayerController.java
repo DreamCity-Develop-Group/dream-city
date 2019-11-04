@@ -175,6 +175,10 @@ public class PlayerController {
                 result.setCode(ReturnStatus.ERROR_NOTEXISTS.getStatus());
                 tip.append(CityGlobal.Constant.USER_NOT_EXIT);
             }else {
+                //禁止登录用户
+                if (playerExists.getIsValid().equals("0")){
+                    return Result.result(false,"当前用户禁止登录",ReturnStatus.FAILED.getStatus());
+                }
                 playerId = playerExists.getPlayerId();
                 // 用户名
                 if (!playerExists.getPlayerName().equalsIgnoreCase(username)){

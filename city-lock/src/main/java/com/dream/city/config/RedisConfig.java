@@ -1,4 +1,4 @@
-package com.dream.city.base.config;
+package com.dream.city.config;
 
 import com.dream.city.base.utils.RedisUtils;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;

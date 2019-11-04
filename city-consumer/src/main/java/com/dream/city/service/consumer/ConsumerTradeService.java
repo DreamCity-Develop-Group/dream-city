@@ -93,7 +93,7 @@ public interface ConsumerTradeService {
      * @return
      */
     @RequestMapping("/insertTradeDetail")
-    Result<Integer> insertTradeDetail(@RequestBody TradeDetail record);
+    Result insertTradeDetail(@RequestBody TradeDetail record);
 
 
 

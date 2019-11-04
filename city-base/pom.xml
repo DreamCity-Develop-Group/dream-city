@@ -197,6 +197,11 @@
             <artifactId>txlcn-txmsg-netty</artifactId>
             <version>5.0.2.RELEASE</version>
         </dependency>
+        <dependency>
+            <groupId>org.redisson</groupId>
+            <artifactId>redisson-spring-boot-starter</artifactId>
+            <version>3.11.5</version>
+        </dependency>
 
     </dependencies>
 

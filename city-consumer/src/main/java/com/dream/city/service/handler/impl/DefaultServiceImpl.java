@@ -11,6 +11,7 @@ import com.dream.city.base.model.entity.PlayerAccount;
 import com.dream.city.base.model.entity.RelationTree;
 import com.dream.city.base.model.enu.ReturnStatus;
 import com.dream.city.base.utils.JsonUtil;
+import com.dream.city.base.utils.RedisLock;
 import com.dream.city.base.utils.RedisUtils;
 import com.dream.city.service.consumer.*;
 import com.dream.city.service.handler.DefaultService;
@@ -18,6 +19,8 @@ import com.dream.city.service.handler.NoticeService;
 import com.dream.city.service.handler.PusherService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,6 +41,8 @@ public class DefaultServiceImpl implements DefaultService {
     ConsumerGameSettingService gameSettingService;
     @Autowired
     ConsumerTreeService treeService;
+    @Autowired
+    RedissonClient redissonClient;
     @Autowired
     RedisUtils redisUtils;
     @Autowired
@@ -172,6 +177,36 @@ public class DefaultServiceImpl implements DefaultService {
     @Override
     public String getAppVersion() {
         return redisUtils.getStr("APP_VERSION");
+    }
+
+    @Override
+    public Message version(Message message){
+        log.info("版本获取或设置");
+
+        String json = JsonUtil.parseObjToJson(message.getData().getData());
+        JSONObject jsonObject = JsonUtil.parseJsonToObj(json,JSONObject.class);
+        String version = jsonObject.getString("version");
+
+        RLock lock = redissonClient.getLock("version");
+
+        if (lock.tryLock()) {
+            lock.lock();
+            log.info("取得锁成功！");
+            if (StringUtils.isBlank(version)) {
+                message.setDesc("获取版本成功");
+                message.getData().setData(getAppVersion());
+            } else {
+                setAppVersion(version);
+                lock.unlock();
+                log.info("翻译锁成功！");
+                message.setDesc("设置版本成功");
+                message.getData().setData("Success:" + getAppVersion());
+            }
+            return message;
+        }
+        message.setDesc("设置或获取版本不成功");
+        message.getData().setData(null);
+        return message;
     }
 
 }

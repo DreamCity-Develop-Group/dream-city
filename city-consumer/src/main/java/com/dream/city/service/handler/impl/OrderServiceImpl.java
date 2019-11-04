@@ -1,6 +1,7 @@
 package com.dream.city.service.handler.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.codingapi.txlcn.tc.annotation.DTXPropagation;
 import com.codingapi.txlcn.tc.annotation.LcnTransaction;
 import com.dream.city.base.exception.BusinessException;
 import com.dream.city.base.model.Message;
@@ -130,19 +131,22 @@ public class OrderServiceImpl implements OrderService {
             }
 
             //返回数据
+            result.put("inType", invest.getInType());
             result.put("investId", "");
             result.put("usdtFreeze", BigDecimal.ZERO);
             result.put("mtFreeze", BigDecimal.ZERO);
             result.put("state", ReturnStatus.INVEST_SUBSCRIBE.getStatus());
 
             //生成订单
-            Result<InvestOrder> orderResult = this.orderCreate(invest, player.getPlayerId(), orderRepeat, desc);
+            Result<InvestOrder> orderResult = orderCreate(invest, player.getPlayerId(), orderRepeat, desc);
             InvestOrder order = null;
             if (orderResult != null && orderResult.getData() != null) {
                 order = orderResult.getData();
                 result.put("investId", order.getOrderInvestId());
+                result.put("state", ReturnStatus.INVEST_SUBSCRIBED.getStatus());
 
                 PlayerEarning insertEarningReq = new PlayerEarning();
+                insertEarningReq.setEarnId(0);
                 insertEarningReq.setIsWithdrew(0);
                 insertEarningReq.setEarnMax(invest.getInLimit().multiply(BigDecimal.valueOf(Double.parseDouble(String.valueOf(invest.getInEarning())))));
                 insertEarningReq.setEarnCurrent(BigDecimal.ZERO);
@@ -330,7 +334,7 @@ public class OrderServiceImpl implements OrderService {
      * @param desc
      * @return
      */
-    @LcnTransaction
+    @LcnTransaction(propagation = DTXPropagation.REQUIRED)
     @Transactional
     @Override
     public Result<InvestOrder> orderCreate(InvestResp invest, String orderPayerId, int orderRepeat, String desc) throws BusinessException {
@@ -340,7 +344,7 @@ public class OrderServiceImpl implements OrderService {
             recordReq.setOrderInvestId(invest.getInId());
             recordReq.setOrderPayerId(orderPayerId);
             //已预约
-            recordReq.setOrderState(InvestStatus.SUBSCRIBED.name());
+            recordReq.setOrderState(InvestStatus.SUBSCRIBED.getStatus());
             recordReq.setOrderRepeat(orderRepeat);
             recordReq.setOrderAmount(invest.getInLimit());
             recordReq.setOrderName(invest.getInName());
