@@ -2,6 +2,7 @@ package com.dream.city.controller;
 
 import com.dream.city.base.model.Message;
 import com.dream.city.base.model.Result;
+import com.dream.city.base.model.enu.ReturnStatus;
 import com.dream.city.base.utils.RedisLock;
 import com.dream.city.service.handler.DefaultService;
 import io.swagger.annotations.*;
@@ -57,6 +58,7 @@ public class DefaultController {
             return defaultService.enterMainPage(msg);
         }catch (Exception e){
             msg.setDesc(e.getMessage());
+            msg.getData().setCode(ReturnStatus.FAILED.getStatus());
             return msg;
         }
     }
@@ -66,6 +68,7 @@ public class DefaultController {
         try {
             return defaultService.version(msg);
         }catch (Exception e){
+            msg.getData().setCode(ReturnStatus.FAILED.getStatus());
             msg.setDesc(e.getMessage());
             return msg;
         }

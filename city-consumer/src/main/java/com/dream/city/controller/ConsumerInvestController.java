@@ -1,6 +1,7 @@
 package com.dream.city.controller;
 
 import com.dream.city.base.model.Message;
+import com.dream.city.base.model.enu.ReturnStatus;
 import com.dream.city.service.handler.InvestService;
 import com.dream.city.service.handler.PropertyService;
 import io.swagger.annotations.Api;
@@ -41,6 +42,7 @@ public class ConsumerInvestController {
         try {
             return investService.playerInvest(msg);
         }catch (Exception e){
+            msg.getData().setCode(ReturnStatus.FAILED.getStatus());
             return msg;
         }
     }
@@ -73,6 +75,7 @@ public class ConsumerInvestController {
         try {
             return investService.getInvest(msg);
         }catch (Exception e){
+            msg.getData().setCode(ReturnStatus.FAILED.getStatus());
             return msg;
         }
     }
@@ -89,6 +92,7 @@ public class ConsumerInvestController {
         try {
             return investService.getInvestList(msg);
         }catch (Exception e){
+            msg.getData().setCode(ReturnStatus.FAILED.getStatus());
             return msg;
         }
     }

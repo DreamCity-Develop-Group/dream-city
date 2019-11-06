@@ -90,7 +90,7 @@ public class PlayerController {
         PlayerResp playerExistByNick = playerService.getPlayerByName(null,nick);
         if (playerExistByNick != null){
             tip = "["+ nick +"]" + CityGlobal.Constant.REG_USER_NICK_EXIST;
-            return Result.result(false,tip,ReturnStatus.ACCOUNT_EXISTS.getStatus(),null);
+            return Result.result(false,tip,ReturnStatus.NICK_EXISTS.getStatus(),null);
         }
 
         /*if(StringUtils.isBlank(code)){

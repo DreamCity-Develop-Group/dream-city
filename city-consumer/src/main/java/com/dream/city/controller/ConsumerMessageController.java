@@ -34,6 +34,7 @@ public class ConsumerMessageController {
         try {
             return messageService.getCode(msg);
         }catch (Exception e){
+            msg.getData().setCode(ReturnStatus.FAILED.getStatus());
             return msg;
         }
     }
@@ -54,6 +55,7 @@ public class ConsumerMessageController {
         try {
             return messageService.checkCode(code,account);
         }catch (Exception e){
+            msg.getData().setCode(ReturnStatus.FAILED.getStatus());
             msg.setDesc(e.getMessage());
             return msg;
         }

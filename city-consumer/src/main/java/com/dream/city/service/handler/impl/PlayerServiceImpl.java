@@ -13,7 +13,6 @@ import com.dream.city.base.model.req.PlayerReq;
 import com.dream.city.base.model.req.UserReq;
 import com.dream.city.base.model.resp.PlayerAccountResp;
 import com.dream.city.base.model.resp.PlayerResp;
-import com.dream.city.base.service.DictionaryService;
 import com.dream.city.base.utils.DataUtils;
 import com.dream.city.base.utils.JsonUtil;
 import com.dream.city.base.utils.RedisKeys;
@@ -60,7 +59,7 @@ public class PlayerServiceImpl implements PlayerService {
     @Autowired
     ConsumerFriendsService friendsService;
     @Autowired
-    DictionaryService dictionaryService;
+    ConsumerDictionaryService dictionaryService;
     @Autowired
     ConsumerPlayerService playerService;
     @Autowired
@@ -789,7 +788,7 @@ public class PlayerServiceImpl implements PlayerService {
         Result checkRet = messageService.checkCode(userReq.getCode(), userReq.getUsername());
         //String descMsg = checkCode(userReq.getCode(), msg.getSource());
         String descMsg = checkRet.getMsg();
-        String descT = CityGlobal.Constant.LOGIN_FAIL;
+        int code = ReturnStatus.FAILED.getStatus();
         Map<String, String> ret = new HashMap<>();
         if (checkRet.getSuccess()) {
             Result idlog = consumerPlayerService.codeLogin(JSON.toJSONString(userReq));
@@ -798,7 +797,7 @@ public class PlayerServiceImpl implements PlayerService {
 
             if (idlog.getSuccess()) {
                 log.info("验证码登录成功");
-                descT = CityGlobal.Constant.LOGIN_SUCCESS;
+
                 String playerId = idlog.getData().toString();
 
                 Result playerRet = consumerPlayerService.getPlayer(playerId);
@@ -808,13 +807,13 @@ public class PlayerServiceImpl implements PlayerService {
                 ret.put("playerId", playerId);
                 ret.put("id", player.getId().toString());
                 ret.put("playerName", player.getPlayerName());
+                code = ReturnStatus.SUCCESS.getStatus();
             } else {
                 log.info("验证码登录失败");
             }
         }
-
-        dataInner.put("desc", descT);
-        data.setData(dataInner);
+        data.setCode(code);
+        data.setData(ret);
         message.setData(data);
         message.setDesc(descMsg);
         return message;

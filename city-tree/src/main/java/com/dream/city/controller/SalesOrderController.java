@@ -139,7 +139,7 @@ public class SalesOrderController {
         BigDecimal rate = salesOrderService.getUsdtToMtRate(playerId);
 
         Map<String, String> data = new HashMap<>();
-        data.put("empty", "yes");
+
         //如果额度不足
         PlayerAccount playerAccount = playerAccountService.getPlayerAccount(playerId);
         BigDecimal payUsdt = buyAmount.multiply(rate);

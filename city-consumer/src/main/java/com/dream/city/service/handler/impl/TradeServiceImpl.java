@@ -84,6 +84,7 @@ public class TradeServiceImpl implements TradeService {
         PlayerTradeReq tradeReq = new PlayerTradeReq();
         tradeReq.setPlayerId(accountReq.getAccPlayerId());
         Result<List<PlayerTradeResp>> tradeResult = tradeService.getTradeDetailList(tradeReq);
+
         Map<String,Object> data = new HashMap<>();
         List<Map<String,Object>> tradeDetailListResult = new ArrayList<>();
         if (tradeResult != null){

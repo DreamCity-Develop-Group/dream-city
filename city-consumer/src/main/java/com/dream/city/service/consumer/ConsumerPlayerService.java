@@ -6,7 +6,7 @@ import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.Player;
 import com.dream.city.base.model.entity.PlayerExt;
 import com.dream.city.base.model.req.PlayerReq;
-import com.dream.city.service.consumer.impl.FallBackPlayer;
+import com.dream.city.service.impl.FallBackPlayer;
 import com.github.pagehelper.PageInfo;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;

@@ -444,6 +444,10 @@
         var playerId = $("playerId").value;
         var username = $("username").value;
         var token = $("token").value;
+        if(playerId == ""|| token == null){
+            alert("未登录");
+            return;
+        }
         console.log(username+">"+password);
         var msg = "{\"source\":\"" + clientId + "\"," +
             "\"createtime\":\"Wed Sep 04 14:31:01 CST 2019\"," +
@@ -458,6 +462,10 @@
         var token = $("token").value;
         var playerId = $("playerId").value;
         console.log(username+">>"+playerId);
+        if(playerId == ""|| token == null){
+            alert("未登录");
+            return;
+        }
         var msg = "{\"source\":\"" + clientId + "\"," +
             "\"createtime\":\"Wed Sep 04 14:31:01 CST 2019\"," +
             "\"data\":{\"type\":\"exit\",\"model\":\"consumer/player\",\"data\":{\"username\":\"" + username + "\",\"playerId\":\""+playerId+"\"}}," +
@@ -470,7 +478,10 @@
         var token = $("token").value;
         var invite = $("invite").value;
         var playerId = $("playerId").value;
-
+        if(playerId == ""|| token == null){
+            alert("未登录");
+            return;
+        }
         console.log(username+">>"+playerId+">>"+invite);
         var msg = "{\"source\":\"" + clientId + "\"," +
             "\"createtime\":\"Wed Sep 04 14:31:01 CST 2019\"," +
@@ -485,6 +496,10 @@
         var playerId = $("playerId").value;
         var tradePass = $("tradePass").value;
         console.log(username+">>"+playerId+">>"+tradePass);
+        if(playerId == ""|| token == null){
+            alert("未登录");
+            return;
+        }
         var msg = "{\"source\":\"" + clientId + "\"," +
             "\"createtime\":\"Wed Sep 04 14:31:01 CST 2019\"," +
             "\"data\":{\"type\":\"join\",\"model\":\"consumer/tree\",\"data\":{\"username\":\"" + username + "\",\"playerId\":\""+playerId+"\",\"invite\":\""+invite+"\",\"tradePass\":\""+tradePass+"\",\"token\":\""+token+"\"}}," +
@@ -498,6 +513,10 @@
         var playerId = $("playerId").value;
         var tradePassOld = "";
         var tradePassNew = $("tradePass").value;
+        if(playerId == ""|| token == null){
+            alert("未登录");
+            return;
+        }
         console.log(username+">>"+playerId+">>"+tradePass);
         var msg = "{\"source\":\"" + clientId + "\"," +
             "\"createtime\":\"Wed Sep 04 14:31:01 CST 2019\"," +
@@ -521,6 +540,10 @@
         var playerId = $("playerId").value;
         var tradePassOld = $("tradePass").value;
         var tradePassNew = $("tradePassNew").value;
+        if(playerId == ""|| token == null){
+            alert("未登录");
+            return;
+        }
         console.log(username+">>"+playerId+">>"+tradePass);
         var msg = "{\"source\":\"" + clientId + "\"," +
             "\"createtime\":\"Wed Sep 04 14:31:01 CST 2019\"," +
@@ -542,7 +565,10 @@
         var username = $("username").value;
         var token = $("token").value;
         var playerId = $("playerId").value;
-
+        if(playerId == ""|| token == null){
+            alert("未登录");
+            return;
+        }
         var amountMT = $("amountMt").value;
         console.log(username+">>"+playerId+">>"+amountMT);
         var msg = "{\"source\":\"" + clientId + "\"," +
@@ -566,6 +592,11 @@
         var playerId = $("playerId").value;
         var tradePassOld = $("tradePass").value;
         var tradePassNew = $("tradePassNew").value;
+
+        if(playerId == ""|| token == null){
+            alert("未登录");
+            return;
+        }
         console.log(username+">>"+playerId+">>"+tradePass);
         var msg = "{\"source\":\"" + clientId + "\"," +
             "\"createtime\":\"Wed Sep 04 14:31:01 CST 2019\"," +
@@ -591,6 +622,11 @@
         var page = 1;
         var tradePassNew = $("tradePassNew").value;
         console.log(username+">>"+playerId+">>"+tradePass);
+
+        if(playerId == ""|| token == null){
+            alert("未登录");
+            return;
+        }
         var msg = "{\"source\":\"" + clientId + "\"," +
             "\"createtime\":\"Wed Sep 04 14:31:01 CST 2019\"," +
             "\"data\":{"+
@@ -614,6 +650,11 @@
         var playerId = $("playerId").value;
         if(orders=="" || typeof orders == 'undefined'){
             var orders = $("sendAllAuto").value;
+        }
+
+        if(playerId == ""|| token == null){
+            alert("未登录");
+            return;
         }
 
         console.log(username+">>"+orders+">>"+playerId);
@@ -738,6 +779,36 @@
             "\"data\":{"+
             "\"type\":\"version\","+
             "\"model\":\"consumer/main\","+
+            "\"data\":{"+
+            "\"username\":\"" + username + "\","+
+            "\"playerId\":\""+playerId+"\","+
+            "\"version\":\""+version+"\","+
+            "\"token\":\""+token+"\"}"+
+            "}," +
+            "\"desc\":\"设置APP版本\",\"target\":\"server\"}";
+        console.log(msg);
+        socket.send(msg);
+    }
+
+
+    function tradeList() {
+        var username = $("username").value;
+        var token = $("token").value;
+        var playerId = $("playerId").value;
+        var version = $("version").value;
+
+        if(playerId == ""|| token == null){
+            alert("未登录");
+            return;
+        }
+
+        console.log(username+">>"+playerId);
+
+        var msg = "{\"source\":\"" + clientId + "\"," +
+            "\"createtime\":\"Wed Sep 04 14:31:01 CST 2019\"," +
+            "\"data\":{"+
+            "\"type\":\"getTradeDetailList\","+
+            "\"model\":\"consumer/trade\","+
             "\"data\":{"+
             "\"username\":\"" + username + "\","+
             "\"playerId\":\""+playerId+"\","+

@@ -52,6 +52,7 @@
     <result column="verify_time" property="verifyTime" jdbcType="TIMESTAMP" />
     <result column="is_valid" property="isValid" jdbcType="CHAR" />
   </resultMap>
+
   <select id="selectCityInvest" resultMap="ExtResultMap" parameterType="com.dream.city.base.model.req.CityInvestReq" >
     select i.in_id,
       i.in_name,
@@ -103,7 +104,9 @@
       (SELECT e2.is_withdrew FROM player_earning e2 WHERE e2.earn_invest_id = i.in_id AND e2.earn_player_id = #{playerId,jdbcType=VARCHAR} ORDER BY e2.update_time DESC LIMIT 1) is_withdrew,
       (SELECT o.order_state FROM invest_order o WHERE o.order_invest_id =i.in_id and o.order_payer_id = #{playerId,jdbcType=VARCHAR} ORDER BY o.update_time DESC LIMIT 1) order_state,
       (SELECT v.create_time FROM trade_verify v,invest_order o
-        WHERE v.verify_order_id = o.order_id and o.order_invest_id =i.in_id and o.order_state='MANAGEMENT' and o.order_payer_id = #{playerId,jdbcType=VARCHAR} ORDER BY v.create_time DESC LIMIT 1) verify_time
+        WHERE v.verify_order_id = o.order_id and o.order_invest_id =i.in_id
+        and o.order_state='5' and o.order_payer_id = #{playerId,jdbcType=VARCHAR}
+        ORDER BY v.create_time DESC LIMIT 1) verify_time
     from city_invest i
     <where>
       1=1

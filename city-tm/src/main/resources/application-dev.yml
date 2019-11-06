@@ -29,7 +29,7 @@ tx-lcn:
     host: 127.0.0.1
     port: 8070
   logger:
-    enabled: true
+    enabled: false
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: dreamcity
     password: Root@123

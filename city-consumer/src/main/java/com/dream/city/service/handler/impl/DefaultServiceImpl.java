@@ -11,7 +11,6 @@ import com.dream.city.base.model.entity.PlayerAccount;
 import com.dream.city.base.model.entity.RelationTree;
 import com.dream.city.base.model.enu.ReturnStatus;
 import com.dream.city.base.utils.JsonUtil;
-import com.dream.city.base.utils.RedisLock;
 import com.dream.city.base.utils.RedisUtils;
 import com.dream.city.service.consumer.*;
 import com.dream.city.service.handler.DefaultService;
@@ -57,6 +56,10 @@ public class DefaultServiceImpl implements DefaultService {
     ConsumerPlayerBlockChainService playerBlockChainService;
     @Autowired
     ConsumerMessageService messageService;
+    @Autowired
+    ConsumerDictionaryService dictionaryService;
+
+    final String MAIN_HASH_DATA = "MAIN_HASH_DATA_";
 
 
     @LcnTransaction
@@ -69,8 +72,15 @@ public class DefaultServiceImpl implements DefaultService {
 
         String username = jsonObject.getString("username");
         String playerId = jsonObject.getString("playerId");
+        Map<String, Object> data = new Hashtable<>();
 
         Player player = playerService.getPlayerByPlayerId(playerId);
+        if (redisUtils.hasKey(MAIN_HASH_DATA+playerId)){
+            Map rdata = redisUtils.hmget(MAIN_HASH_DATA+playerId);
+            message.getData().setData(rdata);
+            message.setDesc("主页数据汇总");
+            message.setCode(ReturnStatus.SUCCESS.getStatus());
+        }
 
 
         RelationTree tree = treeService.getRelationTree(player.getPlayerId());
@@ -134,7 +144,7 @@ public class DefaultServiceImpl implements DefaultService {
         Result result1 = salesService.getUsdtToMtRate(player.getPlayerId());
         BigDecimal rate = new BigDecimal(result1.getData().toString()).setScale(3);
 
-        Map<String, Object> data = new Hashtable<>();
+
 
         //消息数量 显示为小红点
         Result<Integer> integerResult = messageService.getUnReadCount(playerId);
@@ -143,6 +153,7 @@ public class DefaultServiceImpl implements DefaultService {
             int count = integerResult.getData();
             messages = count > 0 ? true : false;
         }
+
         //公告
         data.put("notices", notices);
         //我的信息Player
@@ -153,10 +164,17 @@ public class DefaultServiceImpl implements DefaultService {
         data.put("messages", messages);
         //商会准入
         data.put("commerce", commerce);
+        //用户商会级别
         data.put("level", level);
         //data.put("invest",invests);
+        //商会折扣
         data.put("rate", rate);
+        //修改密码扣除mt额度
+        String taxStr = dictionaryService.getValByKey("player.change.tran.pwd.tax");
+        Integer tax = Integer.parseInt(taxStr);
+        data.put("tradePassResetFee",tax);
 
+        redisUtils.hmset(MAIN_HASH_DATA+playerId,data);
 
         message.getData().setData(data);
         message.setDesc("主页数据汇总");
@@ -198,7 +216,7 @@ public class DefaultServiceImpl implements DefaultService {
             } else {
                 setAppVersion(version);
                 lock.unlock();
-                log.info("翻译锁成功！");
+                log.info("释放锁成功！");
                 message.setDesc("设置版本成功");
                 message.getData().setData("Success:" + getAppVersion());
             }

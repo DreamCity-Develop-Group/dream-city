@@ -97,13 +97,25 @@ public class PlayerServiceImpl implements PlayerService {
         if (StringUtils.isBlank(oldpwshop)) {
             pwdType = "setTraderPwd";
         }
-        Result result = changePwdValid(username, oldpwshop, pwdType);
-        if (!result.getSuccess()) {
-            return result;
-        }
 
         Player player = new Player();
         player.setPlayerName(username);
+        PlayerResp playerExit = playerMapper.getPlayerById(player);
+
+        // 用户不存在
+        if (playerExit == null) {
+            return Result.result(Boolean.FALSE, CityGlobal.Constant.USER_NOT_EXIT, ReturnStatus.ERROR_NOTEXISTS.getStatus());
+        }
+
+        if (StringUtils.isBlank(newpwshop)){
+            return Result.result(Boolean.FALSE, CityGlobal.Constant.USER_CHANGE_TRADERPWD_FAIL+":新密码为空", ReturnStatus.FAILED.getStatus());
+        }
+
+        /*Result result = changePwdValid(username, oldpwshop, pwdType);
+        if (!result.getSuccess()) {
+            return result;
+        }*/
+
         player.setPlayerTradePass(newpwshop);
         int i = playerMapper.updatePassByName(player);
         if (i > 0) {

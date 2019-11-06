@@ -34,10 +34,10 @@ public interface PlayerAccountMapper {
 
     })
     @Select("select * from player_account where 1=1 and  acc_player_id = #{playerId} limit 1 ")
-     PlayerAccount getAccountByPlayerId(String playerId);
+     PlayerAccount getAccountByPlayerId(@Param("playerId")String playerId);
 
     @Select("select acc_id accId, from player_account where 1=1 and acc_id=#{accId}")
-    PlayerAccount findPlayerAccount(int accid);
+    PlayerAccount findPlayerAccount(@Param("accid")int accid);
 
 
 
@@ -57,10 +57,10 @@ public interface PlayerAccountMapper {
      */
     @Select("select * from player_account where 1=1 and  acc_addr = #{address}")
     @ResultMap("BaseCityAccountResultMap")
-    PlayerAccount getPlayerAccountByAddr(String address);
+    PlayerAccount getPlayerAccountByAddr(@Param("address")String address);
 
     @Update("update player_account set acc_usdt = acc_usdt-#{payAmount} ,acc_usdt_availble=acc_usdt_availble-#{payAmount} where 1=1 adnd acc_player_id=#{playerId}")
-    void subtractAmount(BigDecimal payAmount, String playerId);
+    void subtractAmount(@Param("payAmount")BigDecimal payAmount, @Param("playerId")String playerId);
 
     @Insert("insert into `player_account`(acc_id,acc_player_id,acc_addr)value(0,#{accPlayerId},#{accAddr})")
     void createAccount(@Param("accPlayerId")String accPlayerId,@Param("accAddr")String accAddr);
@@ -68,7 +68,7 @@ public interface PlayerAccountMapper {
 
     @Select("select * from player_account where 1=1 and  acc_player_id = #{playerId}")
     @ResultMap("BaseCityAccountResultMap")
-    PlayerAccount getPlayerAccountByPlayerId(String playerId);
+    PlayerAccount getPlayerAccountByPlayerId(@Param("playerId")String playerId);
 
 
 

@@ -73,7 +73,10 @@ public interface SalesOrderMapper {
     @ResultMap("BaseSalesOrderResultMap")
     SalesOrder getSalesOrderByOrderId(String orderId);
 
-    @Update("update `sales_order` set order_state=#{orderState} where 1=1 and order_player_buyer=#{orderPlayerBuyer}")
+    @Update("update `sales_order` set order_state=#{orderState} " +
+            " where 1=1 and " +
+            " order_player_buyer=#{orderPlayerBuyer} " +
+            " and order_id=#{orderId}")
     int updateSalesOrder(SalesOrder order);
 
     @Update({"<script>" +
@@ -87,10 +90,11 @@ public interface SalesOrderMapper {
             "</script>"})
     void sendOrderMt(@Param("orderList") List<SalesOrder> orderList);
 
-    @Select("select * from `sales_order` where 1=1 and order_player_buyer = #{playerId} limit 1 ")
+    @Select("select * from `sales_order` where 1=1 and order_player_buyer = #{playerId} ")
+    @ResultMap("BaseSalesOrderResultMap")
     List<SalesOrder> getSalesOrderByBuyerPlayerId(String playerId);
 
-    @Select("select * from `sales_order` where 1=1 and order_state = #{state} limit 1 ")
+    @Select("select * from `sales_order` where 1=1 and order_state = #{state} ")
     @ResultMap("BaseSalesOrderResultMap")
     List<SalesOrder> getSalesOrdersByState(int state);
 

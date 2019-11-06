@@ -1,6 +1,7 @@
 package com.dream.city.controller;
 
 import com.dream.city.base.model.Message;
+import com.dream.city.base.model.enu.ReturnStatus;
 import com.dream.city.service.handler.TreeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,6 +31,7 @@ public class ConsumerTreeController {
             return treeService.treeAdd(msg);
         }catch (Exception e){
             //throw new BusinessException("setplayertree");
+            msg.getData().setCode(ReturnStatus.FAILED.getStatus());
             return msg;
         }
     }
@@ -46,6 +48,7 @@ public class ConsumerTreeController {
             return treeService.Join(msg);
         }catch (Exception e){
             //throw new BusinessException("setplayertree");
+            msg.getData().setCode(ReturnStatus.FAILED.getStatus());
             return msg;
         }
     }
@@ -62,6 +65,7 @@ public class ConsumerTreeController {
             return treeService.getMembers(msg);
         }catch (Exception e){
             //throw new BusinessException("setplayertree");
+            msg.getData().setCode(ReturnStatus.FAILED.getStatus());
             return msg;
         }
     }
@@ -78,6 +82,7 @@ public class ConsumerTreeController {
             return treeService.getSalesOrder(msg);
         }catch (Exception e){
             //throw new BusinessException("setplayertree");
+            msg.getData().setCode(ReturnStatus.FAILED.getStatus());
             return msg;
         }
     }
@@ -94,6 +99,7 @@ public class ConsumerTreeController {
             return treeService.setAutoSend(msg);
         }catch (Exception e){
             //throw new BusinessException("setplayertree");
+            msg.getData().setCode(ReturnStatus.FAILED.getStatus());
             return msg;
         }
 
@@ -111,6 +117,7 @@ public class ConsumerTreeController {
             return treeService.sendOrder(msg);
         }catch (Exception e){
             //throw new BusinessException("setplayertree");
+            msg.getData().setCode(ReturnStatus.FAILED.getStatus());
             return msg;
         }
     }
@@ -128,6 +135,7 @@ public class ConsumerTreeController {
             return treeService.createOrder(msg);
         }catch (Exception e){
             //throw new BusinessException("setplayertree");
+            msg.getData().setCode(ReturnStatus.FAILED.getStatus());
             return msg;
         }
     }
@@ -145,6 +153,7 @@ public class ConsumerTreeController {
             return treeService.checkOrderPass(msg);
         }catch (Exception e){
             //throw new BusinessException("setplayertree");
+            msg.getData().setCode(ReturnStatus.FAILED.getStatus());
             msg.setDesc(e.getMessage());
             return msg;
         }

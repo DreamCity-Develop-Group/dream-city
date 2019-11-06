@@ -1,7 +1,7 @@
 package com.dream.city.service.consumer;
 
 import com.dream.city.base.model.Result;
-import com.dream.city.service.consumer.impl.FallBackCityUser;
+import com.dream.city.service.impl.FallBackCityUser;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
