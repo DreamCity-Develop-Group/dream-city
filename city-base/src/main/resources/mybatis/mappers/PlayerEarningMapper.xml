@@ -249,7 +249,10 @@
       <if test="inType != null">
         in_type = #{inType,jdbcType=INTEGER},
       </if>
-      update_time = now(),
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+
     </set>
     where earn_id = #{earnId,jdbcType=INTEGER}
   </update>

@@ -105,4 +105,14 @@ public interface SalesOrderMapper {
     @Select("select * from `sales_order` where 1=1 and order_state = '1' and order_player_buyer = #{playerId} limit 1 ")
     @ResultMap("BaseSalesOrderResultMap")
     List<SalesOrder> selectSalesSellerOrders(String playerId);
+
+    /**
+     * 某卖家超时或拒绝的交易数量
+     * @param sellerId
+     * @param status
+     * @return
+     */
+    @Select("select count(*) from `sales_order` where order_state = #{status} and order_player_buyer = #{buyer_id} and order_player_seller = #{sellerId} ")
+    int selectSalesSellerRejectTimes(@Param("buyer_id") String buyer_id, @Param("sellerId") String sellerId, @Param("status") int status);
+
 }

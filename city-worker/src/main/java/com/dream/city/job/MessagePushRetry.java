@@ -26,4 +26,6 @@ public class MessagePushRetry extends QuartzJobBean {
         //推送消息到客户端
         messageService.pushRetry(data.get("username").toString(),data);
     }
+
+
 }

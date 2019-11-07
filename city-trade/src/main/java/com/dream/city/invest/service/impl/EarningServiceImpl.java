@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -63,6 +64,7 @@ public class EarningServiceImpl implements EarningService {
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
     public int updateEarningById(PlayerEarning record) throws BusinessException {
+        record.setUpdateTime(new Date());
         Integer i = earningMapper.updateByPrimaryKeySelective(record);
         return i == null? 0: i;
     }

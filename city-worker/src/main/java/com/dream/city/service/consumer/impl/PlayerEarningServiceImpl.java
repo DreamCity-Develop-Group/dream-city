@@ -9,13 +9,16 @@ import com.dream.city.base.model.mapper.PlayerEarningMapper;
 import com.dream.city.base.model.resp.PlayerEarningResp;
 import com.dream.city.service.PlayerEarningService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 
 /**
  * @author Wvv
  */
+@Service
 public class PlayerEarningServiceImpl  implements PlayerEarningService {
     @Autowired
     PlayerEarningMapper playerEarningMapper;
@@ -53,6 +56,7 @@ public class PlayerEarningServiceImpl  implements PlayerEarningService {
     @Transactional
     @Override
     public void update(PlayerEarning playerEarning)throws BusinessException {
+        playerEarning.setUpdateTime(new Date());
         playerEarningMapper.updateByPrimaryKeySelective(playerEarning);
     }
 
@@ -61,5 +65,12 @@ public class PlayerEarningServiceImpl  implements PlayerEarningService {
     @Override
     public void addEarnLog(EarnIncomeLog earnIncomeLog)throws BusinessException {
         earnIncomeLogMapper.add(earnIncomeLog);
+    }
+
+    @LcnTransaction
+    @Transactional
+    @Override
+    public List<PlayerEarning> getPlayerEarningByAfterHours(Integer withdrewState, Integer afterHours) {
+        return playerEarningMapper.getPlayerEarningByAfterHours(withdrewState, afterHours);
     }
 }

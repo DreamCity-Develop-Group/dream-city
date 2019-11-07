@@ -5,6 +5,7 @@ import com.dream.city.base.exception.BusinessException;
 import com.dream.city.base.model.entity.InvestOrder;
 import com.dream.city.base.model.entity.InvestRule;
 import com.dream.city.base.model.enu.InvestStatus;
+import com.dream.city.base.model.enu.ReturnStatus;
 import com.dream.city.base.model.mapper.InvestOrderMapper;
 import com.dream.city.service.InvestOrderService;
 import com.dream.city.service.InvestService;
@@ -47,6 +48,8 @@ public class InvestOrderServiceImpl implements InvestOrderService {
     @Override
     public Map<String, List<InvestOrder>> getInvestOrdersByCurrentDay(Integer investId, List<InvestRule> rules,int[] states)throws BusinessException {
         List<InvestOrder> investOrders = investOrderMapper.getInvestOrdersByCurrentDay(investId, InvestStatus.SUBSCRIBED.getStatus());
+
+
         //final List<InvestOrder>[] investOrdersSucess = new List[]{new ArrayList<>()};
         final Map<String, List<InvestOrder>> investOrdersSucess = new Hashtable<>();
         long total1 = investOrders.size();
@@ -55,7 +58,15 @@ public class InvestOrderServiceImpl implements InvestOrderService {
         //根据权重排序，权重数值小的权限大，应该先计算
         rules.sort((r1, r2) -> (r1.getRuleLevel() - r2.getRuleLevel()));
 
+        //太少就不要按策略筛选了.下方default已加
+        if(investOrders.size() > 0 && investOrders.size() <= 100){
+
+            //investOrdersSucess.put("1", investOrders);
+
+        }
+
         rules.forEach((rule) -> {
+
             switch (rule.getRuleOpt()) {
                 case "OPT_RATE":
                     switch (rule.getRuleFlag()) {
@@ -96,6 +107,8 @@ public class InvestOrderServiceImpl implements InvestOrderService {
                             break;
                         default:
 
+                            investOrdersSucess.put(rule.getRuleFlag(), investOrders);
+
                     }
                     break;
                 case "OPT_TOP"://新增玩家 前20
@@ -109,17 +122,33 @@ public class InvestOrderServiceImpl implements InvestOrderService {
                         case "":
                             break;
                         default:
+                            investOrdersSucess.put(rule.getRuleFlag(), investOrders);
+
                     }
                     break;
                 default:
 
+                    investOrdersSucess.put(rule.getRuleFlag(), investOrders);
+
 
             }
         });
-        investOrders.forEach(order -> order.setOrderState(String.valueOf(InvestStatus.SUBSCRIBE)));
-        investOrderMapper.setOrdersState(investOrders);
+
+        //investOrders.forEach(order -> order.setOrderState(String.valueOf(InvestStatus.SUBSCRIBE)));
+
+        investOrders.forEach((order) -> {
+            order.setOrderState(InvestStatus.SUBSCRIBE_PASS.getStatus());
+        });
+
+        if (investOrders.size() > 0){
+            investOrderMapper.setOrdersState(investOrders);
+        }
+
+
         return investOrdersSucess;
     }
+
+
 
     /**
      * 第一次投资
@@ -252,9 +281,12 @@ public class InvestOrderServiceImpl implements InvestOrderService {
     @Override
     public void setOrderState(List<InvestOrder> orders, InvestStatus status)throws BusinessException {
         orders.forEach((order) -> {
-            order.setOrderState(String.valueOf(status.getStatus()));
+            order.setOrderState(status.getStatus());
         });
-        investOrderMapper.setOrdersState(orders);
+        if(orders.size() > 0 ){
+            investOrderMapper.setOrdersState(orders);
+        }
+
     }
 
     /**
@@ -266,9 +298,11 @@ public class InvestOrderServiceImpl implements InvestOrderService {
     @Transactional
     @Override
     public void updateOrderState(InvestOrder order, InvestStatus status) throws BusinessException{
-        order.setOrderState(String.valueOf(status.getStatus()));
+        order.setOrderState(status.getStatus());
         investOrderMapper.updateOrder(order);
     }
+
+
 
 
     /**
@@ -341,6 +375,11 @@ public class InvestOrderServiceImpl implements InvestOrderService {
     public List<InvestOrder> getInvestOrdersByCurrent(Integer inId, int[] state,int start,int end)throws BusinessException {
         List<InvestOrder> orders = investOrderMapper.getInvestOrdersByCurrent(inId,state,start,end);
         return orders;
+    }
+
+    @Override
+    public List<InvestOrder> getInvestOrdersByState(Integer state) {
+        return investOrderMapper.getInvestOrdersByState(state);
     }
 
     @LcnTransaction

@@ -1,6 +1,7 @@
 package com.dream.city.service;
 
-import com.dream.city.base.model.entity.CityInvest;
+
+import com.dream.city.base.model.entity.Player;
 import com.dream.city.base.model.entity.PlayerAccount;
 import com.dream.city.base.model.entity.PlayerAccountLog;
 
@@ -17,4 +18,7 @@ public interface PlayerAccountService {
     void updateProfitToAccount(PlayerAccount account);
 
     PlayerAccount getPlayerAccount(String playerId);
+    Player getPlayerByPlayerId(String playerId);
+
+    void updatePlayerAccounts(List<PlayerAccount> accounts);
 }

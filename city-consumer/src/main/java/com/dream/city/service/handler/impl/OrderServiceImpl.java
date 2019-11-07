@@ -340,7 +340,8 @@ public class OrderServiceImpl implements OrderService {
             recordReq.setOrderInvestId(invest.getInId());
             recordReq.setOrderPayerId(orderPayerId);
             //已预约
-            recordReq.setOrderState(InvestStatus.SUBSCRIBED.name());
+            recordReq.setOrderState(InvestStatus.SUBSCRIBED.getStatus());
+            //recordReq.setOrderState(ReturnStatus.INVEST_SUBSCRIBE.getStatus());
             recordReq.setOrderRepeat(orderRepeat);
             recordReq.setOrderAmount(invest.getInLimit());
             recordReq.setOrderName(invest.getInName());

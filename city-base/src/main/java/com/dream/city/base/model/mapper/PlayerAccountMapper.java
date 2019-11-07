@@ -15,26 +15,27 @@ import java.util.List;
 @Repository
 public interface PlayerAccountMapper {
 
-
     @Results(id = "BaseCityAccountResultMap", value = {
             @Result(property = "accId", column = "acc_id", id = true),
-            @Result(property = "accPlayerId", column = "acc_player_id", id = true),
-            @Result(property = "accAddr", column = "acc_addr", id = true),
-            @Result(property = "accPass", column = "acc_pass", id = true),
-            @Result(property = "accUsdt", column = "acc_usdt", id = true),
-            @Result(property = "accUsdtAvailable", column = "acc_usdt_available", id = true),
-            @Result(property = "accUsdtFreeze", column = "acc_usdt_freeze", id = true),
-            @Result(property = "accMt", column = "acc_mt", id = true),
-            @Result(property = "accMtAvailable", column = "acc_mt_available", id = true),
-            @Result(property = "accMtFreeze", column = "acc_mt_freeze", id = true),
-            @Result(property = "accIncome", column = "acc_income", id = true),
-            //@Result(property = "version", column = "version", id = true),
-            @Result(property = "createTime", column = "create_time", id = true),
-            @Result(property = "updateTime", column = "update_time", id = true),
+            @Result(property = "accPlayerId", column = "acc_player_id"),
+            @Result(property = "accAddr", column = "acc_addr"),
+            @Result(property = "accPass", column = "acc_pass"),
+            @Result(property = "accUsdt", column = "acc_usdt"),
+            @Result(property = "accUsdtAvailable", column = "acc_usdt_available"),
+            @Result(property = "accUsdtFreeze", column = "acc_usdt_freeze"),
+            @Result(property = "accMt", column = "acc_mt"),
+            @Result(property = "accMtAvailable", column = "acc_mt_available"),
+            @Result(property = "accMtFreeze", column = "acc_mt_freeze"),
+            @Result(property = "accIncome", column = "acc_income"),
+            @Result(property = "version", column = "version"),
+            @Result(property = "createTime", column = "create_time"),
+            @Result(property = "updateTime", column = "update_time"),
 
     })
-    @Select("select * from player_account where 1=1 and  acc_player_id = #{playerId} limit 1 ")
-     PlayerAccount getAccountByPlayerId(String playerId);
+
+    @Select("select * from player_account where 1=1 and  acc_player_id = #{playerId} limit 0,1 ")
+    //@ResultMap("BaseCityAccountResultMap")
+    PlayerAccount getAccountByPlayerId(String playerId);
 
     @Select("select acc_id accId, from player_account where 1=1 and acc_id=#{accId}")
     PlayerAccount findPlayerAccount(int accid);

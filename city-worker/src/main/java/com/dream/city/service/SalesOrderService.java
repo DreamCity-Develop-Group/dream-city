@@ -15,4 +15,6 @@ public interface SalesOrderService {
     List<SalesOrder> getSalesOrdersByState(int state);
 
     SalesOrder getSalesOrder();
+
+    int selectSalesSellerRejectTimes(String buyer_id, String sellerId, int status);
 }

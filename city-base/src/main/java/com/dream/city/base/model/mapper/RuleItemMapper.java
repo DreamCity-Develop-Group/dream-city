@@ -106,6 +106,15 @@ public interface RuleItemMapper {
     void setOrdersState(@Param("orderList") List<CityInvest> orderList);
 
     @Select("select * from  `rule_item` where 1=1 and item_flag= #{key}")
+    @Results(id = "BaseRuleItemResultMap", value = {
+            @Result(property = "itemId", column = "item_id"),
+            @Result(property = "itemName", column = "item_name"),
+            @Result(property = "itemDesc", column = "item_desc"),
+            @Result(property = "itemFlag", column = "item_flag"),
+            @Result(property = "itemState", column = "item_state"),
+            @Result(property = "createTime", column = "create_time"),
+            @Result(property = "updateTime", column = "update_time"),
+    })
     RuleItem getInvestRuleItemByKey(String key);
 
 

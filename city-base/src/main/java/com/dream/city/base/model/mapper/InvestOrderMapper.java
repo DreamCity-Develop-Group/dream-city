@@ -34,7 +34,7 @@ public interface InvestOrderMapper {
     @Results(id = "BaseInvestOrderResultMap", value = {
             @Result(property = "orderId", column = "order_id", id = true),
             @Result(property = "orderInvestId", column = "order_invest_id"),
-            @Result(property = "orderPlayerId", column = "order_player_id"),
+            @Result(property = "orderPayerId", column = "order_payer_id"),
             @Result(property = "orderAmount", column = "order_amount"),
             @Result(property = "orderState", column = "order_state"),
             @Result(property = "orderRepeat", column = "order_repeat"),
@@ -48,6 +48,10 @@ public interface InvestOrderMapper {
     @Select("select * from `invest_order` where 1=1 and player_id = #{playerId} ")
     List<InvestOrder> getAllInvestOrdersByPlayerId(String playerId);
 
+    @Select("select * from `invest_order` where order_state=#{state}")
+    @ResultMap("BaseInvestOrderResultMap")
+    List<InvestOrder> getInvestOrdersByState(@Param("state") Integer state);
+
     @Select({
             "<script>",
             "select",
@@ -59,10 +63,13 @@ public interface InvestOrderMapper {
             "</foreach>",
             "</script>"
     })
+    @ResultMap("BaseInvestOrderResultMap")
     List<InvestOrder> getSuccessInvestOrdersByPlayerId(@Param("playerId") String playerId, @Param("states") int[]states);
 
     @Select("select * from `invest_order` where 1=1 and order_invest_id = #{investId} and order_state=#{state}")
-    List<InvestOrder> getInvestOrdersByCurrentDay(Integer investId,int state);
+    //List<InvestOrder> getInvestOrdersByCurrentDay(Integer investId,int state);
+    @ResultMap("BaseInvestOrderResultMap")
+    List<InvestOrder> getInvestOrdersByCurrentDay(@Param("investId") Integer investId,@Param("state") Integer state);
 
     @Select("select * from `invest_order` where 1=1 and order_invest_id = #{investId} and order_state=#{state} and order_repeat = 0 ")
     List<InvestOrder> getInvestOrdersNoRepeat(Integer investId,int state);
@@ -75,8 +82,10 @@ public interface InvestOrderMapper {
      *
      * @param order
      */
+    //有错，不要用。There is no getter for property named 'investId'
     @Update("update `invest_order` set order_state = #{orderState} where 1=1 and order_invest_id = #{investId} and order_id=#{orderId}")
     void updateOrder(InvestOrder order);
+
 
 
     /**
@@ -89,9 +98,10 @@ public interface InvestOrderMapper {
             "<foreach collection=\"orderList\" item=\"item\" separator=\";\">" +
             " UPDATE" +
             " `invest_order`" +
-            " SET order_state = #{item.orderState, jdbcType=TINYINT}, " +
-            "  WHERE " +
-            "  AND order_id = #{item.orderId, jdbcType=VARCHAR} " +
+            //" SET order_state = #{item.orderState, jdbcType=TINYINT}, " +
+            " SET order_state = #{item.orderState, jdbcType=TINYINT} " +
+            "  WHERE 1 = 1" +
+            "  AND order_id = #{item.orderId, jdbcType=INTEGER} " +
             "</foreach>" +
             "</script>"})
     void setOrdersState(@Param("orderList") List<InvestOrder> orderList);
@@ -106,12 +116,13 @@ public interface InvestOrderMapper {
      * @return
      */
     @Select("select * from `invest_order` where 1=1 and order_invest_id = #{investId} and order_state=#{state} and create_time BETWEEN #{start} and #{end} ")
-    List<InvestOrder> getInvestOrdersAmountByDayInterval(Integer investId,int state,String start,String end);
+    @ResultMap("BaseInvestOrderResultMap")
+    List<InvestOrder> getInvestOrdersAmountByDayInterval(@Param("investId") Integer investId,@Param("state") int state,@Param("start") String start,@Param("end") String end);
 
     @Select({
             "<script>",
             "select",
-            "*",
+            "count(*)",
             "from `invest_order`",
             "where 1=1 and order_invest_id = #{investId} and order_state in ",
             "<foreach collection='states' item='state' open='(' separator=',' close=')'>",
@@ -119,20 +130,21 @@ public interface InvestOrderMapper {
             "</foreach>",
             "</script>"
     })
-    int getInvestOrdersSum(Integer investId,int[]states);
+    int getInvestOrdersSum(@Param("investId") Integer investId, @Param("states") int[]states);
 
     @Select({
             "<script>",
             "select",
             "*",
             "from `invest_order`",
-            "where 1=1 and order_invest_id = #{investId} and order_state in ",
+            "where 1=1 and order_invest_id = #{inId} and order_state in ",
             "<foreach collection='states' item='state' open='(' separator=',' close=')'>",
             "#{state}",
             "</foreach>",
             " limit #{start},#{end}",
             "</script>"
     })
-    List<InvestOrder> getInvestOrdersByCurrent(Integer inId, int[] states, int start, int end);
+
+    List<InvestOrder> getInvestOrdersByCurrent(@Param("inId") Integer inId, @Param("states") int[] states, @Param("start") int start, @Param("end") int end);
 
 }

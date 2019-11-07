@@ -20,4 +20,13 @@ public interface PlayerEarningService {
     void update(PlayerEarning playerEarning);
 
     void addEarnLog(EarnIncomeLog earnIncomeLog);
+
+    /**
+     * 获取一定时间范围内符合捡漏的player eaning
+     * @param withdrewState
+     * @param afterHours
+
+     * @return
+     */
+    List<PlayerEarning> getPlayerEarningByAfterHours(Integer withdrewState, Integer afterHours);
 }

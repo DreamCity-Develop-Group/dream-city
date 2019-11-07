@@ -88,21 +88,21 @@ public class PropertyServiceImpl implements PropertyService {
                     //物业投资按钮
                     int status = ReturnStatus.INVEST_SUBSCRIBE.getStatus();
                     logger.info("物业状态",invest.getOrderState());
-                    if (StringUtils.isBlank(invest.getOrderState())){
+                    if (InvestStatus.SUBSCRIBE.getStatus() == invest.getOrderState()){
                         //预约
                         status = ReturnStatus.INVEST_SUBSCRIBE.getStatus();
                     }else {
-                        if(InvestStatus.SUBSCRIBE.name().equalsIgnoreCase(invest.getOrderState())){
+                        if(InvestStatus.SUBSCRIBE.getStatus() == invest.getOrderState()){
                             //预约
                             status = ReturnStatus.INVEST_SUBSCRIBE.getStatus();
-                        }else if(InvestStatus.SUBSCRIBED.name().equalsIgnoreCase(invest.getOrderState())){
+                        }else if(InvestStatus.SUBSCRIBED.getStatus() == invest.getOrderState()){
                             //已预约
                             status = ReturnStatus.INVEST_SUBSCRIBED.getStatus();
-                        }else if(InvestStatus.MANAGEMENT.name().equalsIgnoreCase(invest.getOrderState())){
+                        }else if(InvestStatus.MANAGEMENT.getStatus() == invest.getOrderState()){
                             //经营中
                             status = ReturnStatus.INVEST_MANAGEMENT.getStatus();
                         }
-                        if(InvestStatus.EXTRACT.name().equalsIgnoreCase(invest.getOrderState())){
+                        if(InvestStatus.EXTRACT.getStatus() == invest.getOrderState()){
                             //可提取
                             status = ReturnStatus.INVEST_EXTRACT.getStatus();
                         }

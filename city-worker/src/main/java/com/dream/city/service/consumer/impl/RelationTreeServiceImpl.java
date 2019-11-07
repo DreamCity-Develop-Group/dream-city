@@ -2,8 +2,12 @@ package com.dream.city.service.consumer.impl;
 
 import com.codingapi.txlcn.tc.annotation.LcnTransaction;
 import com.dream.city.base.exception.BusinessException;
+import com.dream.city.base.model.entity.CommerceRelation;
 import com.dream.city.base.model.entity.RelationTree;
+import com.dream.city.base.model.mapper.CommerceRelationMapper;
+import com.dream.city.base.model.mapper.RelationTreeMapper;
 import com.dream.city.service.RelationTreeService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +21,11 @@ import java.util.*;
 
 @Service
 public class RelationTreeServiceImpl implements RelationTreeService {
+    @Autowired
+    private CommerceRelationMapper commerceRelationMapper;
+
+    @Autowired
+    private RelationTreeMapper treeMapper;
 
     @LcnTransaction
     @Transactional
@@ -93,4 +102,23 @@ public class RelationTreeServiceImpl implements RelationTreeService {
     public List<RelationTree> findLevel(String playerId, int level) {
         return null;
     }
+
+
+    @LcnTransaction
+    @Transactional
+    @Override
+    public RelationTree getParent(String playerId) throws BusinessException {
+        RelationTree player = treeMapper.getByPlayer(playerId);
+        return treeMapper.getByPlayer(player.getTreeParentId());
+    }
+
+    @LcnTransaction
+    @Transactional
+    @Override
+    public boolean hasParent(String playerId) {
+        RelationTree tree = getParent(playerId);
+        return tree != null;
+    }
+
+
 }
