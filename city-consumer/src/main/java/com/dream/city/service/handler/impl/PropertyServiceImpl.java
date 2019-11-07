@@ -92,7 +92,28 @@ public class PropertyServiceImpl implements PropertyService {
                         //预约
                         status = ReturnStatus.INVEST_SUBSCRIBE.getStatus();
                     }else {
-                        if(InvestStatus.SUBSCRIBE.name().equalsIgnoreCase(invest.getOrderState())){
+                        String string= InvestStatus.SUBSCRIBE.name();
+                        int code = InvestStatus.SUBSCRIBE.getStatus();
+                        int state = Integer.parseInt(invest.getOrderState());
+
+                        if (state == InvestStatus.SUBSCRIBE.getStatus()){
+                            //预约
+                            status = ReturnStatus.INVEST_SUBSCRIBE.getStatus();
+                        }else if(state == InvestStatus.SUBSCRIBED.getStatus()){
+                            //已预约
+                            status = ReturnStatus.INVEST_SUBSCRIBED.getStatus();
+                        }else if (state == InvestStatus.MANAGEMENT.getStatus()){
+                            //经营中
+                            status = ReturnStatus.INVEST_MANAGEMENT.getStatus();
+                        }else if(state == InvestStatus.EXTRACT.getStatus()){
+                            //可提取
+                            status = ReturnStatus.INVEST_EXTRACT.getStatus();
+                        }else {
+                            //预约
+                            status = ReturnStatus.INVEST_SUBSCRIBE.getStatus();
+                        }
+
+                        /*if(InvestStatus.SUBSCRIBE.name().equalsIgnoreCase(invest.getOrderState())){
                             //预约
                             status = ReturnStatus.INVEST_SUBSCRIBE.getStatus();
                         }else if(InvestStatus.SUBSCRIBED.name().equalsIgnoreCase(invest.getOrderState())){
@@ -105,7 +126,7 @@ public class PropertyServiceImpl implements PropertyService {
                         if(InvestStatus.EXTRACT.name().equalsIgnoreCase(invest.getOrderState())){
                             //可提取
                             status = ReturnStatus.INVEST_EXTRACT.getStatus();
-                        }
+                        }*/
                     }
                     if(invest.getIsWithdrew() != null && invest.getIsWithdrew() == 2){
                         //可提取

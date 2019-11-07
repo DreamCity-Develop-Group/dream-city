@@ -142,7 +142,7 @@ public class ConsumerTradeController {
      *
      * @return
      */
-    @ApiOperation(value = "玩家转账", httpMethod = "POST", notes = "t参数:playerId,username,nick,accUsdt,accMt", response = Message.class)
+    @ApiOperation(value = "玩家转账", httpMethod = "POST", notes = "参数:playerId,username,nick,accUsdt,accMt", response = Message.class)
     @RequestMapping("/trade/transfer")
     public Message playerTransfer(@RequestBody Message msg) throws BusinessException {
         try {

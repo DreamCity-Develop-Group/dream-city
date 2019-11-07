@@ -338,12 +338,7 @@ public class PlayerServiceImpl implements PlayerService {
         UserReq jsonReq = DataUtils.getUserReq(msg);
         Result result = consumerPlayerService.forgetPwd(jsonReq.getUsername(), jsonReq.getNewpw());
 
-        Map<String, String> t = new HashMap<>();
-        t.put("desc", result.getMsg());
-        MessageData data = new MessageData(msg.getData().getType(), msg.getData().getModel());
-        data.setData(t);
-        Message message = new Message(msg.getSource(), msg.getTarget(), data);
-        return message;
+        return Message.generateMessage(msg,result);
     }
 
     /**

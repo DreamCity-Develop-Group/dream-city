@@ -26,10 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Wvv
@@ -111,24 +108,33 @@ public class InvestServiceImpl implements InvestService {
         JSONObject jsonObject = JsonUtil.parseJsonToObj(json,JSONObject.class);
         String playerId = jsonObject.getString("playerId");
         Map<String, Object> dataResult = new Hashtable<>();
+
         Map<String, Object> data = new Hashtable<>();
         if (redisUtils.hasKey(INVERST_HASH_DATA+playerId)){
             Map rdata = redisUtils.hmget(INVERST_HASH_DATA+playerId);
-            msg.getData().setData(rdata);
-            msg.setDesc("取出投资数据成功");
-            msg.setCode(ReturnStatus.SUCCESS.getStatus());
-            return msg;
+            List list = (List)rdata.get("investList");
+            if (list.size()>0){
+                msg.getData().setData(rdata);
+                msg.setDesc("取出投资数据成功");
+                msg.setCode(ReturnStatus.SUCCESS.getStatus());
+                return msg;
+            }else{
+                redisUtils.del(INVERST_HASH_DATA+playerId);
+            }
         }
 
         CityInvestReq invest = DataUtils.getInvestFromMessage(msg);
-        Result<List<Map<String, Object>>> result = propertyService.getPropertyLsit(invest);
 
-        dataResult.put("investList", result.getData());
         if (StringUtils.isNotBlank(invest.getFriendId())) {
             dataResult.put("playerId", invest.getFriendId());
+            invest.setPlayerId(invest.getPlayerId());
         } else {
             dataResult.put("playerId", invest.getPlayerId());
         }
+
+        Result<List<Map<String, Object>>> result = propertyService.getPropertyLsit(invest);
+
+        dataResult.put("investList", result.getData());
 
         redisUtils.hmset(INVERST_HASH_DATA+playerId,dataResult);
 

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -93,7 +94,7 @@ public class PropertyController {
         logger.info("物业列表，{}", invest);
         boolean success = Boolean.FALSE;
         String desc = "查询物业列表失败";
-        List<InvestResp> data = null;
+        List<InvestResp> data = new ArrayList<>();
         try {
             data = investService.getInvestLsit(invest);
             desc = "查询物业列表成功";

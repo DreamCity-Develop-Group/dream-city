@@ -16,6 +16,7 @@ import com.dream.city.base.model.resp.InvestResp;
 import com.dream.city.base.model.resp.PlayerResp;
 import com.dream.city.base.utils.DataUtils;
 import com.dream.city.base.utils.KeyGenerator;
+import com.dream.city.base.utils.RedisUtils;
 import com.dream.city.service.consumer.*;
 import com.dream.city.service.handler.CommonService;
 import com.dream.city.service.handler.OrderService;
@@ -41,6 +42,8 @@ import java.util.*;
 public class OrderServiceImpl implements OrderService {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    final String INVERST_HASH_DATA = "INVERST_HASH_DATA_";
+
     @Autowired
     private ConsumerOrderService orderService;
     @Autowired
@@ -62,6 +65,8 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     CommonService commonService;
+    @Autowired
+    RedisUtils redisUtils;
 
 
     @LcnTransaction
@@ -116,9 +121,9 @@ public class OrderServiceImpl implements OrderService {
                 desc = "项目投资已结束";
             }
             //4限额
-        /*if (orderReq.getOrderAmount().compareTo(invest.getInLimit())>0){
-            desc = "超过项目投资限额，投资限额为：" + invest.getInLimit();
-        }*/
+            /*if (orderReq.getOrderAmount().compareTo(invest.getInLimit())>0){
+                desc = "超过项目投资限额，投资限额为：" + invest.getInLimit();
+            }*/
             Result<PlayerAccount> playerAccountResult = accountService.getPlayerAccount(player.getPlayerId());
             PlayerAccount playerAccount = DataUtils.toJavaObject(playerAccountResult.getData(), PlayerAccount.class);
             //5USDT不足
@@ -167,7 +172,7 @@ public class OrderServiceImpl implements OrderService {
             //总税金
             BigDecimal inTax = invest.getPersonalInTax().add(invest.getEnterpriseIntax()).add(invest.getInQuotaTax());
             if (order != null && order.getOrderId() != null) {
-                updatePlayerAccountResult = this.deductPlayerAccountAmount(orderAmount, inTax, playerAccount);
+                updatePlayerAccountResult = deductPlayerAccountAmount(orderAmount, inTax, playerAccount);
                 success = updatePlayerAccountResult.getSuccess();
                 desc = updatePlayerAccountResult.getMsg();
             } else {
@@ -249,9 +254,13 @@ public class OrderServiceImpl implements OrderService {
 
                 success = Boolean.TRUE;
                 desc = "预约投资成功";
+                if (redisUtils.hasKey(INVERST_HASH_DATA+player.getPlayerId())){
+                    //清除缓存,让客户端更新
+                    redisUtils.del(INVERST_HASH_DATA+player.getPlayerId());
+                }
                 msg.getData().setCode(ReturnStatus.SUCCESS.getStatus());
                 result.put("usdtFreeze", trade.getTradeAmount());
-                result.put("mtFreeze", invest.getPersonalInTax().add(invest.getEnterpriseIntax()).add(invest.getInQuotaTax()));
+                //result.put("mtFreeze", invest.getPersonalInTax().add(invest.getEnterpriseIntax()).add(invest.getInQuotaTax()));
                 result.put("state", ReturnStatus.INVEST_SUBSCRIBED.getStatus());
             } else {
                 success = Boolean.FALSE;

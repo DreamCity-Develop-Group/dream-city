@@ -54,9 +54,8 @@ public class PlayerServiceImpl implements PlayerService {
     public Result forgetPwd(String username, String newPwd) throws BusinessException {
         PlayerResp player = getPlayerByName(username, null);
         if (player == null) {
-            return Result.result(Boolean.FALSE, CityGlobal.Constant.USER_NOT_EXIT);
+            return Result.result(Boolean.FALSE, CityGlobal.Constant.USER_NOT_EXIT,ReturnStatus.ERROR_NOTEXISTS.getStatus(),null);
         }
-
         return changePwd(player.getPlayerId(), newPwd);
     }
 
@@ -84,9 +83,9 @@ public class PlayerServiceImpl implements PlayerService {
         int i = playerMapper.updateByPlayerId(player);
         if (i > 0) {
             // 修改密码成功
-            return Result.result(Boolean.TRUE, CityGlobal.Constant.USER_CHANGE_PWD_SUCCESS);
+            return Result.result(Boolean.TRUE, CityGlobal.Constant.USER_CHANGE_PWD_SUCCESS,ReturnStatus.SUCCESS.getStatus());
         }
-        return Result.result(Boolean.FALSE, CityGlobal.Constant.USER_CHANGE_PWD_FAIL);
+        return Result.result(Boolean.FALSE, CityGlobal.Constant.USER_CHANGE_PWD_FAIL,ReturnStatus.SET_FAILED.getStatus());
     }
 
     @LcnTransaction
@@ -140,7 +139,7 @@ public class PlayerServiceImpl implements PlayerService {
 
         // 旧密码不正确 [不进行旧密码判断]
         if ("resetLoginPwd".equalsIgnoreCase(pwdType) && !playerExit.getPlayerPass().equals(oldpwshop)) {
-            //return Result.result(Boolean.FALSE, CityGlobal.Constant.USER_OLD_PWD_ERROR, ReturnStatus.ERROR_PASS.getStatus());
+            return Result.result(Boolean.FALSE, CityGlobal.Constant.USER_OLD_PWD_ERROR, ReturnStatus.ERROR_PASS.getStatus());
         }
         // 交易密码 没有交易密码的设置交易密码，有交易密码的修改交易密码
         if ("setTraderPwd".equalsIgnoreCase(pwdType)) {
@@ -148,9 +147,7 @@ public class PlayerServiceImpl implements PlayerService {
         }
 
         // 交易密码 没有交易密码的设置交易密码，有交易密码的修改交易密码
-        if ("resetTraderPwd".equalsIgnoreCase(pwdType)
-                && StringUtils.isNotBlank(playerExit.getPlayerTradePass())
-                && !playerExit.getPlayerTradePass().equals(oldpwshop)) {
+        if ("resetTraderPwd".equalsIgnoreCase(pwdType)&& StringUtils.isNotBlank(playerExit.getPlayerTradePass()) && !playerExit.getPlayerTradePass().equals(oldpwshop)) {
             return Result.result(Boolean.FALSE, CityGlobal.Constant.USER_OLD_PWD_ERROR, ReturnStatus.ERROR_PASS.getStatus());
         }
 
