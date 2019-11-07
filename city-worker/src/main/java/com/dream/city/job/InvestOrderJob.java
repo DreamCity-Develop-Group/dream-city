@@ -89,28 +89,23 @@ public class InvestOrderJob extends QuartzJobBean {
             orders.forEach((flag,order)->{
                 orderList.addAll(order);
             });
+
             if(orderList.size()>0){
                 investOrderService.setOrderState(orderList, InvestStatus.MANAGEMENT);
                 //插入player_earning
                 orderList.forEach((order)->{
                     PlayerEarning playerEarning = new  PlayerEarning();
-                    playerEarning.setEarnInvestId(order.getOrderId());
+
                     playerEarning.setEarnInvestId(order.getOrderInvestId());
-                    //以下有疑问？
-                    playerEarning.setEarnCurrent(order.getOrderAmount());
-                    if(playerEarning.getEarnCurrent().compareTo(new BigDecimal("1")) >= 0){
-                        playerEarning.setIsWithdrew(2);
-                    }
+                    playerEarning.setOrderId(order.getOrderId());
+                    //playerEarning.setEarnCurrent(order.getOrderAmount());
+                    playerEarning.setIsWithdrew(1);
                     playerEarning.setEarnPlayerId(order.getOrderPayerId());
                     playerEarning.setUpdateTime(new Date());
                     playerEarning.setCreateTime(new Date());
                     playerEarningMapper.insertSelective(playerEarning);
                 });
             }
-
-
-
-
         });
 
 
@@ -144,7 +139,6 @@ public class InvestOrderJob extends QuartzJobBean {
                 playerAccountLog.setDesc("投资预约审核失败,退款");
                 playerAccountLogMapper.insertSelective(playerAccountLog);
             }
-
         });
 
 

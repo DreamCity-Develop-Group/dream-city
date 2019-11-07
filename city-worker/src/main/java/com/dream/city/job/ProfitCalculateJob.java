@@ -60,9 +60,11 @@ public class ProfitCalculateJob extends QuartzJobBean {
             Map<String,String> calTime = investService.getProfitCalculateTime(invest.getCreateTime());
             String start = calTime.get("start");
             String end = calTime.get("end");
+
             //直接找出成功的投资订单，计算新增的资金额度
             List<InvestOrder> orders = orderService.getInvestOrdersAmountByDayInterval(invest.getInId(), start, end);
             //计算总的新增资金总额度
+            System.out.println("orders="+orders);
             BigDecimal total = BigDecimal.ZERO;
             for (InvestOrder order : orders) {
                 total = total.add(order.getOrderAmount());
@@ -88,7 +90,7 @@ public class ProfitCalculateJob extends QuartzJobBean {
              */
 
             for(int i=0;i<averages.length;i++){
-                System.out.println(averages[i]);
+                System.out.println("i="+i+","+averages[i]);
                 redisUtils.lpush(ProfitQueue+"_"+invest.getInEnd(),String.valueOf(averages[i]));
             }
 

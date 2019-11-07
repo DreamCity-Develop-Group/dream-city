@@ -71,7 +71,7 @@ public class InvestServiceImpl implements InvestService {
         String yesterday = dt.format(cal.getTime());
         String end = yesterday + " " + date1;
         //前天
-        cal.add(Calendar.DATE, -2);
+        cal.add(Calendar.DATE, -1);
         String yesterdayMore = dt.format(cal.getTime());
         String start = yesterdayMore + " " + date1;
         times.put("start",start);

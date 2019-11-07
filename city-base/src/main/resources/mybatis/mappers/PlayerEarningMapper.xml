@@ -8,7 +8,7 @@
     <result column="in_type" property="inType" jdbcType="INTEGER" />
     <result column="earn_player_id" property="earnPlayerId" jdbcType="VARCHAR" />
     <result column="earn_max" property="earnMax" jdbcType="DECIMAL" />
-    <result column="earn_personal_tax" property="earnPersonalTax" jdbcType="DECIMAL" />
+    <result column="earn_personal_tax" property="earnPersinsertSelectiveonalTax" jdbcType="DECIMAL" />
     <result column="earn_enterprise_tax" property="earnEnterpriseTax" jdbcType="DECIMAL" />
     <result column="earn_quota_tax" property="earnQuotaTax" jdbcType="DECIMAL" />
     <result column="earn_current" property="earnCurrent" jdbcType="DECIMAL" />
@@ -165,8 +165,8 @@
       <if test="earnQuotaTax != null" >
         earn_quota_tax,
       </if>
-      <if test="earnInvestId != null">
-        earn_invest_id,
+      <if test="isWithdrew != null">
+        is_withdrew,
       </if>
       <if test="inType != null">
         in_type,
@@ -202,8 +202,8 @@
       <if test="earnQuotaTax != null" >
         #{earnQuotaTax,jdbcType=DECIMAL},
       </if>
-      <if test="earnInvestId != null">
-        #{earnInvestId,jdbcType=INTEGER},
+      <if test="isWithdrew != null">
+        #{isWithdrew,jdbcType=INTEGER},
       </if>
       <if test="inType != null">
         #{inType,jdbcType=INTEGER},

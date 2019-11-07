@@ -72,7 +72,7 @@ public class SalesOrderJob extends QuartzJobBean {
         log.info(new Date() + "    超时兑换交易处理");
 
         //TODO 取出所有的支付成功的交易
-        List<SalesOrder> salesOrders = salesOrderService.getSalesOrdersByState(3);
+        List<SalesOrder> salesOrders = salesOrderService.getSalesOrdersByState(OrderState.PAY.getStatus());
         //超时几小时后
         int expireHours = 1;
         //超时或拒绝几次解除商事关系

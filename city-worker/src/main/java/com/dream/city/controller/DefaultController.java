@@ -34,7 +34,7 @@ public class DefaultController {
         }else {
             //workerService.addJob(InvestOrderJob.class,"job2-"+name,"test","0/5 * * * * ?");
         }
-        workerService.addJob(FallDonwJob.class,"job2-"+name,"test","0/50 * * * * ?");
+        workerService.addJob(InvestOrderJob.class,"job2-"+name,"test","0/50 * * * * ?");
     }
 
     @RequestMapping("/updateJob")

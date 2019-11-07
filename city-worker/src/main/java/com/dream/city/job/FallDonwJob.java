@@ -89,7 +89,7 @@ public class FallDonwJob extends QuartzJobBean {
             int earn_invest_id = playerEarning.getEarnInvestId();
 
             if (earning.compareTo(minDropAmount) <= 0){
-                log.info(new Date() + "，invest_id = "+earn_invest_id+",  捡漏金额="+earning+"太小，已丢弃");
+                log.info(new Date() + "，earn_invest_id = "+earn_invest_id+",  捡漏金额="+earning+"太小，已丢弃");
                 return;
             }
 
@@ -98,14 +98,21 @@ public class FallDonwJob extends QuartzJobBean {
 
 
             if (playerIds.size()==0) {
-                log.info(new Date() + "  没有满足捡漏条件的投资");
+                log.info(new Date() + "，earn_invest_id = "+earn_invest_id+", 没有满足捡漏条件的投资（没人点赞）");
                 return;
             }
-            //当前获得额度 earn_current 还是最大预计收益 earn_max ?
-            if (playerEarning.getDropTotal().compareTo(playerEarning.getEarnCurrent()) >= 0){
-                log.info(new Date() + "，earn_invest_id = "+earn_invest_id+",  捡漏金额已超过经营收益");
+            //当前获得额度 earn_current
+            if (playerEarning.getEarnCurrent().compareTo(new BigDecimal("1")) <= 0){
+                log.info(new Date() + "，earn_invest_id = "+earn_invest_id+",  当前收益不足1元，状态改为收益中，不再掉落");
+
+                playerEarning.setIsWithdrew(1);
+                playerEarningMapper.updateByPrimaryKeySelective(playerEarning);
+
                 return;
             }
+
+
+
             //随机 0 至 size-1 （都包含）
 
             Random rand = new Random();
@@ -128,11 +135,16 @@ public class FallDonwJob extends QuartzJobBean {
 
             //玩家账户余额
             PlayerAccount playerAccount = playerAccountMapper.getPlayerAccountByPlayerId(randPlayerId);
-
-            playerAccount.setAccMt(playerAccount.getAccMt().add(earning));
-            playerAccount.setAccMtAvailable(playerAccount.getAccMtAvailable().add(earning));
-            playerAccount.setUpdateTime(new Date());
-            playerAccountMapper.updatePlayerAccount(playerAccount);
+            if(playerAccount != null){
+                playerAccount.setAccMt(playerAccount.getAccMt().add(earning));
+                playerAccount.setAccMtAvailable(playerAccount.getAccMtAvailable().add(earning));
+                playerAccount.setUpdateTime(new Date());
+                playerAccountMapper.updatePlayerAccount(playerAccount);
+            }
+            else {
+                log.warn(new Date() + "，捡漏人PlayerId = "+randPlayerId+",  在PlayerAccount表不存在");
+                return;
+            }
 
             //玩家账户出入账
             PlayerAccountLog playerAccountLog = new PlayerAccountLog();
@@ -151,6 +163,12 @@ public class FallDonwJob extends QuartzJobBean {
                 amount = BigDecimal.ZERO;
             }
             playerEarning.setEarnCurrent(amount);
+            if(amount.compareTo(new BigDecimal("1")) <= 0){
+                //不足1 由可提取改为 收益中
+                playerEarning.setIsWithdrew(1);
+
+            }
+
             playerEarningMapper.updateByPrimaryKeySelective(playerEarning);
 
             //推送到前台显示
