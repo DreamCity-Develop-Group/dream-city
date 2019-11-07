@@ -7,6 +7,7 @@ import com.dream.city.base.model.enu.ReturnStatus;
 import com.dream.city.base.model.mapper.InvestOrderMapper;
 import com.dream.city.base.model.mapper.PlayerAccountLogMapper;
 import com.dream.city.base.model.mapper.PlayerAccountMapper;
+import com.dream.city.base.model.mapper.PlayerEarningMapper;
 import com.dream.city.service.InvestOrderService;
 import com.dream.city.service.InvestRuleService;
 import com.dream.city.service.InvestService;
@@ -47,6 +48,9 @@ public class InvestOrderJob extends QuartzJobBean {
     @Autowired
     PlayerAccountLogMapper playerAccountLogMapper;
 
+    @Autowired
+    PlayerEarningMapper playerEarningMapper;
+
     private final String RULE_CURRENT = "INVEST_ORDER";
 
 
@@ -85,8 +89,28 @@ public class InvestOrderJob extends QuartzJobBean {
             orders.forEach((flag,order)->{
                 orderList.addAll(order);
             });
+            if(orderList.size()>0){
+                investOrderService.setOrderState(orderList, InvestStatus.MANAGEMENT);
+                //插入player_earning
+                orderList.forEach((order)->{
+                    PlayerEarning playerEarning = new  PlayerEarning();
+                    playerEarning.setEarnInvestId(order.getOrderId());
+                    playerEarning.setEarnInvestId(order.getOrderInvestId());
+                    //以下有疑问？
+                    playerEarning.setEarnCurrent(order.getOrderAmount());
+                    if(playerEarning.getEarnCurrent().compareTo(new BigDecimal("1")) >= 0){
+                        playerEarning.setIsWithdrew(2);
+                    }
+                    playerEarning.setEarnPlayerId(order.getOrderPayerId());
+                    playerEarning.setUpdateTime(new Date());
+                    playerEarning.setCreateTime(new Date());
+                    playerEarningMapper.insertSelective(playerEarning);
+                });
+            }
 
-            investOrderService.setOrderState(orderList, InvestStatus.MANAGEMENT);
+
+
+
         });
 
 
@@ -110,7 +134,8 @@ public class InvestOrderJob extends QuartzJobBean {
                 playerAccount.setAccUsdt(playerAccount.getAccUsdt().add(order_amount));
                 playerAccount.setAccUsdtAvailable(playerAccount.getAccUsdtAvailable().add(order_amount));
                 playerAccountMapper.updatePlayerAccount(playerAccount);
-                //明细
+
+                //出入账明细
                 PlayerAccountLog playerAccountLog = new PlayerAccountLog();
                 playerAccountLog.setCreateTime(new Date());
                 playerAccountLog.setPlayerId(playerId);

@@ -2,6 +2,7 @@ package com.dream.city.job;
 
 import com.dream.city.base.model.entity.*;
 import com.dream.city.base.model.mapper.EarnFalldownLogMapper;
+import com.dream.city.base.model.mapper.PlayerAccountLogMapper;
 import com.dream.city.base.model.mapper.PlayerAccountMapper;
 import com.dream.city.base.model.mapper.PlayerEarningMapper;
 import com.dream.city.service.*;
@@ -35,6 +36,9 @@ public class FallDonwJob extends QuartzJobBean {
     private PlayerAccountMapper playerAccountMapper;
 
     @Autowired
+    private PlayerAccountLogMapper playerAccountLogMapper;
+
+    @Autowired
     private PlayerLikesService playerLikesService;
 
     @Autowired
@@ -45,8 +49,6 @@ public class FallDonwJob extends QuartzJobBean {
 
     private final String RULE_CURRENT = "PROFIT_GRANT";
     private final String ProfitQueue =  "PROFIT_QUEUE";
-
-
 
 
     /**
@@ -86,7 +88,7 @@ public class FallDonwJob extends QuartzJobBean {
             //投资项目ID
             int earn_invest_id = playerEarning.getEarnInvestId();
 
-            if (earning.compareTo(playerEarning.getEarnCurrent()) <= 0){
+            if (earning.compareTo(minDropAmount) <= 0){
                 log.info(new Date() + "，invest_id = "+earn_invest_id+",  捡漏金额="+earning+"太小，已丢弃");
                 return;
             }
@@ -132,10 +134,22 @@ public class FallDonwJob extends QuartzJobBean {
             playerAccount.setUpdateTime(new Date());
             playerAccountMapper.updatePlayerAccount(playerAccount);
 
+            //玩家账户出入账
+            PlayerAccountLog playerAccountLog = new PlayerAccountLog();
+            playerAccountLog.setPlayerId(randPlayerId);
+            playerAccountLog.setAmountUsdt(earning);
+            playerAccountLog.setCreateTime(new Date());
+            playerAccountLog.setType(1);
+            playerAccountLog.setDesc("earn_id="+playerEarning.getEarnId()  + "捡漏收益");
+            playerAccountLogMapper.insertSelective(playerAccountLog);
+
+
             //更新投资收益表
             playerEarning.setDropTotal(playerEarning.getDropTotal().add(earning));
             BigDecimal amount = playerEarning.getEarnCurrent().subtract(earning);
-            if(amount.compareTo(BigDecimal.ZERO) <= 0)amount = BigDecimal.ZERO;
+            if(amount.compareTo(BigDecimal.ZERO) <= 0){
+                amount = BigDecimal.ZERO;
+            }
             playerEarning.setEarnCurrent(amount);
             playerEarningMapper.updateByPrimaryKeySelective(playerEarning);
 
