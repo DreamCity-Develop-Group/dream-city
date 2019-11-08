@@ -6,7 +6,9 @@ import com.codingapi.txlcn.tc.annotation.LcnTransaction;
 import com.dream.city.base.model.Message;
 import com.dream.city.base.model.MessageData;
 import com.dream.city.base.model.Result;
+import com.dream.city.base.model.enu.ReturnStatus;
 import com.dream.city.base.utils.DataUtils;
+import com.dream.city.base.utils.JsonUtil;
 import com.dream.city.service.consumer.ConsumerLikesService;
 import com.dream.city.service.consumer.ConsumerPlayerService;
 import com.dream.city.service.handler.LikeService;
@@ -19,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author Wvv
@@ -100,16 +103,27 @@ public class LikeServiceImpl implements LikeService {
     @Override
     public Message playerLike(Message msg){
         logger.info("点赞", JSONObject.toJSONString(msg));
-        Message message = new Message(msg.getSource(), msg.getTarget(),
-                new MessageData<Integer>(msg.getData().getType(),msg.getData().getModel()));
-
-        Map<String, Object> conditionMap = getConditionMap(msg);
-        Result<Integer> result = likesService.playerLike(JSON.toJSONString(conditionMap));
-        if (result.getSuccess()){
-            message.getData().setData(result.getData());
+        if (Objects.isNull(msg) || Objects.isNull(msg.getData().getData())){
+            msg.getData().setCode(ReturnStatus.FAILED.getStatus());
+            msg.setDesc("消息不正确");
+            return msg;
         }
-        message.setDesc(result.getMsg());
-        return message;
+        String json = JsonUtil.parseObjToJson(msg.getData().getData());
+        JSONObject data = JsonUtil.parseJsonToObj(json,JSONObject.class);
+
+        String from = data.getString("playerId");
+        String to = data.getString("friendId");
+
+
+        Result result = likesService.playerLike(from,to);
+        if (result.getSuccess()){
+            msg.getData().setCode(ReturnStatus.SUCCESS.getStatus());
+            msg.setDesc("点赞成功");
+            return msg;
+        }
+        msg.setDesc("点赞失败");
+        msg.getData().setData(null);
+        return msg;
     }
 
     /**

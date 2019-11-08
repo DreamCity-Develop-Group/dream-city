@@ -54,13 +54,13 @@ public interface InvestOrderMapper {
 
     @Select({
             "<script>",
-            "select",
-            "*",
-            "from `invest_order`",
-            "where 1=1 and and player_id = #{playerId} and order_state in ",
-            "<foreach collection='states' item='state' open='(' separator=',' close=')'>",
-            "#{state}",
-            "</foreach>",
+            " select",
+            " *",
+            " from `invest_order`",
+            " where 1=1 and order_payer_id = #{playerId} and order_state in ",
+            " <foreach collection='states' item='state' open='(' separator=',' close=')'>",
+            " #{state}",
+            " </foreach>",
             "</script>"
     })
     @ResultMap("BaseInvestOrderResultMap")

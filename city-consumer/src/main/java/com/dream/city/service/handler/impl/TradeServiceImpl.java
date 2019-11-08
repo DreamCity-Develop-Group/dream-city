@@ -358,10 +358,11 @@ public class TradeServiceImpl implements TradeService {
                         Optional<String> optional = redisUtils.get(RedisKeys.PLAYER_ONLINE_STATE_KEY + receiver.getPlayerName());
                         String clientId = null;
                         if (optional != null && optional.isPresent()){
-                            resultMap.put("code",ReturnStatus.TRANSFER_TO.getStatus());
                             clientId = optional.get();
                             message.setTarget(clientId);
+                            message.getData().setType("getIncome");
                             message.getData().setData(resultMap);
+                            message.getData().setCode(ReturnStatus.SUCCESS.getStatus());
                             redisUtils.publishMsg(PlAYER_UPGRADE, JSON.toJSONString(message));
                         }
                     }else {

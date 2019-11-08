@@ -38,7 +38,8 @@
         IPAddr:<input id="ipAddr" value="127.0.0.1:8010" size="8"/>
         Channel:<input id="channel" value="notice" size="4"/>
         Client:<input id="client" value="Wvv" size="4"/>
-        <button onclick="connect()">连接</button><a href="javascript:send()" id="send">状态：[]</a><br/>
+        <button onclick="connect()">连接</button>
+        <button onclick="close()">断开</button><a href="javascript:send()" id="send">状态：[]</a><br/>
     </fieldset>
 </div>
 <div>
@@ -59,7 +60,8 @@
         账号：<input name="username" id="username" value="18888888888">
         <button onclick="getCode()" id="getCode">获取验证码</button>
         <button hidden="true" id="getCodeTimeout">倒计时</button>
-        <input name="code" id="code" size="4"><br>
+        <input name="code" id="code" size="4">
+        <button onclick="codeLogin()">验证码登录</button><br>
         密码：<input type="password" name="password" id="password" value="dc483e80a7a0bd9ef71d8cf973673924"><br>
         昵称：<input name="nick" id="nick" value="昵称"><br>
         邀请码：<input name="valid" id="valid" value="sin23w" size="4">
@@ -202,6 +204,10 @@
 
     }
 
+    function close() {
+        socket.close();
+    }
+
     function connect() {
         var url = $("ipAddr").value;
         var channel = $("channel").value;
@@ -300,7 +306,7 @@
                     var msg = data.data.data;
                     socket.close();
                     alert("多客户端登录被踢出！");
-                } else if (data.data.type == "login") {
+                } else if (data.data.type == "login" || data.data.type == "codeLogin") {
                     var msg = data.data.data;
                     console.log("Login:", msg);
                     $("token").value = msg.token;
@@ -517,6 +523,18 @@
         var msg = "{\"source\":\"" + clientId + "\"," +
             "\"createtime\":\"Wed Sep 04 14:31:01 CST 2019\"," +
             "\"data\":{\"type\":\"login\",\"model\":\"consumer/player\",\"data\":{\"username\":\"" + username + "\",\"userpass\":\"" + password + "\"}}," +
+            "\"desc\":\"登录\",\"target\":\"14863-1\"}";
+
+        socket.send(msg);
+    }
+
+    function codeLogin() {
+        var username = $("username").value;
+        var code = $("code").value;
+        console.log(username + ">" + code);
+        var msg = "{\"source\":\"" + clientId + "\"," +
+            "\"createtime\":\"Wed Sep 04 14:31:01 CST 2019\"," +
+            "\"data\":{\"type\":\"codeLogin\",\"model\":\"consumer/player\",\"data\":{\"username\":\"" + username + "\",\"code\":\"" + code + "\"}}," +
             "\"desc\":\"登录\",\"target\":\"14863-1\"}";
 
         socket.send(msg);

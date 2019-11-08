@@ -35,4 +35,5 @@ public interface PlayerLikesLogMapper {
      * @return
      */
     int investLikesCountToday(PlayerLikesLog record);
+
 }

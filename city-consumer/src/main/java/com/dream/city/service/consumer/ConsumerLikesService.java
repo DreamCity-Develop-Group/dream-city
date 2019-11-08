@@ -5,6 +5,7 @@ import com.dream.city.base.model.Result;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @FeignClient(value = "city-player")
 public interface ConsumerLikesService {
@@ -35,6 +36,15 @@ public interface ConsumerLikesService {
      */
     @RequestMapping("/likes/playerLike")
     Result<Integer> playerLike(@RequestBody String jsonReq);
+
+    /**
+     * 点赞
+     * @param from
+     * @param to
+     * @return
+     */
+    @RequestMapping("/likes/like")
+    Result<Integer> playerLike(@RequestParam("from") String from,@RequestParam("to")String to);
 
     /**
      * 取消点赞

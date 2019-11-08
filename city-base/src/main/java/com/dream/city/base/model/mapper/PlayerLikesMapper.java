@@ -2,7 +2,6 @@ package com.dream.city.base.model.mapper;
 
 
 import com.dream.city.base.model.entity.InvestOrder;
-import com.dream.city.base.model.entity.Likes;
 import com.dream.city.base.model.entity.PlayerLikes;
 import com.dream.city.base.model.req.PlayerLikesReq;
 import com.dream.city.base.model.resp.PlayerLikesResp;
@@ -17,6 +16,8 @@ public interface PlayerLikesMapper {
 
 
     Integer insertSelective(PlayerLikesReq record);
+
+    Integer insert(PlayerLikes record);
 
 
     PlayerLikes selectByPrimaryKey(Integer likedId);
@@ -51,7 +52,7 @@ public interface PlayerLikesMapper {
             @Result(property = "updateTime", column = "update_time"),
     })
     @Select({"select * from `invest_order` where 1=1 and order_id = #{orderId}"})
-    Likes getInvestOrder(String orderId);
+    PlayerLikes getInvestOrder(String orderId);
 
 
     @Select("select * from `invest_order` where 1=1 and player_id = #{playerId} ")
@@ -62,7 +63,7 @@ public interface PlayerLikesMapper {
             "select",
             "sum(liked_get_total)",
             "from `player_likes`",
-            "where 1=1 and and liked_player_id = #{playerId} and order_state in ",
+            "where 1=1 and liked_player_id = #{playerId} and order_state in ",
             "<foreach collection='states' item='state' open='(' separator=',' close=')'>",
             "#{state}",
             "</foreach>",
@@ -78,4 +79,19 @@ public interface PlayerLikesMapper {
 
     @Select("select liked_player_id from `player_likes` where  liked_invest_id = #{investId} ")
     List<String> getPlayerIdByInvestId(Integer investId);
+
+
+    int deleteByPrimaryKey(Long id);
+
+    int insertSelective(PlayerLikes record);
+
+    PlayerLikes selectByPrimaryKey(Long id);
+
+    int updateByPrimaryKeySelective(PlayerLikes record);
+
+    int updateByPrimaryKey(PlayerLikes record);
+
+    List<PlayerLikes> getInvestLikes(String playerId);
+
+    PlayerLikes getLikes(String playerId);
 }

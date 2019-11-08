@@ -7,7 +7,7 @@ import com.dream.city.base.model.Message;
 import com.dream.city.base.model.MessageData;
 import com.dream.city.base.model.Page;
 import com.dream.city.base.model.Result;
-import com.dream.city.base.model.entity.Likes;
+import com.dream.city.base.model.entity.PlayerLikes;
 import com.dream.city.base.model.req.FriendsReq;
 import com.dream.city.base.model.resp.FriendsResp;
 import com.dream.city.base.utils.DataUtils;
@@ -64,7 +64,7 @@ public class FriendServiceImpl implements FriendService {
         JSONObject jsonObject = JsonUtil.parseJsonToObj(data, JSONObject.class);
         String playerId = jsonObject.getString("playerId");
 
-        Result<List<Likes>> result = consumerFriendsService.getInvestLikes(playerId);
+        Result<List<PlayerLikes>> result = consumerFriendsService.getInvestLikes(playerId);
 
 
         return Message.generateMessage(msg, result);

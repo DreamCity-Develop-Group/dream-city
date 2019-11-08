@@ -36,6 +36,20 @@ public class LikesController {
 
 
     /**
+     * 取消点赞
+     * @param from
+     * @param to
+     * @return
+     */
+    @RequestMapping("/like")
+    public Result like(@RequestParam("from") String from,@RequestParam("to") String to){
+        logger.info("好友点赞，{}",from,"==>",to);
+
+        return likesService.like(from,to);
+    }
+
+
+    /**
      * 当天是否可以点赞
      * 好友
      * @param jsonReq
