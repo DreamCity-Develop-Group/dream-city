@@ -395,7 +395,7 @@ public class OrderServiceImpl implements OrderService {
             playerAccount.setAccUsdtAvailable(playerAccount.getAccUsdtAvailable().subtract(orderAmount));
             playerAccount.setAccUsdtFreeze(playerAccount.getAccUsdtFreeze().add(orderAmount));
             //投资冻结税金MT
-            playerAccount.setAccMt(playerAccount.getAccUsdt().subtract(inTax));
+            playerAccount.setAccMt(playerAccount.getAccMt().subtract(inTax));
             playerAccount.setAccMtAvailable(playerAccount.getAccMtAvailable().subtract(inTax));
             playerAccount.setAccMtFreeze(playerAccount.getAccMtFreeze().add(inTax));
 
