@@ -31,4 +31,13 @@ public class SalesOrdeServiceImpl implements SalesOrderService {
     public SalesOrder getSalesOrder() throws BusinessException {
         return null;
     }
+
+    @LcnTransaction
+    @Transactional
+    @Override
+    public int selectSalesSellerRejectTimes(String buyer_id, String sellerId, int status) {
+
+        return salesOrderMapper.selectSalesSellerRejectTimes(buyer_id, sellerId, status);
+
+    }
 }

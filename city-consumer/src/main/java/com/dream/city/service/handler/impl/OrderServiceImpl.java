@@ -136,7 +136,6 @@ public class OrderServiceImpl implements OrderService {
             }
 
             //返回数据
-            result.put("inType", invest.getInType());
             result.put("investId", "");
             result.put("usdtFreeze", BigDecimal.ZERO);
             result.put("mtFreeze", BigDecimal.ZERO);

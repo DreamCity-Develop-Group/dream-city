@@ -42,14 +42,16 @@ public class ProfitGrantJob extends QuartzJobBean {
     private PlayerEarningService playerEarningService;
 
     @Autowired
-    RelationTreeService relationTreeService;
+    private RelationTreeService relationTreeService;
+
+    @Autowired
+    RedisUtils redisUtils;
 
     private final String RULE_CURRENT = "PROFIT_GRANT";
     private final String PROFIT_QUEUE = "PROFIT_QUEUE";
     private final String SYSTEM_ACCOUNT = "SYSTEM_DC_ACCOUNT";
 
-    @Autowired
-    RedisUtils redisUtils;
+
 
 
     /**
@@ -78,7 +80,12 @@ public class ProfitGrantJob extends QuartzJobBean {
         int state = InvestStatus.MANAGEMENT.getStatus();
         invests.forEach(invest -> {
             rules.forEach(rule -> {
-                BigDecimal profitSum = new BigDecimal(redisUtils.lpop(PROFIT_QUEUE + "_" + invest.getInId()).toString());
+                Object obj = redisUtils.lpop(PROFIT_QUEUE + "_" + invest.getInId());
+                if (obj == null){
+                    log.info(new Date() + "，invest.getInId() = "+invest.getInId()+",  redisUtils.lpop 为null，中途退出");
+                    return;
+                }
+                BigDecimal profitSum = new BigDecimal(obj.toString());
                 switch (rule.getRuleOptPre()) {
                     case "OPT_RATE":
                         switch (rule.getRuleFlag()) {

@@ -37,7 +37,7 @@ public class InvestResp implements Serializable {
     /** 投资结束时间 */
     private Date inEnd;
 
-    private String orderState;
+    private Integer orderState;
 
     /** 玩家ID */
     private String playerId;

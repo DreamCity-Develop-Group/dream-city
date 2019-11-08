@@ -75,4 +75,7 @@ public interface PlayerLikesMapper {
 
     @Select("select * from `invest_order` where 1=1 and player_id = #{playerId} ")
     int getLikesById(String orderPayerId);
+
+    @Select("select liked_player_id from `player_likes` where  liked_invest_id = #{investId} ")
+    List<String> getPlayerIdByInvestId(Integer investId);
 }

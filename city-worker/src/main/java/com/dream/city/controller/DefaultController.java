@@ -1,8 +1,8 @@
 package com.dream.city.controller;
 
 import com.dream.city.config.WorkItemsConfig;
-import com.dream.city.job.ProfitGrantJob;
-import com.dream.city.job.InvestOrderJob;
+import com.dream.city.job.*;
+
 import com.dream.city.service.WorkerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -30,10 +30,11 @@ public class DefaultController {
     @RequestMapping("/addJob")
     public void startSystemJob(String type, String name){
         if ("TestJob1".equals(type)){
-            workerService.addJob(ProfitGrantJob.class,"job1"+name,"test","0/5 * * * * ?");
+            //workerService.addJob(ProfitGrantJob.class,"job1"+name,"test","0/10 * * * * ?");
         }else {
-            workerService.addJob(InvestOrderJob.class,"job2-"+name,"test","0/5 * * * * ?");
+            //workerService.addJob(InvestOrderJob.class,"job2-"+name,"test","0/5 * * * * ?");
         }
+        workerService.addJob(InvestOrderJob.class,"job2-"+name,"test","0/50 * * * * ?");
     }
 
     @RequestMapping("/updateJob")

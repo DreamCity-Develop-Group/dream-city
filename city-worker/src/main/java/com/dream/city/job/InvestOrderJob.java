@@ -1,10 +1,13 @@
 package com.dream.city.job;
 
-import com.dream.city.base.model.entity.CityInvest;
-import com.dream.city.base.model.entity.InvestOrder;
-import com.dream.city.base.model.entity.InvestRule;
-import com.dream.city.base.model.entity.RuleItem;
+import com.dream.city.base.model.entity.*;
+
 import com.dream.city.base.model.enu.InvestStatus;
+import com.dream.city.base.model.enu.ReturnStatus;
+import com.dream.city.base.model.mapper.InvestOrderMapper;
+import com.dream.city.base.model.mapper.PlayerAccountLogMapper;
+import com.dream.city.base.model.mapper.PlayerAccountMapper;
+import com.dream.city.base.model.mapper.PlayerEarningMapper;
 import com.dream.city.service.InvestOrderService;
 import com.dream.city.service.InvestRuleService;
 import com.dream.city.service.InvestService;
@@ -15,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -29,11 +33,23 @@ import java.util.Map;
 @Component
 public class InvestOrderJob extends QuartzJobBean {
     @Autowired
-    private InvestOrderService orderService;
+    private InvestOrderService investOrderService;
     @Autowired
     private InvestService investService;
     @Autowired
     private InvestRuleService ruleService;
+
+    @Autowired
+    InvestOrderMapper investOrderMapper;
+
+    @Autowired
+    PlayerAccountMapper playerAccountMapper;
+
+    @Autowired
+    PlayerAccountLogMapper playerAccountLogMapper;
+
+    @Autowired
+    PlayerEarningMapper playerEarningMapper;
 
     private final String RULE_CURRENT = "INVEST_ORDER";
 
@@ -59,17 +75,72 @@ public class InvestOrderJob extends QuartzJobBean {
          * 取出适应的所有规则
          */
         RuleItem ruleItem = ruleService.getInvestRuleItemByKey(RULE_CURRENT);
+
         List<InvestRule> rules = ruleService.getInvestRuleByKey(ruleItem.getItemId());
 
         invests.forEach(invest->{
             //直接找出合格的投资订单，修改相应的状态
             int[] states = new int[]{InvestStatus.MANAGEMENT.getStatus(),InvestStatus.EXTRACT.getStatus(),InvestStatus.FINISHED.getStatus()};
-            Map<String, List<InvestOrder>> orders = orderService.getInvestOrdersByCurrentDay(invest.getInId(),rules,states);
+            //int[] states = new int[]{ReturnStatus.INVEST_MANAGEMENT.getStatus(),ReturnStatus.INVEST_EXTRACT.getStatus()};
+            //states传过去，但没使用
+            Map<String, List<InvestOrder>> orders = investOrderService.getInvestOrdersByCurrentDay(invest.getInId(),rules,states);
+
             List<InvestOrder> orderList = new ArrayList<>();
             orders.forEach((flag,order)->{
                 orderList.addAll(order);
             });
-            orderService.setOrderState(orderList, InvestStatus.MANAGEMENT);
+
+            if(orderList.size()>0){
+                investOrderService.setOrderState(orderList, InvestStatus.MANAGEMENT);
+                //插入player_earning
+                orderList.forEach((order)->{
+                    PlayerEarning playerEarning = new  PlayerEarning();
+
+                    playerEarning.setEarnInvestId(order.getOrderInvestId());
+                    playerEarning.setOrderId(order.getOrderId());
+                    //playerEarning.setEarnCurrent(order.getOrderAmount());
+                    playerEarning.setIsWithdrew(1);
+                    playerEarning.setEarnPlayerId(order.getOrderPayerId());
+                    playerEarning.setUpdateTime(new Date());
+                    playerEarning.setCreateTime(new Date());
+                    playerEarningMapper.insertSelective(playerEarning);
+                });
+            }
         });
+
+
+        //处理预约成功但不是经营中的。退款，置位。预约成功（临时状态）在上步中都置位。
+        int state = InvestStatus.SUBSCRIBE_PASS.getStatus();
+        List<InvestOrder> investOrdersFail = investOrderService.getInvestOrdersByState(state);
+
+        investOrdersFail.forEach(order->{
+            int currDay = (new Date()).getDay();
+            int orderDay = order.getCreateTime().getDay();
+            //不要把今天0点后投资的置位。一定要保证本job 零点后执行
+            if (currDay != orderDay) {
+                //置位
+                order.setOrderState(InvestStatus.SUBSCRIBE_VERIFY_FAIL.getStatus());
+                investOrderMapper.updateByPrimaryKeySelective(order);
+                //退款
+                String playerId = order.getOrderPayerId();
+                BigDecimal order_amount = order.getOrderAmount();
+
+                PlayerAccount playerAccount = playerAccountMapper.getPlayerAccountByPlayerId(playerId);
+                playerAccount.setAccUsdt(playerAccount.getAccUsdt().add(order_amount));
+                playerAccount.setAccUsdtAvailable(playerAccount.getAccUsdtAvailable().add(order_amount));
+                playerAccountMapper.updatePlayerAccount(playerAccount);
+
+                //出入账明细
+                PlayerAccountLog playerAccountLog = new PlayerAccountLog();
+                playerAccountLog.setCreateTime(new Date());
+                playerAccountLog.setPlayerId(playerId);
+                playerAccountLog.setAmountUsdt(order_amount);
+                playerAccountLog.setType(1);//入账
+                playerAccountLog.setDesc("投资预约审核失败,退款");
+                playerAccountLogMapper.insertSelective(playerAccountLog);
+            }
+        });
+
+
     }
 }

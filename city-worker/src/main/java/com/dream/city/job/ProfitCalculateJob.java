@@ -2,13 +2,10 @@ package com.dream.city.job;
 
 import com.dream.city.base.model.entity.CityInvest;
 import com.dream.city.base.model.entity.InvestOrder;
-import com.dream.city.base.model.entity.InvestRule;
-import com.dream.city.base.model.entity.RuleItem;
 import com.dream.city.base.utils.RedisUtils;
 import com.dream.city.service.InvestOrderService;
 import com.dream.city.service.InvestRuleService;
 import com.dream.city.service.InvestService;
-import com.dream.city.service.OrderSerevice;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -16,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -64,10 +60,12 @@ public class ProfitCalculateJob extends QuartzJobBean {
             Map<String,String> calTime = investService.getProfitCalculateTime(invest.getCreateTime());
             String start = calTime.get("start");
             String end = calTime.get("end");
+
             //直接找出成功的投资订单，计算新增的资金额度
             List<InvestOrder> orders = orderService.getInvestOrdersAmountByDayInterval(invest.getInId(), start, end);
             //计算总的新增资金总额度
-            BigDecimal total = new BigDecimal(0.00000);
+            System.out.println("orders="+orders);
+            BigDecimal total = BigDecimal.ZERO;
             for (InvestOrder order : orders) {
                 total = total.add(order.getOrderAmount());
             }
@@ -92,7 +90,7 @@ public class ProfitCalculateJob extends QuartzJobBean {
              */
 
             for(int i=0;i<averages.length;i++){
-                System.out.println(averages[i]);
+                System.out.println("i="+i+","+averages[i]);
                 redisUtils.lpush(ProfitQueue+"_"+invest.getInEnd(),String.valueOf(averages[i]));
             }
 

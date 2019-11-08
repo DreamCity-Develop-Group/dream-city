@@ -8,4 +8,5 @@ import java.util.Map;
 public interface MessageService {
 
     boolean pushRetry(String clientId, Map data);
+    void pushJobMessage(String playerId, String desc);
 }
