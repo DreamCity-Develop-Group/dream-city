@@ -24,10 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Wvv
@@ -87,14 +84,15 @@ public class PropertyServiceImpl implements PropertyService {
                     resultMap = new HashMap<>();
                     //物业投资按钮
                     int status = ReturnStatus.INVEST_SUBSCRIBE.getStatus();
+
                     logger.info("物业状态",invest.getOrderState());
-                    if (StringUtils.isBlank(invest.getOrderState())){
+                    if (Objects.isNull(invest.getOrderState())){
                         //预约
                         status = ReturnStatus.INVEST_SUBSCRIBE.getStatus();
                     }else {
                         String string= InvestStatus.SUBSCRIBE.name();
                         int code = InvestStatus.SUBSCRIBE.getStatus();
-                        int state = Integer.parseInt(invest.getOrderState());
+                        int state = invest.getOrderState();
 
                         if (state == InvestStatus.SUBSCRIBE.getStatus()){
                             //预约
