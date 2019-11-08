@@ -171,6 +171,7 @@ public class OrderServiceImpl implements OrderService {
             //总税金
             BigDecimal inTax = invest.getPersonalInTax().add(invest.getEnterpriseIntax()).add(invest.getInQuotaTax());
             if (order != null && order.getOrderId() != null) {
+                //TODO 投资成功，冻结USDT，暂时不冻结MT，待第一次提取时扣除相应的税金
                 updatePlayerAccountResult = deductPlayerAccountAmount(orderAmount, inTax, playerAccount);
                 success = updatePlayerAccountResult.getSuccess();
                 desc = updatePlayerAccountResult.getMsg();
@@ -245,7 +246,7 @@ public class OrderServiceImpl implements OrderService {
                 //定额得税
                 if (trade.getQuotaTax().compareTo(BigDecimal.ZERO) > 0) {
                     tradeDetail.setTradeAmount(trade.getQuotaTax());
-                    tradeDetail.setMtSurplus(playerAccount.getAccMt().subtract(trade.getEnterpriseTax().add(trade.getPersonalTax()).add(trade.getQuotaTax())));
+                    //tradeDetail.setMtSurplus(playerAccount.getAccMt().subtract(trade.getEnterpriseTax().add(trade.getPersonalTax()).add(trade.getQuotaTax())));
                     tradeDetail.setTradeDetailType(TradeDetailType.MT_INVEST_QUOTA_TAX.getCode());
                     tradeDetail.setDescr(TradeDetailType.MT_INVEST_QUOTA_TAX.getDesc());
                     tradeService.insertTradeDetail(tradeDetail);
@@ -394,10 +395,10 @@ public class OrderServiceImpl implements OrderService {
             playerAccount.setAccUsdt(playerAccount.getAccUsdt().subtract(orderAmount));
             playerAccount.setAccUsdtAvailable(playerAccount.getAccUsdtAvailable().subtract(orderAmount));
             playerAccount.setAccUsdtFreeze(playerAccount.getAccUsdtFreeze().add(orderAmount));
-            //投资冻结税金MT
-            playerAccount.setAccMt(playerAccount.getAccMt().subtract(inTax));
-            playerAccount.setAccMtAvailable(playerAccount.getAccMtAvailable().subtract(inTax));
-            playerAccount.setAccMtFreeze(playerAccount.getAccMtFreeze().add(inTax));
+            //投资冻结税金MT，目前不扣除
+            playerAccount.setAccMt(playerAccount.getAccMt());//.subtract(inTax)
+            playerAccount.setAccMtAvailable(playerAccount.getAccMtAvailable());//.subtract(inTax)
+            playerAccount.setAccMtFreeze(playerAccount.getAccMtFreeze());//.add(inTax)
 
             Result<Integer> updatePlayerAccountResult = accountService.updatePlayerAccount(playerAccount);
 
