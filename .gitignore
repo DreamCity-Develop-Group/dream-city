@@ -14,7 +14,7 @@
 *.zip
 *.tar.gz
 *.rar
-
+*.db
 *.recommenders
 *.settings
 *.iml
