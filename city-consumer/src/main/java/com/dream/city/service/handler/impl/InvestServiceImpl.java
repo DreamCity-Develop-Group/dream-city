@@ -127,9 +127,10 @@ public class InvestServiceImpl implements InvestService {
 
         if (StringUtils.isNotBlank(invest.getFriendId())) {
             dataResult.put("playerId", invest.getFriendId());
-            invest.setPlayerId(invest.getPlayerId());
+            invest.setPlayerId(invest.getFriendId());
         } else {
             dataResult.put("playerId", invest.getPlayerId());
+            invest.setPlayerId(invest.getPlayerId());
         }
 
         Result<List<Map<String, Object>>> result = propertyService.getPropertyLsit(invest);
