@@ -136,7 +136,8 @@ public class OrderServiceImpl implements OrderService {
             }
 
             //返回数据
-            result.put("investId", "");
+            result.put("investId", "0");
+            result.put("inType",invest.getInType());
             result.put("usdtFreeze", BigDecimal.ZERO);
             result.put("mtFreeze", BigDecimal.ZERO);
             result.put("state", ReturnStatus.INVEST_SUBSCRIBE.getStatus());
@@ -148,6 +149,7 @@ public class OrderServiceImpl implements OrderService {
                 order = orderResult.getData();
                 result.put("investId", order.getOrderInvestId());
                 result.put("state", ReturnStatus.INVEST_SUBSCRIBED.getStatus());
+                result.put("inType", invest.getInType());
 
                 PlayerEarning insertEarningReq = new PlayerEarning();
                 insertEarningReq.setEarnId(0);
