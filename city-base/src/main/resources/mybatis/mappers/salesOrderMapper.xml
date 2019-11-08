@@ -4,19 +4,94 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.dream.city.base.model.mapper.SalesOrderMapper">
     <resultMap id="OrderBaseResultMap" type="com.dream.city.base.model.entity.SalesOrder">
-        <result column="id" jdbcType="INTEGER" property="id" />
-        <result column="order_id" jdbcType="INTEGER" property="orderId"/>
-        <result column="order_amount" jdbcType="DECIMAL" property="orderAmount" />
-        <result column="order_pay_amount" jdbcType="DECIMAL" property="orderPayAmount" />
-        <result column="order_buy_type" jdbcType="VARCHAR" property="orderBuyType"/>
-        <result column="order_pay_type" jdbcType="VARCHAR" property="orderPayType"/>
-        <result column="order_player_buyer" jdbcType="VARCHAR" property="orderPlayerBuyer"/>
-        <result column="order_player_seller" jdbcType="VARCHAR" property="orderPlayerSeller"/>
-        <result column="order_state" jdbcType="INTEGER" property="orderState"/>
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="order_id" property="orderId" jdbcType="VARCHAR" />
+        <result column="order_amount" property="orderAmount" jdbcType="DOUBLE" />
+        <result column="order_buy_type" property="orderBuyType" jdbcType="VARCHAR" />
+        <result column="order_pay_type" property="orderPayType" jdbcType="VARCHAR" />
+        <result column="order_pay_amount" property="orderPayAmount" jdbcType="DOUBLE" />
+        <result column="order_player_buyer" property="orderPlayerBuyer" jdbcType="VARCHAR" />
+        <result column="order_player_seller" property="orderPlayerSeller" jdbcType="VARCHAR" />
+        <result column="order_state" property="orderState" jdbcType="VARCHAR" />
+
+
         <result column="createtime" jdbcType="TIMESTAMP" property="createTime"/>
         <result column="updatetime" jdbcType="TIMESTAMP" property="updateTime"/>
     </resultMap>
 
+    <insert id="insertSelective" parameterType="com.dream.city.base.model.entity.SalesOrder" >
+        insert into sales_order
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                id,
+            </if>
+            <if test="orderId != null" >
+                order_id,
+            </if>
+            <if test="orderAmount != null" >
+                order_amount,
+            </if>
+            <if test="orderBuyType != null" >
+                order_buy_type,
+            </if>
+            <if test="orderPayType != null" >
+                order_pay_type,
+            </if>
+            <if test="orderPayAmount != null" >
+                order_pay_amount,
+            </if>
+            <if test="orderPlayerBuyer != null" >
+                order_player_buyer,
+            </if>
+            <if test="orderPlayerSeller != null" >
+                order_player_seller,
+            </if>
+            <if test="orderState != null" >
+                order_state,
+            </if>
+            <if test="createTime != null" >
+                createtime,
+            </if>
+            <if test="updateTime != null" >
+                updatetime,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="orderId != null" >
+                #{orderId,jdbcType=VARCHAR},
+            </if>
+            <if test="orderAmount != null" >
+                #{orderAmount,jdbcType=DOUBLE},
+            </if>
+            <if test="orderBuyType != null" >
+                #{orderBuyType,jdbcType=VARCHAR},
+            </if>
+            <if test="orderPayType != null" >
+                #{orderPayType,jdbcType=VARCHAR},
+            </if>
+            <if test="orderPayAmount != null" >
+                #{orderPayAmount,jdbcType=DOUBLE},
+            </if>
+            <if test="orderPlayerBuyer != null" >
+                #{orderPlayerBuyer,jdbcType=VARCHAR},
+            </if>
+            <if test="orderPlayerSeller != null" >
+                #{orderPlayerSeller,jdbcType=VARCHAR},
+            </if>
+            <if test="orderState != null" >
+                #{orderState,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null" >
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null" >
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
 
     <select id="getSalesOrderById" resultMap="OrderBaseResultMap" parameterType="com.dream.city.base.model.entity.SalesOrder" >
         select o.id,

@@ -36,4 +36,5 @@ public class UserController {
         users = userService.getUsers();
         return users;
     }
+
 }

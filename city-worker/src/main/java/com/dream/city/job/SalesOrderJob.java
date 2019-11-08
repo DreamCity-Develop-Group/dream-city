@@ -18,6 +18,7 @@ import org.springframework.scheduling.quartz.QuartzJobBean;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -90,8 +91,7 @@ public class SalesOrderJob extends QuartzJobBean {
             String buyer_id = salesOrder.getOrderPlayerBuyer();
             String seller_id = salesOrder.getOrderPlayerSeller();
             Player player = playerAccountService.getPlayerByPlayerId(buyer_id);
-            //检测是否超时或拒绝超过2次
-            int status = OrderState.REFUSE_EXPIRED_FINISHED.getStatus();
+
 
             //int sellerRejectTimes = salesOrderService.selectSalesSellerRejectTimes(buyer_id, seller_id, status);
 
@@ -115,12 +115,12 @@ public class SalesOrderJob extends QuartzJobBean {
                 commerceRelationMapper.insertSelective(relation);
             }
 
-            //订单置位2
-            salesOrder.setOrderState(2);
+            //订单置位
+            salesOrder.setOrderState(OrderState.EXPIRED.getStatus());
             salesOrderMapper.updateSalesOrder(salesOrder);
 
             //由上级或平台发货
-            finishOrderByParent(salesOrder,buyer_id,null);
+            transforOrderToParent(salesOrder,buyer_id,null);
 
             if (currRejectTimes > rejectTimes){
 
@@ -146,6 +146,40 @@ public class SalesOrderJob extends QuartzJobBean {
     }
 
     /**
+     * 将当前超时订单转给卖家上级
+     * @param order
+     * @param buyerId
+     * @param sellerId
+     */
+    private void transforOrderToParent(SalesOrder order, String buyerId, String sellerId){
+        //找出上家
+        RelationTree tree = treeService.getParent(buyerId);
+        String parentId = tree.getTreePlayerId();
+
+        PlayerAccount sellerAccount ;
+        if (parentId.equalsIgnoreCase("system")){
+            sellerAccount = playerAccountService.getPlayerAccount(tree.getTreePlayerId());
+        }else {
+            sellerAccount = playerAccountService.getPlayerAccount(parentId);
+        }
+
+        //插入新卖家的新记录。没法检测是否自动发货既余额，仅插入记录，然后卖家手工点击发货
+        SalesOrder salesOrder = new SalesOrder();
+        salesOrder.setOrderState(OrderState.PAY.getStatus());
+        salesOrder.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+        salesOrder.setCreateTime(new Timestamp(System.currentTimeMillis()));
+        salesOrder.setOrderId(new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()));
+        salesOrder.setOrderAmount(order.getOrderAmount());
+        salesOrder.setOrderPayAmount(order.getOrderPayAmount());
+        salesOrder.setOrderBuyType(order.getOrderBuyType());
+        salesOrder.setOrderPayType(order.getOrderPayType());
+        salesOrder.setOrderPlayerBuyer(order.getOrderPlayerBuyer());
+        salesOrder.setOrderPlayerSeller(order.getOrderPlayerSeller());
+        salesOrderMapper.insertSelective(salesOrder);
+
+    }
+
+    /**
      *
      * @param order
      * @param buyerId
@@ -153,6 +187,7 @@ public class SalesOrderJob extends QuartzJobBean {
      * @param usdt
      * @param mt
      */
+    //暂时不用
     private void finishOrderByParent(SalesOrder order, String buyerId, String sellerId){
         //完全引用SalesOrderServiceImpl-->buyMtFinish 中代码 。问题1，sales_order 中卖家可能与实际卖家不一致
 

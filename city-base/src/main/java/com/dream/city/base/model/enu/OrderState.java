@@ -16,7 +16,7 @@ public enum OrderState {
     FINISHED(9,"完成"),
     EXPIRED(10,"过期"),
     REFUSE(11,"已拒绝"),
-    REFUSE_EXPIRED_FINISHED(12,"已超时或拒绝但完成"),
+
 
     INVALID(-1,"作废");
 

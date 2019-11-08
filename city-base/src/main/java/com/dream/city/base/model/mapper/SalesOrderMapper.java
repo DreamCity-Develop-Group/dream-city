@@ -14,6 +14,7 @@ import java.util.List;
 @Mapper
 public interface SalesOrderMapper {
 
+    Integer insertSelective(SalesOrder record);
 
 
     SalesOrder getSalesOrderById(Integer id);
@@ -61,19 +62,19 @@ public interface SalesOrderMapper {
             "id,order_id,order_amount,order_buy_type," +
             "order_pay_type,order_pay_amount," +
             "order_player_buyer,order_player_seller," +
-            "order_state,createtime)" +
+            "order_state,createtime,updatetime)" +
             "values" +
             "(#{id},#{orderId},#{orderAmount},#{orderBuyType}," +
             "#{orderPayType},#{orderPayAmount}," +
             "#{orderPlayerBuyer},#{orderPlayerSeller}," +
-            "#{orderState},#{createTime} ) ")
+            "#{orderState},#{createTime},#{updatetime}) ")
     int createSalesOrder(SalesOrder order);
 
     @Select("select * from `sales_order` where 1=1 and order_id = #{orderId} limit 1 ")
     @ResultMap("BaseSalesOrderResultMap")
     SalesOrder getSalesOrderByOrderId(String orderId);
 
-    @Update("update `sales_order` set order_state=#{orderState} where 1=1 and order_player_buyer=#{orderPlayerBuyer}")
+    @Update("update `sales_order` set order_state=#{orderState} where 1=1 and id=#{id} and order_player_buyer=#{orderPlayerBuyer}")
     int updateSalesOrder(SalesOrder order);
 
     @Update({"<script>" +
@@ -90,7 +91,7 @@ public interface SalesOrderMapper {
     @Select("select * from `sales_order` where 1=1 and order_player_buyer = #{playerId} limit 1 ")
     List<SalesOrder> getSalesOrderByBuyerPlayerId(String playerId);
 
-    @Select("select * from `sales_order` where 1=1 and order_state = #{state} limit 1 ")
+    @Select("select * from `sales_order` where 1=1 and order_state = #{state} ")
     @ResultMap("BaseSalesOrderResultMap")
     List<SalesOrder> getSalesOrdersByState(int state);
 

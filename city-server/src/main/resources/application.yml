@@ -3,7 +3,7 @@ server:
 spring:
   application:
     name: city-server
-    port: 9999
+    port: 8888
   profiles:
     active: ${spring.profiles.active}
 

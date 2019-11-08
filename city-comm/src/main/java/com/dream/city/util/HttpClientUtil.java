@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.dream.city.base.model.Message;
 import com.dream.city.server.WebSocketServer;
 import com.dream.city.service.HttpClientService;
-import com.dream.city.service.consumer.impl.HttpClientServiceImpl;
+import com.dream.city.service.impl.HttpClientServiceImpl;
 import org.apache.http.HttpEntity;
 import org.apache.http.ParseException;
 import org.apache.http.client.ClientProtocolException;
