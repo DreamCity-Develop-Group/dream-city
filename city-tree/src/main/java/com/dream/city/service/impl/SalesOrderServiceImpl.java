@@ -3,15 +3,13 @@ package com.dream.city.service.impl;
 import com.codingapi.txlcn.tc.annotation.LcnTransaction;
 import com.dream.city.base.exception.BusinessException;
 import com.dream.city.base.model.Result;
-import com.dream.city.base.model.entity.Player;
-import com.dream.city.base.model.entity.PlayerAccount;
-import com.dream.city.base.model.entity.RelationTree;
-import com.dream.city.base.model.entity.SalesOrder;
-import com.dream.city.base.model.enu.OrderState;
-import com.dream.city.base.model.enu.ReturnStatus;
+import com.dream.city.base.model.entity.*;
+import com.dream.city.base.model.enu.*;
 import com.dream.city.base.model.mapper.SalesOrderMapper;
+import com.dream.city.base.model.mapper.SalesRefuseOrderMapper;
 import com.dream.city.base.utils.KeyGenerator;
 import com.dream.city.service.*;
+import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,13 +22,15 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @Slf4j
 public class SalesOrderServiceImpl implements SalesOrderService {
     @Autowired
     private SalesOrderMapper salesOrderMapper;
-
+    @Autowired
+    private SalesRefuseOrderMapper refuseOrderMapper;
 
     @Autowired
     private RelationTreeService treeService;
@@ -40,6 +40,9 @@ public class SalesOrderServiceImpl implements SalesOrderService {
     private PlayerAccountService playerAccountService;
     @Autowired
     InvestRuleService ruleService;
+    @Autowired
+    TradeService tradeService;
+
 
     @LcnTransaction
     @Transactional
@@ -132,9 +135,17 @@ public class SalesOrderServiceImpl implements SalesOrderService {
         buyerAccount.setAccUsdtFreeze(buyerAccount.getAccUsdtFreeze().add(usdtPay));
         int buyerAccountUp = playerAccountService.updatePlayerAccount(buyerAccount);
         if (buyerAccountUp > 0) {
-            //找出上家的playerId=>parentId
-            RelationTree tree = treeService.getTreeByPlayerId(playerId);
-            String parentId = tree.getTreeParentId();
+            String parentId = "";
+            RelationTree treeParent = new RelationTree();
+            CityBusiness business = treeService.getEnabledCityBusiness(playerId);
+            if (Objects.isNull(business)) {
+                //找出上家的playerId=>parentId
+                treeParent = treeService.getParent(playerId);
+                parentId = treeParent.getTreePlayerId();
+            } else {
+                parentId = business.getBusinessParentId();
+                treeParent = treeService.getByPlayer(parentId);
+            }
 
             //生成订单
             SalesOrder order = new SalesOrder();
@@ -157,13 +168,13 @@ public class SalesOrderServiceImpl implements SalesOrderService {
 
             if (insertSalesOrder > 0) {
                 //TODO 自动发货
-                if (StringUtils.isNotBlank(tree.getSendAuto()) && tree.getSendAuto().equals("1")) {
+                if (StringUtils.isNotBlank(treeParent.getSendAuto()) && treeParent.getSendAuto().equals("1")) {
                     //TODO 卖家
                     PlayerAccount sellerAccount = playerAccountService.getPlayerAccount(parentId);
                     if (sellerAccount.getAccMtAvailable().compareTo(buyAmount) < 0) {
                         //TODO 关闭卖家自动发货功能
-                        tree.setSendAuto("0");
-                        treeService.closeAutoSend(tree);
+                        treeParent.setSendAuto("0");
+                        treeService.closeAutoSend(treeParent);
                         log.info("卖家[" + sellerAccount.getAccPlayerId() + "]由于MT备货额度不足被关闭自动发货功能！");
                     } else {
                         //TODO 此处不更新数据，创建订单时虽然卖家设置了自动发货，但是尚未验证密码,待密码确认再处理
@@ -201,6 +212,21 @@ public class SalesOrderServiceImpl implements SalesOrderService {
                             }
                             //return new Result(true, "下单成功", ReturnStatus.SUCCESS.getStatus(), order);
                         }*/
+
+                        SalesOrder salesOrder = salesOrderMapper.getSalesOrderByOrderId(orderId);
+
+                        //创建交易记录
+
+
+                        addPlayerTrade(order,
+                                buyerAccount,
+                                TradeType.BUY_MT.getCode(),
+                                TradeStatus.FREEZE.getCode(),
+                                AmountDynType.OUT.getCode(),
+                                "购买MT下单");
+
+                        addTradeDetail(order, 0, buyerAccount, TradeDetailType.BUY_MT_FREEZE.getCode(), "购买MT下单");
+
                         return Result.result(true, "下单成功", ReturnStatus.SUCCESS.getStatus(), order);
                     }
                 }/* else {
@@ -253,22 +279,32 @@ public class SalesOrderServiceImpl implements SalesOrderService {
         SalesOrder order = this.getBuyerNoPayOrder(playerId);
         if (order != null && OrderState.PAID.getStatus() == order.getOrderState()) {
             //找出上家
-            RelationTree tree = treeService.getParent(playerId);
-            String parentId = tree.getTreePlayerId();
+            String parentId = "";
+            RelationTree treeParent = new RelationTree();
+            CityBusiness business = treeService.getEnabledCityBusiness(playerId);
+            if (Objects.isNull(business)) {
+                //找出上家的playerId=>parentId
+                treeParent = treeService.getParent(playerId);
+                parentId = treeParent.getTreePlayerId();
+            } else {
+                parentId = business.getBusinessParentId();
+                treeParent = treeService.getByPlayer(parentId);
+            }
+
 
             PlayerAccount sellerAccount;
             if (parentId.equalsIgnoreCase("system")) {
-                sellerAccount = playerAccountService.getPlayerAccount(tree.getTreePlayerId());
+                sellerAccount = playerAccountService.getPlayerAccount(treeParent.getTreePlayerId());
             } else {
                 sellerAccount = playerAccountService.getPlayerAccount(parentId);
             }
 
-            if (StringUtils.isNotBlank(tree.getSendAuto()) && tree.getSendAuto().equals("1")) {
+            if (StringUtils.isNotBlank(treeParent.getSendAuto()) && treeParent.getSendAuto().equals("1")) {
                 //判断卖家是否有货可以出售
                 if (sellerAccount.getAccMtAvailable().compareTo(order.getOrderAmount()) < 0) {
                     //TODO 关闭卖家自动发货功能
-                    tree.setSendAuto("0");
-                    treeService.closeAutoSend(tree);
+                    treeParent.setSendAuto("0");
+                    treeService.closeAutoSend(treeParent);
                     log.info("卖家[" + sellerAccount.getAccPlayerId() + "]由于MT备货额度不足被关闭自动发货功能！");
                 } else {
 
@@ -302,6 +338,15 @@ public class SalesOrderServiceImpl implements SalesOrderService {
                         accounts.add(sellerAccount);
 
                         playerAccountService.updatePlayerAccounts(accounts);
+
+
+                        BigDecimal tax = BigDecimal.ZERO;
+                        //创建交易记录明细
+                        PlayerTrade trade = tradeService.getPlayerTrade(order.getId());
+
+                        addTradeDetail(order, trade.getTradeId(), buyerAccount, TradeDetailType.BUY_MT_FINISH.getCode(), "购买MT发货");
+
+                        addTradeDetail(order, trade.getTradeId(), sellerAccount, TradeDetailType.BUY_MT_FINISH.getCode(), "购买MT发货");
 
                         //TODO 订单支付成功
                         return Result.result(true, "订单已支付成功", ReturnStatus.SUCCESS.getStatus());
@@ -370,9 +415,110 @@ public class SalesOrderServiceImpl implements SalesOrderService {
 
             //更新订单状态
             salesOrderMapper.sendOrderMt(orders);
+
+            BigDecimal tax = BigDecimal.ZERO;
+            //创建交易记录明细
+            PlayerTrade trade = tradeService.getPlayerTrade(order.getId());
+
+
+            addTradeDetail(order, trade.getTradeId(), buyerAccount, TradeDetailType.BUY_MT_FINISH.getCode(), "购买MT发货");
+            addTradeDetail(order, trade.getTradeId(), sellerAccount, TradeDetailType.BUY_MT_FINISH.getCode(), "购买MT发货");
+
         }
 
         return new Result(true, "发货成功", ReturnStatus.SUCCESS.getStatus());
+    }
+
+    @LcnTransaction
+    @Transactional
+    @Override
+    public void addTradeDetail(SalesOrder order, Integer tradeId, PlayerAccount account, String status, String desc) throws BusinessException {
+        TradeDetail tradeDetail = new TradeDetail();
+        tradeDetail.setId(0);
+        tradeDetail.setTradeId(tradeId);
+        tradeDetail.setVerifyId(0);
+        tradeDetail.setOrderId(order.getId());
+        tradeDetail.setPlayerId(account.getAccPlayerId());
+        tradeDetail.setTradeDetailType(status);
+        tradeDetail.setTradeAmount(order.getOrderAmount());
+        tradeDetail.setUsdtSurplus(account.getAccUsdtAvailable());
+        tradeDetail.setMtSurplus(account.getAccMtAvailable());
+        tradeDetail.setVerifyTime(null);
+        tradeDetail.setDescr(desc);
+        tradeDetail.setCreateTime(new Date());
+
+        tradeService.addTradeDetail(tradeDetail);
+    }
+
+    @LcnTransaction
+    @Transactional
+    @Override
+    public void addPlayerTrade(SalesOrder order, PlayerAccount account,String tradeType,String tradeStatus, String outStatus, String desc) throws BusinessException {
+        //创建交易记录
+        BigDecimal tax = BigDecimal.ZERO;
+        PlayerTrade trade = new PlayerTrade();
+        trade.setTradeId(0);
+        trade.setTradeAccId(account.getAccId());
+        trade.setTradePlayerId(order.getOrderPlayerBuyer());
+        //trade.setTradeOrderId(salesOrder.getId());
+        trade.setTradeAmount(order.getOrderAmount());
+        trade.setPersonalTax(tax);
+        trade.setEnterpriseTax(tax);
+        trade.setQuotaTax(tax);
+        trade.setTradeStatus(tradeStatus);
+        trade.setInOutStatus(outStatus);
+        trade.setTradeType(tradeType);
+        trade.setTradeDesc(desc);
+
+        tradeService.addTrade(trade);
+    }
+
+    @LcnTransaction
+    @Transactional
+    @Override
+    public void addRefuseOrder(SalesRefuseOrder refuseOrder) {
+        refuseOrderMapper.createSalesRefuseOrder(refuseOrder);
+    }
+
+    @Override
+    public SalesRefuseOrder getRefuseOrder(String playerId, String orderId) {
+        SalesRefuseOrder order = refuseOrderMapper.getSalesRefuseOrderByOrderId(orderId);
+        if (Objects.isNull(order)) {
+            return null;
+        } else if (order.getRefusePlayerSeller().equals(playerId)) {
+            return order;
+        } else {
+            return null;
+        }
+    }
+
+    @LcnTransaction
+    @Transactional
+    @Override
+    public void updateOrder(SalesOrder salesOrder) throws BusinessException {
+        salesOrderMapper.updateSalesOrder(salesOrder);
+    }
+
+    @LcnTransaction
+    @Transactional
+    @Override
+    public void addOrder(SalesOrder salesOrder) throws BusinessException {
+        salesOrderMapper.createSalesOrder(salesOrder);
+    }
+
+    @Override
+    public List<SalesOrder> selectSalesBuyerRefuseOrders(String buyer, String seller) {
+        List<SalesOrder> salesOrders = salesOrderMapper.selectSalesBuyerRefuseOrders(buyer, seller);
+        return salesOrders;
+    }
+
+    @LcnTransaction
+    @Transactional
+    @Override
+    public int selectSalesSellerRejectTimes(String buyer_id, String sellerId, int status) {
+
+        return salesOrderMapper.selectSalesSellerRejectTimes(buyer_id, sellerId, status);
+
     }
 
 

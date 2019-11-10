@@ -66,7 +66,7 @@ public class InvestOrderJob extends QuartzJobBean {
      */
     @Override
     protected void executeInternal(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-        log.info(new Date() + "    订单任务处理执行");
+        log.error(new Date() + "    订单任务处理执行========================================================");
         //TODO 取出所有的投资项目，分别根据投资项目的总预约数以当前规则的比例筛选成功的成员
 
         List<CityInvest> invests = investService.getInvests();
@@ -76,7 +76,7 @@ public class InvestOrderJob extends QuartzJobBean {
          */
         RuleItem ruleItem = ruleService.getInvestRuleItemByKey(RULE_CURRENT);
 
-        List<InvestRule> rules = ruleService.getInvestRuleByKey(ruleItem.getItemId());
+        List<InvestRule> rules = ruleService.getInvestRuleByItemKey(ruleItem.getItemId());
 
         invests.forEach(invest->{
             //直接找出合格的投资订单，修改相应的状态
@@ -141,6 +141,6 @@ public class InvestOrderJob extends QuartzJobBean {
             }
         });
 
-
+        log.error(new Date() + "    订单任务处理执行完成==============================================");
     }
 }

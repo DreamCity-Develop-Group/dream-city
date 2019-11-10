@@ -34,12 +34,46 @@ public class DefaultController {
         }else {
             //workerService.addJob(InvestOrderJob.class,"job2-"+name,"test","0/5 * * * * ?");
         }
-        workerService.addJob(InvestOrderJob.class,"job2-"+name,"test","0/50 * * * * ?");
+        switch (name){
+            //订单预约结果计算任务
+            case "InvestOrderJob":
+                workerService.addJob(InvestOrderJob.class,"job-"+name,"test","0/5 * * * * ?");
+                break;
+                //收益掉落任务
+            case "FallDownJob":
+                workerService.addJob(FallDonwJob.class,"job-"+name,"test","0/5 * * * * ?");
+                break;
+                //掉落收益分配任务
+            case "FallDownGrantJob":
+                workerService.addJob(FallDonwGrantJob.class,"job-"+name,"test","0/5 * * * * ?");
+                break;
+                //Mt购买订单超时处理和商会关系处理任务
+            case "SalesOrderJob":
+                workerService.addJob(SalesOrderJob.class,"job-"+name,"test","0/5 * * * * ?");
+                break;
+                //收益分配任务
+            case "ProfitGrantJob":
+                workerService.addJob(ProfitGrantJob.class,"job-"+name,"test","0/5 * * * * ?");
+                break;
+                //收益计算逻辑任务
+            case "ProfitCalculateJob":
+                workerService.addJob(ProfitCalculateJob.class,"job-"+name,"test","0/5 * * * * ?");
+                break;
+                //自动发货任务
+            case "AutoSendJob":
+                workerService.addJob(AutoSendJob.class,"job-"+name,"test","0/5 * * * * ?");
+                break;
+            case "ChargeScanJob":
+                workerService.addJob(ChargeScanJob.class,"job-"+name,"test","0/5 * * * * ?");
+                default:
+
+                    break;
+        }
     }
 
     @RequestMapping("/updateJob")
     public void updateJob(@RequestParam("jobName")String jobName,@RequestParam("jobGroupName")String jobGroupName) {
-        workerService.updateJob(jobName, jobGroupName, "0/10 * * * * ?");
+        workerService.updateJob(jobName, jobGroupName, "0/30 * * * * ?");
     }
 
     @RequestMapping("/deleteJob")

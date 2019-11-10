@@ -11,7 +11,7 @@
     <result column="in_personal_tax" property="inPersonalTax" jdbcType="DECIMAL" />
     <result column="in_enterprise_tax" property="inEnterpriseTax" jdbcType="DECIMAL" />
     <result column="in_quota_tax" property="inQuotaTax" jdbcType="DECIMAL" />
-    <result column="in_earning" property="inEarning" jdbcType="TINYINT" />
+    <result column="in_earning" property="inEarning" jdbcType="DECIMAL" />
     <result column="in_end" property="inEnd" jdbcType="TIMESTAMP" />
     <result column="is_valid" property="isValid" jdbcType="CHAR" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />

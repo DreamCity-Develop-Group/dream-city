@@ -146,8 +146,8 @@ public class PropertyServiceImpl implements PropertyService {
                     resultMap.put("state", status);
                     resultMap.put("openState", invest.getIsValid());
                     resultMap.put("inType", invest.getInType());
-                    resultMap.put("expectIncome", invest.getInLimit()
-                            .multiply(BigDecimal.valueOf(Long.parseLong(String.valueOf(invest.getInEarning())))));
+                    resultMap.put("expectIncome", invest.getInLimit().multiply(invest.getInEarning()));
+
                     resultMap.put("likeCount",0);
                     String resultTime = "9:30";
                     if (invest.getVerifyTime() != null){

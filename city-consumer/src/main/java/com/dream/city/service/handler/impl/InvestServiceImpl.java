@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Wvv
@@ -47,6 +48,7 @@ public class InvestServiceImpl implements InvestService {
     RedisUtils redisUtils;
 
     final String INVERST_HASH_DATA = "INVERST_HASH_DATA_";
+    final long INVERST_HASH_DATA_EXPIRED= 60*10L;
 
     /**
      * 预约投资
@@ -107,10 +109,12 @@ public class InvestServiceImpl implements InvestService {
         String json = JsonUtil.parseObjToJson(msg.getData().getData());
         JSONObject jsonObject = JsonUtil.parseJsonToObj(json,JSONObject.class);
         String playerId = jsonObject.getString("playerId");
+        String friendId = jsonObject.getString("friendId");
         Map<String, Object> dataResult = new Hashtable<>();
 
         Map<String, Object> data = new Hashtable<>();
-        if (redisUtils.hasKey(INVERST_HASH_DATA+playerId)){
+
+        if (redisUtils.hasKey(INVERST_HASH_DATA+playerId) && StringUtils.isBlank(friendId)){
             Map rdata = redisUtils.hmget(INVERST_HASH_DATA+playerId);
             List list = (List)rdata.get("investList");
             if (list.size()>0){
@@ -137,7 +141,10 @@ public class InvestServiceImpl implements InvestService {
 
         dataResult.put("investList", result.getData());
 
-        redisUtils.hmset(INVERST_HASH_DATA+playerId,dataResult);
+        if(StringUtils.isBlank(friendId)){
+            redisUtils.hmset(INVERST_HASH_DATA+playerId,dataResult);
+            redisUtils.expire(INVERST_HASH_DATA+playerId,INVERST_HASH_DATA_EXPIRED);
+        }
 
         msg.getData().setData(dataResult);
         msg.setDesc(result.getMsg());

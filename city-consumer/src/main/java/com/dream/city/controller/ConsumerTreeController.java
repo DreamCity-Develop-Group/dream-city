@@ -122,6 +122,23 @@ public class ConsumerTreeController {
         }
     }
 
+    /**
+     * 拒绝订单发货
+     *
+     * @param msg
+     * @return
+     */
+    @RequestMapping(value = "/tree/refuseOrder", method = RequestMethod.POST)
+    public Message refuseSendOrder(@RequestBody Message msg) {
+        try {
+            return treeService.refuseSendOrder(msg);
+        }catch (Exception e){
+            //throw new BusinessException("setplayertree");
+            msg.getData().setCode(ReturnStatus.FAILED.getStatus());
+            return msg;
+        }
+    }
+
 
     /**
      * 订单创建

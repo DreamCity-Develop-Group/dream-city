@@ -46,6 +46,7 @@ public class InvestOrderServiceImpl implements InvestOrderService {
     @Transactional
     @Override
     public Map<String, List<InvestOrder>> getInvestOrdersByCurrentDay(Integer investId, List<InvestRule> rules,int[] states)throws BusinessException {
+
         List<InvestOrder> investOrders = investOrderMapper.getInvestOrdersByCurrentDay(investId, InvestStatus.SUBSCRIBED.getStatus());
 
 
@@ -69,26 +70,26 @@ public class InvestOrderServiceImpl implements InvestOrderService {
             switch (rule.getRuleOpt()) {
                 case "OPT_RATE":
                     switch (rule.getRuleFlag()) {
-                        case "ALL_ORDERS"://所有的40%
-                            long all = Long.parseLong(rule.getRuleRate().multiply(total) + "");
+                        case "ALL_ORDERS"://所有的新增投资玩家（包括复投）的20%
+                            long all = rule.getRuleRate().multiply(total).longValue();
                             List<InvestOrder> allOrders = getRandomOrders(investOrders, all);
                             investOrdersSucess.put(rule.getRuleFlag(), allOrders);
                             investOrders.removeAll(allOrders);
                             break;
-                        case "FIRST_TIME"://第一次投资 20
-                            long first = Long.parseLong(rule.getRuleRate().multiply(total) + "");
+                        case "FIRST_TIME"://第一次投资 50%
+                            long first = rule.getRuleRate().multiply(total).longValue();
                             List<InvestOrder> firstOrders = getFirstTimeOrders(investOrders, first);
                             investOrdersSucess.put(rule.getRuleFlag(), firstOrders);
                             investOrders.removeAll(firstOrders);
                             break;
                         case "LIKES_GATHER"://点赞最多 20
-                            long likes = Long.parseLong(rule.getRuleRate().multiply(total) + "");
+                            long likes = rule.getRuleRate().multiply(total).longValue();
                             List<InvestOrder> likesOrders = getLiksGatherOrders(investOrders, likes);
                             investOrdersSucess.put(rule.getRuleFlag(), likesOrders);
                             investOrders.removeAll(likesOrders);
                             break;
                         case "INVEST_LONG"://投资时间最长10%
-                            long longs = Long.parseLong(rule.getRuleRate().multiply(total) + "");
+                            long longs = rule.getRuleRate().multiply(total).longValue();
                             List<InvestOrder> longsOrders = getInvestLongTimeOrders(investOrders, longs);
                             investOrdersSucess.put(rule.getRuleFlag(), longsOrders);
                             if (longsOrders!=null){
@@ -96,7 +97,7 @@ public class InvestOrderServiceImpl implements InvestOrderService {
                             }
                             break;
                         case "ORDER_OTHERS"://其他 100%
-                            long other = Long.parseLong(rule.getRuleRate().multiply(total) + "");
+                            long other = rule.getRuleRate().multiply(total).longValue();
                             List<InvestOrder> othersOrders = getOtherOrders(investOrders, other);
                             if (othersOrders != null) {
                                 investOrdersSucess.put(rule.getRuleFlag(), othersOrders);
@@ -110,10 +111,10 @@ public class InvestOrderServiceImpl implements InvestOrderService {
 
                     }
                     break;
-                case "OPT_TOP"://新增玩家 前20
+                case "OPT_TOP"://新增下级玩家最多的 前30%
                     switch (rule.getRuleFlag()) {
                         case "TOP_MEMBERS":
-                            long top = Long.parseLong(rule.getRuleRate().multiply(total) + "");
+                            long top = rule.getRuleRate().multiply(total).longValue();
                             List<InvestOrder> topOrders = getTopMembersOrders(investOrders, top);
                             investOrdersSucess.put(rule.getRuleFlag(), topOrders);
                             investOrders.removeAll(topOrders);
@@ -338,11 +339,11 @@ public class InvestOrderServiceImpl implements InvestOrderService {
     @Override
     public List<InvestOrder> getTopMembersOrders(List<InvestOrder> orders, long top)throws BusinessException {
         orders.sort(((o2, o1) -> {
-            return relationTreeService.getMembersIncrement(
-                    o2.getOrderPayerId(), investService.getEndTimeAt(o2.getOrderInvestId())
-            ) - relationTreeService.getMembersIncrement(
-                    o1.getOrderPayerId(), investService.getEndTimeAt(o1.getOrderInvestId())
-            );
+            Date oDate2 = investService.getEndTimeAt(o2.getOrderInvestId());
+            Date oDate1 = investService.getEndTimeAt(o1.getOrderInvestId());
+            int incrO2 = relationTreeService.getMembersIncrement(o2.getOrderPayerId(), oDate2);
+            int incrO1 = relationTreeService.getMembersIncrement(o1.getOrderPayerId(), oDate1);
+            return incrO2-incrO1 ;
         }));
 
         return orders.subList(0, (int) top);

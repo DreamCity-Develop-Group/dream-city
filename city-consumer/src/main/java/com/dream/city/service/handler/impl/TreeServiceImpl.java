@@ -255,6 +255,7 @@ public class TreeServiceImpl implements TreeService {
         String username = jsonObject.getString("username");
         Integer page = jsonObject.getInteger("page");
         String playerId = jsonObject.getString("playerId");
+
         if (StringUtils.isBlank(playerId)) {
             msg.getData().setCode(ReturnStatus.ERROR.getStatus());
             msg.setDesc("获取MT交易订单失败");
@@ -377,6 +378,37 @@ public class TreeServiceImpl implements TreeService {
             message.getData().setCode(result.getCode());
             message.setDesc("发货失败:" + result.getMsg());
             return message;
+        }
+    }
+
+
+    /**
+     * 拒绝订单发货
+     *
+     * @param msg
+     * @return
+     */
+    @LcnTransaction
+    @Transactional
+    @Override
+    public Message refuseSendOrder(Message msg){
+        Object dataMsg = msg.getData().getData();
+        JSONObject jsonObject = JsonUtil.parseJsonToObj(JsonUtil.parseObjToJson(dataMsg), JSONObject.class);
+        String playerId = jsonObject.getString("playerId");
+        String orderId = jsonObject.getString("orderId");
+
+
+        Result result = treeService.refuseSendOrder(playerId, orderId);
+        if (result.getSuccess()) {
+            msg.getData().setCode(ReturnStatus.SUCCESS.getStatus());
+            msg.getData().setData(orderId);
+            msg.setDesc(result.getMsg());
+            return msg;
+        } else {
+            msg.getData().setData(orderId);
+            msg.getData().setCode(ReturnStatus.RETRY_OPT.getStatus());
+            msg.setDesc("拒绝发货失败:");
+            return msg;
         }
     }
 

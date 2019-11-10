@@ -44,6 +44,8 @@ public class DataUtils {
             desc = "投资企业税金解冻";
         }else if ("BUY_MT_FREEZE".equalsIgnoreCase(code)){
             desc = "购买mt冻结";
+        }else if ("BUY_MT_FINISH".equalsIgnoreCase(code)){
+            desc = "购买mt完成";
         }else if ("TRANSFER_FREEZE".equalsIgnoreCase(code)){
             desc = "转账冻结";
         }else if ("TRANSFER_VERIFY".equalsIgnoreCase(code)){

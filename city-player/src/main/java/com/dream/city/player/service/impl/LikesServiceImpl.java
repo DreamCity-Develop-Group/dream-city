@@ -142,82 +142,101 @@ public class LikesServiceImpl implements LikesService {
     @Transactional
     @Override
     public Result like(String from, String to) throws BusinessException{
+        //投资经营中标识
         int[] ids = {5};
         List<Integer> ins = new ArrayList<>(7);
 
         List<InvestOrder> orders = investOrderMapper.getSuccessInvestOrdersByPlayerId(to, ids);
-        orders.forEach((order) -> {
-            PlayerLikesLog playerLikesLog = new PlayerLikesLog();
-            playerLikesLog.setLikeLikedId(to);
-            playerLikesLog.setLikePlayerId(from);
-            playerLikesLog.setLikeInvestId(order.getOrderInvestId());
-            int likesLogCount = likesLogMapper.investLikesCountToday(playerLikesLog);
-            if (likesLogCount > 0) {
+        if (orders.size()>0){
+            orders.forEach((order) -> {
+                PlayerLikesLog playerLikesLog = new PlayerLikesLog();
+                playerLikesLog.setLikeLikedId(to);
+                playerLikesLog.setLikePlayerId(from);
+                playerLikesLog.setLikeInvestId(order.getOrderInvestId());
+                int likesLogCount = likesLogMapper.investLikesCountToday(playerLikesLog);
+                if (likesLogCount > 0) {
 
+                } else {
+                    ins.add(order.getOrderInvestId());
+                }
+
+            });
+
+            int investId = 0;
+            if (orders.size() == 1) {
+                investId = (int) ins.get(0);
             } else {
-                ins.add(order.getOrderInvestId());
+                long currentTimeMillis = System.currentTimeMillis();
+                String[] mills = String.valueOf(currentTimeMillis).split("");
+                int last = Integer.parseInt(mills[mills.length - 1]);
+                while (last > ins.size()) {
+                    currentTimeMillis = System.currentTimeMillis();
+                    mills = String.valueOf(currentTimeMillis).split("");
+                    last = Integer.parseInt(mills[mills.length - 1]);
+                }
+                investId = ins.get(last);
             }
 
-        });
+            PlayerLikes likesTo   = playerLikesMapper.getLikesByInvest(to,investId);
+            PlayerLikes likesFrom = playerLikesMapper.getLikesByInvest(from,investId);
 
-        int investId = 0;
-        if (orders.size() == 1) {
-            investId = (int) ins.get(0);
-        } else {
-            long currentTimeMillis = System.currentTimeMillis();
-            String[] mills = String.valueOf(currentTimeMillis).split("");
-            int last = Integer.parseInt(mills[mills.length - 1]);
-            while (last > ins.size()) {
-                currentTimeMillis = System.currentTimeMillis();
-                mills = String.valueOf(currentTimeMillis).split("");
-                last = Integer.parseInt(mills[mills.length - 1]);
+            int insertId = 0;
+            if (Objects.isNull(likesTo)) {
+                likesTo = new PlayerLikes();
+                likesTo.setLikedId(0);
+                likesTo.setLikedPlayerId(to);
+                likesTo.setLikedInvestId(investId);
+
+                likesTo.setLikedSetTotal(0);
+                //设置获取到1
+                likesTo.setLikedGetTotal(1);
+                likesTo.setCreateTime(new Date());
+                likesTo.setUpdateTime(new Date());
+
+                playerLikesMapper.insert(likesTo);
+            }else{
+                likesTo.setLikedGetTotal(likesTo.getLikedGetTotal()+1);
+                likesTo.setUpdateTime(new Date());
+                playerLikesMapper.updateByPrimaryKeySelective(likesTo);
             }
-            investId = ins.get(last);
+
+            if (Objects.isNull(likesFrom)) {
+                likesFrom = new PlayerLikes();
+
+                likesFrom.setLikedId(0);
+                likesFrom.setLikedPlayerId(to);
+                likesFrom.setLikedInvestId(investId);
+                //设置付出1
+                likesFrom.setLikedSetTotal(1);
+                likesFrom.setLikedGetTotal(0);
+                likesFrom.setCreateTime(new Date());
+                likesFrom.setUpdateTime(new Date());
+
+                playerLikesMapper.insert(likesFrom);
+            }else{
+                likesFrom.setLikedSetTotal(likesFrom.getLikedSetTotal()+1);
+                likesFrom.setUpdateTime(new Date());
+                playerLikesMapper.updateByPrimaryKeySelective(likesFrom);
+            }
+
+            //PlayerLikes likes = playerLikesMapper.getLikes(to);
+
+            PlayerLikesLog likesLog = new PlayerLikesLog();
+            likesLog.setId(0);
+            likesLog.setCreateTime(new Date());
+            likesLog.setUpdateTime(new Date());
+            //设置为收取玩家对应的ID
+            likesLog.setLikeId(likesTo.getLikedId());
+            likesLog.setLikeInvestId(investId);
+
+            likesLog.setLikePlayerId(from);
+            likesLog.setLikeLikedId(to);
+            likesLogMapper.insertSelective(likesLog);
+            return Result.result(true,"点赞成功", ReturnStatus.SUCCESS.getStatus(),likesTo);
+        }else {
+            return Result.result(false,"点赞失败", ReturnStatus.FAILED.getStatus(),null);
         }
 
-        PlayerLikes likesTo   = playerLikesMapper.getLikes(to);
-        PlayerLikes likesFrom = playerLikesMapper.getLikes(from);
-        int insertId = 0;
-        if (Objects.isNull(likesTo)) {
-            likesTo = new PlayerLikes();
-            likesTo.setLikedId(0);
-            likesTo.setLikedPlayerId(to);
-            likesTo.setLikedSetTotal(0);
-            //设置获取到1
-            likesTo.setLikedGetTotal(1);
-            likesTo.setCreateTime(new Date());
-            likesTo.setUpdateTime(new Date());
-            likesTo.setLikedInvestId(investId);
-            playerLikesMapper.insert(likesTo);
-        }
-
-        if (Objects.isNull(likesFrom)) {
-            likesFrom = new PlayerLikes();
-            likesFrom.setLikedId(0);
-            likesFrom.setLikedPlayerId(to);
-            //设置付出1
-            likesFrom.setLikedSetTotal(1);
-            likesFrom.setLikedGetTotal(0);
-            likesFrom.setCreateTime(new Date());
-            likesFrom.setUpdateTime(new Date());
-            likesFrom.setLikedInvestId(investId);
-            playerLikesMapper.insert(likesFrom);
-        }
-
-        PlayerLikes likes = playerLikesMapper.getLikes(to);
-
-        PlayerLikesLog likesLog = new PlayerLikesLog();
-        likesLog.setId(0);
-        likesLog.setCreateTime(new Date());
-        likesLog.setUpdateTime(new Date());
-        //设置为收取玩家对应的ID
-        likesLog.setLikeId(likes.getLikedId());
-        likesLog.setLikeInvestId(investId);
-
-        likesLog.setLikePlayerId(from);
-        likesLog.setLikeLikedId(to);
-
-        return Result.result(true,"点赞成功", ReturnStatus.SUCCESS.getStatus(),likes);
     }
 
 }

@@ -1,10 +1,7 @@
 package com.dream.city.base.model.mapper;
 
 
-import com.dream.city.base.model.entity.CityInvest;
-import com.dream.city.base.model.entity.InvestAllow;
-import com.dream.city.base.model.entity.Player;
-import com.dream.city.base.model.entity.RuleItem;
+import com.dream.city.base.model.entity.*;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -148,6 +145,5 @@ public interface RuleItemMapper {
             "item_state itemState,create_time createTime,update_time updateTime " +
             "from `rule_item` where 1=1 and item_flag = #{flag} and item_state=1"})
     RuleItem getRuleItemByFlag(String flag);
-
 
 }

@@ -8,11 +8,9 @@ import com.dream.city.base.model.CityGlobal;
 import com.dream.city.base.model.Message;
 import com.dream.city.base.model.MessageData;
 import com.dream.city.base.model.Result;
-import com.dream.city.base.model.entity.InvestRule;
-import com.dream.city.base.model.entity.Player;
-import com.dream.city.base.model.entity.RelationTree;
-import com.dream.city.base.model.entity.RuleItem;
+import com.dream.city.base.model.entity.*;
 import com.dream.city.base.model.enu.ReturnStatus;
+import com.dream.city.base.model.mapper.CityBusinessMapper;
 import com.dream.city.base.model.mapper.RelationTreeMapper;
 import com.dream.city.base.utils.JsonUtil;
 import com.dream.city.base.utils.RedisKeys;
@@ -24,7 +22,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
@@ -44,6 +41,10 @@ public class RelationTreeServiceImpl implements RelationTreeService {
 
     @Autowired
     private RelationTreeMapper treeMapper;
+
+    @Autowired
+    private CityBusinessMapper cityBusinessMapper;
+
 
     @Autowired
     InvestRuleService investRuleService;
@@ -441,6 +442,16 @@ public class RelationTreeServiceImpl implements RelationTreeService {
     @Override
     public void closeAutoSend(RelationTree tree) throws BusinessException {
         treeMapper.updateTree(tree);
+    }
+
+    @Override
+    public void addCityBusiness(CityBusiness cityBusiness) {
+        cityBusinessMapper.savebusiness(cityBusiness);
+    }
+
+    @Override
+    public CityBusiness getEnabledCityBusiness(String playerId) {
+        return cityBusinessMapper.getEnabledCityBusiness(playerId);
     }
 
     /**

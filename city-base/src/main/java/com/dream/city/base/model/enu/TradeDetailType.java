@@ -26,6 +26,9 @@ public enum TradeDetailType {
     MT_INVEST_QUOTA_TAX_UNFREEZE("MT_INVEST_ENTERPRISE_TAX_UNFREEZE","mt投资企业税金解冻"),
     MT_EARNINGS("MT_EARNINGS","mt投资收益"),
     BUY_MT_FREEZE("BUY_MT_FREEZE","购买mt冻结"),
+    BUY_MT_FINISH("BUY_MT_FINISH","购买mt完成发货"),
+    BUY_MT_REFUSE("BUY_MT_REFUSE","购买mt拒绝发货"),
+    LEVEL_EARN("LEVEL_EARN","印记分成收益"),
 
     /*PERSONAL_TAX("PERSONAL_TAX","个人所得税"),
     ENTERPRISE_TAX("ENTERPRISE_TAX","企业所得税"),*/
