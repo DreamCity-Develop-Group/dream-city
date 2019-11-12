@@ -16,7 +16,7 @@ public class PlayerAccountReq implements Serializable {
     private Integer accId;
 
     /** 平台账号id */
-    private String platformAccIds;
+    private String[] platformAccIds;
 
     /** 账户玩家 */
     private String accPlayerId;
