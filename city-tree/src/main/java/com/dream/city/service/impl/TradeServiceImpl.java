@@ -29,4 +29,9 @@ public class TradeServiceImpl implements TradeService {
     public PlayerTrade getPlayerTrade(Integer id) {
         return tradeMapper.getPlayerTradeByOrderId();
     }
+
+    @Override
+    public void updatePlayerTrade(PlayerTrade trade) {
+        tradeMapper.updateByPrimaryKeySelective(trade);
+    }
 }

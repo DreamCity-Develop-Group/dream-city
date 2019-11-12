@@ -1,18 +1,10 @@
 spring:
-  devtools:
-    restart:
-      #添加那个目录的文件需要restart
-      additional-paths: src/main/java
-      #排除那个目录的文件不需要restart
-      exclude: static/**
-
   datasource:
     #driver-class-name: com.mysql.jdbc.Driver
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/dreamcity?serverTimezone=UTC&useUnicode=true&characterEncoding=UTF-8&transformedBitIsBoolean=true&autoReconnect=true&failOverReadOnly=false&allowMultiQueries=true&useSSL=false
     username: dreamcity
     password: Root@123
-
   cache:
     type: redis
   redis:

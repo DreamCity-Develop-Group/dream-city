@@ -9,7 +9,6 @@ spring:
       hibernate:
         ddl-auto: update #ddl-auto:设为update表示每次都不会重新建表
       show-sql: true
-
   cache:
     type: redis
   redis:

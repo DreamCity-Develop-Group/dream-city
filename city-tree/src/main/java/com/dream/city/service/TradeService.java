@@ -18,4 +18,6 @@ public interface TradeService {
     void addTradeDetail(TradeDetail tradeDetail);
 
     PlayerTrade getPlayerTrade(Integer id);
+
+    void updatePlayerTrade(PlayerTrade trade);
 }

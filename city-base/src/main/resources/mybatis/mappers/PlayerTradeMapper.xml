@@ -190,6 +190,8 @@
       now(),
     </trim>
   </insert>
+
+
   <update id="updateByPrimaryKeySelective" parameterType="com.dream.city.base.model.entity.PlayerTrade" >
     update player_trade
     <set >

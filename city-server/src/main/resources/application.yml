@@ -6,7 +6,3 @@ spring:
     port: 9999
   profiles:
     active: ${spring.profiles.active}
-
-  devtools:
-    restart:
-      enabled: false

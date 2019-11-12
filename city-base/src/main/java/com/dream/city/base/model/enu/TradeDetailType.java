@@ -8,7 +8,7 @@ public enum TradeDetailType {
 
     CHANGE_TRAN_PWD("CHANGE_TRAN_PWD","修改交易密码"),
 
-    PLATFORM_CHANGE_AMOUNT("CHANGE_TRAN_PWD","管理后台修改账户额度"),
+    PLATFORM_CHANGE_AMOUNT("PLATFORM_CHANGE_AMOUNT","管理后台修改账户额度"),
 
     RECHARGE("RECHARGE","充值"),
 

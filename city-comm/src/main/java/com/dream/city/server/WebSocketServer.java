@@ -185,6 +185,7 @@ public class WebSocketServer {
         log.info("Message:" + message);
         //this.session.addMessageHandler(SocketMessageHandler.MessageHandler.handleTextMessage(this.session,message));
         publishService.publish(topic, message);
+        //TODO 这里要处理消息记录到=>player_message_log
         //根据sid 到服务上找对应的数据，=》校验 =》 推送数据到客户端
         try {
             //TODO 1、如果客户端发心跳包[ping&&XXXX],回复success：包括登录期间的ping和登录之前的连接检测
@@ -194,6 +195,22 @@ public class WebSocketServer {
                 String account = msgArray[1];
                 String heartBeat = "ping";
                 String tokenBeat = "token";
+                //账号为空
+                if (StringUtils.isBlank(account)){
+                    Message replay = new Message(
+                            "server",
+                            WebSocketServer.this.clientId,
+                            new MessageData(
+                                    "tokenCheck",
+                                    "messageCenter",
+                                    ReturnStatus.FAILED.getStatus()
+                            ),
+                            "账号异常",
+                            String.valueOf(System.currentTimeMillis())
+                    );
+
+                    sendInfo(replay);
+                }
 
                 if (heartBeat.equals(ping)) {
                     System.out.println("心跳消息接收...");

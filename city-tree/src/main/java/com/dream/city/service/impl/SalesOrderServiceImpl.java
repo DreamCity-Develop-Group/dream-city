@@ -342,7 +342,11 @@ public class SalesOrderServiceImpl implements SalesOrderService {
 
                         BigDecimal tax = BigDecimal.ZERO;
                         //创建交易记录明细
+
+                        //修改交易状态
                         PlayerTrade trade = tradeService.getPlayerTrade(order.getId());
+                        trade.setTradeStatus(TradeStatus.OUT.getCode());
+                        tradeService.updatePlayerTrade(trade);
 
                         addTradeDetail(order, trade.getTradeId(), buyerAccount, TradeDetailType.BUY_MT_FINISH.getCode(), "购买MT发货");
 

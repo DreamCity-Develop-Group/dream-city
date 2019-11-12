@@ -97,9 +97,9 @@ public class TradeServiceImpl implements TradeService {
                 for(PlayerTradeResp tradeResp: tradeDetailList){
                     dataMap = new HashMap<>();
                     dataMap.put("createTime",tradeResp.getCreateTime());
-                    dataMap.put("tradeDetailType",DataUtils.getTradeDetailType(tradeResp.getTradeDetailType()));
+                    dataMap.put("tradeDetailType",tradeResp.getTradeDetailType());
                     dataMap.put("tradeAmount",tradeResp.getTradeAmount());
-                    dataMap.put("tradeStatus",DataUtils.getTradeStatus(tradeResp.getTradeStatus()));
+                    dataMap.put("tradeStatus",tradeResp.getTradeStatus());
                     dataMap.put("usdtSurplus",tradeResp.getUsdtSurplus());
                     dataMap.put("mtSurplus",tradeResp.getMtSurplus());
                     tradeDetailListResult.add(dataMap);
@@ -181,6 +181,7 @@ public class TradeServiceImpl implements TradeService {
         PlayerAccountReq accountReq = DataUtils.getPlayerAccountReqFromMessage(msg);
         String playerId = accountReq.getAccPlayerId();
         PlayerResp player = null;
+
         if (StringUtils.isBlank(playerId)) {
             player = commonService.getPlayerByUserName(msg);
             playerId = player.getPlayerId();
