@@ -150,8 +150,6 @@ public class SalesOrderJob extends QuartzJobBean {
      * @param order
      * @param buyerId
      * @param sellerId
-     * @param usdt
-     * @param mt
      */
     private void finishOrderByParent(SalesOrder order, String buyerId, String sellerId){
         //完全引用SalesOrderServiceImpl-->buyMtFinish 中代码 。问题1，sales_order 中卖家可能与实际卖家不一致

@@ -41,6 +41,7 @@ public class PlayerTradeResp implements Serializable {
     /**  审核人 */
     private String verifyUserName;
     private String verifyStatus;
+    private String verifyToAddress;
     private String verifyDesc;
     private String verifyTime;
 

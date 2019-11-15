@@ -5,6 +5,7 @@
     <id column="verify_id" property="verifyId" jdbcType="INTEGER" />
     <result column="verify_trade_id" property="verifyTradeId" jdbcType="INTEGER" />
     <result column="verify_order_id" property="verifyOrderId" jdbcType="INTEGER" />
+    <result column="verify_to_address" property="verifyToAddress" jdbcType="VARCHAR" />
     <result column="verify_user_id" property="verifyEmpId" jdbcType="INTEGER" />
     <result column="verify_status" property="verifyStatus" jdbcType="VARCHAR" />
     <result column="verify_desc" property="verifyDesc" jdbcType="VARCHAR" />
@@ -12,7 +13,7 @@
     <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    verify_id, verify_trade_id,verify_order_id, verify_user_id,  verify_status, verify_desc,
+    verify_id, verify_trade_id,verify_order_id,verify_to_address, verify_user_id,  verify_status, verify_desc,
     DATE_FORMAT(create_time,'%Y-%m-%d %h:%m:%s') create_time, DATE_FORMAT(update_time,'%Y-%m-%d %h:%m:%s') update_time
   </sql>
 
@@ -41,6 +42,9 @@
       <if test="verifyOrderId != null">
         and verify_order_id = #{verifyOrderId,jdbcType=INTEGER}
       </if>
+      <if test="verifyToAddress != null">
+        and verify_to_address = #{verifyOrderId,jdbcType=VARCHAR}
+      </if>
     </where>
     order by update_time desc limit 1
   </select>
@@ -64,6 +68,9 @@
       <if test="verifyOrderId != null">
         and verify_order_id = #{verifyOrderId,jdbcType=INTEGER}
       </if>
+      <if test="verifyToAddress != null">
+        and verify_to_address = #{verifyOrderId,jdbcType=VARCHAR}
+      </if>
     </where>
     order by update_time desc
   </select>
@@ -85,6 +92,9 @@
       </if>
       <if test="verifyOrderId != null" >
         verify_order_id,
+      </if>
+      <if test="verifyToAddress != null" >
+        verify_to_address,
       </if>
       <if test="verifyEmpId != null" >
         verify_user_id,
@@ -108,6 +118,9 @@
       <if test="verifyOrderId != null" >
         #{verifyOrderId,jdbcType=INTEGER},
       </if>
+      <if test="verifyToAddress != null" >
+        #{verifyToAddress,jdbcType=VARCHAR},
+      </if>
       <if test="verifyEmpId != null" >
         #{verifyEmpId,jdbcType=INTEGER},
       </if>
@@ -130,6 +143,9 @@
       </if>
       <if test="verifyOrderId != null" >
         verify_order_id = #{verifyOrderId,jdbcType=INTEGER},
+      </if>
+      <if test="verifyToAddress != null">
+        verify_to_address = #{verifyOrderId,jdbcType=VARCHAR}
       </if>
       <if test="verifyEmpId != null" >
         verify_user_id = #{verifyEmpId,jdbcType=INTEGER},

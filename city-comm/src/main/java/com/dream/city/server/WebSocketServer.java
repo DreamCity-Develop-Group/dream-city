@@ -9,16 +9,20 @@ import com.dream.city.base.utils.JsonUtil;
 import com.dream.city.base.utils.RedisKeys;
 import com.dream.city.base.utils.RedisUtils;
 import com.dream.city.base.utils.SpringUtils;
+import com.dream.city.config.HttpSessionConfigurator;
+import com.dream.city.config.WebSocketConfig;
 import com.dream.city.service.HttpClientService;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.java_websocket.WebSocket;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
+import javax.servlet.http.HttpSession;
 import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
@@ -33,7 +37,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * topic :
  */
 
-@ServerEndpoint("/dream/city/{topic}/{name}")
+@ServerEndpoint(value = "/dream/city/{topic}/{name}",configurator = HttpSessionConfigurator.class)
 @Component
 public class WebSocketServer {
     @Value("${server.port}")
@@ -88,13 +92,22 @@ public class WebSocketServer {
      * @param session
      */
     @OnOpen
-    public void onOpen(Session session, @PathParam("topic") String topic, @PathParam("name") String name) {
+    public void onOpen(Session session, EndpointConfig config, @PathParam("topic") String topic, @PathParam("name") String name) {
         sid = session.getId();
         log.info(
                 "有新窗口[" + name +
                         "@" + topic + "]开始监听:" + sid +
                         ",当前在线人数为" + getOnlineCount()+"||"+getOnlinePlayerCount());
         this.session = session;
+
+        HttpSession httpSession= (HttpSession) config.getUserProperties().get(HttpSession.class.getName());
+        log.info("name is : "+ httpSession.getAttribute("name"));
+        //sessionMap.put(session.getId(), session);
+        log.info("the session is : "+session.getId());
+        log.info("session content is : "+session.getId());
+        log.info("httpSession  is : "+httpSession.getId());
+
+
         //加入set中
         webSocketSet.add(this);
         redisUtils.addOnlinePlayer("clientID_"+server+"_"+session.getId(),1);

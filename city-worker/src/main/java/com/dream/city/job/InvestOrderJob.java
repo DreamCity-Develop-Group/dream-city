@@ -82,7 +82,7 @@ public class InvestOrderJob extends QuartzJobBean {
             //直接找出合格的投资订单，修改相应的状态
             int[] states = new int[]{InvestStatus.MANAGEMENT.getStatus(),InvestStatus.EXTRACT.getStatus(),InvestStatus.FINISHED.getStatus()};
             //int[] states = new int[]{ReturnStatus.INVEST_MANAGEMENT.getStatus(),ReturnStatus.INVEST_EXTRACT.getStatus()};
-            //states传过去，但没使用
+            //states传过去，找出当天的订单
             Map<String, List<InvestOrder>> orders = investOrderService.getInvestOrdersByCurrentDay(invest.getInId(),rules,states);
 
             List<InvestOrder> orderList = new ArrayList<>();

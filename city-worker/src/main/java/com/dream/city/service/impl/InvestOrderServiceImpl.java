@@ -47,6 +47,7 @@ public class InvestOrderServiceImpl implements InvestOrderService {
     @Override
     public Map<String, List<InvestOrder>> getInvestOrdersByCurrentDay(Integer investId, List<InvestRule> rules,int[] states)throws BusinessException {
 
+        //1.TODO 找出当前投资项【InvestId】当天所有的订单 状态【==已预约==】
         List<InvestOrder> investOrders = investOrderMapper.getInvestOrdersByCurrentDay(investId, InvestStatus.SUBSCRIBED.getStatus());
 
 
@@ -54,16 +55,11 @@ public class InvestOrderServiceImpl implements InvestOrderService {
         final Map<String, List<InvestOrder>> investOrdersSucess = new Hashtable<>();
         long total1 = investOrders.size();
         BigDecimal total = new BigDecimal(total1);
+
         //Map<InvestOrder>
-        //根据权重排序，权重数值小的权限大，应该先计算
+        //2.TODO 根据权重排序，权重数值小的权限大，应该先计算
         rules.sort((r1, r2) -> (r1.getRuleLevel() - r2.getRuleLevel()));
 
-        //太少就不要按策略筛选了.下方default已加
-        if(investOrders.size() > 0 && investOrders.size() <= 100){
-
-            //investOrdersSucess.put("1", investOrders);
-
-        }
 
         rules.forEach((rule) -> {
 
@@ -168,10 +164,11 @@ public class InvestOrderServiceImpl implements InvestOrderService {
                 firstOders.add(order);
             }
         });
+        //排序订单
         firstOders.sort((o1, o2) -> {
             return (int) (o1.getCreateTime().getTime() - o2.getCreateTime().getTime());
         });
-
+        //返回投资项目前面[first]数量项目
         return firstOders.subList(0, (int) first);
     }
 
