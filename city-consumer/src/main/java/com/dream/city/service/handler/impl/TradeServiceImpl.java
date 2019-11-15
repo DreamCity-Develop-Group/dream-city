@@ -338,7 +338,7 @@ public class TradeServiceImpl implements TradeService {
             if (tradeResult.getSuccess()){
                 resultMap.put("amount",tradeResult.getData().getTradeAmount());
                 msg.getData().setCode(tradeResult.getCode());
-
+                //是否是内部转账
                 PlayerAccount receiverAccount = accountService.getPlayerAccountByAddr(addr);
                 //内部转账发消息
                 if (receiverAccount!=null){

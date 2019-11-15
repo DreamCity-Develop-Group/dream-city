@@ -13,26 +13,27 @@ import com.dream.city.base.model.req.PlayerReq;
 import com.dream.city.base.model.req.UserReq;
 import com.dream.city.base.model.resp.PlayerAccountResp;
 import com.dream.city.base.model.resp.PlayerResp;
-import com.dream.city.base.utils.DataUtils;
-import com.dream.city.base.utils.JsonUtil;
-import com.dream.city.base.utils.RedisKeys;
-import com.dream.city.base.utils.RedisUtils;
+import com.dream.city.base.model.resp.WebResponse;
+import com.dream.city.base.utils.*;
 import com.dream.city.service.consumer.*;
 import com.dream.city.service.handler.CommonService;
 import com.dream.city.service.handler.PlayerService;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.codec.digest.Md5Crypt;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.*;
 
 
 @Slf4j
@@ -69,6 +70,15 @@ public class PlayerServiceImpl implements PlayerService {
 
     @Autowired
     CommonService commonService;
+
+    @Autowired
+    RestTemplate restTemplate;
+
+    @Value("${dreamcity.wallet.url}")
+    private String walletUrl;
+
+    @Value("${dreamcity.wallet.signKey}")
+    private String signKey;
     /**
      * 修改玩家头像
      *
@@ -529,7 +539,7 @@ public class PlayerServiceImpl implements PlayerService {
     @LcnTransaction
     @Transactional
     @Override
-    public Message reg(Message message) {
+    public Message reg(Message message) throws URISyntaxException {
         long start = System.currentTimeMillis();
         long end;
         log.info("用户注册", JSONObject.toJSONString(message));
@@ -617,9 +627,20 @@ public class PlayerServiceImpl implements PlayerService {
                 // TODO [[todo 2、创建用户USDT钱包账户]]
                 /*todo************************************************************/
                 //获取钱包地址
-                Result accRet = playerBlockChainService.createBlockChainAccount(username);
-                if (accRet.getSuccess()) {
-                    String address = accRet.getData().toString();
+                //Result accRet = playerBlockChainService.createBlockChainAccount(username);
+
+                Map<String, Object> params = new HashMap<String, Object>();
+                params.put("userId", "0");
+                params.put("equipmentId", "equipmentId");
+                params.put("password", playerId);
+                params.put("coinType", "ETH");
+                String sign = getSign(params);
+                walletUrl+="";
+                String accRet = getWalletAddress(params);
+
+
+                if (Objects.nonNull(accRet)) {
+                    String address = accRet;
                     log.info("玩家账户地址：[" + address + "]创建成功");
                     if (!StringUtils.isBlank(address)) {
                         Result create = playerAccountService.createAccount(playerId, address);
@@ -632,9 +653,9 @@ public class PlayerServiceImpl implements PlayerService {
                     }
                 } else {
                     log.info("获取钱包地址不成功，重试一次");
-                    accRet = playerBlockChainService.createBlockChainAccount(username);
-                    if (accRet.getSuccess()) {
-                        String address = accRet.getData().toString();
+                    accRet = getWalletAddress(params);
+                    if (Objects.nonNull(accRet)) {
+                        String address = accRet;
                         log.info("玩家账户地址：[" + address + "]获取成功");
                         if (!StringUtils.isBlank(address)) {
                             Result create = playerAccountService.createAccount(playerId, address);
@@ -702,6 +723,38 @@ public class PlayerServiceImpl implements PlayerService {
             return msg;
         }
     }
+
+
+    public String getSign(Map<String, Object> paramsMap) {
+        Set<String> set = new TreeSet<String>(paramsMap.keySet());
+        String queryString = "";
+        for (String key : set) { // 遍历所有key
+            String value = paramsMap.get(key) + "";
+            queryString += key + "=" + value + "&";
+        }
+        queryString += "key=" + signKey;
+        //String sign = Md5Crypt.md5Crypt(queryString.getBytes(),"");
+        String sign = CryptUtil.md5(queryString);
+        return sign;
+    }
+
+    private String getWalletAddress(Map params){
+        ResponseEntity<WebResponse> response = null;
+        try {
+            response = restTemplate.postForEntity(new URI(walletUrl), params, WebResponse.class);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+        WebResponse webResponse = response.getBody();
+        if (Objects.isNull(webResponse) || webResponse.getStatusCode() != 200){
+            return "";
+        }else{
+            String weData = JsonUtil.parseObjToJson(webResponse.getData());
+            JSONObject jsonObject2 = JsonUtil.parseJsonToObj(weData,JSONObject.class);
+            return jsonObject2.getString("address");
+        }
+    }
+
 
 
     /**

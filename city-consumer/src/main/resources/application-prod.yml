@@ -37,6 +37,10 @@ dreamcity:
     account:
       accIds: 4E2EE556055042AB80E3D164E51DDD1A
 
+  wallet:
+    url: http://47.244.78.40:23333/v1/wallet/getWalletAddress?sign=7fa7133adcf511839a480780187d2be4&coinType=ETH&equipmentId=equipmentId&password=test&userId=0
+    signKey: cGFuaG06OTg2OTI1X19weqYW5obQada
+
 
 
 eureka:

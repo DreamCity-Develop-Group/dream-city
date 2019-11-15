@@ -59,6 +59,7 @@
       t.personal_tax,t.enterprise_tax,t.trade_type,t.trade_status,p.player_name,
       (SELECT u.name FROM user u,trade_verify v WHERE d.verify_id=v.verify_id and v.verify_user_id= u.id) user_name,
       (SELECT v.verify_status FROM trade_verify v WHERE d.verify_id = v.verify_id) verify_status,
+      (SELECT v.verify_to_address FROM trade_verify v WHERE d.verify_id = v.verify_id) verify_to_address,
       (SELECT v.create_time FROM trade_verify v WHERE d.verify_id = v.verify_id) verify_time,
       (SELECT o.order_name FROM invest_order o WHERE d.order_id=o.order_id) order_name,
       (SELECT o.order_num FROM invest_order o WHERE d.order_id=o.order_id) order_num

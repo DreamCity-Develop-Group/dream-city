@@ -46,6 +46,7 @@ public enum ReturnStatus {
 
     TRANSFER_TO(600,"转账入账"),
     TRANSFER_FROM(603,"转账转出"),
+    DEPOSIT_FROM(604,"充值到账"),
 
     UPGRADE_TIP(666,"恭喜升级成功"),
     MT_MISS_BUY_TIP(602,"错过购买兑换处理提示"),

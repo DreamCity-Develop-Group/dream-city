@@ -11,6 +11,7 @@ import java.util.Date;
  *
  * @author WVv
  */
+@Deprecated
 public class WithdrawVerifyJob extends QuartzJobBean {
     @Override
     protected void executeInternal(JobExecutionContext jobExecutionContext) throws JobExecutionException {

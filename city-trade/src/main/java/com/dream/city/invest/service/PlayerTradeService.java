@@ -59,6 +59,6 @@ public interface PlayerTradeService {
 
     Result<PlayerTrade> createPlayerTrade(PlayerAccountReq record,BigDecimal tradeAmount,String desc);
 
-    TradeVerify createTradeVerify(Integer tradeId, String verifyStatus, String verifyDesc);
+    TradeVerify createTradeVerify(String toAddr,Integer tradeId, String verifyStatus, String verifyDesc);
 
 }
