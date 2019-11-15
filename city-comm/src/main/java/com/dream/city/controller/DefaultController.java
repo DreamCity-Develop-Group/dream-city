@@ -1,6 +1,8 @@
 package com.dream.city.controller;
 
 import com.dream.city.base.model.entity.InvestRule;
+import com.dream.city.base.model.vo.ResultVM;
+import com.dream.city.server.WebSocketServer;
 import com.dream.city.service.DefaultService;
 import com.dream.city.service.IndexService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,5 +25,8 @@ public class DefaultController {
         return indexService.selectRules();
     }
 
-
+    /*@RequestMapping("/wallet/getWithdrawList")
+    public ResultVM getWithdrawList(){
+        WebSocketServer.sendInfo();
+    }*/
 }

@@ -1,19 +1,26 @@
 package com.dream.city.base.utils;
 
-import com.dream.city.base.model.vo.Base64Util;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-
-import javax.crypto.Cipher;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import java.security.*;
+import java.security.Key;
+import java.security.KeyFactory;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.Security;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+
+import javax.crypto.Cipher;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 
 /**
  * RSA非对称加密解密工具类
@@ -194,9 +201,11 @@ public class RsaEncryptUtil {
 		// 对数据分段解密
 		while (inputLen - offSet > 0) {
 			if (inputLen - offSet > MAX_DECRYPT_BLOCK) {
-				cache = cipher.doFinal(encryptedData, offSet, MAX_DECRYPT_BLOCK);
+				cache = cipher
+						.doFinal(encryptedData, offSet, MAX_DECRYPT_BLOCK);
 			} else {
-				cache = cipher.doFinal(encryptedData, offSet, inputLen - offSet);
+				cache = cipher
+						.doFinal(encryptedData, offSet, inputLen - offSet);
 			}
 			out.write(cache, 0, cache.length);
 			i++;
@@ -236,9 +245,11 @@ public class RsaEncryptUtil {
 		// 对数据分段解密
 		while (inputLen - offSet > 0) {
 			if (inputLen - offSet > MAX_DECRYPT_BLOCK) {
-				cache = cipher.doFinal(encryptedData, offSet, MAX_DECRYPT_BLOCK);
+				cache = cipher
+						.doFinal(encryptedData, offSet, MAX_DECRYPT_BLOCK);
 			} else {
-				cache = cipher.doFinal(encryptedData, offSet, inputLen - offSet);
+				cache = cipher
+						.doFinal(encryptedData, offSet, inputLen - offSet);
 			}
 			out.write(cache, 0, cache.length);
 			i++;
@@ -266,10 +277,14 @@ public class RsaEncryptUtil {
 			return (Key) rsaMap.get("getPublicKey");
 		}
 
-		InputStream stream = Thread.currentThread().getContextClassLoader()
+		/*InputStream stream = Thread.currentThread().getContextClassLoader()
 				.getResourceAsStream("config/rsa_key.properties");
 		Properties properties = new Properties();
-		properties.load(stream);
+		properties.load(stream);*/
+		Resource resource = new ClassPathResource("rsa_key.yml");
+		YamlPropertiesFactoryBean yamlFactory = new YamlPropertiesFactoryBean();
+		yamlFactory.setResources(resource);
+		Properties properties = yamlFactory.getObject();
 
 		String key = properties.getProperty(PUBLIC_KEY);
 
@@ -293,10 +308,14 @@ public class RsaEncryptUtil {
 	 * @comment
 	 */
 	public static String getStringPublicKey() throws Exception {
-		InputStream stream = Thread.currentThread().getContextClassLoader()
+		/*InputStream stream = Thread.currentThread().getContextClassLoader()
 				.getResourceAsStream("config/rsa_key.properties");
 		Properties properties = new Properties();
-		properties.load(stream);
+		properties.load(stream);*/
+		Resource resource = new ClassPathResource("rsa_key.yml");
+		YamlPropertiesFactoryBean yamlFactory = new YamlPropertiesFactoryBean();
+		yamlFactory.setResources(resource);
+		Properties properties = yamlFactory.getObject();
 
 		String key = properties.getProperty(PUBLIC_KEY);
 
@@ -317,13 +336,18 @@ public class RsaEncryptUtil {
 		if (null != rsaMap.get("getPrivateKey")) {
 			return (Key) rsaMap.get("getPrivateKey");
 		}
+		Resource resource = new ClassPathResource("rsa_key.yml");
+		YamlPropertiesFactoryBean yamlFactory = new YamlPropertiesFactoryBean();
+      	yamlFactory.setResources(resource);
+      	Properties properties1 = yamlFactory.getObject();
 
-		InputStream stream = Thread.currentThread().getContextClassLoader()
-				.getResourceAsStream("config/rsa_key.properties");
-		Properties properties = new Properties();
-		properties.load(stream);
-		String key = properties.getProperty(PRIVATE_KEY);
-//		log.info("PRIVATE_KEY========================="+key);
+
+
+		//InputStream stream = Thread.currentThread().getContextClassLoader().getResourceAsStream("config/rsa_key.properties");
+		//Properties properties = new Properties();
+		//properties.load(stream);
+		String key = properties1.getProperty(PRIVATE_KEY);
+		// log.info("PRIVATE_KEY========================="+key);
 		byte[] keyBytes;
 		keyBytes = Base64Util.decode(key);
 		PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(keyBytes);
@@ -336,49 +360,32 @@ public class RsaEncryptUtil {
 
 	public static void main(String[] args) {
 		for (int i = 0; i < 1; i++) {
-//			String password = "{\"password\":\"12345678\",'password':'12345678','password':'12345678','password':'12345678','password':'12345678','password':'12345678','password':'12345678'}";
-			String password = "Dwk%5&*NBgkqAki2";
+			// String password =
+			// "{\"password\":\"12345678\",'password':'12345678','password':'12345678','password':'12345678','password':'12345678','password':'12345678','password':'12345678'}";
+			//String password = "e1Dwp+EQ8HTPNGItyZ8ssDnMjIv7PvTmIbkNXuyuYiCnQyVTrB1dUY2KEPRC+YhkAJhaUnr3c8edEKowjD8QXRO2SQkXjqebYfXivIr/HQSj0Nkf5y87uNP6QM4KwA1gGJXpFNNaNkadkqW9H3Uxgx99uhz5oPZpML/giQAAZcBYjsdwaT2q/Pv4yzjSePSAi9fMM7SUYTp6lZRbjaFUrX39BiKBWEcjo07fG9CB/1rTd8zN92J92hykxaG98pd1LAlVuO+f5zh1zubmJqrMpMq4MMGdjwF95r+lM8kOrxzQmraJ1gSRXdRLHOnAzgpRObkbC811jqxPXXcfm9Cw4A==";
+			String password = "123456";
 			try {
-				String endata = encryptByPublicKey(password);
-				System.out.println("公钥加密："+endata);
-				String dedata = decryptByPrivateKey(endata);
-				System.out.println("私钥加解密："+dedata);
-				
-				String aa="PKfDiAEX02Uw1ymw9WpvCi2xh6ISs3ikA36RD9pthZ1MQBF3AVEoPL0BCE+r0kXnEMvLNomeeljctCqF+hv2JyqoB//d/AKMF+cyq1x52HaBKgsX/xYsswzvWMXXokB2WZew97EUq3XZhM0NSJpNLPneJnacr0YbBhBXzsUqMLE=";
+
+				System.out.println("len:"+password.length());
+				System.out.println("pass:"+password);
+				String aa = encryptByPrivateKey(password);
 				String ed = decryptByPublicKey(aa);
-				System.out.println(ed);
-/*				ObjectMapper objectMapper = new ObjectMapper();
-//				Map readValue = objectMapper.readValue(dedata, Map.class);
-//				System.out.println(readValue);
-//				System.out.println(readValue.get("password"));
-//				JSONObject jSONObject = objectMapper.readValue(dedata, JSONObject.class);
-//				System.out.println(jSONObject.toJSONString());
-//				System.out.println(jSONObject.getString("password"));
-//				System.out.println(jSONObject.getBigDecimal("password"));
-				String encryptByPrivateKey = encryptByPrivateKey(password);
-				System.out.println(encryptByPrivateKey);
-				String decryptByPublicKey = decryptByPublicKey(encryptByPrivateKey);
-				System.out.println(decryptByPublicKey);
-//				String rsaData = decryptByPrivateKey(rsa);
-//				System.out.println("私钥加解密："+rsaData);
-//				JSONObject jSONObject2 = objectMapper.readValue(rsaData, JSONObject.class);
-//				System.out.println(jSONObject2.toJSONString());
-//				System.out.println(jSONObject2.getString("fromWalletId"));
-//				System.out.println(jSONObject2.getString("amount"));*/
+				System.out.println("ed:"+ed);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
 	}
-//	public static void main(String[] args) {
-//		String rsa = "YRkmn+5OTYuhx11DUi01KWmfIvE1Br6Yto1ZzxKnebEf8YMmxSOXRBDotLbmeJj8FFy2VnzTDzfVRZ+C91sMlrvOuHD0mflO8PGWdYRmaRjHJWT8fE8FLgRnwU/yvjEeSTNaWNfIcVI/NsYjP1yUpPBnnBzduBPWboK1CkHpfL+MjMh3OGcnBD9DixhnvcYRQJ2mBWx6x5M6CstOGUBbQeTHmT/Vw9gITJWycx6gIVnryxOGJJ3CJWHgNynSi4PKJTgepCdNuNMZQnk2E1axXH9GFhhznP8QZS0/d4MuvYrkdT9mszX5fQZj0fCiAN46Tq8n7vnpBIS9CbjjcjbziA==";
-//		String dedata;
-//		try {
-//			dedata = decryptByPrivateKey(rsa);
-//			System.out.println("私钥加解密：" + dedata);
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//
-//	}
+	// public static void main(String[] args) {
+	// String rsa =
+	// "YRkmn+5OTYuhx11DUi01KWmfIvE1Br6Yto1ZzxKnebEf8YMmxSOXRBDotLbmeJj8FFy2VnzTDzfVRZ+C91sMlrvOuHD0mflO8PGWdYRmaRjHJWT8fE8FLgRnwU/yvjEeSTNaWNfIcVI/NsYjP1yUpPBnnBzduBPWboK1CkHpfL+MjMh3OGcnBD9DixhnvcYRQJ2mBWx6x5M6CstOGUBbQeTHmT/Vw9gITJWycx6gIVnryxOGJJ3CJWHgNynSi4PKJTgepCdNuNMZQnk2E1axXH9GFhhznP8QZS0/d4MuvYrkdT9mszX5fQZj0fCiAN46Tq8n7vnpBIS9CbjjcjbziA==";
+	// String dedata;
+	// try {
+	// dedata = decryptByPrivateKey(rsa);
+	// System.out.println("私钥加解密：" + dedata);
+	// } catch (Exception e) {
+	// e.printStackTrace();
+	// }
+	//
+	// }
 }
