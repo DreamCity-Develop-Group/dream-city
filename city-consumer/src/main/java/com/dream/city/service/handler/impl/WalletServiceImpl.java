@@ -173,7 +173,7 @@ public class WalletServiceImpl implements WalletService {
                 resultMap.put("amount",amount);
                 resultMap.put("mt",0);
                 resultMap.put("code",ReturnStatus.SUCCESS.getStatus());
-                resultMap.put("desc","充值到帐户成功");
+                resultMap.put("desc","充值到帐成功");
 
                 if (optional != null && optional.isPresent()){
                     clientId = optional.get();

@@ -56,7 +56,8 @@ public class AccountServiceImpl implements AccountService {
     @Transactional
     @Override
     public PlayerAccountResp getPlayerAccount(PlayerAccountReq record) throws BusinessException {
-        String ids = dictionaryService.getValByKey("platform.account.accIds");
+        String id = dictionaryService.getValByKey("platform.account.accIds");
+        String[] ids = id.split(",");
         record.setPlatformAccIds(ids);
 
         return accountMapper.getPlayerAccountSelective(record);
@@ -66,7 +67,8 @@ public class AccountServiceImpl implements AccountService {
     @Transactional
     @Override
     public List<PlayerAccountResp> getPlayerAccountList(PlayerAccountReq record) throws BusinessException {
-        String ids = dictionaryService.getValByKey("platform.account.accIds");
+        String id = dictionaryService.getValByKey("platform.account.accIds");
+        String[] ids = id.split(",");
         record.setPlatformAccIds(ids);
 
         return accountMapper.getPlayerAccountList(record);
@@ -93,8 +95,10 @@ public class AccountServiceImpl implements AccountService {
     @Transactional
     @Override
     public List<PlayerAccount> getPlatformAccounts(PlayerAccountReq record) throws BusinessException {
-        if (record == null || (record != null && StringUtils.isBlank(record.getPlatformAccIds()))) {
-            record.setPlatformAccIds(dictionaryService.getValByKey("platform.account.accIds"));
+        if (record == null || (record != null && record.getPlatformAccIds().length == 0)) {
+            String id = dictionaryService.getValByKey("platform.account.accIds");
+            String[] ids = id.split(",");
+            record.setPlatformAccIds(ids);
             //record.setAccAddr(dictionaryService.getValByKey("platform.account.accIds"));
         }
         return accountMapper.getPlatformAccounts(record);
