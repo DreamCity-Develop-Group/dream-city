@@ -1,4 +1,4 @@
-package com.dream.city.service.consumer.impl;
+package com.dream.city.service.impl;
 
 import com.codingapi.txlcn.tc.annotation.LcnTransaction;
 import com.dream.city.base.exception.BusinessException;

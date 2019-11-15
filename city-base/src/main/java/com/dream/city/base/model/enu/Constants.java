@@ -1,0 +1,12 @@
+package com.dream.city.base.model.enu;
+
+public class Constants {
+
+
+    public static final String ALL_ORDERS= "ALL_ORDERS";
+    public static final String TOP_MEMBERS= "TOP_MEMBERS";
+    public static final String FIRST_TIME =  "FIRST_TIME";
+    public static final String LIKES_GATHER =  "LIKES_GATHER";
+    public static final String INVEST_LONG = "INVEST_LONG";
+    public static final String ORDER_OTHERS = "ORDER_OTHERS";
+}
