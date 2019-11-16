@@ -105,12 +105,4 @@ public class ProfitFallDownThead implements Runnable {
         }
 
     }
-
-
-    public static void main(String[] args) {
-        int i = 123;
-        Integer rand = (int)(Math.random()*123);
-        System.out.println(rand);
-    }
-
 }
