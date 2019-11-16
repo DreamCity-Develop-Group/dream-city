@@ -1,6 +1,8 @@
 package com.dream.city.job;
 
+import com.dream.city.base.model.entity.CityInvest;
 import com.dream.city.base.utils.RedisUtils;
+import com.dream.city.job.thread.ThreadTask;
 import com.dream.city.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobExecutionContext;
@@ -23,10 +25,10 @@ import java.util.Map;
 public class ProfitGrantJobReload extends QuartzJobBean {
 
     @Autowired
-    InvestService investService;
+    private InvestService investService;
 
     @Autowired
-    RedisUtils redisUtils;
+    private ThreadTask threadTask;
 
     /**
      * TODO
@@ -40,7 +42,10 @@ public class ProfitGrantJobReload extends QuartzJobBean {
      */
     @Override
     protected void executeInternal(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-        investService.profitGrant();
+        List<CityInvest> invests = investService.getInvests();
+        for (CityInvest cityInvest:invests) {
+            threadTask.profitGrant(cityInvest);
+        }
     }
 
 }

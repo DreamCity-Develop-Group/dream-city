@@ -9,4 +9,6 @@ public interface PlayerLikesService {
 
 
     List<String> getPlayerIdByInvestId(int investId);
+
+    List<String> getLikesPlayerByInvestId(int investId,String playerId);
 }

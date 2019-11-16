@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -72,5 +73,20 @@ public class PlayerEarningServiceImpl  implements PlayerEarningService {
     @Override
     public List<PlayerEarning> getPlayerEarningByAfterHours(Integer withdrewState, Integer afterHours) {
         return playerEarningMapper.getPlayerEarningByAfterHours(withdrewState, afterHours);
+    }
+
+    @Override
+    public List<PlayerEarning> getPlayerEarningCanFallDown(String time) {
+        return playerEarningMapper.getPlayerEarningCanFallDown(time);
+    }
+
+    @Override
+    public int updateEarningWithRawStatus(Integer earnId, Integer status) {
+        return playerEarningMapper.updateEarningStatus(earnId,status);
+    }
+
+    @Override
+    public int updateEarningFallDown(Integer earnId, BigDecimal amount) {
+        return playerEarningMapper.updateFalldown(earnId,amount);
     }
 }

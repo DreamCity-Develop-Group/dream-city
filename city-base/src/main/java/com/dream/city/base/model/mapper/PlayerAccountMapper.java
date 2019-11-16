@@ -115,4 +115,20 @@ public interface PlayerAccountMapper {
             "  acc_mt_available " +
             ")value(0,#{accPlayerId},#{accAddr},#{accUsdt},#{accUsdtFreeze},#{accUsdtAvailable},#{accMt},#{accMtFreeze},#{accMtAvailable})")
     void insertAccount(PlayerAccount payAmount);
+
+
+
+
+    @Update(" UPDATE `player_account` SET acc_usdt = acc_usdt+#{payAmount}, acc_usdt_available = acc_usdt_available+#{payAmount} WHERE acc_player_id = #{accPlayerId} and #{payAmount} > 0")
+    int addPlayerUsdtAmount(@Param("playerId") String playerId,@Param("payAmount") BigDecimal payAmount);
+
+    @Update(" UPDATE `player_account` SET acc_usdt = acc_usdt+#{payAmount}, acc_usdt_freeze = acc_usdt_freeze+#{payAmount} WHERE acc_player_id = #{accPlayerId} and #{payAmount} > 0")
+    int addPlayerFreezeUsdtAmount(@Param("playerId") String playerId,@Param("payAmount") BigDecimal payAmount);
+
+    @Update(" UPDATE `player_account` SET acc_mt = acc_mt+#{payAmount}, acc_mt_available = acc_mt_available+#{payAmount} WHERE acc_player_id = #{accPlayerId} and #{payAmount} > 0")
+    int addPlayerMtAmount(@Param("playerId") String playerId,@Param("payAmount") BigDecimal payAmount);
+
+    @Update(" UPDATE `player_account` SET acc_mt = acc_mt+#{payAmount}, acc_mt_freeze = acc_mt_freeze+#{payAmount} WHERE acc_player_id = #{accPlayerId} and #{payAmount} > 0")
+    int addPlayerFreezeMtAmount(@Param("playerId") String playerId,@Param("payAmount") BigDecimal payAmount);
+
 }

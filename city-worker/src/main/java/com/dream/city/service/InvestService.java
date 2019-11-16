@@ -21,5 +21,5 @@ public interface InvestService {
 
     CityInvest getInvestById(Integer orderInvestId);
 
-    void profitGrant();
+    void profitGrant(CityInvest invest);
 }

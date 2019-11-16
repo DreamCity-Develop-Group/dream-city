@@ -12,6 +12,7 @@
     <result column="earn_enterprise_tax" property="earnEnterpriseTax" jdbcType="DECIMAL" />
     <result column="earn_quota_tax" property="earnQuotaTax" jdbcType="DECIMAL" />
     <result column="earn_current" property="earnCurrent" jdbcType="DECIMAL" />
+    <result column="earn_pre_profit" property="earnPreProfit" jdbcType="DECIMAL" />
     <result column="withdrew_total" property="withdrewTotal" jdbcType="DECIMAL" />
     <result column="drop_total" property="dropTotal" jdbcType="DECIMAL" />
     <result column="withdrew_times" property="withdrewTimes" jdbcType="INTEGER" />
@@ -42,6 +43,7 @@
     <result column="earn_enterprise_tax" property="earnEnterpriseTax" jdbcType="DECIMAL" />
     <result column="earn_quota_tax" property="earnQuotaTax" jdbcType="DECIMAL" />
     <result column="earn_current" property="earnCurrent" jdbcType="DECIMAL" />
+    <result column="earn_pre_profit" property="earnPreProfit" jdbcType="DECIMAL" />
     <result column="withdrew_total" property="withdrewTotal" jdbcType="DECIMAL" />
     <result column="drop_total" property="dropTotal" jdbcType="DECIMAL" />
     <result column="withdrew_times" property="withdrewTimes" jdbcType="INTEGER" />

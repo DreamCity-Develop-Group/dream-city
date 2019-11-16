@@ -78,8 +78,8 @@ public interface CityBusinessMapper {
             " business_enabled businessEnabled," +
             " create_time createTime, " +
             " update_time updateTime " +
-            " from city_business where 1=1 and business_player_id=#{playerId}  ORDER BY create_time DESC ")
-    List<CityBusiness> getbusinessByPlayerId(@Param("playerId") String playerId);
+            " from city_business where 1=1 and business_player_id=#{playerId}  ORDER BY create_time DESC limit 1")
+    CityBusiness getbusinessByPlayerId(@Param("playerId") String playerId);
 
     @Select("select " +
             " business_id businessId," +
@@ -91,4 +91,7 @@ public interface CityBusinessMapper {
             " update_time updateTime " +
             " from city_business where 1=1 and business_player_id=#{playerId} and business_enabled='1' limit 1 ")
     CityBusiness getEnabledCityBusiness(@Param("playerId")String playerId);
+
+    @Update(" update city_business set business_enabled='1' where business_id=#{businessId} and business_enabled='0'")
+    int updateBusinessEnable(@Param("businessId") Integer businessId);
 }

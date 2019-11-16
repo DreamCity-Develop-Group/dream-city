@@ -107,5 +107,13 @@ public interface PlayerLikesMapper {
     List<PlayerLikes> getLikes(String playerId);
 
 
+    /**
+     * 获取对用项目点赞人数
+     * @param investId
+     * @return
+     */
+    @Select(" select liked_player_id from `player_likes` where  liked_invest_id = #{investId} and like_player_id!=#{playerId} group by like_player_id ")
+    @ResultMap(value = "BaseInvestInvestResultMap")
+    List<String> getLikesByPlayerIdAndInvestId(@Param("investId") Integer investId,@Param("playerId") String playerId);
 
 }

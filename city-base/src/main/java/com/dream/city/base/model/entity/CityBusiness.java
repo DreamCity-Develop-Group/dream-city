@@ -34,4 +34,11 @@ public class CityBusiness {
      */
     private Integer businessEnabled;
 
+    public CityBusiness(){super();}
+    public CityBusiness(String businessParentId, String businessPlayerId, String businessRelation, Integer businessEnabled) {
+        this.businessParentId = businessParentId;
+        this.businessPlayerId = businessPlayerId;
+        this.businessRelation = businessRelation;
+        this.businessEnabled = businessEnabled;
+    }
 }

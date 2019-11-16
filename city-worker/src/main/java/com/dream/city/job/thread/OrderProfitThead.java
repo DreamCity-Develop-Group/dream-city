@@ -3,6 +3,8 @@ package com.dream.city.job.thread;
 
 import com.codingapi.txlcn.tc.annotation.LcnTransaction;
 import com.dream.city.base.model.entity.*;
+import com.dream.city.base.model.mapper.AccountMapper;
+import com.dream.city.base.model.mapper.PlayerAccountMapper;
 import com.dream.city.base.model.resp.PlayerEarningResp;
 import com.dream.city.service.InvestService;
 import com.dream.city.service.PlayerAccountService;
@@ -27,12 +29,14 @@ public class OrderProfitThead implements Runnable {
     private InvestOrder order;
     private CountDownLatch endGate;
     private InvestService investService;
+    private PlayerAccountMapper playerAccountMapper;
     private PlayerEarningService playerEarningService;
     private PlayerAccountService accountService;
     private final String SYSTEM_ACCOUNT = "SYSTEM_DC_ACCOUNT";
 
-    public OrderProfitThead(BigDecimal everyOneProfit, InvestOrder order,InvestService investService,
+    public OrderProfitThead(BigDecimal everyOneProfit, InvestOrder order,InvestService investService,PlayerAccountMapper playerAccountMapper,
                             PlayerAccountService accountService,PlayerEarningService playerEarningService, CountDownLatch endGate) {
+        this.playerAccountMapper = playerAccountMapper;
         this.playerEarningService = playerEarningService;
         this.accountService = accountService;
         this.investService = investService;
@@ -65,7 +69,11 @@ public class OrderProfitThead implements Runnable {
             earning.setEarnCurrent(everyOneProfit);
             earning.setEarnPersonalTax(cityInvest.getInPersonalTax());
             earning.setEarnEnterpriseTax(cityInvest.getInEnterpriseTax());
-            earning.setIsWithdrew(0);
+            if(everyOneProfit.compareTo(BigDecimal.ONE)>=0){
+                earning.setIsWithdrew(2);
+            }else{
+                earning.setIsWithdrew(1);
+            }
             earning.setCreateTime(new Date());
             earning.setUpdateTime(new Date());
             playerEarningService.add(earning);
@@ -89,36 +97,19 @@ public class OrderProfitThead implements Runnable {
 
             if(playerEarning.getEarnCurrent().compareTo(BigDecimal.ONE)>=0){
                 isNotCanWithdraw = false;
-                playerEarning.setIsWithdrew(2);//设置为可提取状态
+                playerEarningService.updateEarningWithRawStatus(playerEarning.getEarnId(),2);
             }
             if (isNotCanWithdraw){
                 //插入日志记录
-                EarnIncomeLog earnIncomeLog = new EarnIncomeLog();
-                earnIncomeLog.setInLogId(0);
-                earnIncomeLog.setInInvestId(order.getOrderInvestId());
-                earnIncomeLog.setInPlayerId(order.getOrderPayerId());
-                earnIncomeLog.setInAmount(everyOneProfit);
+                EarnIncomeLog earnIncomeLog = new EarnIncomeLog(order.getOrderInvestId(),order.getOrderPayerId(),everyOneProfit);
                 playerEarningService.addEarnLog(earnIncomeLog);
             }else {
                 if(subProfit.compareTo(BigDecimal.ZERO)>0) {
                     //将剩余的收益加到平台
                     BigDecimal remainProfit = everyOneProfit.subtract(subProfit);
                     PlayerAccount account = accountService.getPlayerAccount(SYSTEM_ACCOUNT);
-                    account.setAccUsdt(account.getAccUsdt().add(remainProfit));
-                    account.setAccMtAvailable(account.getAccUsdtAvailable().add(remainProfit));
-                    accountService.updateProfitToAccount(account);
-
-
-                    PlayerAccountLog accountLog = new PlayerAccountLog();
-                    accountLog.setId(0L);
-                    accountLog.setAddress(account.getAccAddr());
-                    accountLog.setAmountMt(new BigDecimal(0));
-                    accountLog.setAmountUsdt(remainProfit);
-                    accountLog.setPlayerId(SYSTEM_ACCOUNT);
-                    accountLog.setType(1);
-                    accountLog.setDesc("收入账户多余的额度");
-                    accountLog.setCreateTime(new Date());
-
+                    playerAccountMapper.addPlayerUsdtAmount(account.getAccPlayerId(),remainProfit);
+                    PlayerAccountLog accountLog = new PlayerAccountLog(SYSTEM_ACCOUNT,account.getAccAddr(),remainProfit,BigDecimal.ZERO,1,"收入账户多余的额度");
                     accountService.addAccountLog(accountLog);
                 }
             }
