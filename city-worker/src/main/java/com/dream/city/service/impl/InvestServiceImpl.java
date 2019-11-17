@@ -300,7 +300,7 @@ public class InvestServiceImpl implements InvestService {
 
     private void checkMmber(CityInvest invest){
         List<InvestOrder> orders = orderService.getInvestOrdersByCurrentReload(invest.getInId(), InvestStatus.MANAGEMENT.getStatus());
-        Map<String,String> times = getProfitCalculateTime(invest.getInEnd());
+        Map<String,String> times = getProfitCalculateTime(invest.getInStart());
         final int threadSize = orders.size();
         CountDownLatch endGate = new CountDownLatch(threadSize);
         for (int i=0;i<orders.size();i++) {
