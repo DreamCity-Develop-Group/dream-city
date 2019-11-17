@@ -134,6 +134,7 @@ public class InvestServiceImpl implements InvestService {
         return investMapper.getCityInvest(orderInvestId);
     }
 
+    @Transactional
     @Override
     public void profitGrant(CityInvest invest) {
         //先掉落收益
@@ -146,6 +147,7 @@ public class InvestServiceImpl implements InvestService {
             return;
         }
         BigDecimal  profitSum = new BigDecimal(obj.toString());//当前项目待分配的总收益
+        log.info("取出总收益为：{}",profitSum);
         RuleItem ruleItem = ruleService.getInvestRuleItemByKey(Constants.RULE_CURRENT);//
         List<InvestRule> rules = ruleService.getInvestRuleByKey(ruleItem.getItemId());//规则明细
         String ruleFlag ="";
@@ -155,6 +157,8 @@ public class InvestServiceImpl implements InvestService {
         for (InvestRule rule : rules ) {
             ruleFlag = rule.getRuleFlag();
             profit = profitSum.multiply(rule.getRuleRate());
+            log.info("ruleFlag:{}",ruleFlag);
+            log.info("当前所发收益对应规则:{}，收益总额：{}",ruleFlag,profit);
             if(Constants.ALL_ORDERS.equalsIgnoreCase(ruleFlag)){//所有订单收益
                 allOrder(invest,profit);
             }else if(Constants.FIRST_TIME.equalsIgnoreCase(ruleFlag)){//第一次投资收益
@@ -212,9 +216,12 @@ public class InvestServiceImpl implements InvestService {
 
 
     private void allOrder(CityInvest invest,BigDecimal profit){
+        log.info("计算---ALL_ORDERS---开始");
         List<InvestOrder> orders = orderService.getInvestOrdersByCurrentReload(invest.getInId(), InvestStatus.MANAGEMENT.getStatus());
         BigDecimal everyOneProfit = profit.divide(new BigDecimal(orders.size()));
+        log.info("ALL_ORDERS---每个人所得收益：{}",everyOneProfit);
         final int threadSize = orders.size();
+        log.info("ALL_ORDERS---等待执行记录数：{}",threadSize);
         CountDownLatch endGate = new CountDownLatch(threadSize);
         for (int i=0;i<orders.size();i++) {
             ThreadPoolUtil.submit(ThreadPoolUtil.poolCount, ThreadPoolUtil.MODULE_MESSAGE_RESEND,
@@ -234,12 +241,15 @@ public class InvestServiceImpl implements InvestService {
 
     private void firstTime(InvestRule rule,CityInvest invest, BigDecimal profit){
         Integer count = orderService.getInvestOrdersFirstTimeCount(invest.getInId());//第一次投资玩家总数量
+        log.info("firstTime---第一次投资玩家总数量：{}",count);
         Integer limit = new BigDecimal(count).multiply(rule.getRuleRatePre()).intValue();//确定可获得收益人数
         //第一次投资订单 通过时间正序排序  去前limit 条订单 进行收益发放
         List<InvestOrder> orders = orderService.getInvestOrdersFirstTimeReload(invest.getInId(),limit);
         //计算每个人
         BigDecimal everyOneProfit = profit.divide(new BigDecimal(orders.size()));
+        log.info("firstTime---每个人所得收益：{}",everyOneProfit);
         final int threadSize = orders.size();
+        log.info("firstTime---等待执行记录数：{}",threadSize);
         CountDownLatch endGate = new CountDownLatch(threadSize);
         for (int i=0;i<orders.size();i++) {
             ThreadPoolUtil.submit(ThreadPoolUtil.poolCount, ThreadPoolUtil.MODULE_MESSAGE_RESEND,
@@ -260,8 +270,10 @@ public class InvestServiceImpl implements InvestService {
     private void investLong(InvestRule rule,CityInvest invest, BigDecimal profit){
         Integer topLong = rule.getRuleRatePre().intValue();
         BigDecimal everyOneProfit = profit.divide(new BigDecimal(topLong));
+        log.info("investLong---每个人所得收益：{}",everyOneProfit);
         List<InvestOrder> orders = orderService.getInvestLongOrdersReload(invest.getInId(),topLong);
         final int threadSize = orders.size();
+        log.info("investLong---等待执行记录数：{}",threadSize);
         CountDownLatch endGate = new CountDownLatch(threadSize);
         for (int i=0;i<orders.size();i++) {
             ThreadPoolUtil.submit(ThreadPoolUtil.poolCount, ThreadPoolUtil.MODULE_MESSAGE_RESEND,
@@ -280,8 +292,10 @@ public class InvestServiceImpl implements InvestService {
 
     private void likes(InvestRule rule,CityInvest invest, BigDecimal profit){
         BigDecimal everyOneProfit = profit.divide(rule.getRuleRatePre());
+        log.info("likes---每个人所得收益：{}",everyOneProfit);
         List<InvestOrder> orders = orderService.getLikesGatherReload(invest.getInId(),rule.getRuleRatePre().intValue());
         final int threadSize = orders.size();
+        log.info("likes---等待执行记录数：{}",threadSize);
         CountDownLatch endGate = new CountDownLatch(threadSize);
         for (int i=0;i<orders.size();i++) {
             ThreadPoolUtil.submit(ThreadPoolUtil.poolCount, ThreadPoolUtil.MODULE_MESSAGE_RESEND,

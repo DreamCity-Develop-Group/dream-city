@@ -6,9 +6,11 @@ import com.dream.city.base.model.entity.*;
 import com.dream.city.base.model.mapper.AccountMapper;
 import com.dream.city.base.model.mapper.PlayerAccountMapper;
 import com.dream.city.base.model.resp.PlayerEarningResp;
+import com.dream.city.base.utils.JSONHelper;
 import com.dream.city.service.InvestService;
 import com.dream.city.service.PlayerAccountService;
 import com.dream.city.service.PlayerEarningService;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +24,7 @@ import java.util.concurrent.CountDownLatch;
 /**
  * Created by Administrator on 2019/7/4 0004.
  */
+@Slf4j
 public class OrderProfitThead implements Runnable {
 
     private final Logger logger = LoggerFactory.getLogger(OrderProfitThead.class);
@@ -59,12 +62,14 @@ public class OrderProfitThead implements Runnable {
     }
     private void setProfit(InvestOrder order,BigDecimal everyOneProfit){
         PlayerEarningResp playerEarning = playerEarningService.getPlayerEarnByPlayerId(order.getOrderPayerId(), order.getOrderInvestId());
+        log.info("playerEarning:{}", JSONHelper.toJson(playerEarning));
         if (null == playerEarning) {
             PlayerEarning earning = new PlayerEarning();
             CityInvest cityInvest = investService.getCityInvest(order.getOrderInvestId());
             earning.setEarnId(0);
             earning.setEarnInvestId(order.getOrderInvestId());
             earning.setEarnPlayerId(order.getOrderPayerId());
+            earning.setEarnPreProfit(everyOneProfit);
             earning.setEarnMax(cityInvest.getInEarning().multiply(cityInvest.getInLimit()));
             earning.setEarnCurrent(everyOneProfit);
             earning.setEarnPersonalTax(cityInvest.getInPersonalTax());
@@ -82,12 +87,15 @@ public class OrderProfitThead implements Runnable {
             CityInvest invest = investService.getInvestById(order.getOrderInvestId());
             //满收益额度
             BigDecimal fullProfit = invest.getInEarning().multiply(invest.getInLimit());
+            log.info("fullProfit:{}",fullProfit);
             BigDecimal current = playerEarning.getEarnCurrent();
+            log.info("current:{}",current);
             BigDecimal subProfit = new BigDecimal(0);
             boolean isNotCanWithdraw = true;
             //掉落+已提取+当前收益+此次发放收益 之后大于等于 最大收益额
             BigDecimal allProfit = current.add(everyOneProfit).
                     add(playerEarning.getWithdrewTotal()).add(playerEarning.getDropTotal()).add(everyOneProfit);
+            log.info("allProfit:{}",allProfit);
             if(allProfit.compareTo(fullProfit)>=0){
                 subProfit = allProfit.subtract(fullProfit);
                 playerEarning.setEarnCurrent(current.add(subProfit));
