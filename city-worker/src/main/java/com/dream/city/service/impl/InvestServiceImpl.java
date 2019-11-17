@@ -12,6 +12,7 @@ import com.dream.city.base.model.mapper.PlayerAccountLogMapper;
 import com.dream.city.base.model.mapper.PlayerAccountMapper;
 import com.dream.city.base.model.resp.PlayerEarningResp;
 import com.dream.city.base.utils.CommDateUtil;
+import com.dream.city.base.utils.JSONHelper;
 import com.dream.city.base.utils.RedisUtils;
 import com.dream.city.job.thread.*;
 import com.dream.city.service.*;
@@ -147,7 +148,7 @@ public class InvestServiceImpl implements InvestService {
             return;
         }
         BigDecimal  profitSum = new BigDecimal(obj.toString());//当前项目待分配的总收益
-        log.info("取出总收益为：{}",profitSum);
+        log.info("这次发收益-----------------取出总收益为：{}",profitSum);
         RuleItem ruleItem = ruleService.getInvestRuleItemByKey(Constants.RULE_CURRENT);//
         List<InvestRule> rules = ruleService.getInvestRuleByItemKey(ruleItem.getItemId());//规则明细
         String ruleFlag ="";
@@ -155,7 +156,6 @@ public class InvestServiceImpl implements InvestService {
         BigDecimal everyOneProfit = BigDecimal.ZERO;//所有会员平均每个人可得收益
         BigDecimal firstTimeOrdersProfitPer = BigDecimal.ZERO;//第一次投资会员平均每个人可得收益
         for (InvestRule rule : rules ) {
-
             ruleFlag = rule.getRuleFlag();
             profit = profitSum.multiply(rule.getRuleRate());
             log.info("ruleFlag:{}",ruleFlag);
@@ -227,6 +227,7 @@ public class InvestServiceImpl implements InvestService {
             final int threadSize = orders.size();
             CountDownLatch endGate = new CountDownLatch(threadSize);
             for (int i = 0; i < orders.size(); i++) {
+                log.info("orders:{}", JSONHelper.toJson(orders.get(i)));
                 ThreadPoolUtil.submit(ThreadPoolUtil.poolCount, ThreadPoolUtil.MODULE_MESSAGE_RESEND,
                         new OrderProfitThead(everyOneProfit, orders.get(i), this, playerAccountMapper, accountService, playerEarningService, endGate));
                 if (i == orders.size() - 1) {
@@ -257,6 +258,7 @@ public class InvestServiceImpl implements InvestService {
             final int threadSize = orders.size();
             CountDownLatch endGate = new CountDownLatch(threadSize);
             for (int i=0;i<orders.size();i++) {
+                log.info("orders:{}", JSONHelper.toJson(orders.get(i)));
                 ThreadPoolUtil.submit(ThreadPoolUtil.poolCount, ThreadPoolUtil.MODULE_MESSAGE_RESEND,
                         new OrderProfitThead(everyOneProfit,orders.get(i),this,playerAccountMapper,accountService,playerEarningService,endGate));
                 if(i==orders.size()-1){

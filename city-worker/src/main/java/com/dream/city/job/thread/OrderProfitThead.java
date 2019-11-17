@@ -27,7 +27,6 @@ import java.util.concurrent.CountDownLatch;
 @Slf4j
 public class OrderProfitThead implements Runnable {
 
-    private final Logger logger = LoggerFactory.getLogger(OrderProfitThead.class);
     private BigDecimal everyOneProfit;
     private InvestOrder order;
     private CountDownLatch endGate;
@@ -54,7 +53,7 @@ public class OrderProfitThead implements Runnable {
             setProfit(order,everyOneProfit);
         } catch (Exception e) {
             e.printStackTrace();
-            logger.info("用户收益计算错误，用户ID为：" + order.getOrderPayerId());
+            log.info("用户收益计算错误，用户ID为:{}" + order.getOrderPayerId());
         } finally {
             endGate.countDown();
         }
