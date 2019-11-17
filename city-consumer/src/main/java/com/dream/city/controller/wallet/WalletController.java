@@ -106,7 +106,7 @@ public class WalletController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        log.info("getWithDrawList:失败");
+        log.info("withDrawResultCallback:失败");
         return ResultVM.error("失败");
     }
 

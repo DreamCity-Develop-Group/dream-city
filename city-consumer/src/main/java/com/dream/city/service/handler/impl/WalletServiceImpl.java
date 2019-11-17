@@ -58,7 +58,7 @@ public class WalletServiceImpl implements WalletService {
         PlayerTradeReq playerTradeReq = new PlayerTradeReq();
         playerTradeReq.setTradeType(TradeType.TRANSFER_FROM.getCode());
         playerTradeReq.setTradeDetailType(TradeDetailType.TRANSFER_VERIFY.getCode());
-        playerTradeReq.setVerifyStatus(VerifyStatus.VERIFYING.getCode());
+        playerTradeReq.setVerifyStatus(VerifyStatus.PASS.getCode());
         List<PlayerTradeResp> tradeResps = tradeDetailMapper.getTradeVerifyDetailList();
 
         tradeResps.forEach(playerTradeResp -> {
@@ -68,7 +68,7 @@ public class WalletServiceImpl implements WalletService {
                         playerTradeResp.getVerifyId().toString(),//taskId
                         "60",//chainId
                         assetId,//assetId
-                        "UDST",//coinType
+                        "USDT",//coinType
                         playerTradeResp.getPlayerId(),//userId
                         playerTradeResp.getPlayerId(), //userName
                         playerTradeResp.getVerifyToAddress(),//toWalletAddress
@@ -91,19 +91,23 @@ public class WalletServiceImpl implements WalletService {
     public Result withDrawResultCallback(WithdrawFeedbackParamVo dataVo) {
         String tradeVerifylId = dataVo.getTask_id();
         if (Objects.isNull(tradeVerifylId)) {
+            log.error("错误的task_id，无法根据task_id获取到相应的交易数据");
             return Result.result(false, "错误的task_id，无法根据task_id获取到相应的交易数据");
         }
         Integer verifyId = Integer.valueOf(tradeVerifylId);
         if (Objects.isNull(verifyId) || verifyId.equals(0)) {
+            log.error("交易检验ID无效");
             return Result.result(false, "交易检验ID无效");
         }
         TradeVerify verify = verifyMapper.getTradeVerifyBiId(verifyId);
         if (Objects.isNull(verify)) {
+            log.error("错误的交易检验ID");
             return Result.result(false, "错误的交易检验ID");
         }
         Integer tradeId = verify.getVerifyTradeId();
         PlayerTradeResp trade = playerTradeMapper.getPlayerTradeById(tradeId);
         if (Objects.isNull(trade)) {
+            log.error("错误的交易检验,要处理的交易详情不存在");
             return Result.result(false, "错误的交易检验,要处理的交易详情不存在");
         }
         //如果提现失败,退款，重新发起提现申请
@@ -121,13 +125,15 @@ public class WalletServiceImpl implements WalletService {
 
             int re = playerAccountMapper.updatePlayerAccount(playerAccount);
             if (re > 0) {
+                log.error("接收回调并回退账户成功");
                 return Result.result(true, "接收回调并回退账户成功");
             }
+            log.error("接收回调并回退账户失败");
             return Result.result(false, "接收回调并回退账户失败");
 
             //提现成功
         } else if (dataVo.getStatus().equalsIgnoreCase("1")) {
-            if (verify.getVerifyStatus().equals(VerifyStatus.VERIFYING.getCode())) {
+            if (verify.getVerifyStatus().equals(VerifyStatus.PASS.getCode())) {
 
                 verify.setVerifyStatus(VerifyStatus.SUCCESS.getCode());
                 //修改校验状态为通过
@@ -139,13 +145,15 @@ public class WalletServiceImpl implements WalletService {
                 playerAccount.setAccUsdt(playerAccount.getAccUsdt().subtract(trade.getTradeAmount()));
                 int re = playerAccountMapper.updatePlayerAccount(playerAccount);
                 if (re > 0) {
+                    log.error("接收回调并修改账户成功");
                     return Result.result(true, "接收回调并修改账户成功");
                 }
             }
-
+            log.error("接收回调并修改账户失败");
             return Result.result(false, "接收回调并修改账户失败");
 
         } else {
+            log.error("未知状态的请求");
             return Result.result(false, "未知状态的请求");
         }
     }
@@ -165,10 +173,12 @@ public class WalletServiceImpl implements WalletService {
             BigDecimal amount = dataVo.getAmount();
 
             if (Objects.isNull(playerAddress)) {
+                log.error("充值回调参数错误,无法获取address");
                 return Result.result(false, "充值回调参数错误,无法获取address");
             }
             BigDecimal value = BigDecimal.ZERO;
             if (Objects.isNull(amount) || amount.compareTo(value) == 0) {
+                log.error("充值回调参数错误,无法获取额度");
                 return Result.result(false, "充值回调参数错误,无法获取额度");
             }
             PlayerAccount account = playerAccountMapper.getPlayerAccountByAddr(playerAddress);
@@ -216,7 +226,7 @@ public class WalletServiceImpl implements WalletService {
                     }
                 }
 
-                    log.info("withDrawResultCallback:成功");
+                    log.info("withDrawResultCallback:正确充值：充值成功记录");
                     dlog.setDepDesc(dataVo.getMemo()+"正确充值：充值成功记录");
                     dlog.setCreateTime(new Date());
                     addDepositCallbackLog(dlog);
@@ -224,9 +234,11 @@ public class WalletServiceImpl implements WalletService {
 
                 return Result.result(true, "更新账户成功");
             } else {
+                log.error("更新账户失败");
                 return Result.result(false, "更新账户失败");
             }
         }
+        log.error("无可处理的数据");
         return Result.result(true, "无可处理的数据");
     }
 
