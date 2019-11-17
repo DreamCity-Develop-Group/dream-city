@@ -71,11 +71,25 @@ public interface InvestOrderMapper {
     @ResultMap("BaseInvestOrderResultMap")
     List<InvestOrder> getInvestOrdersByCurrentDay(@Param("investId") Integer investId,@Param("state") Integer state);
 
+    //所有的第一次投资的订单
     @Select("select * from `invest_order` where 1=1 and order_invest_id = #{investId} and order_state=#{state} and order_repeat = 0 ")
     List<InvestOrder> getInvestOrdersNoRepeat(Integer investId,int state);
+    //所有的第一次投资的订单数量
+    @Select("select count(0) from `invest_order` where 1=1 and order_invest_id = #{investId} and order_state='5' and order_repeat = 0 ")
+    Integer getInvestOrdersNoRepeatCount(Integer investId);
+    //投资物业的前20%玩家
+    @Select("select * from `invest_order` where 1=1 and order_invest_id = #{investId} and order_state='5' and order_repeat = 0 order by create_time asc limit #{limit}")
+    List<InvestOrder> getInvestOrdersNoRepeatReload(@Param("investId") Integer investId,@Param("limit") Integer limit);
 
     @Select("select * from `invest_order` where 1=1 and order_invest_id = #{investId} and order_state=#{state} and order_repeat = 1 ")
     List<InvestOrder> getInvestOrdersRepeat(Integer investId,int state);
+
+    @Select("select * from `invest_order` where 1=1 and order_invest_id #{investId} and order_state='5' and order by create_time asc limit #{limit}")
+    List<InvestOrder> getInvestLongOrdersReload(@Param("investId") Integer investId,@Param("limit") Integer limit);
+
+
+    @Select("select io.* from invest_order as io , player_likes as pl where pl.liked_invest_id = io.order_invest_id and pl.liked_invest_id = #{investId} order by pl.liked_get_total desc limit #{limit} ")
+    List<InvestOrder>  getLikesGatherReload(@Param("investId") Integer investId,@Param("limit") Integer limit);
 
     /**
      * 更新订单
@@ -132,6 +146,9 @@ public interface InvestOrderMapper {
     })
     int getInvestOrdersSum(@Param("investId") Integer investId, @Param("states") int[]states);
 
+    @Select("select count(*) from `invest_order` where 1=1 and order_invest_id = #{investId} and order_state=#{state}")
+    int getInvestOrdersSumReload(@Param("investId") Integer investId, @Param("states") int states);
+
     @Select({
             "<script>",
             "select",
@@ -146,5 +163,9 @@ public interface InvestOrderMapper {
     })
 
     List<InvestOrder> getInvestOrdersByCurrent(@Param("inId") Integer inId, @Param("states") int[] states, @Param("start") int start, @Param("end") int end);
+
+
+    @Select("select * from `invest_order` where 1=1 and order_invest_id = #{inId} and order_state = #{state}")
+    List<InvestOrder> getInvestOrdersByCurrentReload(@Param("inId") Integer inId, @Param("state") int states);
 
 }

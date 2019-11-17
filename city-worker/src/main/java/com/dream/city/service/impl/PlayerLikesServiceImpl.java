@@ -40,4 +40,9 @@ public class PlayerLikesServiceImpl  implements PlayerLikesService {
     public List<String> getPlayerIdByInvestId(int investId) {
         return playerLikesMapper.getPlayerIdByInvestId(investId);
     }
+
+    @Override
+    public List<String> getLikesPlayerByInvestId(int investId, String playerId) {
+        return playerLikesMapper.getLikesByPlayerIdAndInvestId(investId,playerId);
+    }
 }

@@ -228,6 +228,11 @@ public class InvestOrderServiceImpl implements InvestOrderService {
         return orders.subList(0, (int) longs);
     }
 
+    @Override
+    public List<InvestOrder> getInvestLongOrdersReload(Integer investId,Integer limit) {
+        return investOrderMapper.getInvestLongOrdersReload(investId,limit);
+    }
+
     /**
      * 取投资时间最长数量 [longs]
      *
@@ -373,6 +378,14 @@ public class InvestOrderServiceImpl implements InvestOrderService {
         return orders;
     }
 
+    @LcnTransaction
+    @Transactional
+    @Override
+    public List<InvestOrder> getInvestOrdersByCurrentReload(Integer inId, int state)throws BusinessException {
+        List<InvestOrder> orders = investOrderMapper.getInvestOrdersByCurrentReload(inId,state);
+        return orders;
+    }
+
     @Override
     public List<InvestOrder> getInvestOrdersByState(Integer state) {
         return investOrderMapper.getInvestOrdersByState(state);
@@ -389,11 +402,46 @@ public class InvestOrderServiceImpl implements InvestOrderService {
     @LcnTransaction
     @Transactional
     @Override
+    public int getInvestOrdersSumReload(Integer investId, int states) throws BusinessException{
+
+        return investOrderMapper.getInvestOrdersSumReload(investId,states);
+    }
+
+    @LcnTransaction
+    @Transactional
+    @Override
     public List<InvestOrder> getInvestOrdersFirstTime(Integer inId)throws BusinessException {
         //有包含预约成功的
         //预约中的
         int state = InvestStatus.MANAGEMENT.getStatus();
         List<InvestOrder> orders = investOrderMapper.getInvestOrdersNoRepeat(inId,state);
+        return orders;
+    }
+
+    @LcnTransaction
+    @Transactional
+    @Override
+    public Integer getInvestOrdersFirstTimeCount(Integer inId)throws BusinessException {
+        //有包含预约成功的
+        //预约中的
+        int state = InvestStatus.MANAGEMENT.getStatus();
+        Integer count = investOrderMapper.getInvestOrdersNoRepeatCount(inId);
+        return count;
+    }
+
+    @LcnTransaction
+    @Transactional
+    @Override
+    public List<InvestOrder> getInvestOrdersFirstTimeReload(Integer inId,Integer limit)throws BusinessException {
+        //有包含预约成功的
+        //预约中的
+        List<InvestOrder> orders = investOrderMapper.getInvestOrdersNoRepeatReload(inId,limit);
+        return orders;
+    }
+
+    @Override
+    public List<InvestOrder> getLikesGatherReload(Integer inId, Integer limit) {
+        List<InvestOrder> orders = investOrderMapper.getLikesGatherReload(inId,limit);
         return orders;
     }
 }

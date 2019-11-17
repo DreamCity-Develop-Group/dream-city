@@ -60,7 +60,11 @@
             <artifactId>aspectjweaver</artifactId>
             <version>1.9.2</version>
         </dependency>-->
-
+        <dependency>
+            <groupId>org.web3j</groupId>
+            <artifactId>core</artifactId>
+            <version>3.3.1</version>
+        </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>

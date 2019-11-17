@@ -119,5 +119,15 @@ public class RelationTreeServiceImpl implements RelationTreeService {
         return tree != null;
     }
 
+    @Override
+    public RelationTree getSelfTree(String playerId) {
+        return treeMapper.getSelfTree(playerId);
+    }
+
+    @Override
+    public Integer getTeamListCount(String tree, String startTime, String endTime) {
+        return treeMapper.getTeamListCount(tree,startTime,endTime);
+    }
+
 
 }

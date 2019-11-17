@@ -117,5 +117,5 @@ public interface SalesRefuseOrderMapper {
     int selectSalesSellerRejectTimes(@Param("buyer_id") String buyer_id, @Param("sellerId") String sellerId, @Param("status") int status);
 
     @Select("select count(*) from `sales_refuse_order` where 1=1 and order_player_buyer = #{buyer} and order_player_seller = #{seller} ")
-    List<SalesRefuseOrder> selectSalesBuyerRefuseOrders(@Param("buyer") String buyer, @Param("seller") String seller);
+    Integer selectSalesBuyerRefuseOrders(@Param("buyer") String buyer, @Param("seller") String seller);
 }

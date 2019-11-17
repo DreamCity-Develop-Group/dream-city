@@ -91,7 +91,7 @@ public class ProfitCalculateJob extends QuartzJobBean {
 
             for(int i=0;i<averages.length;i++){
                 System.out.println("i="+i+","+averages[i]);
-                redisUtils.lpush(ProfitQueue+"_"+invest.getInEnd(),String.valueOf(averages[i]));
+                redisUtils.lpush(ProfitQueue+"_"+invest.getInId(),String.valueOf(averages[i]));
             }
 
         });

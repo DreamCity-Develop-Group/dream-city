@@ -22,4 +22,15 @@ public class SalesOrder {
     private int orderState;
     private Timestamp createTime;
     private Timestamp updateTime;
+    public SalesOrder(){super();}
+    public SalesOrder(String orderId,BigDecimal orderAmount, String orderBuyType, String orderPayType, BigDecimal orderPayAmount, String orderPlayerBuyer, String orderPlayerSeller, int orderState) {
+        this.orderId = orderId;
+        this.orderAmount = orderAmount;
+        this.orderBuyType = orderBuyType;
+        this.orderPayType = orderPayType;
+        this.orderPayAmount = orderPayAmount;
+        this.orderPlayerBuyer = orderPlayerBuyer;
+        this.orderPlayerSeller = orderPlayerSeller;
+        this.orderState = orderState;
+    }
 }

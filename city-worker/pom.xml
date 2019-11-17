@@ -84,6 +84,12 @@
         </dependency>
 
 
+        <dependency>
+            <groupId>io.springside</groupId>
+            <artifactId>springside-utils</artifactId>
+            <version>5.0.0-RC1</version>
+        </dependency>
+
 
 
         <dependency>
@@ -157,6 +163,7 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+
         </dependencies>
     </dependencyManagement>
 

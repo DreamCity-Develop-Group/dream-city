@@ -26,5 +26,10 @@ public class EarnIncomeLog implements Serializable {
     private BigDecimal inAmount;
 
     private Date createTime;
-
+    public EarnIncomeLog(){super();}
+    public EarnIncomeLog(Integer inInvestId, String inPlayerId, BigDecimal inAmount) {
+        this.inInvestId = inInvestId;
+        this.inPlayerId = inPlayerId;
+        this.inAmount = inAmount;
+    }
 }

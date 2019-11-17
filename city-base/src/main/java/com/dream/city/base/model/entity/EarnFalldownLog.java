@@ -27,4 +27,11 @@ public class EarnFalldownLog implements Serializable {
 
     private Date createTime;
 
+    public EarnFalldownLog(){super();}
+
+    public EarnFalldownLog(Integer fallInvestId, String fallPlayerId, BigDecimal fallAmount) {
+        this.fallInvestId = fallInvestId;
+        this.fallPlayerId = fallPlayerId;
+        this.fallAmount = fallAmount;
+    }
 }
