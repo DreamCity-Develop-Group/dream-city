@@ -52,18 +52,26 @@ public class ProfitCalculateJob extends QuartzJobBean {
      */
     @Override
     protected void executeInternal(JobExecutionContext jobExecutionContext) throws JobExecutionException {
+
         log.info(new Date() + "    收益规则计算处理");
         //TODO 取出所有的投资项目
         List<CityInvest> invests = investService.getInvests();
 
 
         invests.forEach(invest -> {
+            long size = redisUtils.lGetListSize(ProfitQueue+"_"+invest.getInId());
+            if(size>0){
+                return;
+            }
             Map<String,String> calTime = investService.getProfitCalculateTime(invest.getCreateTime());
             String start = calTime.get("start");
             String end = calTime.get("end");
 
             //直接找出成功的投资订单，计算新增的资金额度
             List<InvestOrder> orders = orderService.getInvestOrdersAmountByDayInterval(invest.getInId(), start, end);
+            if(orders.size()<=0){
+                return ;
+            }
             //计算总的新增资金总额度
             BigDecimal total = BigDecimal.ZERO;
             for (InvestOrder order : orders) {
@@ -73,8 +81,10 @@ public class ProfitCalculateJob extends QuartzJobBean {
             BigDecimal temp = BigDecimal.ZERO;//累计已添加到队列的收益
             BigDecimal rate = new BigDecimal(0.7);//随机数
             BigDecimal onceProfit = BigDecimal.ZERO;//每次添加的收益
+
             for (int i = 0; i < 10; i++) {
-                rate = new BigDecimal(Math.random()+0.5).setScale(1, RoundingMode.HALF_UP);
+                int num = (int) (Math.random() * 5 + 1);
+                rate = new BigDecimal(num).divide(BigDecimal.TEN);
                 onceProfit = total.multiply(rate);
                 if(i==9){
                     redisUtils.lpush(ProfitQueue+"_"+invest.getInId(),String.valueOf(total.subtract(temp)));
@@ -110,5 +120,6 @@ public class ProfitCalculateJob extends QuartzJobBean {
 //            }
 
         });
+
     }
 }
