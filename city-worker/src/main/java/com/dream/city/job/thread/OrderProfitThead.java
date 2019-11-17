@@ -61,6 +61,7 @@ public class OrderProfitThead implements Runnable {
 
     }
     private void setProfit(InvestOrder order,BigDecimal everyOneProfit){
+        log.info("playerEarningService:{},order:{}",playerEarningService,JSONHelper.toJson(order));
         PlayerEarningResp playerEarning = playerEarningService.getPlayerEarnByPlayerId(order.getOrderPayerId(), order.getOrderInvestId());
         log.info("playerEarning:{}", JSONHelper.toJson(playerEarning));
         if (null == playerEarning) {
