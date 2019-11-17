@@ -35,6 +35,8 @@ public class DefaultController {
             //workerService.addJob(InvestOrderJob.class,"job2-"+name,"test","0/5 * * * * ?");
         }
         switch (name){
+            case "ProfitGrantJobReload":
+                workerService.addJob(ProfitGrantJobReload.class,"job-"+name,"test","0/20 * * * * ?");
             //订单预约结果计算任务
             case "InvestOrderJob":
                 workerService.addJob(InvestOrderJob.class,"job-"+name,"test","0/5 * * * * ?");
@@ -65,6 +67,7 @@ public class DefaultController {
                 break;
             case "ChargeScanJob":
                 workerService.addJob(ChargeScanJob.class,"job-"+name,"test","0/5 * * * * ?");
+                break;
                 default:
 
                     break;

@@ -63,7 +63,7 @@ public class ProfitCalculateJob extends QuartzJobBean {
             if(size>0){
                 return;
             }
-            Map<String,String> calTime = investService.getProfitCalculateTime(invest.getCreateTime());
+            Map<String,String> calTime = investService.getProfitCalculateTime(invest.getInStart());
             String start = calTime.get("start");
             String end = calTime.get("end");
 
@@ -120,6 +120,5 @@ public class ProfitCalculateJob extends QuartzJobBean {
 //            }
 
         });
-
     }
 }
