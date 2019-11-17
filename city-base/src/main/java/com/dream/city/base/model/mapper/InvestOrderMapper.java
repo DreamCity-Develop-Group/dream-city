@@ -84,7 +84,7 @@ public interface InvestOrderMapper {
     @Select("select * from `invest_order` where 1=1 and order_invest_id = #{investId} and order_state=#{state} and order_repeat = 1 ")
     List<InvestOrder> getInvestOrdersRepeat(Integer investId,int state);
 
-    @Select("select * from `invest_order` where 1=1 and order_invest_id #{investId} and order_state='5' and order by create_time asc limit #{limit}")
+    @Select("select * from `invest_order` where 1=1 and order_invest_id=#{investId} and order_state='5' and order by create_time asc limit #{limit}")
     List<InvestOrder> getInvestLongOrdersReload(@Param("investId") Integer investId,@Param("limit") Integer limit);
 
 

@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springside.modules.utils.time.DateUtil;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
@@ -243,22 +244,22 @@ public class InvestServiceImpl implements InvestService {
         }
     }
 
-
     private void firstTime(InvestRule rule,CityInvest invest, BigDecimal profit){
         Integer count = orderService.getInvestOrdersFirstTimeCount(invest.getInId());//第一次投资玩家总数量
         log.info("firstTime---第一次投资玩家总数量：{}",count);
-        Integer limit = new BigDecimal(count).multiply(rule.getRuleRatePre()).intValue();//确定可获得收益人数
+        Integer limit = new BigDecimal(count).multiply(rule.getRuleRatePre()).setScale(0, RoundingMode.CEILING).intValue();//确定可获得收益人数
         //第一次投资订单 通过时间正序排序  去前limit 条订单 进行收益发放
         List<InvestOrder> orders = orderService.getInvestOrdersFirstTimeReload(invest.getInId(),limit);
         log.info("firstTime---等待执行记录数：{}",orders.size());
         //计算每个人
         if(orders.size()>0){
+            log.info("orders====================:{}", JSONHelper.toJson(orders));
             BigDecimal everyOneProfit = profit.divide(new BigDecimal(orders.size()));
             log.info("firstTime---每个人所得收益：{}",everyOneProfit);
             final int threadSize = orders.size();
             CountDownLatch endGate = new CountDownLatch(threadSize);
             for (int i=0;i<orders.size();i++) {
-                log.info("orders:{}", JSONHelper.toJson(orders.get(i)));
+                log.info("order---------------:{}", JSONHelper.toJson(orders.get(i)));
                 ThreadPoolUtil.submit(ThreadPoolUtil.poolCount, ThreadPoolUtil.MODULE_MESSAGE_RESEND,
                         new OrderProfitThead(everyOneProfit,orders.get(i),this,playerAccountMapper,accountService,playerEarningService,endGate));
                 if(i==orders.size()-1){
