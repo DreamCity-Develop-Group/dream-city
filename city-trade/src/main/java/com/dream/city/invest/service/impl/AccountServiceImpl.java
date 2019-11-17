@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -57,7 +58,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public PlayerAccountResp getPlayerAccount(PlayerAccountReq record) throws BusinessException {
         String id = dictionaryService.getValByKey("platform.account.accIds");
-        String[] ids = id.split(",");
+        List<String> ids = Arrays.asList(id.split(","));
         record.setPlatformAccIds(ids);
 
         return accountMapper.getPlayerAccountSelective(record);
@@ -68,7 +69,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public List<PlayerAccountResp> getPlayerAccountList(PlayerAccountReq record) throws BusinessException {
         String id = dictionaryService.getValByKey("platform.account.accIds");
-        String[] ids = id.split(",");
+        List<String> ids = Arrays.asList(id.split(","));
         record.setPlatformAccIds(ids);
 
         return accountMapper.getPlayerAccountList(record);
@@ -95,9 +96,9 @@ public class AccountServiceImpl implements AccountService {
     @Transactional
     @Override
     public List<PlayerAccount> getPlatformAccounts(PlayerAccountReq record) throws BusinessException {
-        if (record == null || (record != null && record.getPlatformAccIds().length == 0)) {
+        if (record == null || (record != null && record.getPlatformAccIds().size() == 0)) {
             String id = dictionaryService.getValByKey("platform.account.accIds");
-            String[] ids = id.split(",");
+            List<String> ids = Arrays.asList(id.split(","));
             record.setPlatformAccIds(ids);
             //record.setAccAddr(dictionaryService.getValByKey("platform.account.accIds"));
         }
@@ -115,7 +116,8 @@ public class AccountServiceImpl implements AccountService {
     @Transactional
     @Override
     public PlayerAccount getPlayerAccountByAddr(String addr) throws BusinessException {
-        return playerAccountMapper.getPlayerAccountByAddr(addr);
+        PlayerAccount account = playerAccountMapper.getPlayerAccountByAddr(addr);
+        return account;
     }
 
     @LcnTransaction

@@ -4,10 +4,7 @@ package com.dream.city.invest.service.impl;
 import com.codingapi.txlcn.tc.annotation.LcnTransaction;
 import com.dream.city.base.exception.BusinessException;
 import com.dream.city.base.model.Result;
-import com.dream.city.base.model.entity.PlayerAccount;
-import com.dream.city.base.model.entity.PlayerTrade;
-import com.dream.city.base.model.entity.TradeDetail;
-import com.dream.city.base.model.entity.TradeVerify;
+import com.dream.city.base.model.entity.*;
 import com.dream.city.base.model.enu.*;
 import com.dream.city.base.model.mapper.PlayerTradeMapper;
 import com.dream.city.base.model.req.PlayerAccountReq;
@@ -26,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class PlayerTradeServiceImpl implements PlayerTradeService {
@@ -271,6 +269,13 @@ public class PlayerTradeServiceImpl implements PlayerTradeService {
             BigDecimal transferTax = BigDecimal.ZERO;
             //是否确认
             Boolean transferVerify = Boolean.FALSE;
+            //是否外部转账
+            Boolean isDeposit = Boolean.FALSE;
+
+            PlayerAccount account = accountService.getPlayerAccountByAddr(recordOut.getAccAddr());
+            if (Objects.isNull(account)){
+                isDeposit = Boolean.TRUE;
+            }
 
             if (StringUtils.isNotBlank(valByKey)) {
                 transferVerify = Boolean.parseBoolean(valByKey);
@@ -324,12 +329,18 @@ public class PlayerTradeServiceImpl implements PlayerTradeService {
             if (createPlayerTradeResult.getSuccess()) {
                // 是否内部转账
                 trade = createPlayerTradeResult.getData();
-                if (transferVerify) {
-                    tradeVerify = this.createTradeVerify(recordOut.getAccAddr(),createPlayerTradeResult.getData().getTradeId(),verifyStatus, msg);
-                } else {
-                    verifyStatus = VerifyStatus.PASS.name();
-                    tradeVerify = this.createTradeVerify(recordOut.getAccAddr(),createPlayerTradeResult.getData().getTradeId(),verifyStatus, msg);
+                if (isDeposit) {
+                    //外部转账
+                    verifyStatus = VerifyStatus.WAIT.name();
+                } else { //内部转账
+                    if (transferVerify){
+                        verifyStatus = VerifyStatus.WAIT.name();
+                    }else{
+
+                        verifyStatus = VerifyStatus.PASS.name();
+                    }
                 }
+                tradeVerify = this.createTradeVerify(recordOut.getAccAddr(),createPlayerTradeResult.getData().getTradeId(),verifyStatus, msg);
             }
 
             //收款用户
@@ -681,7 +692,7 @@ public class PlayerTradeServiceImpl implements PlayerTradeService {
     @Override
     public TradeVerify createTradeVerify(String toAddr,Integer tradeId, String verifyStatus, String verifyDesc) throws BusinessException {
         TradeVerify verifyReq = new TradeVerify();
-        verifyReq.setToAddr(toAddr);
+        verifyReq.setVerifyToAddress(toAddr);
         verifyReq.setVerifyDesc(verifyDesc);
         verifyReq.setVerifyStatus(verifyStatus);
         verifyReq.setVerifyTradeId(tradeId);

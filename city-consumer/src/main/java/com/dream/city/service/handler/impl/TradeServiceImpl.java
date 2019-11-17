@@ -332,7 +332,7 @@ public class TradeServiceImpl implements TradeService {
         resultMap.put("amount",accountReq.getAmount());
         resultMap.put("mt",0);
         resultMap.put("code",ReturnStatus.SUCCESS.getStatus());
-        resultMap.put("desc","转账失败");
+        resultMap.put("desc","转账成功");
 
         if (tradeResult != null){
             if (tradeResult.getSuccess()){
@@ -393,7 +393,7 @@ public class TradeServiceImpl implements TradeService {
                     message.setId(0L);
                     message.setTitle("入账消息");
                     message.setContent("你收到一笔来自朋友的转账,额度："+amount+"，请查收！");
-                    message.setPlayerId(receiverAccount.getAccPlayerId());
+                    message.setPlayerId(addr);
                     message.setCreateTime(new Date());
                     boolean finished = commonService.sendMessage(message);
                     if(!finished){

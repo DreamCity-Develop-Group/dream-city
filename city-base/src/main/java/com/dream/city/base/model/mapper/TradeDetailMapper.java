@@ -20,4 +20,6 @@ public interface TradeDetailMapper {
 
     Integer updateByPrimaryKeySelective(TradeDetail record);
 
+
+    List<PlayerTradeResp> getTradeVerifyDetailList();
 }

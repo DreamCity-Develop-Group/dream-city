@@ -173,8 +173,8 @@ public class CommonServiceImpl implements CommonService {
     @Override
     public boolean sendMessage(CityMessage message) throws BusinessException {
 
-        massegeService.insertMessage(message);
-        return false;
+        Result result = massegeService.insertMessage(message);
+        return result.getSuccess();
     }
 
 

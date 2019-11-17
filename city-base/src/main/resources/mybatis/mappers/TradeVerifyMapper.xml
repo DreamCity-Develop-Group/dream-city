@@ -145,7 +145,7 @@
         verify_order_id = #{verifyOrderId,jdbcType=INTEGER},
       </if>
       <if test="verifyToAddress != null">
-        verify_to_address = #{verifyOrderId,jdbcType=VARCHAR}
+        verify_to_address = #{verifyOrderId,jdbcType=VARCHAR},
       </if>
       <if test="verifyEmpId != null" >
         verify_user_id = #{verifyEmpId,jdbcType=INTEGER},

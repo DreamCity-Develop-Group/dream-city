@@ -2,6 +2,7 @@ package com.dream.city.base.model.mapper;
 
 
 import com.dream.city.base.model.entity.PlayerAccount;
+import com.dream.city.base.model.entity.TradeDetail;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 

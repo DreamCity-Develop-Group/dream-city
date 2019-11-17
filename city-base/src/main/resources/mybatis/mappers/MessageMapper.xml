@@ -69,10 +69,10 @@
       <if test="id != null" >
         id,
       </if>
-      <if test="player_id != null" >
+      <if test="playerId != null" >
         player_id,
       </if>
-      <if test="friend_id != null" >
+      <if test="friendId != null" >
         friend_id,
       </if>
       <if test="title != null" >
@@ -81,8 +81,11 @@
       <if test="content != null" >
         content,
       </if>
-      <if test="have_read != null" >
+      <if test="haveRead != null" >
         have_read,
+      </if>
+      <if test="sendTime != null" >
+        send_time,
       </if>
       create_time,
       update_time,
@@ -105,6 +108,9 @@
       </if>
       <if test="haveRead != null" >
         #{haveRead,jdbcType=INTEGER},
+      </if>
+      <if test="sendTime != null" >
+        #{sendTime,jdbcType=DATETIME},
       </if>
       now(),
       now(),
