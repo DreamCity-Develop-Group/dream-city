@@ -98,7 +98,7 @@ public interface InvestRuleMapper {
     void setRuleState(@Param("ruleList") List<InvestRule> ruleList);
 
     //@Select("select * from `invest_rule` where 1=1 and rule_invest_id = #{investId} and rule_state=#{state}")
-    @Select("select * from `invest_rule` where 1=1 and rule_item = #{investId} order by rule_level asc")
+    @Select("select * from `invest_rule` where 1=1 and rule_id = #{investId} ")
     @ResultMap("InvestRuleBaseMap")
     List<InvestRule> getInvestRuleByKey(Integer key);
 
@@ -107,7 +107,7 @@ public interface InvestRuleMapper {
     List<InvestRule> selectRules();
 
 
-    @Select("select * from `invest_rule` where 1=1 and rule_item=#{itemId} ")
+    @Select("select * from `invest_rule` where 1=1 and rule_item=#{itemId} order by rule_level asc")
     @ResultMap("InvestRuleBaseMap")
     List<InvestRule> getInvestRuleByItem(Integer itemId);
 }

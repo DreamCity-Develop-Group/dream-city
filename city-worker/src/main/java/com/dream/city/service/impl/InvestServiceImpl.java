@@ -149,7 +149,7 @@ public class InvestServiceImpl implements InvestService {
         BigDecimal  profitSum = new BigDecimal(obj.toString());//当前项目待分配的总收益
         log.info("取出总收益为：{}",profitSum);
         RuleItem ruleItem = ruleService.getInvestRuleItemByKey(Constants.RULE_CURRENT);//
-        List<InvestRule> rules = ruleService.getInvestRuleByKey(ruleItem.getItemId());//规则明细
+        List<InvestRule> rules = ruleService.getInvestRuleByItemKey(ruleItem.getItemId());//规则明细
         String ruleFlag ="";
         BigDecimal profit = BigDecimal.ZERO;
         BigDecimal everyOneProfit = BigDecimal.ZERO;//所有会员平均每个人可得收益
