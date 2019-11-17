@@ -155,6 +155,7 @@ public class InvestServiceImpl implements InvestService {
         BigDecimal everyOneProfit = BigDecimal.ZERO;//所有会员平均每个人可得收益
         BigDecimal firstTimeOrdersProfitPer = BigDecimal.ZERO;//第一次投资会员平均每个人可得收益
         for (InvestRule rule : rules ) {
+
             ruleFlag = rule.getRuleFlag();
             profit = profitSum.multiply(rule.getRuleRate());
             log.info("ruleFlag:{}",ruleFlag);
@@ -167,10 +168,11 @@ public class InvestServiceImpl implements InvestService {
                 investLong(rule,invest,profit);
             }else if(Constants.LIKES_GATHER.equalsIgnoreCase(ruleFlag)){//点赞最多玩家收益
                 likes(rule,invest,profit);
-            }else if(Constants.TOP_MEMBERS.equalsIgnoreCase(ruleFlag)){//每日新增会员最多玩家收益
-                checkMmber(invest);
-                topMember(rule,invest,profit);
             }
+//            else if(Constants.TOP_MEMBERS.equalsIgnoreCase(ruleFlag)){//每日新增会员最多玩家收益
+//                checkMmber(invest);
+//                topMember(rule,invest,profit);
+//            }
         }
     }
 
