@@ -42,11 +42,10 @@ public class ProfitGrantJobReload extends QuartzJobBean {
      */
     @Override
     protected void executeInternal(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-//        List<CityInvest> invests = investService.getInvests();
-        CityInvest invests = investService.getInvestById(2);
-//        for (CityInvest cityInvest:invests) {
-        threadTask.profitGrant(invests);
-//        }
+        investService.fallDown();//执行收益掉落
+        List<CityInvest> invests = investService.getInvests();
+        for (CityInvest cityInvest:invests) {
+            threadTask.profitGrant(cityInvest);
+        }
     }
-
 }

@@ -43,7 +43,7 @@ public interface InvestMapper {
      *
      * @return
      */
-    @Select("select * from `city_invest` where 1=1 ")
+    @Select("select * from `city_invest` where 1=1 and is_valid='Y' ")
     @ResultMap("BaseCityInvestnResultMap")
     List<CityInvest> getAllCityInvests();
 

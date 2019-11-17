@@ -36,14 +36,17 @@ public class PlayerEarningServiceImpl  implements PlayerEarningService {
         return playerEarningMapper.selectPlayerEarningList(record);
     }
 
-    @LcnTransaction
-    @Transactional
     @Override
     public PlayerEarningResp getPlayerEarnByPlayerId(String playerId, Integer investId)throws BusinessException {
         PlayerEarning record = new PlayerEarning();
         record.setEarnPlayerId(playerId);
         record.setEarnInvestId(investId);
         return playerEarningMapper.getPlayerEarning(record);
+    }
+
+    @Override
+    public PlayerEarning getPlayerEarnByPlayerIdReload(String playerId, Integer investId) {
+        return playerEarningMapper.getPlayerEarningReload(playerId,investId);
     }
 
     @LcnTransaction
@@ -89,4 +92,9 @@ public class PlayerEarningServiceImpl  implements PlayerEarningService {
     public int updateEarningFallDown(Integer earnId, BigDecimal amount) {
         return playerEarningMapper.updateFalldown(earnId,amount);
     }
+    @Override
+    public int updateCurrentAmount(Integer earnId,BigDecimal amount,Integer status,String playerId) {
+        return playerEarningMapper.updateCurrentAmount(earnId,amount,status,playerId);
+    }
+
 }

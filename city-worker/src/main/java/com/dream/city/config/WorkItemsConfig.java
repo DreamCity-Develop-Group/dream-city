@@ -12,15 +12,13 @@ import java.util.Map;
  * @author WWvv
  */
 
-@ConfigurationProperties(value = "worker.channel")
 @Component
 @Data
 public class WorkItemsConfig {
-    @Value("#{'${worker.channel.topics}'.split(',')}")
+    /*@Value("${'#{worker.channel.topics}'.split(',')}")
     private List<String> topics;
 
     @Value("#{${tasks}}")
-    private Map<String,String> tasks;
-
+    private Map<String,String> tasks;*/
 
 }

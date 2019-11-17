@@ -103,10 +103,10 @@ public class DefaultController {
 
     @RequestMapping("/queryRunJob")
     public Object queryRunJob() {
-        List<String> topics = workItemsConfig.getTopics();
+       /* List<String> topics = workItemsConfig.getTopics();
         topics.forEach(System.out::println);
         Map tasks = workItemsConfig.getTasks();
-        tasks.forEach((key,item)-> System.out.println(key+"=>"+item));
+        tasks.forEach((key,item)-> System.out.println(key+"=>"+item));*/
 
         return workerService.queryRunJobs();
     }

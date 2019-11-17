@@ -69,6 +69,9 @@ public class ProfitCalculateJob extends QuartzJobBean {
 
             //直接找出成功的投资订单，计算新增的资金额度
             List<InvestOrder> orders = orderService.getInvestOrdersAmountByDayInterval(invest.getInId(), start, end);
+            if(orders.size()<=0){
+                return;
+            }
             //计算总的新增资金总额度
             BigDecimal total = BigDecimal.ZERO;
             for (InvestOrder order : orders) {
@@ -79,15 +82,16 @@ public class ProfitCalculateJob extends QuartzJobBean {
             BigDecimal onceProfit = BigDecimal.ZERO;
             BigDecimal average = total.divide(new BigDecimal(10));
             for (int i = 0; i < 10; i++) {
-                double num =  (Math.random()  + 9);
-                BigDecimal rate = new BigDecimal(num).divide(BigDecimal.TEN).setScale(2,RoundingMode.HALF_DOWN);
-                onceProfit = average.multiply(rate);
-                if(i==9){
-                    redisUtils.lpush(ProfitQueue+"_"+invest.getInId(),String.valueOf(total.subtract(temp)));
-                }else{
-                    redisUtils.lpush(ProfitQueue+"_"+invest.getInId(),onceProfit.toString());
-                    temp = temp.add(onceProfit);
-                }
+//                double num =  (Math.random()  + 9);
+//                BigDecimal rate = new BigDecimal(num).divide(BigDecimal.TEN).setScale(2,RoundingMode.HALF_DOWN);
+//                onceProfit = average.multiply(rate);
+//                if(i==9){
+//                    redisUtils.lpush(ProfitQueue+"_"+invest.getInId(),String.valueOf(total.subtract(temp)));
+//                }else{
+//                    redisUtils.lpush(ProfitQueue+"_"+invest.getInId(),onceProfit.toString());
+//                    temp = temp.add(onceProfit);
+//                }
+                redisUtils.lpush(ProfitQueue+"_"+invest.getInId(),"10");
             }
 
 

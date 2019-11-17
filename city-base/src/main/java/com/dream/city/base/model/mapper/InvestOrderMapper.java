@@ -77,18 +77,24 @@ public interface InvestOrderMapper {
     //所有的第一次投资的订单数量
     @Select("select count(0) from `invest_order` where 1=1 and order_invest_id = #{investId} and order_state='5' and order_repeat = 0 ")
     Integer getInvestOrdersNoRepeatCount(Integer investId);
+
+
     //投资物业的前20%玩家
     @Select("select * from `invest_order` where 1=1 and order_invest_id = #{investId} and order_state='5' and order_repeat = 0 order by create_time asc limit #{limit}")
+    @ResultMap("BaseInvestOrderResultMap")
     List<InvestOrder> getInvestOrdersNoRepeatReload(@Param("investId") Integer investId,@Param("limit") Integer limit);
 
     @Select("select * from `invest_order` where 1=1 and order_invest_id = #{investId} and order_state=#{state} and order_repeat = 1 ")
     List<InvestOrder> getInvestOrdersRepeat(Integer investId,int state);
 
-    @Select("select * from `invest_order` where 1=1 and order_invest_id=#{investId} and order_state='5' and order by create_time asc limit #{limit}")
+
+    @Select("select * from `invest_order` where 1=1 and order_invest_id=#{investId} and order_state='5' order by create_time asc limit #{limit}")
+    @ResultMap("BaseInvestOrderResultMap")
     List<InvestOrder> getInvestLongOrdersReload(@Param("investId") Integer investId,@Param("limit") Integer limit);
 
 
     @Select("select io.* from invest_order as io , player_likes as pl where pl.liked_invest_id = io.order_invest_id and pl.liked_invest_id = #{investId} order by pl.liked_get_total desc limit #{limit} ")
+    @ResultMap("BaseInvestOrderResultMap")
     List<InvestOrder>  getLikesGatherReload(@Param("investId") Integer investId,@Param("limit") Integer limit);
 
     /**
@@ -166,6 +172,7 @@ public interface InvestOrderMapper {
 
 
     @Select("select * from `invest_order` where 1=1 and order_invest_id = #{inId} and order_state = #{state}")
+    @ResultMap("BaseInvestOrderResultMap")
     List<InvestOrder> getInvestOrdersByCurrentReload(@Param("inId") Integer inId, @Param("state") int states);
 
 }

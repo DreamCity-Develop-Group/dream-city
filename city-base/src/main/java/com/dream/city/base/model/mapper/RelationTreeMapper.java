@@ -122,10 +122,11 @@ public interface RelationTreeMapper {
 
 
 
-    @Select("select * from city_tree as ct,city_player as cp where ct.tree_player_id = cp.player_id and tree_relation like concat(#{tree},'/%') and cp.create_time BETWEEN #{startTime} AND #{endTime}")
+    @Select("select count(0) from city_tree as ct,city_player as cp where ct.tree_player_id = cp.player_id and tree_relation like concat(#{tree},'/%') and cp.create_time BETWEEN #{startTime} AND #{endTime}")
     Integer getTeamListCount(@Param("tree")String tree,@Param("startTime")String startTime,@Param("endTime")String endTime);
 
     @Select("select * from city_tree where tree_player_id=#{playerId}")
+    @ResultMap("treeBaseMap")
     RelationTree getSelfTree(@Param("playerId") String playerId);
 
 }

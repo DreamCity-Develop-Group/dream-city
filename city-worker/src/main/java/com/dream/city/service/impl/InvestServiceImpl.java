@@ -2,7 +2,6 @@ package com.dream.city.service.impl;
 
 import com.codingapi.txlcn.tc.annotation.LcnTransaction;
 import com.dream.city.base.exception.BusinessException;
-import com.dream.city.base.model.CityGlobal;
 import com.dream.city.base.model.entity.*;
 import com.dream.city.base.model.enu.Constants;
 import com.dream.city.base.model.enu.InvestStatus;
@@ -10,7 +9,6 @@ import com.dream.city.base.model.mapper.EarnFalldownLogMapper;
 import com.dream.city.base.model.mapper.InvestMapper;
 import com.dream.city.base.model.mapper.PlayerAccountLogMapper;
 import com.dream.city.base.model.mapper.PlayerAccountMapper;
-import com.dream.city.base.model.resp.PlayerEarningResp;
 import com.dream.city.base.utils.CommDateUtil;
 import com.dream.city.base.utils.JSONHelper;
 import com.dream.city.base.utils.RedisUtils;
@@ -139,9 +137,6 @@ public class InvestServiceImpl implements InvestService {
     @Transactional
     @Override
     public void profitGrant(CityInvest invest) {
-        //先掉落收益
-        fallDown();
-
         //执行发收益
         Object obj = redisUtils.lpop("PROFIT_QUEUE_" + invest.getInId());
         if (obj == null){
@@ -154,37 +149,33 @@ public class InvestServiceImpl implements InvestService {
         List<InvestRule> rules = ruleService.getInvestRuleByItemKey(ruleItem.getItemId());//规则明细
         String ruleFlag ="";
         BigDecimal profit = BigDecimal.ZERO;
-        BigDecimal everyOneProfit = BigDecimal.ZERO;//所有会员平均每个人可得收益
-        BigDecimal firstTimeOrdersProfitPer = BigDecimal.ZERO;//第一次投资会员平均每个人可得收益
         for (InvestRule rule : rules ) {
             ruleFlag = rule.getRuleFlag();
             profit = profitSum.multiply(rule.getRuleRate());
-            log.info("ruleFlag:{}",ruleFlag);
-            log.info("当前所发收益对应规则:{}，收益总额：{}",ruleFlag,profit);
             if(Constants.ALL_ORDERS.equalsIgnoreCase(ruleFlag)){//所有订单收益
-                allOrder(invest,profit);
+                allOrder(invest,profit,profitSum);
             }else if(Constants.FIRST_TIME.equalsIgnoreCase(ruleFlag)){//第一次投资收益
-                firstTime(rule,invest,profit);
-            }else if(Constants.INVEST_LONG.equalsIgnoreCase(ruleFlag)){//投资时间最长收益
-                investLong(rule,invest,profit);
-            }else if(Constants.LIKES_GATHER.equalsIgnoreCase(ruleFlag)){//点赞最多玩家收益
-                likes(rule,invest,profit);
+                firstTime(rule,invest,profit,profitSum);
             }
-//            else if(Constants.TOP_MEMBERS.equalsIgnoreCase(ruleFlag)){//每日新增会员最多玩家收益
-//                checkMmber(invest);
-//                topMember(rule,invest,profit);
-//            }
+            else if(Constants.INVEST_LONG.equalsIgnoreCase(ruleFlag)){//投资时间最长收益
+                investLong(rule,invest,profit,profitSum);
+            }else if(Constants.LIKES_GATHER.equalsIgnoreCase(ruleFlag)){//点赞最多玩家收益
+                likes(rule,invest,profit,profitSum);
+            }else if(Constants.TOP_MEMBERS.equalsIgnoreCase(ruleFlag)){//每日新增会员最多玩家收益
+                checkMmber(invest);
+                topMember(rule,invest,profit,profitSum);
+            }
         }
     }
 
-
-    private void fallDown(){
+    @Override
+    public void fallDown(){
         Date date = DateUtil.subHours(new Date(),1); //上一次发收益的时间
         String time = CommDateUtil.getDateTimeFormat( DateUtil.addMinutes(date,10));//增加10分钟时间差
         //查询出所有满足掉落条件的记录
         List<PlayerEarning> playerEarnings = playerEarningService.getPlayerEarningCanFallDown(time);
         RuleItem fallDown = ruleService.getInvestRuleItemByKey(Constants.PROFIT_FALL_DOWN);//
-        List<InvestRule> fallDownRules = ruleService.getInvestRuleByKey(fallDown.getItemId());//规则明细
+        List<InvestRule> fallDownRules = ruleService.getInvestRuleByItemKey(fallDown.getItemId());//规则明细
         InvestRule investRule = fallDownRules.get(0);
         BigDecimal minDropAmount  = new BigDecimal("0.0001");
         BigDecimal number = investRule.getRuleRatePre();//掉落的收益平均分配的人数
@@ -218,17 +209,18 @@ public class InvestServiceImpl implements InvestService {
     }
 
 
-    private void allOrder(CityInvest invest,BigDecimal profit){
+    private void allOrder(CityInvest invest,BigDecimal profit,BigDecimal profitSum){
+        long start =  System.currentTimeMillis();
         log.info("计算---ALL_ORDERS---开始");
         List<InvestOrder> orders = orderService.getInvestOrdersByCurrentReload(invest.getInId(), InvestStatus.MANAGEMENT.getStatus());
         log.info("ALL_ORDERS---等待执行记录数：{}", orders.size());
         if(orders.size()>0) {
+            log.info("orders==================:{}", JSONHelper.toJson(orders));
             BigDecimal everyOneProfit = profit.divide(new BigDecimal(orders.size()));
             log.info("ALL_ORDERS---每个人所得收益：{}",everyOneProfit);
             final int threadSize = orders.size();
             CountDownLatch endGate = new CountDownLatch(threadSize);
             for (int i = 0; i < orders.size(); i++) {
-                log.info("orders:{}", JSONHelper.toJson(orders.get(i)));
                 ThreadPoolUtil.submit(ThreadPoolUtil.poolCount, ThreadPoolUtil.MODULE_MESSAGE_RESEND,
                         new OrderProfitThead(everyOneProfit, orders.get(i), this, playerAccountMapper, accountService, playerEarningService, endGate));
                 if (i == orders.size() - 1) {
@@ -241,25 +233,32 @@ public class InvestServiceImpl implements InvestService {
                 log.info("等待计算---ALL_ORDERS---收益计算结束发生异常");
             }
             log.info("计算---ALL_ORDERS---结束");
+        }else{
+            PlayerAccount account = accountService.getPlayerAccount(Constants.SYSTEM_ACCOUNT);
+            playerAccountMapper.addPlayerUsdtAmount(account.getAccPlayerId(),profit);
+            PlayerAccountLog accountLog = new PlayerAccountLog(Constants.SYSTEM_ACCOUNT,account.getAccAddr(),profitSum,BigDecimal.ZERO,1,"ALL_ORDERS收益未查询到满足条件用户，总金额为："+profit);
+            accountService.addAccountLog(accountLog);
+
         }
+        long end =  System.currentTimeMillis();
+        log.info("ALL_ORDERS==================执行时间：{}",end-start);
     }
 
-    private void firstTime(InvestRule rule,CityInvest invest, BigDecimal profit){
+    private void firstTime(InvestRule rule,CityInvest invest, BigDecimal profit,BigDecimal profitSum){
+        long start =  System.currentTimeMillis();
         Integer count = orderService.getInvestOrdersFirstTimeCount(invest.getInId());//第一次投资玩家总数量
-        log.info("firstTime---第一次投资玩家总数量：{}",count);
+        log.info("FIRST_TIME---第一次投资玩家总数量：{}",count);
         Integer limit = new BigDecimal(count).multiply(rule.getRuleRatePre()).setScale(0, RoundingMode.CEILING).intValue();//确定可获得收益人数
         //第一次投资订单 通过时间正序排序  去前limit 条订单 进行收益发放
         List<InvestOrder> orders = orderService.getInvestOrdersFirstTimeReload(invest.getInId(),limit);
-        log.info("firstTime---等待执行记录数：{}",orders.size());
+        log.info("FIRST_TIME---等待执行记录数：{}",orders.size());
         //计算每个人
         if(orders.size()>0){
-            log.info("orders====================:{}", JSONHelper.toJson(orders));
             BigDecimal everyOneProfit = profit.divide(new BigDecimal(orders.size()));
-            log.info("firstTime---每个人所得收益：{}",everyOneProfit);
+            log.info("FIRST_TIME---每个人所得收益：{}",everyOneProfit);
             final int threadSize = orders.size();
             CountDownLatch endGate = new CountDownLatch(threadSize);
             for (int i=0;i<orders.size();i++) {
-                log.info("order---------------:{}", JSONHelper.toJson(orders.get(i)));
                 ThreadPoolUtil.submit(ThreadPoolUtil.poolCount, ThreadPoolUtil.MODULE_MESSAGE_RESEND,
                         new OrderProfitThead(everyOneProfit,orders.get(i),this,playerAccountMapper,accountService,playerEarningService,endGate));
                 if(i==orders.size()-1){
@@ -271,18 +270,26 @@ public class InvestServiceImpl implements InvestService {
             }catch (Exception e){
                 log.info("等待计算---FIRST_TIME---收益计算结束发生异常");
             }
+        }else{
+            PlayerAccount account = accountService.getPlayerAccount(Constants.SYSTEM_ACCOUNT);
+            playerAccountMapper.addPlayerUsdtAmount(account.getAccPlayerId(),profit);
+            PlayerAccountLog accountLog = new PlayerAccountLog(Constants.SYSTEM_ACCOUNT,account.getAccAddr(),profitSum,BigDecimal.ZERO,1,"FIRST_TIME收益未查询到满足条件用户，总金额为："+profit);
+            accountService.addAccountLog(accountLog);
         }
 
         log.info("计算---FIRST_TIME---结束");
+        long end =  System.currentTimeMillis();
+        log.info("FIRST_TIME==================执行时间：{}",end-start);
     }
 
 
-    private void investLong(InvestRule rule,CityInvest invest, BigDecimal profit){
+    private void investLong(InvestRule rule,CityInvest invest, BigDecimal profit,BigDecimal profitSum){
+        long start =  System.currentTimeMillis();
         Integer topLong = rule.getRuleRatePre().intValue();
         List<InvestOrder> orders = orderService.getInvestLongOrdersReload(invest.getInId(),topLong);
         log.info("investLong---等待执行记录数：{}", orders.size());
         if(orders.size()>0) {
-            BigDecimal everyOneProfit = profit.divide(new BigDecimal(topLong));
+            BigDecimal everyOneProfit = profit.divide(new BigDecimal(orders.size()));
             log.info("investLong---每个人所得收益：{}",everyOneProfit);
             final int threadSize = orders.size();
             CountDownLatch endGate = new CountDownLatch(threadSize);
@@ -299,10 +306,18 @@ public class InvestServiceImpl implements InvestService {
                 log.info("等待计算---INVEST_LONG---收益计算结束发生异常");
             }
             log.info("计算---INVEST_LONG---结束");
+        }else{
+            PlayerAccount account = accountService.getPlayerAccount(Constants.SYSTEM_ACCOUNT);
+            playerAccountMapper.addPlayerUsdtAmount(account.getAccPlayerId(),profit);
+            PlayerAccountLog accountLog = new PlayerAccountLog(Constants.SYSTEM_ACCOUNT,account.getAccAddr(),profitSum,BigDecimal.ZERO,1,"INVEST_LONG收益未查询到满足条件用户，总金额为："+profit);
+            accountService.addAccountLog(accountLog);
         }
+        long end =  System.currentTimeMillis();
+        log.info("INVEST_LONG==================执行时间：{}",end-start);
     }
 
-    private void likes(InvestRule rule,CityInvest invest, BigDecimal profit){
+    private void likes(InvestRule rule,CityInvest invest, BigDecimal profit,BigDecimal profitSum){
+        long start =  System.currentTimeMillis();
         List<InvestOrder> orders = orderService.getLikesGatherReload(invest.getInId(),rule.getRuleRatePre().intValue());
         log.info("likes---等待执行记录数：{}",orders.size());
         if(orders.size()>0){
@@ -323,10 +338,18 @@ public class InvestServiceImpl implements InvestService {
                 log.info("等待计算---LIKES_GATHER---收益计算结束发生异常");
             }
             log.info("计算---LIKES_GATHER---结束");
+        }else{
+            PlayerAccount account = accountService.getPlayerAccount(Constants.SYSTEM_ACCOUNT);
+            playerAccountMapper.addPlayerUsdtAmount(account.getAccPlayerId(),profit);
+            PlayerAccountLog accountLog = new PlayerAccountLog(Constants.SYSTEM_ACCOUNT,account.getAccAddr(),profitSum,BigDecimal.ZERO,1,"LIKES_GATHER收益未查询到满足条件用户，总金额为："+profit);
+            accountService.addAccountLog(accountLog);
         }
+        long end =  System.currentTimeMillis();
+        log.info("LIKES_GATHER==================执行时间：{}",end-start);
     }
 
     private void checkMmber(CityInvest invest){
+        long start =  System.currentTimeMillis();
         List<InvestOrder> orders = orderService.getInvestOrdersByCurrentReload(invest.getInId(), InvestStatus.MANAGEMENT.getStatus());
         Map<String,String> times = getProfitCalculateTime(invest.getInStart());
         final int threadSize = orders.size();
@@ -355,10 +378,13 @@ public class InvestServiceImpl implements InvestService {
         incraseCount.sort((o1,o2)->{
             return o2.getCount()-o1.getCount();
         });//得到按照日新增人数正序排序的列表
+        long end =  System.currentTimeMillis();
+        log.info("TOP_MEMBERS==================执行时间：{}",end-start);
     }
 
 
-    private void topMember(InvestRule rule,CityInvest invest, BigDecimal profit){
+    private void topMember(InvestRule rule,CityInvest invest, BigDecimal profit,BigDecimal profitSum){
+        long start =  System.currentTimeMillis();
         List<InvestOrder> orders  = new ArrayList<InvestOrder>();
         Integer topCount = rule.getRuleRatePre().intValue();
         if(incraseCount.size()>topCount){
@@ -383,8 +409,15 @@ public class InvestServiceImpl implements InvestService {
             }catch (Exception e){
                 log.info("计算---TOP_MEMBERS---收益结束");
             }
+        }else{
+            PlayerAccount account = accountService.getPlayerAccount(Constants.SYSTEM_ACCOUNT);
+            playerAccountMapper.addPlayerUsdtAmount(account.getAccPlayerId(),profit);
+            PlayerAccountLog accountLog = new PlayerAccountLog(Constants.SYSTEM_ACCOUNT,account.getAccAddr(),profitSum,BigDecimal.ZERO,1,"TOP_MEMBER收益未查询到满足条件用户，总金额为："+profit);
+            accountService.addAccountLog(accountLog);
         }
         incraseCount.clear();
+        long end =  System.currentTimeMillis();
+        log.info("TOP_MEMBERS==================执行时间：{}",end-start);
 
     }
 }
