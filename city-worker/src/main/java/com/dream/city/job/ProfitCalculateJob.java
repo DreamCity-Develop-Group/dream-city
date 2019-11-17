@@ -69,27 +69,23 @@ public class ProfitCalculateJob extends QuartzJobBean {
 
             //直接找出成功的投资订单，计算新增的资金额度
             List<InvestOrder> orders = orderService.getInvestOrdersAmountByDayInterval(invest.getInId(), start, end);
-            if(orders.size()<=0){
-                return ;
-            }
             //计算总的新增资金总额度
             BigDecimal total = BigDecimal.ZERO;
             for (InvestOrder order : orders) {
                 total = total.add(order.getOrderAmount());
             }
-
-            BigDecimal temp = BigDecimal.ZERO;//累计已添加到队列的收益
-            BigDecimal rate = new BigDecimal(0.7);//随机数
-            BigDecimal onceProfit = BigDecimal.ZERO;//每次添加的收益
-
+            log.info("total:{}",total);
+            BigDecimal temp = BigDecimal.ZERO;
+            BigDecimal onceProfit = BigDecimal.ZERO;
+            BigDecimal average = total.divide(new BigDecimal(10));
             for (int i = 0; i < 10; i++) {
-                int num = (int) (Math.random() * 5 + 1);
-                rate = new BigDecimal(num).divide(BigDecimal.TEN);
-                onceProfit = total.multiply(rate);
+                double num =  (Math.random()  + 9);
+                BigDecimal rate = new BigDecimal(num).divide(BigDecimal.TEN).setScale(2,RoundingMode.HALF_DOWN);
+                onceProfit = average.multiply(rate);
                 if(i==9){
                     redisUtils.lpush(ProfitQueue+"_"+invest.getInId(),String.valueOf(total.subtract(temp)));
                 }else{
-                    redisUtils.lpush(ProfitQueue+"_"+invest.getInId(),String.valueOf(onceProfit));
+                    redisUtils.lpush(ProfitQueue+"_"+invest.getInId(),onceProfit.toString());
                     temp = temp.add(onceProfit);
                 }
             }
@@ -120,5 +116,25 @@ public class ProfitCalculateJob extends QuartzJobBean {
 //            }
 
         });
+    }
+
+    public static void main(String[] args) {
+        BigDecimal total = new BigDecimal(200);
+        BigDecimal temp = BigDecimal.ZERO;
+        BigDecimal onceProfit = BigDecimal.ZERO;
+        BigDecimal average = total.divide(new BigDecimal(10));
+        for (int i=0;i<=9;i++){
+            double num =  (Math.random()  + 9);
+            BigDecimal rate = new BigDecimal(num).divide(BigDecimal.TEN).setScale(2,RoundingMode.HALF_DOWN);
+            onceProfit = average.multiply(rate);
+            if(i==9){
+                System.out.println(total.subtract(temp));
+            }else{
+                System.out.println(onceProfit.toString());
+                temp = temp.add(onceProfit);
+            }
+        }
+
+//        onceProfit = total.multiply(rate);
     }
 }
