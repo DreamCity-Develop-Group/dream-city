@@ -57,7 +57,7 @@ public class ProfitCalculateJob extends QuartzJobBean {
 
 
         invests.forEach(invest -> {
-            Map<String,String> calTime = investService.getProfitCalculateTime(invest.getCreateTime());
+            Map<String,String> calTime = investService.getProfitCalculateTime(invest.getInStart());
             String start = calTime.get("start");
             String end = calTime.get("end");
 
@@ -90,7 +90,7 @@ public class ProfitCalculateJob extends QuartzJobBean {
              */
 
             for(int i=0;i<averages.length;i++){
-                System.out.println("i="+i+","+averages[i]);
+                System.out.println("i="+i+","+averages[i].toString());
                 redisUtils.lpush(ProfitQueue+"_"+invest.getInId(),String.valueOf(averages[i]));
             }
 
