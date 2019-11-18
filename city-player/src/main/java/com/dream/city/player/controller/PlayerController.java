@@ -311,10 +311,19 @@ public class PlayerController {
             redisUtils.del(RedisKeys.CURRENT_USER + playerExit.getPlayerName());
             redisUtils.decr(RedisKeys.CURRENT_LOGIN_USER_COUNT);
         }
+        //Token清除
         if(redisUtils.hasKey(RedisKeys.LOGIN_USER_TOKEN+playerExit.getPlayerName())){
             redisUtils.del(RedisKeys.LOGIN_USER_TOKEN+playerExit.getPlayerName());
         }
+        //缓存删除
         redisUtils.rmOnlinePlayer(playerExit.getPlayerName());
+        if(redisUtils.hasKey(RedisKeys.MAIN_HASH_DATA+playerExit.getPlayerName())){
+            redisUtils.del(RedisKeys.MAIN_HASH_DATA+playerExit.getPlayerName());
+        }
+        //下线
+        if (redisUtils.hasKey(RedisKeys.PLAYER_ONLINE_STATE_KEY+playerExit.getPlayerName())){
+            redisUtils.del(RedisKeys.PLAYER_ONLINE_STATE_KEY+playerExit.getPlayerName());
+        }
         return result;
     }
 
@@ -341,6 +350,23 @@ public class PlayerController {
         if (redisUtils.hasKey(RedisKeys.CURRENT_USER + playerExit.getPlayerName())) {
             redisUtils.del(RedisKeys.CURRENT_USER + playerExit.getPlayerName());
             redisUtils.decr(RedisKeys.CURRENT_LOGIN_USER_COUNT);
+        }
+        if (redisUtils.hasKey(RedisKeys.CURRENT_USER + playerExit.getPlayerName())) {
+            redisUtils.del(RedisKeys.CURRENT_USER + playerExit.getPlayerName());
+            redisUtils.decr(RedisKeys.CURRENT_LOGIN_USER_COUNT);
+        }
+        //Token清除
+        if(redisUtils.hasKey(RedisKeys.LOGIN_USER_TOKEN+playerExit.getPlayerName())){
+            redisUtils.del(RedisKeys.LOGIN_USER_TOKEN+playerExit.getPlayerName());
+        }
+        //缓存删除
+        redisUtils.rmOnlinePlayer(playerExit.getPlayerName());
+        if(redisUtils.hasKey(RedisKeys.MAIN_HASH_DATA+playerExit.getPlayerName())){
+            redisUtils.del(RedisKeys.MAIN_HASH_DATA+playerExit.getPlayerName());
+        }
+        //下线
+        if (redisUtils.hasKey(RedisKeys.PLAYER_ONLINE_STATE_KEY+playerExit.getPlayerName())){
+            redisUtils.del(RedisKeys.PLAYER_ONLINE_STATE_KEY+playerExit.getPlayerName());
         }
         return result;
     }
