@@ -100,4 +100,8 @@ public interface PlayerEarningMapper {
 
     @Update("update player_earning set earn_current=earn_current+#{amount},earn_pre_profit=#{amount},is_withdrew=#{status} where earn_id=#{earnId}  and earn_player_id=#{playerId}")
     int updateCurrentAmount( @Param("earnId") Integer earnId,@Param("amount") BigDecimal amount,@Param("status") Integer status,@Param("playerId") String playerId);
+
+    @Select("select * from player_earning where in_type = #{inType}  and earn_player_id = #{playerId} ")
+    @ResultMap("BasePlayerEarningResultMap")
+    PlayerEarning getEarningInvestByPlayerId(@Param("playerId")String playerId, @Param("inType")String inType);
 }

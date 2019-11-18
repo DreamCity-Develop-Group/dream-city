@@ -65,4 +65,6 @@ public interface ConsumerEarningService {
     @RequestMapping("/extract")
     Result<Map<String,Object>> extract(@RequestParam("playerId")String playerId, @RequestParam("inType")Integer inType);
 
+    @RequestMapping("/getEarningInvestByPlayerId")
+    PlayerEarning getEarningByPlayerId(@RequestParam("playerId") String playerId, @RequestParam("inType") String inType);
 }

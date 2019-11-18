@@ -1,6 +1,7 @@
 package com.dream.city.service.handler.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.codingapi.txlcn.tc.annotation.DTXPropagation;
 import com.codingapi.txlcn.tc.annotation.LcnTransaction;
 import com.dream.city.base.exception.BusinessException;
@@ -15,6 +16,7 @@ import com.dream.city.base.model.resp.InvestOrderResp;
 import com.dream.city.base.model.resp.InvestResp;
 import com.dream.city.base.model.resp.PlayerResp;
 import com.dream.city.base.utils.DataUtils;
+import com.dream.city.base.utils.JsonUtil;
 import com.dream.city.base.utils.KeyGenerator;
 import com.dream.city.base.utils.RedisUtils;
 import com.dream.city.service.consumer.*;
@@ -74,8 +76,20 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Message  playerInvest(Message msg) throws BusinessException {
         logger.info("预约投资:{}", msg);
+        String json = JsonUtil.parseObjToJson(msg.getData().getData());
+        JSONObject jsonObject = JsonUtil.parseJsonToObj(json,JSONObject.class);
+        String playerId = jsonObject.getString("playerId");
+        String inType = jsonObject.getString("inType");
+        PlayerEarning earning = earningService.getEarningByPlayerId(playerId,inType);
+        if (earning != null && !earning.getIsWithdrew().equals("4")){
+            msg.setCode(ReturnStatus.ERROR.getStatus());
+            msg.setDesc("项目正在经营中");
+            return msg;
+        }
         String desc = "";
         boolean success = Boolean.FALSE;
+        //判断是否还存在未出局的项目
+
         Map<String, Object> result = new HashMap<>();
         try {
             InvestOrderReq orderReq = DataUtils.getInvestOrderReqFromMessage(msg);

@@ -68,4 +68,12 @@ public class EarningServiceImpl implements EarningService {
         Integer i = earningMapper.updateByPrimaryKeySelective(record);
         return i == null? 0: i;
     }
+
+    @LcnTransaction
+    @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public PlayerEarning getEarningInvestByPlayerId(String playerId, String inType) {
+        PlayerEarning earning = earningMapper.getEarningInvestByPlayerId(playerId,inType);
+        return earning;
+    }
 }

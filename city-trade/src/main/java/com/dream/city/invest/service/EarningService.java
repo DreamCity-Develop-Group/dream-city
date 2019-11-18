@@ -47,4 +47,5 @@ public interface EarningService {
      */
     int updateEarningById(PlayerEarning record);
 
+    PlayerEarning getEarningInvestByPlayerId(String playerId, String inType);
 }

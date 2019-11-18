@@ -324,7 +324,12 @@ public class PlayerController {
         if(redisUtils.hasKey(RedisKeys.MAIN_HASH_DATA+playerExit.getPlayerName())){
             redisUtils.del(RedisKeys.MAIN_HASH_DATA+playerExit.getPlayerName());
         }
-        //下线
+
+        //缓存投资删除
+        if(redisUtils.hasKey(RedisKeys.INVERST_HASH_DATA+playerId)){
+            redisUtils.del(RedisKeys.INVERST_HASH_DATA+playerId);
+        }
+        // 下线
         if (redisUtils.hasKey(RedisKeys.PLAYER_ONLINE_STATE_KEY+playerExit.getPlayerName())){
             redisUtils.del(RedisKeys.PLAYER_ONLINE_STATE_KEY+playerExit.getPlayerName());
         }

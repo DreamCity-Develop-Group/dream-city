@@ -39,7 +39,8 @@
         Channel:<input id="channel" value="notice" size="4"/>
         Client:<input id="client" value="Wvv" size="4"/>
         <button onclick="connect()">连接</button>
-        <button onclick="close()">断开</button><a href="javascript:send()" id="send">状态：[]</a><br/>
+        <button onclick="close()">断开</button>
+        <a href="javascript:send()" id="send">状态：[]</a><br/>
     </fieldset>
 </div>
 <div>
@@ -61,7 +62,8 @@
         <button onclick="getCode()" id="getCode">获取验证码</button>
         <button hidden="true" id="getCodeTimeout">倒计时</button>
         <input name="code" id="code" size="4">
-        <button onclick="codeLogin()">验证码登录</button><br>
+        <button onclick="codeLogin()">验证码登录</button>
+        <br>
         密码：<input type="password" name="password" id="password" value="dc483e80a7a0bd9ef71d8cf973673924"><br>
         昵称：<input name="nick" id="nick" value="昵称"><br>
         邀请码：<input name="valid" id="valid" value="sin23w" size="4">
@@ -71,9 +73,7 @@
 
     <div id="main">
         <fieldset>
-            <legend>主页数据</legend>
-            <button onclick="main()">主页</button>
-            <br>
+            <legend>主页数据<button onclick="main()">主页</button></legend>
             <table border="1">
                 <tr>
                     <td>昵称：</td>
@@ -108,7 +108,8 @@
     <fieldset>
         <legend>商会</legend>
         邀请码：<input name="invite" id="invite">
-        <button onclick="addTree()">加入商会</button>  <button onclick="join()">同意加入</button>
+        <button onclick="addTree()">加入商会</button>
+        <button onclick="join()">同意加入</button>
     </fieldset>
     <fieldset>
         <legend>交易密码</legend>
@@ -151,23 +152,31 @@
 </div>
 
 <div>
-    <button onclick="getSalesOrder()">订单列表</button>
-    <input type="hidden" value="" id="sendAllAuto">
-    <ul>
-        <li>序号===订单号===玩家账号===订单状态===订单时间
-            <button id="" onclick="playerSellerSend()">一键发货</button>
-        </li>
-    </ul>
-    <ol id="orderList">
-    </ol>
+    <fieldset>
+        <legend>投资列表
+            <button onclick="getSalesOrder()">订单列表</button>
+        </legend>
+        <input type="hidden" value="" id="sendAllAuto">
+        <ul>
+            <li>序号===订单号===玩家账号===订单状态===订单时间
+                <button id="" onclick="playerSellerSend()">一键发货</button>
+            </li>
+        </ul>
+        <ol id="orderList">
+        </ol>
+    </fieldset>
 </div>
 <div>
-    <button onclick="getInvestList()">投资列表</button>
-    <ul>
-        <li>序号===开启时间===投资额度===税率===订单状态===预期收益</li>
-    </ul>
-    <ol id="investList">
-    </ol>
+    <fieldset>
+        <legend>投资列表
+            <button onclick="getInvestList()">投资列表</button>
+        </legend>
+        <ul>
+            <li>序号===开启时间===投资额度===税率===订单状态===预期收益</li>
+        </ul>
+        <ol id="investList">
+        </ol>
+    </fieldset>
 </div>
 </body>
 
@@ -394,7 +403,11 @@
                                     break;
                             }
                             tr += "|| " + status;
-                            tr += "<button onclick=\"invest(" + list[i].inType + ")\">" + status + "</button></li>"
+                            tr += "<button onclick=\"invest(" + list[i].inType + ")\">" + status + "</button>";
+                            if(status == "可提取"){
+                                tr += "<span></span><button onclick=\"extract(" + list[i].inType + ")\">" + status + "</button>";
+                            }
+                            tr += "</li>";
                         } else {
                             tr += "|| " + "不可用";
                             tr += "<button disabled >敬请期待...</button></li>"
@@ -463,7 +476,7 @@
         $("tips").innerHTML = content + "";
         setTimeout(function () {
             $("tips").innerHTML = "";
-        },2000);
+        }, 2000);
     }
 
     function getCode() {
@@ -830,6 +843,35 @@
             "\"amount\":\"" + amount + "\"," +
             "\"accAddr\":\"" + accAddr + "\"," +
             "\"tradePass\":\"" + tradePass + "\"," +
+            "\"token\":\"" + token + "\"}" +
+            "}," +
+            "\"desc\":\"设置交易密码\",\"target\":\"server\"}";
+
+        socket.send(msg);
+    }
+
+    function extract(inType) {
+        var username = $("username").value;
+        var token = $("token").value;
+        var playerId = $("playerId").value;
+
+        var inType = inType;
+
+        if (playerId == "" || token == null) {
+            alert("未登录");
+            return;
+        }
+        console.log(username + ">>" + playerId + ">>" + inType);
+
+        var msg = "{\"source\":\"" + clientId + "\"," +
+            "\"createtime\":\"Wed Sep 04 14:31:01 CST 2019\"," +
+            "\"data\":{" +
+            "\"type\":\"extract\"," +
+            "\"model\":\"consumer\"," +
+            "\"data\":{" +
+            "\"username\":\"" + username + "\"," +
+            "\"playerId\":\"" + playerId + "\"," +
+            "\"inType\":\"" + inType + "\"," +
             "\"token\":\"" + token + "\"}" +
             "}," +
             "\"desc\":\"设置交易密码\",\"target\":\"server\"}";

@@ -13,6 +13,9 @@ public final class RedisKeys {
     public static final String CURRENT_USER = "CURRENT_USER_";
 
     public static final String LOGIN_USER_TOKEN = "LOGIN_USER_TOKEN_";
+
+    public static final String INVERST_HASH_DATA = "INVERST_HASH_DATA_";
+
     public static final String MAIN_HASH_DATA ="MAIN_HASH_DATA_";
 
     // 当前登录总人数

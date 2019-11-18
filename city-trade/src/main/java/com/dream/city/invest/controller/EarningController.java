@@ -157,6 +157,23 @@ public class EarningController {
         return result;
     }
 
+    /**
+     * 更新玩家提现收入
+     * @param playerId
+     * @param inType
+     * @return
+     */
+    @RequestMapping("/getEarningInvestByPlayerId")
+    public PlayerEarning getEarningInvestByPlayerId(@RequestParam("playerId")String playerId,@RequestParam("inType")String inType) {
+        logger.info("获取当前投资项目经营状态");
+        try {
+            PlayerEarning earning = earningService.getEarningInvestByPlayerId(playerId,inType);
+            return earning;
+        }catch (Exception e){
+        }
+        return null;
+    }
+
 
     /**
      * 投资提取
