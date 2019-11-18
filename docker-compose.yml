@@ -1,0 +1,13 @@
+version: "3"
+services:
+  jekins:
+    image: jekinsci/blueocean:1.15.1
+    container_name: devops-jekins
+    user: root
+    restart: always
+    ports:
+      -  "8080:8080"
+      - "50000:50000"
+    volumes:
+      - "/data/docker_local/jekins-data:/var/jekins_home"
+      - "/var/run/docker.sock:/var/run/docker.sock"
