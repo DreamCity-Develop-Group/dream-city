@@ -129,13 +129,14 @@ public interface SalesOrderMapper {
      * 查询所有已经超时的并且支付成功 订单
      * @return
      */
-    @Select("select * from `sales_order` where 1=1 and order_state='2' and updatetime < #{time}")
+    @Select("select * from `sales_order` where 1=1 and order_state='3' and updatetime < #{time}")
+    @ResultMap("BaseSalesOrderResultMap")
     List<SalesOrder> getOverTimeOrder(@Param("time")String time);
 
     /**
      * 更改订单状态为已超时
      * @return
      */
-    @Update("update `sales_order` set  order_state='4' where order_id=#{orderId} and order_state='2' ")
+    @Update("update `sales_order` set  order_state='4' where order_id=#{orderId} and order_state='3' ")
     int updateOverTimeOrder(@Param("orderId")String orderId);
 }

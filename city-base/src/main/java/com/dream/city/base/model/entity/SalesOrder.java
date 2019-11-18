@@ -5,6 +5,7 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.Date;
 
 /**
  * @author Wvv
@@ -20,8 +21,8 @@ public class SalesOrder {
     private String orderPlayerBuyer;
     private String orderPlayerSeller;
     private int orderState;
-    private Timestamp createTime;
-    private Timestamp updateTime;
+    private Date createTime;
+    private Date updateTime;
     public SalesOrder(){super();}
     public SalesOrder(String orderId,BigDecimal orderAmount, String orderBuyType, String orderPayType, BigDecimal orderPayAmount, String orderPlayerBuyer, String orderPlayerSeller, int orderState) {
         this.orderId = orderId;
@@ -32,5 +33,6 @@ public class SalesOrder {
         this.orderPlayerBuyer = orderPlayerBuyer;
         this.orderPlayerSeller = orderPlayerSeller;
         this.orderState = orderState;
+        this.createTime = new Date();
     }
 }

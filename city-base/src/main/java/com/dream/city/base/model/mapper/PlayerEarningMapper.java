@@ -40,6 +40,7 @@ public interface PlayerEarningMapper {
             @Result(property = "earnPlayerId", column = "earn_player_id"),
             @Result(property = "earnMax", column = "earn_max"),
             @Result(property = "earnCurrent", column = "earn_current"),
+            @Result(property = "earnPreProfit", column = "earn_pre_profit"),
             @Result(property = "earnPersonalTax", column = "earn_personal_tax"),
             @Result(property = "earnEnterpriseTax", column = "earn_enterprise_tax"),
             @Result(property = "earnQuotaTax", column = "earn_quota_tax"),
@@ -98,6 +99,6 @@ public interface PlayerEarningMapper {
     @Update("update player_earning set earn_current=earn_current-#{amount},drop_total=drop_total+#{amount},earn_pre_profit=0 where earn_id=#{earnId}")
     int updateFalldown( @Param("earnId") Integer earnId,@Param("amount") BigDecimal amount);
 
-    @Update("update player_earning set earn_current=earn_current+#{amount},earn_pre_profit=#{amount},is_withdrew=#{status} where earn_id=#{earnId}  and earn_player_id=#{playerId}")
+    @Update("update player_earning set earn_current=earn_current+#{amount},earn_pre_profit=earn_pre_profit+#{amount},is_withdrew=#{status} where earn_id=#{earnId}  and earn_player_id=#{playerId}")
     int updateCurrentAmount( @Param("earnId") Integer earnId,@Param("amount") BigDecimal amount,@Param("status") Integer status,@Param("playerId") String playerId);
 }

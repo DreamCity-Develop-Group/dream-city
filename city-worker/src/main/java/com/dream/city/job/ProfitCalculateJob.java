@@ -2,6 +2,7 @@ package com.dream.city.job;
 
 import com.dream.city.base.model.entity.CityInvest;
 import com.dream.city.base.model.entity.InvestOrder;
+import com.dream.city.base.model.enu.InvestStatus;
 import com.dream.city.base.utils.RedisUtils;
 import com.dream.city.service.InvestOrderService;
 import com.dream.city.service.InvestRuleService;
@@ -76,6 +77,7 @@ public class ProfitCalculateJob extends QuartzJobBean {
             BigDecimal total = BigDecimal.ZERO;
             for (InvestOrder order : orders) {
                 total = total.add(order.getOrderAmount());
+                orderService.updateOrderState(order.getOrderId(), order.getOrderState(),InvestStatus.MANAGEMENT.getStatus());
             }
             log.info("total:{}",total);
             BigDecimal temp = BigDecimal.ZERO;
@@ -91,34 +93,8 @@ public class ProfitCalculateJob extends QuartzJobBean {
 //                    redisUtils.lpush(ProfitQueue+"_"+invest.getInId(),onceProfit.toString());
 //                    temp = temp.add(onceProfit);
 //                }
-                redisUtils.lpush(ProfitQueue+"_"+invest.getInId(),"10");
+                redisUtils.lpush(ProfitQueue+"_"+invest.getInId(),average.toString());
             }
-
-
-//            //平均分成15份
-//            BigDecimal average = total.divide(new BigDecimal(10));
-//            BigDecimal[] averages = new BigDecimal[10];
-//            for (int i = 0; i < 15; i++) {
-//                double x = Math.floor(Math.random() * 10);
-//                double y = x / 40;
-//                System.out.println(y);
-//                BigDecimal subtract = average.multiply(new BigDecimal(y));
-//                averages[i] = subtract.add(average);
-//                averages[i + 7] = average.subtract(subtract);
-//                if (i==7){
-//                    break;
-//                }
-//            }
-            /**
-             *TODO
-             * 将计算结果放入 Redis队列 ProfitQueue
-             */
-
-//            for(int i=0;i<averages.length;i++){
-//                System.out.println("i="+i+","+averages[i]);
-//                redisUtils.lpush(ProfitQueue+"_"+invest.getInId(),String.valueOf(averages[i]));
-//            }
-
         });
     }
 

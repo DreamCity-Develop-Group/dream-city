@@ -19,10 +19,11 @@ public interface EarnIncomeLogMapper {
             @Result(property = "inInvestId", column = "in_invest_id"),
             @Result(property = "inPlayerId", column = "in_player_id"),
             @Result(property = "inAmount", column = "in_amount"),
+            @Result(property = "inDec", column = "in_dec"),
             @Result(property = "createTime", column = "create_time"),
     })
 
-    @Insert("insert into earn_income_log values(#{inLogId},#{inInvestId},#{inPlayerId},#{inAmount},#{createTime})")
+    @Insert("insert into earn_income_log values(#{inLogId},#{inInvestId},#{inPlayerId},#{inAmount},#{inDec},#{createTime})")
     void add(EarnIncomeLog earnIncomeLog);
     /**
      *查找当前玩家当前项目的收益

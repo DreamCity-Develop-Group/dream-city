@@ -170,14 +170,4 @@ public class TradeController {
     }
 
 
-    @RequestMapping("/playerTransfer")
-    public Result<PlayerTrade> playerTransferReload(@RequestBody PlayerAccountReq record) throws BusinessException {
-        logger.info("玩家转账，{}", record);
-        try {
-            return tradeService.playerTransfer(record);
-        }catch (Exception e){
-            e.printStackTrace();
-            return Result.result(false);
-        }
-    }
 }

@@ -93,18 +93,16 @@ public interface InvestOrderMapper {
     List<InvestOrder> getInvestLongOrdersReload(@Param("investId") Integer investId,@Param("limit") Integer limit);
 
 
-    @Select("select io.* from invest_order as io , player_likes as pl where pl.liked_invest_id = io.order_invest_id and pl.liked_invest_id = #{investId} order by pl.liked_get_total desc limit #{limit} ")
+    @Select("select io.* from invest_order as io, player_likes as pl where liked_invest_id=#{investId} and pl.liked_player_id = io.order_payer_id and pl.liked_invest_id = io.order_invest_id order by pl.liked_get_total desc limit #{limit}; ")
     @ResultMap("BaseInvestOrderResultMap")
     List<InvestOrder>  getLikesGatherReload(@Param("investId") Integer investId,@Param("limit") Integer limit);
 
     /**
      * 更新订单
      *
-     * @param order
      */
-    //有错，不要用。There is no getter for property named 'investId'
-    @Update("update `invest_order` set order_state = #{orderState} where 1=1 and order_invest_id = #{investId} and order_id=#{orderId}")
-    void updateOrder(InvestOrder order);
+    @Update("update `invest_order` set order_state = #{staus} where 1=1 and order_id=#{orderId} and order_state=#{preStatus}")
+    void updateOrderStatus(@Param("orderId") Integer orderId,@Param("preStatus") Integer preStatus ,@Param("staus") Integer staus);
 
 
 

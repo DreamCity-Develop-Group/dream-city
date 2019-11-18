@@ -1,11 +1,15 @@
 package com.dream.city.job;
 
 import com.dream.city.base.model.entity.*;
+import com.dream.city.base.model.enu.Constants;
 import com.dream.city.base.model.enu.OrderState;
-import com.dream.city.base.model.mapper.CommerceRelationMapper;
-import com.dream.city.base.model.mapper.SalesOrderMapper;
+import com.dream.city.base.model.mapper.*;
 import com.dream.city.base.utils.CommDateUtil;
 import com.dream.city.base.utils.RedisUtils;
+import com.dream.city.job.thread.OrderOverTimeThead;
+import com.dream.city.job.thread.OrderProfitThead;
+import com.dream.city.job.thread.ThreadPoolUtil;
+import com.dream.city.job.thread.ThreadTask;
 import com.dream.city.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobExecutionContext;
@@ -18,6 +22,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * TODO 购买订单处理逻辑
@@ -41,17 +46,22 @@ public class OrderOverTimeJob extends QuartzJobBean {
     private PlayerAccountService playerAccountService;
 
     @Autowired
-    private CommerceRelationService commerceRelationService;
+    private CityBusinessMapper cityBusinessMapper;
 
     @Autowired
-    private CommerceRelationMapper commerceRelationMapper;
+    private RelationTreeMapper relationTreeMapper;
 
     @Autowired
     private SalesOrderMapper salesOrderMapper;
+    @Autowired
+    private SalesRefuseOrderMapper salesRefuseOrderMapper;
+    @Autowired
+    private PlayerMapper playerMapper;
 
     @Autowired
     private RelationTreeService  treeService;
-
+    @Autowired
+    private ThreadTask threadTask;
     /**
      *TODO
      * 1、取出所有【在线玩家】【等待处理】订单集合
@@ -70,6 +80,20 @@ public class OrderOverTimeJob extends QuartzJobBean {
         String dateTime = CommDateUtil.getDateTimeFormat(date);
         // 取出所有的支付成功的交易并且已经超时的订单
         List<SalesOrder> salesOrders = salesOrderService.getOverTimeOrder(dateTime);
+        final int threadSize = salesOrders.size();
+        CountDownLatch endGate = new CountDownLatch(threadSize);
+        for (int i = 0; i < salesOrders.size(); i++) {
+            ThreadPoolUtil.submit(ThreadPoolUtil.poolCount, ThreadPoolUtil.MODULE_MESSAGE_RESEND,
+                    new OrderOverTimeThead(salesOrderMapper, salesOrders.get(i), salesRefuseOrderMapper, playerMapper, relationTreeMapper, cityBusinessMapper, endGate));
+            if (i == salesOrders.size() - 1) {
+                endGate.countDown();
+            }
+        }
+        try {
+            endGate.await();
+        } catch (Exception e) {
+            log.info("等待计算---OrderOverTimeJob---收益计算结束发生异常");
+        }
 
     }
 
