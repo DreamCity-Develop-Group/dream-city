@@ -891,11 +891,13 @@ public class PlayerServiceImpl implements PlayerService {
         }
         log.info("##################### 用户登出 :{}", msg);
 
+        //LOGIN_USER_TOKEN_
         String redisKey = RedisKeys.LOGIN_USER_TOKEN + jsonReq.getUsername();
         if (redisUtils.hasKey(redisKey)) {
             redisUtils.del(redisKey);
         }
 
+        // SQUARE_PLAYER_LIST_ANOTHER_BATCH
         redisKey = RedisKeys.SQUARE_PLAYER_LIST_ANOTHER_BATCH + jsonReq.getUsername();
         redisUtils.del(redisKey);
 
