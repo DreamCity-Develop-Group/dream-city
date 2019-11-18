@@ -9,14 +9,16 @@ import com.dream.city.base.model.mapper.PlayerAccountLogMapper;
 import com.dream.city.base.model.mapper.PlayerAccountMapper;
 import com.dream.city.base.model.req.PlayerAccountReq;
 import com.dream.city.base.model.resp.PlayerAccountResp;
-import com.dream.city.base.service.DictionaryService;
 import com.dream.city.invest.service.AccountService;
+import com.dream.city.invest.service.DictionaryService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -55,7 +57,8 @@ public class AccountServiceImpl implements AccountService {
     @Transactional
     @Override
     public PlayerAccountResp getPlayerAccount(PlayerAccountReq record) throws BusinessException {
-        String ids = dictionaryService.getValByKey("platform.account.accIds");
+        String id = dictionaryService.getValByKey("platform.account.accIds");
+        List<String> ids = Arrays.asList(id.split(","));
         record.setPlatformAccIds(ids);
 
         return accountMapper.getPlayerAccountSelective(record);
@@ -65,7 +68,8 @@ public class AccountServiceImpl implements AccountService {
     @Transactional
     @Override
     public List<PlayerAccountResp> getPlayerAccountList(PlayerAccountReq record) throws BusinessException {
-        String ids = dictionaryService.getValByKey("platform.account.accIds");
+        String id = dictionaryService.getValByKey("platform.account.accIds");
+        List<String> ids = Arrays.asList(id.split(","));
         record.setPlatformAccIds(ids);
 
         return accountMapper.getPlayerAccountList(record);
@@ -92,8 +96,10 @@ public class AccountServiceImpl implements AccountService {
     @Transactional
     @Override
     public List<PlayerAccount> getPlatformAccounts(PlayerAccountReq record) throws BusinessException {
-        if (record == null || (record != null && StringUtils.isBlank(record.getPlatformAccIds()))) {
-            record.setPlatformAccIds(dictionaryService.getValByKey("platform.account.accIds"));
+        if (record == null || (record != null && record.getPlatformAccIds().size() == 0)) {
+            String id = dictionaryService.getValByKey("platform.account.accIds");
+            List<String> ids = Arrays.asList(id.split(","));
+            record.setPlatformAccIds(ids);
             //record.setAccAddr(dictionaryService.getValByKey("platform.account.accIds"));
         }
         return accountMapper.getPlatformAccounts(record);
@@ -110,7 +116,8 @@ public class AccountServiceImpl implements AccountService {
     @Transactional
     @Override
     public PlayerAccount getPlayerAccountByAddr(String addr) throws BusinessException {
-        return playerAccountMapper.getPlayerAccountByAddr(addr);
+        PlayerAccount account = playerAccountMapper.getPlayerAccountByAddr(addr);
+        return account;
     }
 
     @LcnTransaction

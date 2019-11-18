@@ -5,6 +5,7 @@ import com.dream.city.base.model.entity.InvestOrder;
 import com.dream.city.base.model.enu.ReturnStatus;
 import com.dream.city.base.model.req.InvestOrderReq;
 import com.dream.city.base.model.resp.InvestOrderResp;
+import com.dream.city.base.utils.RedisUtils;
 import com.dream.city.invest.service.OrderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 投资订单
@@ -22,9 +24,13 @@ public class OrderController {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    final String INVERST_HASH_DATA = "INVERST_HASH_DATA_";
+
 
     @Autowired
     private OrderService orderService;
+    @Autowired
+    RedisUtils redisUtils;
 
 
     /**
@@ -41,6 +47,7 @@ public class OrderController {
         boolean success = Boolean.FALSE;
         if (investOrder != null){
             desc = "预约投资成功";
+
             success = Boolean.TRUE;
         }
         return new Result<InvestOrder>(success,desc, investOrder);

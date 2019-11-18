@@ -47,6 +47,13 @@ public interface TreeService {
      */
     Message sendOrder(Message msg) throws BusinessException;
 
+    /**
+     * 拒绝订单发货
+     *
+     * @param msg
+     * @return
+     */
+    Message refuseSendOrder(Message msg) throws BusinessException;
 
     /**
      * 订单创建
@@ -64,4 +71,6 @@ public interface TreeService {
      * @return
      */
     Message checkOrderPass(Message msg) throws BusinessException;
+
+
 }

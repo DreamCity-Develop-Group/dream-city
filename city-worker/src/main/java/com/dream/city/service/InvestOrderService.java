@@ -52,6 +52,8 @@ public interface InvestOrderService {
 
     List<InvestOrder> getInvestOrdersByCurrent(Integer inId, int[] states,int start,int end);
 
+    List<InvestOrder> getInvestOrdersByCurrentReload(Integer inId, int states);
+
     List<InvestOrder> getInvestOrdersByState(Integer state);
 
     /**
@@ -64,6 +66,15 @@ public interface InvestOrderService {
     int getInvestOrdersSum(Integer investId, int[] states);
 
     /**
+     * 查出符合条件的记录总数
+     *
+     * @param investId
+     * @param states
+     * @return
+     */
+    int getInvestOrdersSumReload(Integer investId, int states);
+
+    /**
      * 第一次投资的订单
      *
      * @param inId
@@ -71,7 +82,35 @@ public interface InvestOrderService {
      */
     List<InvestOrder> getInvestOrdersFirstTime(Integer inId);
 
+    /**
+     * 第一次投资的订单
+     *
+     * @param inId
+     * @return
+     */
+    Integer getInvestOrdersFirstTimeCount(Integer inId);
+    /**
+     * 第一次投资的订单重写
+     *
+     * @param inId
+     * @return
+     */
+    List<InvestOrder> getInvestOrdersFirstTimeReload(Integer inId,Integer limit);
+
+
+
+    /**
+     * 点赞数 前 limit 的订单
+     *
+     * @param inId
+     * @return
+     */
+    List<InvestOrder>  getLikesGatherReload(Integer inId,Integer limit);
+
     List<InvestOrder> getInvestLongOrders(Integer investId,long longs);
+
+    List<InvestOrder> getInvestLongOrdersReload(Integer investId,Integer limit);//获取投资 时间最长的 前   limit  名 玩家
+
     List<InvestOrder> getInvestLongTimeOrders(List<InvestOrder> orders,long longs);
     List<InvestOrder> getOtherOrders(List<InvestOrder> investOrders, long other);
     List<InvestOrder> getRandomOrders(List<InvestOrder> orders, long required);

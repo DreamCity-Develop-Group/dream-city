@@ -1,0 +1,23 @@
+org.quartz.scheduler.instanceName = schedulerFactoryBean
+
+org.quartz.scheduler.instanceId = AUTO
+
+org.quartz.jobStore.class = org.quartz.impl.jdbcjobstore.JobStoreTX
+
+org.quartz.jobStore.driverDelegateClass = org.quartz.impl.jdbcjobstore.StdJDBCDelegate
+#使用QRTZ_前缀
+org.quartz.jobStore.tablePrefix = QRTZ_
+
+
+org.quartz.jobStore.useProperties = true
+#分布式节点有效性检查时间间隔，单位：毫秒
+org.quartz.jobStore.clusterCheckinInterval = 10000
+
+
+org.quartz.threadPool.threadsInheritContextClassLoaderOfInitializingThread = true
+
+org.quartz.threadPool.class = org.quartz.simpl.SimpleThreadPool
+#配置线程池线程数量，默认10个
+org.quartz.threadPool.threadCount = 10
+
+org.quartz.threadPool.threadPriority = 5

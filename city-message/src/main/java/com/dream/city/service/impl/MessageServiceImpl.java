@@ -5,8 +5,8 @@ import com.dream.city.base.exception.BusinessException;
 import com.dream.city.base.model.entity.CityMessage;
 import com.dream.city.base.model.mapper.MessageMapper;
 import com.dream.city.base.model.req.MessageReq;
-import com.dream.city.base.service.DictionaryService;
 import com.dream.city.base.utils.DataUtils;
+import com.dream.city.service.DictService;
 import com.dream.city.service.MessageService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ public class MessageServiceImpl implements MessageService {
     @Autowired
     MessageMapper messageMapper;
     @Autowired
-    DictionaryService dictionaryService;
+    DictService dictionaryService;
 
 
     @LcnTransaction

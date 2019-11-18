@@ -184,8 +184,6 @@ public class SalesOrderJob extends QuartzJobBean {
      * @param order
      * @param buyerId
      * @param sellerId
-     * @param usdt
-     * @param mt
      */
     //暂时不用
     private void finishOrderByParent(SalesOrder order, String buyerId, String sellerId){

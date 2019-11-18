@@ -33,6 +33,7 @@ hs_err_pid*
 /class/
 /test/
 .idea/
+.txlcn/
 .mvn/
 .apt_generated/
 /*.mvn/

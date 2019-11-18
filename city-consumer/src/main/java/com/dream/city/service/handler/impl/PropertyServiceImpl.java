@@ -24,10 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Wvv
@@ -87,25 +84,47 @@ public class PropertyServiceImpl implements PropertyService {
                     resultMap = new HashMap<>();
                     //物业投资按钮
                     int status = ReturnStatus.INVEST_SUBSCRIBE.getStatus();
+
                     logger.info("物业状态",invest.getOrderState());
-                    if (InvestStatus.SUBSCRIBE.getStatus() == invest.getOrderState()){
+                    if (Objects.isNull(invest.getOrderState())){
                         //预约
                         status = ReturnStatus.INVEST_SUBSCRIBE.getStatus();
                     }else {
-                        if(InvestStatus.SUBSCRIBE.getStatus() == invest.getOrderState()){
+                        String string= InvestStatus.SUBSCRIBE.name();
+                        int code = InvestStatus.SUBSCRIBE.getStatus();
+                        int state = invest.getOrderState();
+
+                        if (state == InvestStatus.SUBSCRIBE.getStatus()){
                             //预约
                             status = ReturnStatus.INVEST_SUBSCRIBE.getStatus();
-                        }else if(InvestStatus.SUBSCRIBED.getStatus() == invest.getOrderState()){
+                        }else if(state == InvestStatus.SUBSCRIBED.getStatus()){
                             //已预约
                             status = ReturnStatus.INVEST_SUBSCRIBED.getStatus();
-                        }else if(InvestStatus.MANAGEMENT.getStatus() == invest.getOrderState()){
+                        }else if (state == InvestStatus.MANAGEMENT.getStatus()){
+                            //经营中
+                            status = ReturnStatus.INVEST_MANAGEMENT.getStatus();
+                        }else if(state == InvestStatus.EXTRACT.getStatus()){
+                            //可提取
+                            status = ReturnStatus.INVEST_EXTRACT.getStatus();
+                        }else {
+                            //预约
+                            status = ReturnStatus.INVEST_SUBSCRIBE.getStatus();
+                        }
+
+                        /*if(InvestStatus.SUBSCRIBE.name().equalsIgnoreCase(invest.getOrderState())){
+                            //预约
+                            status = ReturnStatus.INVEST_SUBSCRIBE.getStatus();
+                        }else if(InvestStatus.SUBSCRIBED.name().equalsIgnoreCase(invest.getOrderState())){
+                            //已预约
+                            status = ReturnStatus.INVEST_SUBSCRIBED.getStatus();
+                        }else if(InvestStatus.MANAGEMENT.name().equalsIgnoreCase(invest.getOrderState())){
                             //经营中
                             status = ReturnStatus.INVEST_MANAGEMENT.getStatus();
                         }
-                        if(InvestStatus.EXTRACT.getStatus() == invest.getOrderState()){
+                        if(InvestStatus.EXTRACT.name().equalsIgnoreCase(invest.getOrderState())){
                             //可提取
                             status = ReturnStatus.INVEST_EXTRACT.getStatus();
-                        }
+                        }*/
                     }
                     if(invest.getIsWithdrew() != null && invest.getIsWithdrew() == 2){
                         //可提取
@@ -127,8 +146,8 @@ public class PropertyServiceImpl implements PropertyService {
                     resultMap.put("state", status);
                     resultMap.put("openState", invest.getIsValid());
                     resultMap.put("inType", invest.getInType());
-                    resultMap.put("expectIncome", invest.getInLimit()
-                            .multiply(BigDecimal.valueOf(Long.parseLong(String.valueOf(invest.getInEarning())))));
+                    resultMap.put("expectIncome", invest.getInLimit().multiply(invest.getInEarning()));
+
                     resultMap.put("likeCount",0);
                     String resultTime = "9:30";
                     if (invest.getVerifyTime() != null){

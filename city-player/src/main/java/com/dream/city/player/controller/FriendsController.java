@@ -4,7 +4,7 @@ package com.dream.city.player.controller;
 import com.dream.city.base.model.Page;
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.Friends;
-import com.dream.city.base.model.entity.Likes;
+import com.dream.city.base.model.entity.PlayerLikes;
 import com.dream.city.base.model.enu.ReturnStatus;
 import com.dream.city.base.model.req.FriendsReq;
 import com.dream.city.base.model.resp.FriendsResp;
@@ -147,8 +147,8 @@ public class FriendsController {
 
 
     @RequestMapping("/to/friend/main")
-    public Result<List<Likes>> toFriendMain(@RequestParam("playerId")String playerId){
-        List<Likes> likes = likesService.getPlayerInvestLikes(playerId);
+    public Result<List<PlayerLikes>> toFriendMain(@RequestParam("playerId")String playerId){
+        List<PlayerLikes> likes = likesService.getPlayerInvestLikes(playerId);
 
         return Result.result(true,"获取朋友首页数据成功", ReturnStatus.SUCCESS.getStatus(),likes);
     }

@@ -188,7 +188,10 @@
         <include refid="Base_Column_List"/>
         from player_account
         <where>
-            acc_addr in(${platformAccIds})
+            acc_addr in
+            <foreach item="item" index="index" collection="platformAccIds" open="(" separator="," close=")">
+                #{item}
+            </foreach>
         </where>
         order by update_time desc
     </select>
@@ -199,7 +202,13 @@
           a.acc_mt accMt,a.acc_mt_available accMtAvailable,a.acc_mt_freeze accMtFreeze,a.create_time createTime,p.player_name playerName
         from player_account a ,city_player p
         <where>
-            a.acc_player_id = p.player_id and a.acc_addr not in(${platformAccIds})
+            a.acc_player_id = p.player_id
+            <if test="platformAccIds != null and platformAccIds.size()>0 ">
+                and a.acc_addr not in
+                <foreach item="item" index="index" collection="platformAccIds" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
             <if test="accId != null">
                 and a.acc_id = #{accId,jdbcType=INTEGER}
             </if>
@@ -223,7 +232,13 @@
         a.acc_mt accMt,a.acc_mt_available accMtAvailable,a.acc_mt_freeze accMtFreeze,a.create_time createTime,p.player_name playerName
         from player_account a ,city_player p
         <where>
-            a.acc_player_id = p.player_id and a.acc_addr in(${platformAccIds})
+            a.acc_player_id = p.player_id
+            <if test="platformAccIds != null and platformAccIds.size()>0 ">
+                and a.acc_addr not in
+                <foreach item="item" index="index" collection="platformAccIds" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
             <if test="accId != null">
                 and a.acc_id = #{accId,jdbcType=INTEGER}
             </if>
@@ -322,13 +337,27 @@
     </select>-->
     <select id="getPlayerAccountSelective" resultType="com.dream.city.base.model.resp.PlayerAccountResp"
             parameterType="com.dream.city.base.model.req.PlayerAccountReq">
-        select a.acc_id accId,a.acc_player_id playerId,a.acc_addr accAddr,a.acc_income totalIncome,a.acc_usdt accUsdt,a.acc_usdt_available accUsdtAvailable,a.acc_usdt_freeze accUsdtFreeze,
-        a.acc_mt accMt,a.acc_mt_available accMtAvailable,a.acc_mt_freeze accMtFreeze,a.create_time createTime,p.player_name playerName
+        select
+        a.acc_id accId,
+        a.acc_player_id playerId,
+        a.acc_addr accAddr,
+        a.acc_income totalIncome,
+        a.acc_usdt accUsdt,
+        a.acc_usdt_available accUsdtAvailable,
+        a.acc_usdt_freeze accUsdtFreeze,
+        a.acc_mt accMt,
+        a.acc_mt_available accMtAvailable,
+        a.acc_mt_freeze accMtFreeze,
+        a.create_time createTime,
+        p.player_name playerName
         from player_account a ,city_player p
         <where>
             a.acc_player_id = p.player_id
-            <if test="platformAccIds != null and platformAccIds != ''">
-                and a.acc_addr not in(${platformAccIds})
+            <if test="platformAccIds != null and platformAccIds.size()>0 ">
+                and a.acc_addr not in
+                <foreach item="item" index="index" collection="platformAccIds" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
             </if>
             <if test="accId != null">
                 and a.acc_id = #{accId,jdbcType=INTEGER}

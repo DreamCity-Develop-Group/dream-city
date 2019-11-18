@@ -3,8 +3,9 @@ package com.dream.city.service;
 import com.dream.city.base.model.entity.EarnIncomeLog;
 import com.dream.city.base.model.entity.PlayerEarning;
 import com.dream.city.base.model.resp.PlayerEarningResp;
-
+import java.math.BigDecimal;
 import java.util.List;
+
 
 /**
  * @author Wvv
@@ -14,6 +15,9 @@ public interface PlayerEarningService {
     List<PlayerEarning> getPlayerEarnByPlayerId(String playerId);
 
     PlayerEarningResp getPlayerEarnByPlayerId(String playerId, Integer investId);
+
+
+    PlayerEarning getPlayerEarnByPlayerIdReload(String playerId, Integer investId);
 
     void add(PlayerEarning earning);
 
@@ -29,4 +33,12 @@ public interface PlayerEarningService {
      * @return
      */
     List<PlayerEarning> getPlayerEarningByAfterHours(Integer withdrewState, Integer afterHours);
+
+    List<PlayerEarning> getPlayerEarningCanFallDown(String time);
+
+    int updateEarningWithRawStatus(Integer earnId,Integer status);
+
+    int updateEarningFallDown(Integer earnId, BigDecimal amount);
+
+    int updateCurrentAmount(Integer earnId,BigDecimal earnPreProfit,Integer status,String playerId);
 }

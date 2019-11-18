@@ -40,4 +40,9 @@ public class SalesOrdeServiceImpl implements SalesOrderService {
         return salesOrderMapper.selectSalesSellerRejectTimes(buyer_id, sellerId, status);
 
     }
+
+    @Override
+    public List<SalesOrder> getOverTimeOrder(String time) {
+        return salesOrderMapper.getOverTimeOrder(time);
+    }
 }

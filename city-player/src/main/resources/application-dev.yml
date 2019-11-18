@@ -1,17 +1,9 @@
 spring:
-  devtools:
-    restart:
-      enabled: true
-      additional-paths: src/main/java
-      exclude: static/**
-      additional-exclude: static/**,public/**
-
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/dreamcity?serverTimezone=UTC&useUnicode=true&characterEncoding=UTF-8&transformedBitIsBoolean=true&autoReconnect=true&failOverReadOnly=false&allowMultiQueries=true&useSSL=false
     username: dreamcity
     password: Root@123
-
   cache:
     type: redis
   redis:
@@ -27,7 +19,25 @@ spring:
         max-wait: -1
         max-idle: 300
         min-idle: 1
+    
+    
+    
+  
+#打印日志
+logging:
+  level:
+    root: INFO
+    org.hibernate: INFO
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    org.hibernate.type.descriptor.sql.BasicExtractor: TRACE
+    com.springms: DEBUG
 
+#datasource
+mybatis:
+  type-aliases-package: com.dream.city.base.model.mapper
+  mapper-locations: classpath:/mybatis/mappers/*.xml
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 eureka:
   instance:

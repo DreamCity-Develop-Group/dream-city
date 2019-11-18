@@ -17,4 +17,6 @@ public interface SalesOrderService {
     SalesOrder getSalesOrder();
 
     int selectSalesSellerRejectTimes(String buyer_id, String sellerId, int status);
+
+    List<SalesOrder> getOverTimeOrder(String time);
 }

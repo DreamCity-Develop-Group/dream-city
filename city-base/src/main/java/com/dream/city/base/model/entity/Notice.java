@@ -11,9 +11,15 @@ import java.sql.Timestamp;
 @Data
 public class Notice  implements Serializable {
     private Integer noticeId;
+
     private String title;
+
     private String noticeContent;
+
     private Integer noticeState;
+
     private Timestamp createTime;
+
+    private Timestamp sendTime;
 
 }

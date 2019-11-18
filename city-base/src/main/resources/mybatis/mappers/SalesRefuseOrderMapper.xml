@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dream.city.base.model.mapper.SalesRefuseOrderMapper">
+    <resultMap id="RefuseOrderBaseResultMap" type="com.dream.city.base.model.entity.SalesRefuseOrder">
+        <result column="refuse_id" jdbcType="INTEGER" property="refuseId" />
+        <result column="refuse_order_old" jdbcType="INTEGER" property="refuseOrderOld"/>
+        <result column="refuse_order_new" jdbcType="DECIMAL" property="refuseOrderNew" />
+        <result column="refuse_player_seller" jdbcType="DECIMAL" property="refusePlayerSeller" />
+        <result column="refuse_player_buyer" jdbcType="VARCHAR" property="refusePlayerBuyer"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+    </resultMap>
+
+    <resultMap id="OrderBaseResultMap" type="com.dream.city.base.model.entity.SalesRefuseOrder">
+        <result column="refuse_id" jdbcType="INTEGER" property="refuseId" />
+        <result column="refuse_order_old" jdbcType="INTEGER" property="refuseOrderOld"/>
+        <result column="refuse_order_new" jdbcType="DECIMAL" property="refuseOrderNew" />
+        <result column="refuse_player_seller" jdbcType="DECIMAL" property="refusePlayerSeller" />
+        <result column="refuse_player_buyer" jdbcType="VARCHAR" property="refusePlayerBuyer"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+    </resultMap>
+
+
+    <select id="getSalesRefuseOrderById" resultMap="RefuseOrderBaseResultMap" parameterType="com.dream.city.base.model.entity.SalesRefuseOrder" >
+        select o.id,
+        o.order_id,
+        o.order_amount,
+        o.order_pay_amount,
+        o.order_buy_type,
+        o.order_pay_type,
+        (SELECT p1.player_name FROM city_player p1 WHERE p1.player_id=o.order_player_buyer) order_player_buyer,
+        (SELECT p2.player_name FROM city_player p2 WHERE p2.player_id=o.order_player_seller) order_player_seller,
+        o.order_state,
+        o.createtime,
+        o.updatetime
+        from sales_order o
+        where o.id = #{id,jdbcType=INTEGER}
+    </select>
+
+
+    <select id="getSalesRefuseOrderList" resultMap="OrderBaseResultMap" parameterType="com.dream.city.base.model.entity.SalesRefuseOrder" >
+        select * FROM (
+        select o.id,
+        o.order_id,
+        o.order_amount,
+        o.order_pay_amount,
+        o.order_buy_type,
+        o.order_pay_type,
+        (SELECT p1.player_name FROM city_player p1 WHERE p1.player_id=o.order_player_buyer) order_player_buyer,
+        (SELECT p2.player_name FROM city_player p2 WHERE p2.player_id=o.order_player_seller) order_player_seller,
+        o.order_state,
+        o.createtime,
+        o.updatetime
+        from sales_order o
+        ) a
+        <where>
+            1=1
+            <if test="id != null">
+                and a.id = #{id,jdbcType=INTEGER}
+            </if>
+            <if test="orderId != null">
+                and a.order_id = #{orderId,jdbcType=INTEGER}
+            </if>
+            <if test="orderBuyType != null and orderBuyType != ''">
+                and a.order_buy_type = #{orderBuyType,jdbcType=VARCHAR}
+            </if>
+            <if test="orderPayType != null and orderPayType != ''">
+                and a.order_pay_type = #{orderPayType,jdbcType=VARCHAR}
+            </if>
+            <if test="orderPlayerBuyer != null and orderPlayerBuyer != ''">
+                and a.order_player_buyer = #{orderPlayerBuyer,jdbcType=VARCHAR}
+            </if>
+            <if test="orderPlayerSeller != null and orderPlayerSeller != ''">
+                and a.order_player_seller = #{orderPlayerSeller,jdbcType=VARCHAR}
+            </if>
+            <if test="orderState != null and orderState != ''">
+                and a.order_state = #{orderState,jdbcType=INTEGER}
+            </if>
+        </where>
+        order by a.createtime desc
+    </select>
+
+
+
+</mapper>

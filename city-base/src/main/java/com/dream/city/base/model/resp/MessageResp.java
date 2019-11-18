@@ -19,6 +19,8 @@ public class MessageResp implements Serializable {
     private String friendName;
     private String friendNick;
 
+    private String title;
+
     private String content;
 
     private Integer haveRead;

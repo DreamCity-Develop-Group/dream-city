@@ -14,6 +14,7 @@ public enum TradeType {
     INVEST_TAX("INVEST_TAX","提取扣税"),
 
     BUY_MT("BUY_MT","购买MT"),
+    LEVEL_EARN("LEVEL_EARN","印记分成"),
 
     RECHARGE("RECHARGE","充值"),
 

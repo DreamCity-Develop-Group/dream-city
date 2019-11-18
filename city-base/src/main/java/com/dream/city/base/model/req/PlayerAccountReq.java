@@ -5,6 +5,7 @@ import lombok.Data;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author wvv
@@ -16,7 +17,7 @@ public class PlayerAccountReq implements Serializable {
     private Integer accId;
 
     /** 平台账号id */
-    private String platformAccIds;
+    private List<String> platformAccIds;
 
     /** 账户玩家 */
     private String accPlayerId;

@@ -107,7 +107,7 @@ public interface InvestRuleMapper {
     List<InvestRule> selectRules();
 
 
-    @Select("select * from `invest_rule` where 1=1 and rule_item=#{itemId} ")
+    @Select("select * from `invest_rule` where 1=1 and rule_item=#{itemId} order by rule_level asc")
     @ResultMap("InvestRuleBaseMap")
     List<InvestRule> getInvestRuleByItem(Integer itemId);
 }

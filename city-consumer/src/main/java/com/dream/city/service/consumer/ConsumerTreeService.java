@@ -77,5 +77,6 @@ public interface ConsumerTreeService {
     @RequestMapping("/sales/player/seller/send")
     Result sendOrder(@RequestParam("playerId") String playerId, @RequestParam("ordersId") String ordersId);
 
-
+    @RequestMapping("/sales/player/seller/refuse")
+    Result refuseSendOrder(@RequestParam("playerId")String playerId, @RequestParam("orderId")String orderId);
 }

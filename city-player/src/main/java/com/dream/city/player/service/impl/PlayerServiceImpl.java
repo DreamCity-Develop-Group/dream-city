@@ -1,6 +1,7 @@
 package com.dream.city.player.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.codingapi.txlcn.tc.annotation.DTXPropagation;
 import com.codingapi.txlcn.tc.annotation.LcnTransaction;
 import com.dream.city.base.exception.BusinessException;
 import com.dream.city.base.model.CityGlobal;
@@ -34,7 +35,6 @@ import java.util.*;
  */
 @Slf4j
 @Service
-@Transactional
 public class PlayerServiceImpl implements PlayerService {
 
     @Autowired
@@ -54,9 +54,8 @@ public class PlayerServiceImpl implements PlayerService {
     public Result forgetPwd(String username, String newPwd) throws BusinessException {
         PlayerResp player = getPlayerByName(username, null);
         if (player == null) {
-            return Result.result(Boolean.FALSE, CityGlobal.Constant.USER_NOT_EXIT);
+            return Result.result(Boolean.FALSE, CityGlobal.Constant.USER_NOT_EXIT,ReturnStatus.ERROR_NOTEXISTS.getStatus(),null);
         }
-
         return changePwd(player.getPlayerId(), newPwd);
     }
 
@@ -84,9 +83,9 @@ public class PlayerServiceImpl implements PlayerService {
         int i = playerMapper.updateByPlayerId(player);
         if (i > 0) {
             // 修改密码成功
-            return Result.result(Boolean.TRUE, CityGlobal.Constant.USER_CHANGE_PWD_SUCCESS);
+            return Result.result(Boolean.TRUE, CityGlobal.Constant.USER_CHANGE_PWD_SUCCESS,ReturnStatus.SUCCESS.getStatus());
         }
-        return Result.result(Boolean.FALSE, CityGlobal.Constant.USER_CHANGE_PWD_FAIL);
+        return Result.result(Boolean.FALSE, CityGlobal.Constant.USER_CHANGE_PWD_FAIL,ReturnStatus.SET_FAILED.getStatus());
     }
 
     @LcnTransaction
@@ -97,13 +96,25 @@ public class PlayerServiceImpl implements PlayerService {
         if (StringUtils.isBlank(oldpwshop)) {
             pwdType = "setTraderPwd";
         }
-        Result result = changePwdValid(username, oldpwshop, pwdType);
-        if (!result.getSuccess()) {
-            return result;
-        }
 
         Player player = new Player();
         player.setPlayerName(username);
+        PlayerResp playerExit = playerMapper.getPlayerById(player);
+
+        // 用户不存在
+        if (playerExit == null) {
+            return Result.result(Boolean.FALSE, CityGlobal.Constant.USER_NOT_EXIT, ReturnStatus.ERROR_NOTEXISTS.getStatus());
+        }
+
+        if (StringUtils.isBlank(newpwshop)){
+            return Result.result(Boolean.FALSE, CityGlobal.Constant.USER_CHANGE_TRADERPWD_FAIL+":新密码为空", ReturnStatus.FAILED.getStatus());
+        }
+
+        /*Result result = changePwdValid(username, oldpwshop, pwdType);
+        if (!result.getSuccess()) {
+            return result;
+        }*/
+
         player.setPlayerTradePass(newpwshop);
         int i = playerMapper.updatePassByName(player);
         if (i > 0) {
@@ -113,7 +124,7 @@ public class PlayerServiceImpl implements PlayerService {
         return Result.result(Boolean.FALSE, CityGlobal.Constant.USER_CHANGE_TRADERPWD_FAIL, ReturnStatus.FAILED.getStatus());
     }
 
-    @LcnTransaction
+    @LcnTransaction(propagation = DTXPropagation.SUPPORTS)
     @Transactional
     @Override
     public Result changePwdValid(String username, String oldpwshop, String pwdType)  throws BusinessException{
@@ -126,7 +137,7 @@ public class PlayerServiceImpl implements PlayerService {
             return Result.result(Boolean.FALSE, CityGlobal.Constant.USER_NOT_EXIT, ReturnStatus.ERROR_NOTEXISTS.getStatus());
         }
 
-        // 旧密码不正确
+        // 旧密码不正确 [不进行旧密码判断]
         if ("resetLoginPwd".equalsIgnoreCase(pwdType) && !playerExit.getPlayerPass().equals(oldpwshop)) {
             return Result.result(Boolean.FALSE, CityGlobal.Constant.USER_OLD_PWD_ERROR, ReturnStatus.ERROR_PASS.getStatus());
         }
@@ -136,9 +147,7 @@ public class PlayerServiceImpl implements PlayerService {
         }
 
         // 交易密码 没有交易密码的设置交易密码，有交易密码的修改交易密码
-        if ("resetTraderPwd".equalsIgnoreCase(pwdType)
-                && StringUtils.isNotBlank(playerExit.getPlayerTradePass())
-                && !playerExit.getPlayerTradePass().equals(oldpwshop)) {
+        if ("resetTraderPwd".equalsIgnoreCase(pwdType)&& StringUtils.isNotBlank(playerExit.getPlayerTradePass()) && !playerExit.getPlayerTradePass().equals(oldpwshop)) {
             return Result.result(Boolean.FALSE, CityGlobal.Constant.USER_OLD_PWD_ERROR, ReturnStatus.ERROR_PASS.getStatus());
         }
 
@@ -248,7 +257,7 @@ public class PlayerServiceImpl implements PlayerService {
         return result;
     }
 
-    @LcnTransaction
+    @LcnTransaction(propagation = DTXPropagation.SUPPORTS)
     @Transactional
     @Override
     public PlayerResp getPlayerByName(String playerName, String playerNick) throws BusinessException {
@@ -302,7 +311,7 @@ public class PlayerServiceImpl implements PlayerService {
         return gradeMapper.getPlayerGradeByPlayerId(record);
     }
 
-    @LcnTransaction
+    @LcnTransaction(propagation = DTXPropagation.SUPPORTS)
     @Transactional
     @Override
     public Player getPlayerByPlayerId(String playerId) throws BusinessException {

@@ -112,11 +112,16 @@ public class MessageReceiver {
 
     private Message genericMessageOuter(String messageStringWithDash) {
         String message1 = messageStringWithDash.replace("\\","");
-                String message2 = message1.substring(1, message1.length() - 1);
-        Message msg = JsonUtil.parseJsonToObj(message2, Message.class);
+        Message msg = JsonUtil.parseJsonToObj(message1, Message.class);
+        if (msg instanceof Message){
+            return msg;
+        }
+        String message2 = message1.substring(1, message1.length() - 1);
+
+        Message msg2 = JsonUtil.parseJsonToObj(message2, Message.class);
 
         log.info(msg.getDesc());
-        return msg;
+        return msg2;
     }
 
     private Message genericMessageInner(Map message) {

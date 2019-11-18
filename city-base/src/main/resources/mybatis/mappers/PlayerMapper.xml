@@ -32,6 +32,9 @@
     (SELECT e.imgurl FROM player_ext e WHERE p.player_id=e.player_id) imgurl
     from city_player p
     where p.is_valid = 1
+    <if test="id != null and id != ''">
+      and p.id = #{id,jdbcType=BIGINT}
+    </if>
     <if test="playerId != null and playerId != ''">
     and p.player_id = #{playerId,jdbcType=VARCHAR}
     </if>

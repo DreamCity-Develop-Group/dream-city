@@ -1,6 +1,7 @@
 package com.dream.city.controller;
 
 import com.dream.city.base.model.Message;
+import com.dream.city.base.model.enu.ReturnStatus;
 import com.dream.city.service.handler.EarnService;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
@@ -34,6 +35,7 @@ public class ConsumerEarningController {
         try {
             return earnService.extract(msg);
         }catch (Exception e){
+            msg.getData().setCode(ReturnStatus.FAILED.getStatus());
             return msg;
         }
     }
@@ -50,6 +52,7 @@ public class ConsumerEarningController {
         try {
             return earnService.getEarning(msg);
         }catch (Exception e){
+            msg.getData().setCode(ReturnStatus.FAILED.getStatus());
             return msg;
         }
     }
@@ -65,6 +68,7 @@ public class ConsumerEarningController {
         try {
             return earnService.getEarningList(msg);
         }catch (Exception e){
+            msg.getData().setCode(ReturnStatus.FAILED.getStatus());
             return msg;
         }
     }

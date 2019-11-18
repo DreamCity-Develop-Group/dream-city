@@ -179,6 +179,8 @@ public class HttpClientServiceImpl implements HttpClientService {
         log.info(">>>>>执行[httpClientService]=>Post");
         log.info("{}",msg);
 
+        //TODO 这里要处理消息记录到=>player_opt_log
+
         CloseableHttpClient client = HttpClientBuilder.create().build();
         //网关地址
         String gateWayUrl = gateWayConfig.getUrl();

@@ -8,10 +8,11 @@
     <result column="in_type" property="inType" jdbcType="INTEGER" />
     <result column="earn_player_id" property="earnPlayerId" jdbcType="VARCHAR" />
     <result column="earn_max" property="earnMax" jdbcType="DECIMAL" />
-    <result column="earn_personal_tax" property="earnPersinsertSelectiveonalTax" jdbcType="DECIMAL" />
+    <result column="earn_personal_tax" property="earnPersonalTax" jdbcType="DECIMAL" />
     <result column="earn_enterprise_tax" property="earnEnterpriseTax" jdbcType="DECIMAL" />
     <result column="earn_quota_tax" property="earnQuotaTax" jdbcType="DECIMAL" />
     <result column="earn_current" property="earnCurrent" jdbcType="DECIMAL" />
+    <result column="earn_pre_profit" property="earnPreProfit" jdbcType="DECIMAL" />
     <result column="withdrew_total" property="withdrewTotal" jdbcType="DECIMAL" />
     <result column="drop_total" property="dropTotal" jdbcType="DECIMAL" />
     <result column="withdrew_times" property="withdrewTimes" jdbcType="INTEGER" />
@@ -42,6 +43,7 @@
     <result column="earn_enterprise_tax" property="earnEnterpriseTax" jdbcType="DECIMAL" />
     <result column="earn_quota_tax" property="earnQuotaTax" jdbcType="DECIMAL" />
     <result column="earn_current" property="earnCurrent" jdbcType="DECIMAL" />
+    <result column="earn_pre_profit" property="earnPreProfit" jdbcType="DECIMAL" />
     <result column="withdrew_total" property="withdrewTotal" jdbcType="DECIMAL" />
     <result column="drop_total" property="dropTotal" jdbcType="DECIMAL" />
     <result column="withdrew_times" property="withdrewTimes" jdbcType="INTEGER" />
@@ -56,7 +58,7 @@
     <result column="player_name" property="playerName" jdbcType="VARCHAR" />
   </resultMap>
   <select id="getPlayerEarning" resultMap="ExtResultMap"  parameterType="com.dream.city.base.model.entity.PlayerEarning" >
-    select e.*,i.in_name,i.in_type,i.in_limit,i.in_end
+    select e.*,i.in_name,i.in_type,i.in_limit,i.in_end,earn_current,withdrew_total,drop_total
     from player_earning e,city_invest i
     where e.earn_invest_id = i.in_id
     <if test="earnId != null">
@@ -147,6 +149,9 @@
       <if test="earnInvestId != null" >
         earn_invest_id,
       </if>
+      <if test="inType != null">
+        in_type,
+      </if>
       <if test="earnPlayerId != null" >
         earn_player_id,
       </if>
@@ -165,11 +170,11 @@
       <if test="earnQuotaTax != null" >
         earn_quota_tax,
       </if>
-      <if test="isWithdrew != null">
-        is_withdrew,
+      <if test="withdrewTotal != null" >
+        withdrew_total,
       </if>
-      <if test="inType != null">
-        in_type,
+      <if test="isWithdrew != null and isWithdrew > 0" >
+        is_withdrew,
       </if>
       create_time,
       update_time,
@@ -183,6 +188,9 @@
       </if>
       <if test="earnInvestId != null" >
         #{earnInvestId,jdbcType=VARCHAR},
+      </if>
+      <if test="inType != null">
+        #{inType,jdbcType=INTEGER},
       </if>
       <if test="earnPlayerId != null" >
         #{earnPlayerId,jdbcType=VARCHAR},
@@ -202,11 +210,11 @@
       <if test="earnQuotaTax != null" >
         #{earnQuotaTax,jdbcType=DECIMAL},
       </if>
-      <if test="isWithdrew != null">
-        #{isWithdrew,jdbcType=INTEGER},
+      <if test="withdrewTotal != null">
+        #{withdrewTotal,jdbcType=DECIMAL},
       </if>
-      <if test="inType != null">
-        #{inType,jdbcType=INTEGER},
+      <if test="isWithdrew != null and isWithdrew > 0" >
+        #{isWithdrew,jdbcType=INTEGER},
       </if>
       now(),
       now(),

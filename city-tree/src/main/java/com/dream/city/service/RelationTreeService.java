@@ -1,9 +1,9 @@
 package com.dream.city.service;
 
 import com.dream.city.base.model.Result;
+import com.dream.city.base.model.entity.CityBusiness;
 import com.dream.city.base.model.entity.InvestRule;
 import com.dream.city.base.model.entity.RelationTree;
-import com.dream.city.base.model.entity.User;
 
 import java.util.List;
 import java.util.Map;
@@ -54,4 +54,8 @@ public interface RelationTreeService {
     RelationTree getTreeByPlayerId(String playerId);
 
     void closeAutoSend(RelationTree tree);
+
+    void addCityBusiness(CityBusiness cityBusiness);
+
+    CityBusiness getEnabledCityBusiness(String playerId);
 }

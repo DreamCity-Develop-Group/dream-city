@@ -39,4 +39,10 @@ public class InvestRuleServiceImpl implements InvestRuleService {
 
         return ruleItemMapper.getInvestRuleItemByKey(key);
     }
+
+    @Override
+    public List<InvestRule> getInvestRuleByItemKey(Integer itemId) {
+        return ruleMapper.getInvestRuleByItem(itemId);
+    }
+
 }

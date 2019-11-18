@@ -1,6 +1,7 @@
 package com.dream.city.controller;
 
 import com.dream.city.base.model.Message;
+import com.dream.city.base.model.enu.ReturnStatus;
 import com.dream.city.service.handler.WorkerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,7 @@ public class ConsumerWorkerController {
         try {
             return workerService.createWorker(msg);
         }catch (Exception e){
+            msg.getData().setCode(ReturnStatus.FAILED.getStatus());
             return msg;
         }
     }

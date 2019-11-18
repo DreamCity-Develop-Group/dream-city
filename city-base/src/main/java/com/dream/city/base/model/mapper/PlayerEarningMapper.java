@@ -7,6 +7,7 @@ import com.dream.city.base.model.resp.PlayerEarningResp;
 import io.swagger.models.auth.In;
 import org.apache.ibatis.annotations.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -68,7 +69,35 @@ public interface PlayerEarningMapper {
      */
 
     @Select("select * from player_earning where is_withdrew=#{withdrewState} and DATEDIFF(now(),date_add(`update_time`, interval #{afterHours} hour)) > 0")
-    //@ResultMap("BasePlayerEarningResultMap")
     List<PlayerEarning> getPlayerEarningByAfterHours(@Param("withdrewState") Integer withdrewState, @Param("afterHours") Integer afterHours);
 
+    @Select("select * from player_earning where earn_player_id=#{playerId} and earn_invest_id=#{investId}")
+    PlayerEarning getPlayerEarningReload(@Param("playerId")String playerId, @Param("investId")Integer investId);
+
+    /**
+     *
+     * 查询所有满足掉落的记录
+     */
+    @Select("select * from player_earning where earn_pre_profit > 0 and update_time < #{time} AND is_withdrew='2' ")
+    @ResultMap("BasePlayerEarningResultMap")
+    List<PlayerEarning> getPlayerEarningCanFallDown(@Param("time") String time);
+
+
+    /**
+     *
+     * 查询所有满足掉落的记录
+     */
+    @Update("update player_earning set is_withdrew=#{status} where earn_id=#{earnId}")
+    int updateEarningStatus( @Param("earnId") Integer earnId,@Param("status") Integer status);
+
+
+    /**
+     *
+     * 查询所有满足掉落的记录
+     */
+    @Update("update player_earning set earn_current=earn_current-#{amount},drop_total=drop_total+#{amount},earn_pre_profit=0 where earn_id=#{earnId}")
+    int updateFalldown( @Param("earnId") Integer earnId,@Param("amount") BigDecimal amount);
+
+    @Update("update player_earning set earn_current=earn_current+#{amount},earn_pre_profit=#{amount},is_withdrew=#{status} where earn_id=#{earnId}  and earn_player_id=#{playerId}")
+    int updateCurrentAmount( @Param("earnId") Integer earnId,@Param("amount") BigDecimal amount,@Param("status") Integer status,@Param("playerId") String playerId);
 }

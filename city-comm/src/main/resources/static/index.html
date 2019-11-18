@@ -6,22 +6,23 @@
     <title>Title209</title>
     <script src="js/jquery-2.0.3.min.js" type="text/javascript"></script>
     <style>
-        input{
+        input {
             border: 1px solid #ccc;
             padding: 7px 0px;
             border-radius: 3px;
-            padding-left:5px;
-            -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
-            box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
-            -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
-            -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
-            transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s
+            padding-left: 5px;
+            -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+            box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+            -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+            -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+            transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s
         }
-        input:focus{
+
+        input:focus {
             border-color: #66afe9;
             outline: 0;
-            -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);
-            box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6)
+            -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6);
+            box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6)
         }
     </style>
 
@@ -32,76 +33,161 @@
     <div id="tips" style="color: red"></div>
 </div>
 <div>
-    IPAddr:<input id="ipAddr" value="127.0.0.1:8010" size="8" />
-    Channel:<input id="channel" value="notice" size="4" />
-    Client:<input id="client" value="Wvv" size="4" />
-    <button onclick="connect()">连接</button></div>
+    <fieldset>
+        <legend>连接服务</legend>
+        IPAddr:<input id="ipAddr" value="127.0.0.1:8010" size="8"/>
+        Channel:<input id="channel" value="notice" size="4"/>
+        Client:<input id="client" value="Wvv" size="4"/>
+        <button onclick="connect()">连接</button>
+        <button onclick="close()">断开</button><a href="javascript:send()" id="send">状态：[]</a><br/>
+    </fieldset>
+</div>
+<div>
+    <fieldset>
+        <legend>登录</legend>
+        账号：<input name="username" id="username" value="18888888888">
+        密码：<input type="password" name="password" id="password" value="dc483e80a7a0bd9ef71d8cf973673924">
+        <button onclick="login()">登录</button>
+        <button onclick="quit()">退出</button>
+        <br/>Token:<textarea id="token"></textarea>
+    </fieldset>
+</div>
 <br>
-<div><input type="hidden" value="" id="playerId">
-    账号：<input name="username" id="username" value="18888888888">
+<div>
+    <fieldset>
+        <legend>玩家注册</legend>
+        <input type="hidden" value="" id="playerId">
+        账号：<input name="username" id="username" value="18888888888">
         <button onclick="getCode()" id="getCode">获取验证码</button>
-        <button hidden="true" id="getCodeTimeout">倒计时</button><input name="code" id="code" size="4"><br>
-    密码：<input type="password" name="password" id="password" value="dc483e80a7a0bd9ef71d8cf973673924"><br>
-    昵称：<input name="nick" id="nick" value="昵称" ><br>
-    邀请码：<input name="valid" id="valid"  value="sin23w" size="4" ><br>
-    Token:<textarea id="token"></textarea>
-    Main:<div id="main">
-        <table border="1">
-            <tr><td>昵称：</td><td><input name="nick"id="nick1"></td><td>级别：</td><td><input name="level" id="level"></td></tr>
-            <tr><td>USDT：</td><td><input name="nick" id="usdt" va></td><td>MT：</td><td><input name="nick" id="mt"></td></tr>
-            <tr><td>公告：</td>
-                <td colspan="2"><div id="notice">
+        <button hidden="true" id="getCodeTimeout">倒计时</button>
+        <input name="code" id="code" size="4">
+        <button onclick="codeLogin()">验证码登录</button><br>
+        密码：<input type="password" name="password" id="password" value="dc483e80a7a0bd9ef71d8cf973673924"><br>
+        昵称：<input name="nick" id="nick" value="昵称"><br>
+        邀请码：<input name="valid" id="valid" value="sin23w" size="4">
+        <button onclick="reg()">注册</button>
+        <br>
+    </fieldset>
 
-                </div></td></tr>
-            <tr>
-                <td>是否加入商会：</td><td><input name="commerce" id="commerce"></td>
-                <td>消息数量：</td><td><input name="messages" id="messages"></td>
-            </tr>
-        </table>
+    <div id="main">
+        <fieldset>
+            <legend>主页数据</legend>
+            <button onclick="main()">主页</button>
+            <br>
+            <table border="1">
+                <tr>
+                    <td>昵称：</td>
+                    <td><input name="nick" id="nick1"></td>
+                    <td>级别：</td>
+                    <td><input name="level" id="level"></td>
+                </tr>
+                <tr>
+                    <td>USDT：</td>
+                    <td><input name="nick" id="usdt" va></td>
+                    <td>MT：</td>
+                    <td><input name="nick" id="mt"></td>
+                </tr>
+                <tr>
+                    <td>公告：</td>
+                    <td colspan="2">
+                        <div id="notice">
+
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>是否加入商会：</td>
+                    <td><input name="commerce" id="commerce"></td>
+                    <td>消息数量：</td>
+                    <td><input name="messages" id="messages"></td>
+                </tr>
+            </table>
+        </fieldset>
     </div>
 
-    <button onclick="reg()">注册</button>
-    <button onclick="login()">登录</button>
-    <button onclick="quit()">退出</button>
-    <button onclick="main()">主页</button><br>
-    邀请码：<input name="invite" id="invite"><button onclick="addTree()">加入商会</button><button onclick="join()">同意加入</button><br />
-    交易密码：<input name="tradePass" id="tradePass" value="dc483e80a7a0bd9ef71d8cf973673924"><button onclick="setting()">设置</button><br />
-    交易密码：<input name="tradePassNew" id="tradePassNew"><button onclick="newTradePassNew()">修改</button><br>
-    交易MT：<input name="amountMt" id="amountMt" value="0"><button onclick="playerBuyMtCreate()">购买</button><button onclick="playerBuyMtFinish()">确认</button><br>
-    转账USDT：
-    额度：<input name="amountUSDT" id="amountUSDT" size="6" value="0">
-    地址：<input name="address" id="address" size="10" value="988A43BEB87E4B2A8C25BD40CDEAEA66">
-    <button onclick="transfer()">转账</button><br>
-</div>
-<a href="javascript:send()" id="send">状态：[]</a>
+    <fieldset>
+        <legend>商会</legend>
+        邀请码：<input name="invite" id="invite">
+        <button onclick="addTree()">加入商会</button>  <button onclick="join()">同意加入</button>
+    </fieldset>
+    <fieldset>
+        <legend>交易密码</legend>
+        交易密码：<input name="tradePass" id="tradePass" value="dc483e80a7a0bd9ef71d8cf973673924">
+        <button onclick="setting()">设置</button>
+        <br/>
+        交易密码：<input name="tradePassNew" id="tradePassNew">
+        <button onclick="newTradePassNew()">修改</button>
+    </fieldset>
+    <fieldset>
+        <legend>MT购买</legend>
+        交易MT：<input name="amountMt" id="amountMt" value="0">
+        <button onclick="playerBuyMtCreate()">1>购买</button>
+        <button onclick="playerBuyMtFinish()">2>确认</button>
+    </fieldset>
+    <fieldset>
+        <legend>USDT转账</legend>
+        额度：<input name="amountUSDT" id="amountUSDT" size="6" value="0">
+        地址：<input name="address" id="address" size="50" value="988A43BEB87E4B2A8C25BD40CDEAEA66">
+        <button onclick="transfer()">转账</button>
+    </fieldset>
+    <fieldset>
+        <legend>版本设置</legend>
+        版本：<input name="version" id="version" size="10" size="10">
+        <button onclick="version()">设置</button>
+    </fieldset>
+    <fieldset>
+        <legend>修改密码</legend>
 
-<div><button onclick="getSalesOrder()">订单列表</button>
+    </fieldset>
+    <fieldset>
+        <legend>忘记密码</legend>
+        账号：<input name="username1" id="username1" value="18888888888">
+        <button onclick="getCode1()" id="getCode1">获取验证码</button>
+        <button hidden="true" id="getCodeTimeout1">倒计时</button>
+        <input name="code1" id="code1" size="4"><br>
+        密码：<input type="password" name="password1" id="password1" value="dc483e80a7a0bd9ef71d8cf973673924"><br>
+        <button onclick="passForgot()">设置</button>
+    </fieldset>
+</div>
+
+<div>
+    <button onclick="getSalesOrder()">订单列表</button>
     <input type="hidden" value="" id="sendAllAuto">
-    <ul><li>序号===订单号===玩家账号===订单状态===订单时间<button id="" onclick="playerSellerSend()">一键发货</button></li></ul>
-    <ol  id="orderList">
+    <ul>
+        <li>序号===订单号===玩家账号===订单状态===订单时间
+            <button id="" onclick="playerSellerSend()">一键发货</button>
+        </li>
+    </ul>
+    <ol id="orderList">
     </ol>
 </div>
-<div><button onclick="getInvestList()">投资列表</button>
-    <ul><li>序号===开启时间===投资额度===税率===订单状态===预期收益</li></ul>
-    <ol  id="investList">
+<div>
+    <button onclick="getInvestList()">投资列表</button>
+    <ul>
+        <li>序号===开启时间===投资额度===税率===订单状态===预期收益</li>
+    </ul>
+    <ol id="investList">
     </ol>
 </div>
 </body>
 
 </html>
 <script>
+    console.log(window.href);
     var socket;
     var clientId;
     var dataList = new Map();
-    dataList.set(1,"data1");
-    dataList.set(2,"data2");
-    dataList.set(3,"data3");
+    dataList.set(1, "data1");
+    dataList.set(2, "data2");
+    dataList.set(3, "data3");
 
     console.log(dataList);
     //dataList.delete(2);
     console.log(dataList);
 
-    function $(id) { return document.getElementById(id); }
+    function $(id) {
+        return document.getElementById(id);
+    }
 
     function send() {
         var msg = "{\"source\":\"" + clientId + "\"," +
@@ -118,6 +204,10 @@
 
     }
 
+    function close() {
+        socket.close();
+    }
+
     function connect() {
         var url = $("ipAddr").value;
         var channel = $("channel").value;
@@ -129,19 +219,19 @@
             var date = new Date();
             //var num = date.getFullYear()+"-"+date.getMilliseconds();
             //client-"+num+"
-            var topic =channel;
+            var topic = channel;
 
             if (url == "") {
                 url = "localhost:8010";
             }
-            if(topic == ""){
+            if (topic == "") {
                 topic = "notice";
             }
             //实现化WebSocket对象，指定要连接的服务器地址与端口  建立连接
             //socket = new WebSocket("ws://localhost:20088/dream/city/");
             //for (var i = 0; i < 1; i++) {
             //socket = new WebSocket("ws://" + url + "/dream/city/" + topic + "/"+client);
-            socket = new WebSocket("ws://" + url + "/dream/city/" + topic + "/"+client);
+            socket = new WebSocket("ws://" + url + "/dream/city/" + topic + "/" + client);
             //}
             //socket = new WebSocket("ws://localhost:8080/ws/app/chat.sendMessage");
             //socket = new WebSocket("${basePath}websocket/${cid}".replace("http","ws"));
@@ -155,9 +245,10 @@
             socket.onopen = function (data) {
                 console.log("Socket 已打开");
                 console.log(data);
-                if("undefined" == typeof reconnect){
+                if ("undefined" == typeof reconnect) {
                     clearInterval(connect);
                 }
+
                 //socket.send("这是来自客户端的消息" + location.href + new Date());
             };
             //socket.send("这是来自客户端的消息00" + location.href + new Date());
@@ -170,6 +261,11 @@
                 if (data.data.type == "init") {
                     clientId = data.target;
                     document.getElementById("send").innerText = "连接：[" + clientId + "]";
+                    var data = data.data;
+                    console.log(data);
+                    var data = data.data;
+                    console.log(data);
+                    $("version").value = data.version.replace("\"", "").replace("\"", "");
                 } else if (data.data.type == "getCode") {
                     var msg = data.data.data;
                     console.log(msg);
@@ -177,107 +273,107 @@
                 } else if (data.data.type == "notice") {
                     var msg = data.data.t;
                     console.log("Notice:", msg);
-                }else if(data.data.type == "pushData"){
+                } else if (data.data.type == "pushData") {
                     dataList.delete(data.data.key);
-                    if(dataList.size()>0){
+                    if (dataList.size() > 0) {
                         var data;
                         for (var [key, value] of myMap) {
-                            socket.send(channel,client,value);
+                            socket.send(channel, client, value);
                             data = value;
                             console.log(key + " = " + value);
                             break;
                         }
                         var msg = "{\"source\":\"" + clientId + "\"," +
                             "\"createtime\":\"Wed Sep 04 14:31:01 CST 2019\"," +
-                            "\"data\":{\"type\":\"getData\",\"model\":\"consumer/push\",\"data\":{\"client\":\"" + username + "\",\"channel\":\""+channel+"\",\"data\":\""+data+"\"}}," +
+                            "\"data\":{\"type\":\"getData\",\"model\":\"consumer/push\",\"data\":{\"client\":\"" + username + "\",\"channel\":\"" + channel + "\",\"data\":\"" + data + "\"}}," +
                             "\"desc\":\"收取数据确认\",\"target\":\"server\"}";
                     }
-                }else if(data.data.type == "reg" ){
-                    if(data.data.code == "503"){
+                } else if (data.data.type == "reg") {
+                    if (data.data.code == "503") {
                         alert("邀请码错误！");
                     }
-                    if(data.data.code == "401"){
+                    if (data.data.code == "401") {
                         alert("参数缺失！");
                     }
-                    if(data.data.code == "303"){
+                    if (data.data.code == "303") {
                         alert("验证码已经失效！");
                     }
-                    if(data.data.code == "200"){
+                    if (data.data.code == "200") {
                         alert("玩家账户注册成功！");
                     }
 
-                }else if(data.data.type == "replay" && data.data.code == "301"){
+                } else if (data.data.type == "replay" && data.data.code == "301") {
                     var msg = data.data.data;
                     socket.close();
                     alert("多客户端登录被踢出！");
-                }else if(data.data.type == "login"){
+                } else if (data.data.type == "login" || data.data.type == "codeLogin") {
                     var msg = data.data.data;
                     console.log("Login:", msg);
-                    $("token").value= msg.token;
-                    $("playerId").value=msg.playerId;
-                }else if(data.data.type == "exit"){
+                    $("token").value = msg.token;
+                    $("playerId").value = msg.playerId;
+                } else if (data.data.type == "exit") {
                     var msg = data.data.data;
                     console.log("Login:", msg);
-                    $("token").value= "";
-                }else if(data.data.type == "getSalesOrder"){
+                    $("token").value = "";
+                } else if (data.data.type == "getSalesOrder") {
                     var msg = data.data.data;
                     console.log("getSalesOrder:", msg);
 
                     var list = msg.list;
-                    var strList= "";
+                    var strList = "";
                     var orders = "";
-                    for(i=0;i<list.length;i++){
-                        var tr="<li>";
+                    for (i = 0; i < list.length; i++) {
+                        var tr = "<li>";
                         /*console.log("orderId:"+list[i].orderId);
                         console.log("buyer:"+list[i].player);
                         console.log("state:"+list[i].state);
                         console.log("amount:"+list[i].amount);
                         console.log("date:"+list[i].date);*/
 
-                        tr+="|| "+list[i].orderId;
-                        tr+="|| "+list[i].player;
-                        tr+="|| "+list[i].state;
-                        tr+="|| "+list[i].amount;
-                        tr+="|| "+list[i].date;
-                        if(parseInt(list[i].state) == 3){
-                            tr+="<button onclick=\"playerSellerSend("+list[i].orderId+")\">发货</button></li>"
-                        }else{
-                            tr+="<button disabled >发货</button></li>"
+                        tr += "|| " + list[i].orderId;
+                        tr += "|| " + list[i].player;
+                        tr += "|| " + list[i].state;
+                        tr += "|| " + list[i].amount;
+                        tr += "|| " + list[i].date;
+                        if (parseInt(list[i].state) == 3) {
+                            tr += "<button onclick=\"playerSellerSend(" + list[i].orderId + ")\">发货</button></li>"
+                        } else {
+                            tr += "<button disabled >发货</button></li>"
                         }
-                        if(i==0){
-                            orders+=list[i].orderId+"\",";
-                        }else if(i==list.length-1){
-                            orders+="\""+list[i].orderId+"";
-                        }else{
-                            orders+="\""+list[i].orderId+"\",";
+                        if (i == 0) {
+                            orders += list[i].orderId + "\",";
+                        } else if (i == list.length - 1) {
+                            orders += "\"" + list[i].orderId + "";
+                        } else {
+                            orders += "\"" + list[i].orderId + "\",";
                         }
-                        strList+=tr;
+                        strList += tr;
                     }
-                    $("sendAllAuto").value=orders;
-                    $("orderList").innerHTML=strList;
+                    $("sendAllAuto").value = orders;
+                    $("orderList").innerHTML = strList;
 
-                }else if(data.data.type == "getInvestList"){
+                } else if (data.data.type == "getInvestList") {
                     var msg = data.data.data;
                     console.log("getInvestList:", msg);
 
                     var list = msg.investList;
-                    var strList= "";
+                    var strList = "";
                     var orders = "";
-                    for(i=0;i<list.length;i++){
-                        var tr="<li>";
-                        console.log("resultTime:"+list[i].resultTime);
-                        console.log("investMoney:"+list[i].investMoney);
-                        console.log("state:"+list[i].state);
-                        console.log("quotaTax:"+list[i].quotaTax);
-                        console.log("expectIncome:"+list[i].expectIncome);
-                        console.log("openState:"+list[i].openState);
+                    for (i = 0; i < list.length; i++) {
+                        var tr = "<li>";
+                        console.log("resultTime:" + list[i].resultTime);
+                        console.log("investMoney:" + list[i].investMoney);
+                        console.log("state:" + list[i].state);
+                        console.log("quotaTax:" + list[i].quotaTax);
+                        console.log("expectIncome:" + list[i].expectIncome);
+                        console.log("openState:" + list[i].openState);
 
-                        tr+="|| "+list[i].resultTime;
-                        tr+="|| "+list[i].investMoney;
+                        tr += "|| " + list[i].resultTime;
+                        tr += "|| " + list[i].investMoney;
 
-                        tr+="|| "+list[i].quotaTax;
-                        tr+="|| "+list[i].expectIncome;
-                        if(list[i].openState == "Y"){
+                        tr += "|| " + list[i].quotaTax;
+                        tr += "|| " + list[i].expectIncome;
+                        if (list[i].openState == "Y") {
                             var status = "预约";
                             var state = list[i].state;
                             switch (state) {
@@ -297,46 +393,46 @@
                                     status = "预约";
                                     break;
                             }
-                            tr+="|| "+status;
-                            tr+="<button onclick=\"invest("+list[i].inType+")\">"+status+"</button></li>"
-                        }else{
-                            tr+="|| "+"不可用";
-                            tr+="<button disabled >敬请期待...</button></li>"
+                            tr += "|| " + status;
+                            tr += "<button onclick=\"invest(" + list[i].inType + ")\">" + status + "</button></li>"
+                        } else {
+                            tr += "|| " + "不可用";
+                            tr += "<button disabled >敬请期待...</button></li>"
                         }
-                        if(i==0){
-                            orders+=list[i].orderId+"\",";
-                        }else if(i==list.length-1){
-                            orders+="\""+list[i].orderId+"";
-                        }else{
-                            orders+="\""+list[i].orderId+"\",";
+                        if (i == 0) {
+                            orders += list[i].orderId + "\",";
+                        } else if (i == list.length - 1) {
+                            orders += "\"" + list[i].orderId + "";
+                        } else {
+                            orders += "\"" + list[i].orderId + "\",";
                         }
-                        strList+=tr;
+                        strList += tr;
                     }
                     //$("sendAllAuto").value=orders;
-                    $("investList").innerHTML=strList;
+                    $("investList").innerHTML = strList;
 
-                }else if(data.data.type == "default"){
+                } else if (data.data.type == "default") {
                     var msg = data.data.data;
                     console.log("Main:", msg);
-                    $("nick1").value= msg.profile.nick;
-                    $("level").value= msg.profile.level;
-                    $("usdt").value= msg.account.usdt;
-                    $("mt").value= msg.account.mt;
+                    $("nick1").value = msg.profile.nick;
+                    $("level").value = msg.profile.level;
+                    $("usdt").value = msg.account.usdt;
+                    $("mt").value = msg.account.mt;
                     var noticeInner = "";
                     var notices = msg.notices;
                     console.log(notices.length);
-                    for(var i=0;i<notices.length;i++){
-                        noticeInner+=""+notices[i].noticeContent+", 时间:["+notices[i]["createTime"]+"]<br />"
+                    for (var i = 0; i < notices.length; i++) {
+                        noticeInner += "" + notices[i].noticeContent + ", 时间:[" + notices[i]["createTime"] + "]<br />"
                     }
 
                     console.log(noticeInner);
-                    $("notice").innerHTML= noticeInner;
-                    if(msg.commerce){
-                        $("commerce").value= "是";
-                    }else{
-                        $("commerce").value= "否";
+                    $("notice").innerHTML = noticeInner;
+                    if (msg.commerce) {
+                        $("commerce").value = "是";
+                    } else {
+                        $("commerce").value = "否";
                     }
-                    $("messages").value= msg.messages;
+                    $("messages").value = msg.messages;
                 }
 
 
@@ -349,9 +445,9 @@
                 tips("连接断开...")
                 console.log("Socket已关闭");
 
-                var reconnect = setInterval(function(){
+                var reconnect = setInterval(function () {
                     connect();
-                },1000);
+                }, 1000);
 
             };
             //发生了错误事件
@@ -363,11 +459,11 @@
         }
     }
 
-    function tips(content){
-        $("tips").innerHTML = content+"";
-        setTimeout(() => {
+    function tips(content) {
+        $("tips").innerHTML = content + "";
+        setTimeout(function () {
             $("tips").innerHTML = "";
-    }, 2000);
+        },2000);
     }
 
     function getCode() {
@@ -382,26 +478,63 @@
             "\"data\":{\"type\":\"getCode\",\"model\":\"consumer/message\",\"data\":{\"username\":\"" + username + "\",\"token\":\"eyJ0eXBlIjoiSldUIiwiYWxnIjoiSFMyNTYiLCJ0eXAiOiJKV1QifQ.eyJhdWQiOiJBUFAiLCJpc3MiOiJTZXJ2aWNlIiwiZXhwIjoxNTY5MjIzNzczLCJpYXQiOjE1NjkyMjE5NzMsInVzZXJuYW1lIjoid3Z2In0.s6fzQzzuc1mbLIqp_wrmGA4enXFnnjoXCP55c_JoRIg\"}}," +
             "\"desc\":\"验证码\",\"target\":\"14863-1\"}";
         socket.send(msg);
-        $("getCode").hidden=true;
-        $("getCodeTimeout").hidden=false;
+        $("getCode").hidden = true;
+        $("getCodeTimeout").hidden = false;
         var i = 10;
         var t = setInterval(function () {
-            if (i<=0){
-                $("getCode").hidden=false;
-                $("getCodeTimeout").hidden=true;
+            if (i <= 0) {
+                $("getCode").hidden = false;
+                $("getCodeTimeout").hidden = true;
                 clearInterval(t);
             }
-            $("getCodeTimeout").innerText=i--;
-        },1000);
+            $("getCodeTimeout").innerText = i--;
+        }, 1000);
     }
 
-    function login(){
-        var username = $("username").value;
-        var password = $("password").value;
-        console.log(username+">"+password);
+    function getCode1() {
+        if (!socket) {
+            tips("未连接...");
+            return;
+        }
+        //connect();
+        var username = $("username1").value;
         var msg = "{\"source\":\"" + clientId + "\"," +
             "\"createtime\":\"Wed Sep 04 14:31:01 CST 2019\"," +
-            "\"data\":{\"type\":\"login\",\"model\":\"consumer/player\",\"data\":{\"username\":\"" + username + "\",\"userpass\":\""+password+"\"}}," +
+            "\"data\":{\"type\":\"getCode\",\"model\":\"consumer/message\",\"data\":{\"username\":\"" + username + "\",\"token\":\"eyJ0eXBlIjoiSldUIiwiYWxnIjoiSFMyNTYiLCJ0eXAiOiJKV1QifQ.eyJhdWQiOiJBUFAiLCJpc3MiOiJTZXJ2aWNlIiwiZXhwIjoxNTY5MjIzNzczLCJpYXQiOjE1NjkyMjE5NzMsInVzZXJuYW1lIjoid3Z2In0.s6fzQzzuc1mbLIqp_wrmGA4enXFnnjoXCP55c_JoRIg\"}}," +
+            "\"desc\":\"验证码\",\"target\":\"14863-1\"}";
+        socket.send(msg);
+        $("getCode1").hidden = true;
+        $("getCodeTimeout1").hidden = false;
+        var i = 10;
+        var t = setInterval(function () {
+            if (i <= 0) {
+                $("getCode1").hidden = false;
+                $("getCodeTimeout1").hidden = true;
+                clearInterval(t);
+            }
+            $("getCodeTimeout1").innerText = i--;
+        }, 1000);
+    }
+
+    function login() {
+        var username = $("username").value;
+        var password = $("password").value;
+        console.log(username + ">" + password);
+        var msg = "{\"source\":\"" + clientId + "\"," +
+            "\"createtime\":\"Wed Sep 04 14:31:01 CST 2019\"," +
+            "\"data\":{\"type\":\"login\",\"model\":\"consumer/player\",\"data\":{\"username\":\"" + username + "\",\"userpass\":\"" + password + "\"}}," +
+            "\"desc\":\"登录\",\"target\":\"14863-1\"}";
+
+        socket.send(msg);
+    }
+
+    function codeLogin() {
+        var username = $("username").value;
+        var code = $("code").value;
+        console.log(username + ">" + code);
+        var msg = "{\"source\":\"" + clientId + "\"," +
+            "\"createtime\":\"Wed Sep 04 14:31:01 CST 2019\"," +
+            "\"data\":{\"type\":\"codeLogin\",\"model\":\"consumer/player\",\"data\":{\"username\":\"" + username + "\",\"code\":\"" + code + "\"}}," +
             "\"desc\":\"登录\",\"target\":\"14863-1\"}";
 
         socket.send(msg);
@@ -420,211 +553,258 @@
         console.log(code);
         var msg = "{\"source\":\"" + clientId + "\"," +
             "\"createtime\":\"Wed Sep 04 14:31:01 CST 2019\"," +
-            "\"data\":{\"type\":\"reg\",\"model\":\"consumer/player\",\"data\":"+
-            "{\"username\":\"" + username + "\","+
-            "\"code\":\""+code+"\","+
-            "\"userpass\":\""+password+"\","+
-            "\"invite\":\""+valid+"\""
-            +"}}," +
+            "\"data\":{\"type\":\"reg\",\"model\":\"consumer/player\",\"data\":" +
+            "{\"username\":\"" + username + "\"," +
+            "\"code\":\"" + code + "\"," +
+            "\"userpass\":\"" + password + "\"," +
+            "\"invite\":\"" + valid + "\""
+            + "}}," +
             "\"desc\":\"注册\",\"target\":\"14863-1\"}";
         console.log(msg);
         socket.send(msg);
 
     }
 
-    function main(){
+    function main() {
         var playerId = $("playerId").value;
         var username = $("username").value;
         var token = $("token").value;
-        console.log(username+">"+password);
+        if (playerId == "" || token == null) {
+            alert("未登录");
+            return;
+        }
+        console.log(username + ">" + password);
         var msg = "{\"source\":\"" + clientId + "\"," +
             "\"createtime\":\"Wed Sep 04 14:31:01 CST 2019\"," +
-            "\"data\":{\"type\":\"default\",\"model\":\"consumer/main\",\"data\":{\"username\":\"" + username + "\",\"token\":\""+token+"\",\"playerId\":\""+playerId+"\"}}," +
+            "\"data\":{\"type\":\"default\",\"model\":\"consumer/main\",\"data\":{\"username\":\"" + username + "\",\"token\":\"" + token + "\",\"playerId\":\"" + playerId + "\"}}," +
             "\"desc\":\"主页\",\"target\":\"14863-1\"}";
 
         socket.send(msg);
     }
 
-    function quit(){
+    function quit() {
         var username = $("username").value;
         var token = $("token").value;
         var playerId = $("playerId").value;
-        console.log(username+">>"+playerId);
+        console.log(username + ">>" + playerId);
+        if (playerId == "" || token == null) {
+            alert("未登录");
+            return;
+        }
         var msg = "{\"source\":\"" + clientId + "\"," +
             "\"createtime\":\"Wed Sep 04 14:31:01 CST 2019\"," +
-            "\"data\":{\"type\":\"exit\",\"model\":\"consumer/player\",\"data\":{\"username\":\"" + username + "\",\"playerId\":\""+playerId+"\"}}," +
+            "\"data\":{\"type\":\"exit\",\"model\":\"consumer/player\",\"data\":{\"username\":\"" + username + "\",\"playerId\":\"" + playerId + "\"}}," +
             "\"desc\":\"退出请求\",\"target\":\"server\"}";
 
         socket.send(msg);
     }
-    function addTree(){
+
+    function addTree() {
         var username = $("username").value;
         var token = $("token").value;
         var invite = $("invite").value;
         var playerId = $("playerId").value;
-
-        console.log(username+">>"+playerId+">>"+invite);
+        if (playerId == "" || token == null) {
+            alert("未登录");
+            return;
+        }
+        console.log(username + ">>" + playerId + ">>" + invite);
         var msg = "{\"source\":\"" + clientId + "\"," +
             "\"createtime\":\"Wed Sep 04 14:31:01 CST 2019\"," +
-            "\"data\":{\"type\":\"add\",\"model\":\"consumer/tree\",\"data\":{\"username\":\"" + username + "\",\"playerId\":\""+playerId+"\",\"invite\":\""+invite+"\",\"tradePass\":\""+tradePass+"\",\"token\":\""+token+"\"}}," +
+            "\"data\":{\"type\":\"add\",\"model\":\"consumer/tree\",\"data\":{\"username\":\"" + username + "\",\"playerId\":\"" + playerId + "\",\"invite\":\"" + invite + "\",\"tradePass\":\"" + tradePass + "\",\"token\":\"" + token + "\"}}," +
             "\"desc\":\"加入关系树\",\"target\":\"server\"}";
 
         socket.send(msg);
     }
-    function join(){
+
+    function join() {
         var username = $("username").value;
         var token = $("token").value;
         var playerId = $("playerId").value;
         var tradePass = $("tradePass").value;
-        console.log(username+">>"+playerId+">>"+tradePass);
+        console.log(username + ">>" + playerId + ">>" + tradePass);
+        if (playerId == "" || token == null) {
+            alert("未登录");
+            return;
+        }
         var msg = "{\"source\":\"" + clientId + "\"," +
             "\"createtime\":\"Wed Sep 04 14:31:01 CST 2019\"," +
-            "\"data\":{\"type\":\"join\",\"model\":\"consumer/tree\",\"data\":{\"username\":\"" + username + "\",\"playerId\":\""+playerId+"\",\"invite\":\""+invite+"\",\"tradePass\":\""+tradePass+"\",\"token\":\""+token+"\"}}," +
+            "\"data\":{\"type\":\"join\",\"model\":\"consumer/tree\",\"data\":{\"username\":\"" + username + "\",\"playerId\":\"" + playerId + "\",\"invite\":\"" + invite + "\",\"tradePass\":\"" + tradePass + "\",\"token\":\"" + token + "\"}}," +
             "\"desc\":\"加入商会\",\"target\":\"server\"}";
 
         socket.send(msg);
     }
-    function setting(){
+
+    function setting() {
         var username = $("username").value;
         var token = $("token").value;
         var playerId = $("playerId").value;
         var tradePassOld = "";
         var tradePassNew = $("tradePass").value;
-        console.log(username+">>"+playerId+">>"+tradePass);
+        if (playerId == "" || token == null) {
+            alert("未登录");
+            return;
+        }
+        console.log(username + ">>" + playerId + ">>" + tradePass);
         var msg = "{\"source\":\"" + clientId + "\"," +
             "\"createtime\":\"Wed Sep 04 14:31:01 CST 2019\"," +
-            "\"data\":{"+
-            "\"type\":\"resetTradePass\","+
-            "\"model\":\"consumer/player\","+
-            "\"data\":{"+
-            "\"username\":\"" + username + "\","+
-            "\"playerId\":\""+playerId+"\","+
-            "\"oldpwshop\":\""+tradePassOld+"\","+
-            "\"newpwshop\":\""+tradePassNew+"\","+
-            "\"token\":\""+token+"\"}"+
+            "\"data\":{" +
+            "\"type\":\"resetTradePass\"," +
+            "\"model\":\"consumer/player\"," +
+            "\"data\":{" +
+            "\"username\":\"" + username + "\"," +
+            "\"playerId\":\"" + playerId + "\"," +
+            "\"oldpwshop\":\"" + tradePassOld + "\"," +
+            "\"newpwshop\":\"" + tradePassNew + "\"," +
+            "\"token\":\"" + token + "\"}" +
             "}," +
             "\"desc\":\"设置交易密码\",\"target\":\"server\"}";
 
         socket.send(msg);
     }
-    function newTradePassNew(){
+
+    function newTradePassNew() {
         var username = $("username").value;
         var token = $("token").value;
         var playerId = $("playerId").value;
         var tradePassOld = $("tradePass").value;
         var tradePassNew = $("tradePassNew").value;
-        console.log(username+">>"+playerId+">>"+tradePass);
+        if (playerId == "" || token == null) {
+            alert("未登录");
+            return;
+        }
+        console.log(username + ">>" + playerId + ">>" + tradePass);
         var msg = "{\"source\":\"" + clientId + "\"," +
             "\"createtime\":\"Wed Sep 04 14:31:01 CST 2019\"," +
-            "\"data\":{"+
-            "\"type\":\"resetTradePass\","+
-            "\"model\":\"consumer/player\","+
-            "\"data\":{"+
-            "\"username\":\"" + username + "\","+
-            "\"playerId\":\""+playerId+"\","+
-            "\"oldpwshop\":\""+tradePassOld+"\","+
-            "\"newpwshop\":\""+tradePassNew+"\","+
-            "\"token\":\""+token+"\"}"+
+            "\"data\":{" +
+            "\"type\":\"resetTradePass\"," +
+            "\"model\":\"consumer/player\"," +
+            "\"data\":{" +
+            "\"username\":\"" + username + "\"," +
+            "\"playerId\":\"" + playerId + "\"," +
+            "\"oldpwshop\":\"" + tradePassOld + "\"," +
+            "\"newpwshop\":\"" + tradePassNew + "\"," +
+            "\"token\":\"" + token + "\"}" +
             "}," +
             "\"desc\":\"设置交易密码\",\"target\":\"server\"}";
 
         socket.send(msg);
     }
-    function playerBuyMtCreate(){
+
+    function playerBuyMtCreate() {
         var username = $("username").value;
         var token = $("token").value;
         var playerId = $("playerId").value;
-
+        if (playerId == "" || token == null) {
+            alert("未登录");
+            return;
+        }
         var amountMT = $("amountMt").value;
-        console.log(username+">>"+playerId+">>"+amountMT);
+        console.log(username + ">>" + playerId + ">>" + amountMT);
         var msg = "{\"source\":\"" + clientId + "\"," +
             "\"createtime\":\"Wed Sep 04 14:31:01 CST 2019\"," +
-            "\"data\":{"+
-            "\"type\":\"createOrder\","+
-            "\"model\":\"consumer/tree\","+
-            "\"data\":{"+
-            "\"username\":\"" + username + "\","+
-            "\"playerId\":\""+playerId+"\","+
-            "\"amount\":\""+amountMT+"\","+
-            "\"token\":\""+token+"\"}"+
+            "\"data\":{" +
+            "\"type\":\"createOrder\"," +
+            "\"model\":\"consumer/tree\"," +
+            "\"data\":{" +
+            "\"username\":\"" + username + "\"," +
+            "\"playerId\":\"" + playerId + "\"," +
+            "\"amount\":\"" + amountMT + "\"," +
+            "\"token\":\"" + token + "\"}" +
             "}," +
             "\"desc\":\"设置交易密码\",\"target\":\"server\"}";
 
         socket.send(msg);
     }
-    function playerBuyMtFinish(){
+
+    function playerBuyMtFinish() {
         var username = $("username").value;
         var token = $("token").value;
         var playerId = $("playerId").value;
         var tradePassOld = $("tradePass").value;
         var tradePassNew = $("tradePassNew").value;
-        console.log(username+">>"+playerId+">>"+tradePass);
+
+        if (playerId == "" || token == null) {
+            alert("未登录");
+            return;
+        }
+        console.log(username + ">>" + playerId + ">>" + tradePass);
         var msg = "{\"source\":\"" + clientId + "\"," +
             "\"createtime\":\"Wed Sep 04 14:31:01 CST 2019\"," +
-            "\"data\":{"+
-            "\"type\":\"check/orderPass\","+
-            "\"model\":\"consumer/tree\","+
-            "\"data\":{"+
-            "\"username\":\"" + username + "\","+
-            "\"playerId\":\""+playerId+"\","+
-            "\"confirmPass\":\""+tradePassOld+"\","+
-            "\"newpwshop\":\""+tradePassNew+"\","+
-            "\"token\":\""+token+"\"}"+
+            "\"data\":{" +
+            "\"type\":\"check/orderPass\"," +
+            "\"model\":\"consumer/tree\"," +
+            "\"data\":{" +
+            "\"username\":\"" + username + "\"," +
+            "\"playerId\":\"" + playerId + "\"," +
+            "\"confirmPass\":\"" + tradePassOld + "\"," +
+            "\"newpwshop\":\"" + tradePassNew + "\"," +
+            "\"token\":\"" + token + "\"}" +
             "}," +
             "\"desc\":\"设置交易密码\",\"target\":\"server\"}";
 
         socket.send(msg);
     }
 
-    function getSalesOrder(){
+    function getSalesOrder() {
         var username = $("username").value;
         var token = $("token").value;
         var playerId = $("playerId").value;
         var page = 1;
         var tradePassNew = $("tradePassNew").value;
-        console.log(username+">>"+playerId+">>"+tradePass);
+        console.log(username + ">>" + playerId + ">>" + tradePass);
+
+        if (playerId == "" || token == null) {
+            alert("未登录");
+            return;
+        }
         var msg = "{\"source\":\"" + clientId + "\"," +
             "\"createtime\":\"Wed Sep 04 14:31:01 CST 2019\"," +
-            "\"data\":{"+
-            "\"type\":\"getSalesOrder\","+
-            "\"model\":\"consumer/tree\","+
-            "\"data\":{"+
-            "\"username\":\"" + username + "\","+
-            "\"playerId\":\""+playerId+"\","+
-            "\"page\":\""+page+"\","+
-            "\"newpwshop\":\""+tradePassNew+"\","+
-            "\"token\":\""+token+"\"}"+
+            "\"data\":{" +
+            "\"type\":\"getSalesOrder\"," +
+            "\"model\":\"consumer/tree\"," +
+            "\"data\":{" +
+            "\"username\":\"" + username + "\"," +
+            "\"playerId\":\"" + playerId + "\"," +
+            "\"page\":\"" + page + "\"," +
+            "\"newpwshop\":\"" + tradePassNew + "\"," +
+            "\"token\":\"" + token + "\"}" +
             "}," +
             "\"desc\":\"设置交易密码\",\"target\":\"server\"}";
 
         socket.send(msg);
     }
 
-    function playerSellerSend(orders){
+    function playerSellerSend(orders) {
         var username = $("username").value;
         var token = $("token").value;
         var playerId = $("playerId").value;
-        if(orders=="" || typeof orders == 'undefined'){
+        if (orders == "" || typeof orders == 'undefined') {
             var orders = $("sendAllAuto").value;
         }
 
-        console.log(username+">>"+orders+">>"+playerId);
+        if (playerId == "" || token == null) {
+            alert("未登录");
+            return;
+        }
+
+        console.log(username + ">>" + orders + ">>" + playerId);
         var msg = "{\"source\":\"" + clientId + "\"," +
             "\"createtime\":\"Wed Sep 04 14:31:01 CST 2019\"," +
-            "\"data\":{"+
-            "\"type\":\"sendOrder\","+
-            "\"model\":\"consumer/tree\","+
-            "\"data\":{"+
-            "\"username\":\"" + username + "\","+
-            "\"playerId\":\""+playerId+"\","+
-            "\"orders\":[\""+orders+"\"],"+
-            "\"token\":\""+token+"\"}"+
+            "\"data\":{" +
+            "\"type\":\"sendOrder\"," +
+            "\"model\":\"consumer/tree\"," +
+            "\"data\":{" +
+            "\"username\":\"" + username + "\"," +
+            "\"playerId\":\"" + playerId + "\"," +
+            "\"orders\":[\"" + orders + "\"]," +
+            "\"token\":\"" + token + "\"}" +
             "}," +
             "\"desc\":\"设置交易密码\",\"target\":\"server\"}";
         console.log(msg);
         socket.send(msg);
     }
-    
+
     function transfer() {
         var username = $("username").value;
         var token = $("token").value;
@@ -633,24 +813,24 @@
         var amount = $("amountUSDT").value;
         var accAddr = $("address").value;
         var tradePass = $("tradePass").value;
-        if(playerId == ""|| token == null){
+        if (playerId == "" || token == null) {
             alert("未登录");
             return;
         }
-        console.log(username+">>"+playerId+">>"+tradePass);
+        console.log(username + ">>" + playerId + ">>" + tradePass);
 
         var msg = "{\"source\":\"" + clientId + "\"," +
             "\"createtime\":\"Wed Sep 04 14:31:01 CST 2019\"," +
-            "\"data\":{"+
-            "\"type\":\"transfer\","+
-            "\"model\":\"consumer/trade\","+
-            "\"data\":{"+
-            "\"username\":\"" + username + "\","+
-            "\"playerId\":\""+playerId+"\","+
-            "\"amount\":\""+amount+"\","+
-            "\"accAddr\":\""+accAddr+"\","+
-            "\"tradePass\":\""+tradePass+"\","+
-            "\"token\":\""+token+"\"}"+
+            "\"data\":{" +
+            "\"type\":\"transfer\"," +
+            "\"model\":\"consumer/trade\"," +
+            "\"data\":{" +
+            "\"username\":\"" + username + "\"," +
+            "\"playerId\":\"" + playerId + "\"," +
+            "\"amount\":\"" + amount + "\"," +
+            "\"accAddr\":\"" + accAddr + "\"," +
+            "\"tradePass\":\"" + tradePass + "\"," +
+            "\"token\":\"" + token + "\"}" +
             "}," +
             "\"desc\":\"设置交易密码\",\"target\":\"server\"}";
 
@@ -664,22 +844,22 @@
 
         var inType = inType;
 
-        if(playerId == ""|| token == null){
+        if (playerId == "" || token == null) {
             alert("未登录");
             return;
         }
-        console.log(username+">>"+playerId+">>"+inType);
+        console.log(username + ">>" + playerId + ">>" + inType);
 
         var msg = "{\"source\":\"" + clientId + "\"," +
             "\"createtime\":\"Wed Sep 04 14:31:01 CST 2019\"," +
-            "\"data\":{"+
-            "\"type\":\"playerInvest\","+
-            "\"model\":\"consumer\","+
-            "\"data\":{"+
-            "\"username\":\"" + username + "\","+
-            "\"playerId\":\""+playerId+"\","+
-            "\"inType\":\""+inType+"\","+
-            "\"token\":\""+token+"\"}"+
+            "\"data\":{" +
+            "\"type\":\"playerInvest\"," +
+            "\"model\":\"consumer\"," +
+            "\"data\":{" +
+            "\"username\":\"" + username + "\"," +
+            "\"playerId\":\"" + playerId + "\"," +
+            "\"inType\":\"" + inType + "\"," +
+            "\"token\":\"" + token + "\"}" +
             "}," +
             "\"desc\":\"设置交易密码\",\"target\":\"server\"}";
 
@@ -691,24 +871,83 @@
         var token = $("token").value;
         var playerId = $("playerId").value;
 
-        if(playerId == ""|| token == null){
+        if (playerId == "" || token == null) {
             alert("未登录");
             return;
         }
-        console.log(username+">>"+playerId);
+        console.log(username + ">>" + playerId);
 
         var msg = "{\"source\":\"" + clientId + "\"," +
             "\"createtime\":\"Wed Sep 04 14:31:01 CST 2019\"," +
-            "\"data\":{"+
-            "\"type\":\"getInvestList\","+
-            "\"model\":\"consumer\","+
-            "\"data\":{"+
-            "\"username\":\"" + username + "\","+
-            "\"playerId\":\""+playerId+"\","+
-            "\"token\":\""+token+"\"}"+
+            "\"data\":{" +
+            "\"type\":\"getInvestList\"," +
+            "\"model\":\"consumer\"," +
+            "\"data\":{" +
+            "\"username\":\"" + username + "\"," +
+            "\"playerId\":\"" + playerId + "\"," +
+            "\"token\":\"" + token + "\"}" +
             "}," +
             "\"desc\":\"设置交易密码\",\"target\":\"server\"}";
 
+        socket.send(msg);
+    }
+
+    function version() {
+        var username = $("username").value;
+        var token = $("token").value;
+        var playerId = $("playerId").value;
+        var version = $("version").value;
+
+        if (playerId == "" || token == null) {
+            alert("未登录");
+            return;
+        }
+
+        console.log(username + ">>" + playerId);
+
+        var msg = "{\"source\":\"" + clientId + "\"," +
+            "\"createtime\":\"Wed Sep 04 14:31:01 CST 2019\"," +
+            "\"data\":{" +
+            "\"type\":\"version\"," +
+            "\"model\":\"consumer/main\"," +
+            "\"data\":{" +
+            "\"username\":\"" + username + "\"," +
+            "\"playerId\":\"" + playerId + "\"," +
+            "\"version\":\"" + version + "\"," +
+            "\"token\":\"" + token + "\"}" +
+            "}," +
+            "\"desc\":\"设置APP版本\",\"target\":\"server\"}";
+        console.log(msg);
+        socket.send(msg);
+    }
+
+
+    function tradeList() {
+        var username = $("username").value;
+        var token = $("token").value;
+        var playerId = $("playerId").value;
+        var version = $("version").value;
+
+        if (playerId == "" || token == null) {
+            alert("未登录");
+            return;
+        }
+
+        console.log(username + ">>" + playerId);
+
+        var msg = "{\"source\":\"" + clientId + "\"," +
+            "\"createtime\":\"Wed Sep 04 14:31:01 CST 2019\"," +
+            "\"data\":{" +
+            "\"type\":\"getTradeDetailList\"," +
+            "\"model\":\"consumer/trade\"," +
+            "\"data\":{" +
+            "\"username\":\"" + username + "\"," +
+            "\"playerId\":\"" + playerId + "\"," +
+            "\"version\":\"" + version + "\"," +
+            "\"token\":\"" + token + "\"}" +
+            "}," +
+            "\"desc\":\"设置APP版本\",\"target\":\"server\"}";
+        console.log(msg);
         socket.send(msg);
     }
 

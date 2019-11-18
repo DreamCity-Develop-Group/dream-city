@@ -4,7 +4,6 @@ import com.codingapi.txlcn.tc.annotation.LcnTransaction;
 import com.dream.city.base.exception.BusinessException;
 import com.dream.city.base.model.entity.InvestOrder;
 import com.dream.city.base.model.enu.InvestStatus;
-import com.dream.city.base.model.enu.ReturnStatus;
 import com.dream.city.base.model.mapper.InvestOrderMapper;
 import com.dream.city.base.model.req.InvestOrderReq;
 import com.dream.city.base.model.resp.InvestOrderResp;
@@ -41,7 +40,6 @@ public class OrderServiceImpl implements OrderService {
         InvestOrder record = new InvestOrder();
         record.setOrderId(orderId);
         record.setOrderState(InvestStatus.MANAGEMENT.getStatus());
-        //record.setOrderState(ReturnStatus.INVEST_MANAGEMENT.getStatus());
         Integer integer = orderMapper.updateByPrimaryKeySelective(record);
         return (integer ==null || integer == 0)?0:integer;
     }
@@ -51,7 +49,6 @@ public class OrderServiceImpl implements OrderService {
     @Transactional(propagation = Propagation.SUPPORTS)
     public int investOrderInvalid(InvestOrder record)  throws BusinessException{
         record.setOrderState(InvestStatus.INVALID.getStatus());
-        //record.setOrderState(ReturnStatus.INVALID.getStatus());
         Integer integer = orderMapper.updateByPrimaryKeySelective(record);
         return integer ==null?0:integer;
     }
@@ -61,7 +58,6 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public int investOrderCancel(InvestOrder record) throws BusinessException {
         record.setOrderState(InvestStatus.CANCEL.getStatus());
-        //record.setOrderState(ReturnStatus.FAILED.getStatus());
         Integer integer = orderMapper.updateByPrimaryKeySelective(record);
         return integer ==null?0:integer;
     }

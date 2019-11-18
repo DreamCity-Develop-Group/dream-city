@@ -9,9 +9,9 @@ public enum ReturnStatus {
 
     SUCCESS(200,"成功"),
     EXISTS(201,"已存在"),
-    NOT_ENOUGH(210,"USDT额度不足，请去充值"),
     NOT_ENOUGH_MT(209,"MT额度不足，请去充值"),
-    NOT_ENOUGH_PARENT(211,"上级USDT额度不足"),
+    NOT_ENOUGH(210,"USDT额度不足，请去充值"),
+    NOT_ENOUGH_PARENT(211,"上级MT额度不足"),
     TOKEN_EXPIRED(212,"TOKEN过期"),
 
     RELOGIN_OPT(301,"重复登录"),
@@ -32,7 +32,7 @@ public enum ReturnStatus {
     ERROR_INVITE(503,"邀请码错误"),
     ERROR_CODE(504,"验证码错误"),
     CODE_EXPIRED(505,"验证码过期"),
-    ERROR_ACCOUNT(506,"已账号或密码错误"),
+    ERROR_ACCOUNT(506,"账号或密码错误"),
     ERROR_RECEIVED(507,"获取失败"),
     ERROR_NOTEXISTS(508,"账号不存在"),
     SET_SUCCESS(200,"设置成功"),
@@ -46,6 +46,7 @@ public enum ReturnStatus {
 
     TRANSFER_TO(600,"转账入账"),
     TRANSFER_FROM(603,"转账转出"),
+    DEPOSIT_FROM(604,"充值到账"),
 
     UPGRADE_TIP(666,"恭喜升级成功"),
     MT_MISS_BUY_TIP(602,"错过购买兑换处理提示"),

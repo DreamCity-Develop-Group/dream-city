@@ -3,6 +3,7 @@ package com.dream.city.controller;
 
 import com.dream.city.base.exception.BusinessException;
 import com.dream.city.base.model.Message;
+import com.dream.city.base.model.enu.ReturnStatus;
 import com.dream.city.service.handler.TradeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -43,6 +44,7 @@ public class ConsumerTradeController {
         try {
             return tradeService.getTradeDetailList(msg);
         } catch (Exception e) {
+            msg.getData().setCode(ReturnStatus.FAILED.getStatus());
             return msg;
         }
     }
@@ -60,6 +62,7 @@ public class ConsumerTradeController {
         try {
             return tradeService.getPlayerTradeById(msg);
         } catch (Exception e) {
+            msg.getData().setCode(ReturnStatus.FAILED.getStatus());
             return msg;
         }
     }
@@ -77,6 +80,7 @@ public class ConsumerTradeController {
         try {
             return tradeService.getPlayerTrade(msg);
         } catch (Exception e) {
+            msg.getData().setCode(ReturnStatus.FAILED.getStatus());
             return msg;
         }
     }
@@ -93,6 +97,7 @@ public class ConsumerTradeController {
         try {
             return tradeService.getPlayerTradeList(msg);
         } catch (Exception e) {
+            msg.getData().setCode(ReturnStatus.FAILED.getStatus());
             return msg;
         }
     }
@@ -109,6 +114,7 @@ public class ConsumerTradeController {
         try {
             return tradeService.playerRecharge(msg);
         } catch (Exception e) {
+            msg.getData().setCode(ReturnStatus.FAILED.getStatus());
             return msg;
         }
     }
@@ -125,6 +131,7 @@ public class ConsumerTradeController {
         try {
             return tradeService.playerWithdraw(msg);
         } catch (Exception e) {
+            msg.getData().setCode(ReturnStatus.FAILED.getStatus());
             return msg;
         }
     }
@@ -135,10 +142,15 @@ public class ConsumerTradeController {
      *
      * @return
      */
-    @ApiOperation(value = "玩家转账", httpMethod = "POST", notes = "t参数:playerId,username,nick,accUsdt,accMt", response = Message.class)
+    @ApiOperation(value = "玩家转账", httpMethod = "POST", notes = "参数:playerId,username,nick,accUsdt,accMt", response = Message.class)
     @RequestMapping("/trade/transfer")
     public Message playerTransfer(@RequestBody Message msg) throws BusinessException {
-        return tradeService.playerTransfer(msg);
+        try {
+            return tradeService.playerTransfer(msg);
+        } catch (Exception e) {
+            msg.getData().setCode(ReturnStatus.FAILED.getStatus());
+            return msg;
+        }
     }
 
 

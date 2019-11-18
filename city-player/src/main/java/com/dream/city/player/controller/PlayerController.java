@@ -90,7 +90,7 @@ public class PlayerController {
         PlayerResp playerExistByNick = playerService.getPlayerByName(null,nick);
         if (playerExistByNick != null){
             tip = "["+ nick +"]" + CityGlobal.Constant.REG_USER_NICK_EXIST;
-            return Result.result(false,tip,ReturnStatus.ACCOUNT_EXISTS.getStatus(),null);
+            return Result.result(false,tip,ReturnStatus.NICK_EXISTS.getStatus(),null);
         }
 
         /*if(StringUtils.isBlank(code)){
@@ -175,6 +175,10 @@ public class PlayerController {
                 result.setCode(ReturnStatus.ERROR_NOTEXISTS.getStatus());
                 tip.append(CityGlobal.Constant.USER_NOT_EXIT);
             }else {
+                //禁止登录用户
+                if (playerExists.getIsValid().equals("0")){
+                    return Result.result(false,"当前用户禁止登录",ReturnStatus.FAILED.getStatus());
+                }
                 playerId = playerExists.getPlayerId();
                 // 用户名
                 if (!playerExists.getPlayerName().equalsIgnoreCase(username)){
@@ -311,10 +315,19 @@ public class PlayerController {
             redisUtils.del(RedisKeys.CURRENT_USER + playerExit.getPlayerName());
             redisUtils.decr(RedisKeys.CURRENT_LOGIN_USER_COUNT);
         }
+        //Token清除
         if(redisUtils.hasKey(RedisKeys.LOGIN_USER_TOKEN+playerExit.getPlayerName())){
             redisUtils.del(RedisKeys.LOGIN_USER_TOKEN+playerExit.getPlayerName());
         }
+        //缓存删除
         redisUtils.rmOnlinePlayer(playerExit.getPlayerName());
+        if(redisUtils.hasKey(RedisKeys.MAIN_HASH_DATA+playerExit.getPlayerName())){
+            redisUtils.del(RedisKeys.MAIN_HASH_DATA+playerExit.getPlayerName());
+        }
+        //下线
+        if (redisUtils.hasKey(RedisKeys.PLAYER_ONLINE_STATE_KEY+playerExit.getPlayerName())){
+            redisUtils.del(RedisKeys.PLAYER_ONLINE_STATE_KEY+playerExit.getPlayerName());
+        }
         return result;
     }
 
@@ -341,6 +354,23 @@ public class PlayerController {
         if (redisUtils.hasKey(RedisKeys.CURRENT_USER + playerExit.getPlayerName())) {
             redisUtils.del(RedisKeys.CURRENT_USER + playerExit.getPlayerName());
             redisUtils.decr(RedisKeys.CURRENT_LOGIN_USER_COUNT);
+        }
+        if (redisUtils.hasKey(RedisKeys.CURRENT_USER + playerExit.getPlayerName())) {
+            redisUtils.del(RedisKeys.CURRENT_USER + playerExit.getPlayerName());
+            redisUtils.decr(RedisKeys.CURRENT_LOGIN_USER_COUNT);
+        }
+        //Token清除
+        if(redisUtils.hasKey(RedisKeys.LOGIN_USER_TOKEN+playerExit.getPlayerName())){
+            redisUtils.del(RedisKeys.LOGIN_USER_TOKEN+playerExit.getPlayerName());
+        }
+        //缓存删除
+        redisUtils.rmOnlinePlayer(playerExit.getPlayerName());
+        if(redisUtils.hasKey(RedisKeys.MAIN_HASH_DATA+playerExit.getPlayerName())){
+            redisUtils.del(RedisKeys.MAIN_HASH_DATA+playerExit.getPlayerName());
+        }
+        //下线
+        if (redisUtils.hasKey(RedisKeys.PLAYER_ONLINE_STATE_KEY+playerExit.getPlayerName())){
+            redisUtils.del(RedisKeys.PLAYER_ONLINE_STATE_KEY+playerExit.getPlayerName());
         }
         return result;
     }

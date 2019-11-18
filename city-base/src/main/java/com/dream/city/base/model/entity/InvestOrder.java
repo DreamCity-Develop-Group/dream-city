@@ -19,6 +19,7 @@ public class InvestOrder implements Serializable {
     private String orderPayerId;
 
     private String orderName;
+
     private String orderNum;
 
     /** 投资金额 */

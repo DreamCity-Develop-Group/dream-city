@@ -4,13 +4,12 @@ import com.codingapi.txlcn.tc.annotation.LcnTransaction;
 import com.dream.city.base.exception.BusinessException;
 import com.dream.city.base.model.entity.RelationTree;
 import com.dream.city.base.model.entity.Notice;
-import com.dream.city.base.model.mapper.DictionaryMapper;
 import com.dream.city.base.model.mapper.RelationTreeMapper;
 import com.dream.city.base.model.mapper.NoticeMapper;
 import com.dream.city.base.model.req.NoticeReq;
-import com.dream.city.base.service.DictionaryService;
 import com.dream.city.base.utils.DataUtils;
 import com.dream.city.base.utils.RedisUtils;
+import com.dream.city.service.DictService;
 import com.dream.city.service.NoticeService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,11 +29,9 @@ public class NoticeServiceImpl implements NoticeService {
     @Autowired
     RelationTreeMapper RelationTreeMapper;
     @Autowired
-    DictionaryMapper dictionaryMapper;
+    DictService dictionaryService;
     @Autowired
     RedisUtils redisUtils;
-    @Autowired
-    DictionaryService dictionaryService;
 
     @LcnTransaction
     @Transactional

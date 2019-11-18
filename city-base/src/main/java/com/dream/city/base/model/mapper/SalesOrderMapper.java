@@ -74,7 +74,11 @@ public interface SalesOrderMapper {
     @ResultMap("BaseSalesOrderResultMap")
     SalesOrder getSalesOrderByOrderId(String orderId);
 
-    @Update("update `sales_order` set order_state=#{orderState} where 1=1 and id=#{id} and order_player_buyer=#{orderPlayerBuyer}")
+
+    @Update("update `sales_order` set order_state=#{orderState} " +
+            " where 1=1 and " +
+            " order_player_buyer=#{orderPlayerBuyer} " +
+            " and order_id=#{orderId}")
     int updateSalesOrder(SalesOrder order);
 
     @Update({"<script>" +
@@ -88,7 +92,8 @@ public interface SalesOrderMapper {
             "</script>"})
     void sendOrderMt(@Param("orderList") List<SalesOrder> orderList);
 
-    @Select("select * from `sales_order` where 1=1 and order_player_buyer = #{playerId} limit 1 ")
+    @Select("select * from `sales_order` where 1=1 and order_player_buyer = #{playerId} ")
+    @ResultMap("BaseSalesOrderResultMap")
     List<SalesOrder> getSalesOrderByBuyerPlayerId(String playerId);
 
     @Select("select * from `sales_order` where 1=1 and order_state = #{state} ")
@@ -116,4 +121,23 @@ public interface SalesOrderMapper {
     @Select("select count(*) from `sales_order` where order_state = #{status} and order_player_buyer = #{buyer_id} and order_player_seller = #{sellerId} ")
     int selectSalesSellerRejectTimes(@Param("buyer_id") String buyer_id, @Param("sellerId") String sellerId, @Param("status") int status);
 
+    @Select("select count(*) from `sales_order` where 1=1 and order_player_buyer = #{buyer} and order_player_seller = #{seller} ")
+    List<SalesOrder> selectSalesBuyerRefuseOrders(@Param("buyer") String buyer, @Param("seller")String seller);
+
+
+    /**
+     *
+     *
+     * 查询所有已经超时的并且支付成功 订单
+     * @return
+     */
+    @Select("select * from `sales_order` where 1=1 and order_state='2' and updatetime < #{time}")
+    List<SalesOrder> getOverTimeOrder(@Param("time")String time);
+
+    /**
+     * 更改订单状态为已超时
+     * @return
+     */
+    @Update("update `sales_order` set  order_state='4' where order_id=#{orderId} and order_state='2' ")
+    int updateOverTimeOrder(@Param("orderId")String orderId);
 }

@@ -21,6 +21,9 @@ public class CityMessage implements Serializable {
     private Integer haveRead;
 
     /**  */
+    private Date sendTime;
+
+    /**  */
     private Date createTime;
 
     /**  */

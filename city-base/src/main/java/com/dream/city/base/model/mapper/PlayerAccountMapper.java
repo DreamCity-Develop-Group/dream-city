@@ -2,6 +2,7 @@ package com.dream.city.base.model.mapper;
 
 
 import com.dream.city.base.model.entity.PlayerAccount;
+import com.dream.city.base.model.entity.TradeDetail;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
@@ -32,13 +33,11 @@ public interface PlayerAccountMapper {
             @Result(property = "updateTime", column = "update_time"),
 
     })
-
-    @Select("select * from player_account where 1=1 and  acc_player_id = #{playerId} limit 0,1 ")
-    //@ResultMap("BaseCityAccountResultMap")
-    PlayerAccount getAccountByPlayerId(String playerId);
+    @Select("select * from player_account where 1=1 and  acc_player_id = #{playerId} limit 1 ")
+     PlayerAccount getAccountByPlayerId(@Param("playerId")String playerId);
 
     @Select("select acc_id accId, from player_account where 1=1 and acc_id=#{accId}")
-    PlayerAccount findPlayerAccount(int accid);
+    PlayerAccount findPlayerAccount(@Param("accid")int accid);
 
 
 
@@ -58,10 +57,10 @@ public interface PlayerAccountMapper {
      */
     @Select("select * from player_account where 1=1 and  acc_addr = #{address}")
     @ResultMap("BaseCityAccountResultMap")
-    PlayerAccount getPlayerAccountByAddr(String address);
+    PlayerAccount getPlayerAccountByAddr(@Param("address")String address);
 
     @Update("update player_account set acc_usdt = acc_usdt-#{payAmount} ,acc_usdt_availble=acc_usdt_availble-#{payAmount} where 1=1 adnd acc_player_id=#{playerId}")
-    void subtractAmount(BigDecimal payAmount, String playerId);
+    void subtractAmount(@Param("payAmount")BigDecimal payAmount, @Param("playerId")String playerId);
 
     @Insert("insert into `player_account`(acc_id,acc_player_id,acc_addr)value(0,#{accPlayerId},#{accAddr})")
     void createAccount(@Param("accPlayerId")String accPlayerId,@Param("accAddr")String accAddr);
@@ -69,7 +68,7 @@ public interface PlayerAccountMapper {
 
     @Select("select * from player_account where 1=1 and  acc_player_id = #{playerId}")
     @ResultMap("BaseCityAccountResultMap")
-    PlayerAccount getPlayerAccountByPlayerId(String playerId);
+    PlayerAccount getPlayerAccountByPlayerId(@Param("playerId")String playerId);
 
 
 
@@ -117,4 +116,20 @@ public interface PlayerAccountMapper {
             "  acc_mt_available " +
             ")value(0,#{accPlayerId},#{accAddr},#{accUsdt},#{accUsdtFreeze},#{accUsdtAvailable},#{accMt},#{accMtFreeze},#{accMtAvailable})")
     void insertAccount(PlayerAccount payAmount);
+
+
+
+
+    @Update(" UPDATE `player_account` SET acc_usdt = acc_usdt+#{payAmount}, acc_usdt_available = acc_usdt_available+#{payAmount} WHERE acc_player_id = #{playerId} and #{payAmount} > 0")
+    int addPlayerUsdtAmount(@Param("playerId") String playerId,@Param("payAmount") BigDecimal payAmount);
+
+    @Update(" UPDATE `player_account` SET acc_usdt = acc_usdt+#{payAmount}, acc_usdt_freeze = acc_usdt_freeze+#{payAmount} WHERE acc_player_id = #{playerId} and #{payAmount} > 0")
+    int addPlayerFreezeUsdtAmount(@Param("playerId") String playerId,@Param("payAmount") BigDecimal payAmount);
+
+    @Update(" UPDATE `player_account` SET acc_mt = acc_mt+#{payAmount}, acc_mt_available = acc_mt_available+#{payAmount} WHERE acc_player_id = #{playerId} and #{payAmount} > 0")
+    int addPlayerMtAmount(@Param("playerId") String playerId,@Param("payAmount") BigDecimal payAmount);
+
+    @Update(" UPDATE `player_account` SET acc_mt = acc_mt+#{payAmount}, acc_mt_freeze = acc_mt_freeze+#{payAmount} WHERE acc_player_id = #{playerId} and #{payAmount} > 0")
+    int addPlayerFreezeMtAmount(@Param("playerId") String playerId,@Param("payAmount") BigDecimal payAmount);
+
 }

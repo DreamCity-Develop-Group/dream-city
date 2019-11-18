@@ -18,6 +18,8 @@ import com.dream.city.service.handler.NoticeService;
 import com.dream.city.service.handler.PusherService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,6 +41,8 @@ public class DefaultServiceImpl implements DefaultService {
     @Autowired
     ConsumerTreeService treeService;
     @Autowired
+    RedissonClient redissonClient;
+    @Autowired
     RedisUtils redisUtils;
     @Autowired
     NoticeService noticeService;
@@ -52,6 +56,10 @@ public class DefaultServiceImpl implements DefaultService {
     ConsumerPlayerBlockChainService playerBlockChainService;
     @Autowired
     ConsumerMessageService messageService;
+    @Autowired
+    ConsumerDictionaryService dictionaryService;
+
+    final String MAIN_HASH_DATA = "MAIN_HASH_DATA_";
 
 
     @LcnTransaction
@@ -64,8 +72,15 @@ public class DefaultServiceImpl implements DefaultService {
 
         String username = jsonObject.getString("username");
         String playerId = jsonObject.getString("playerId");
+        Map<String, Object> data = new Hashtable<>();
 
         Player player = playerService.getPlayerByPlayerId(playerId);
+        if (redisUtils.hasKey(MAIN_HASH_DATA+playerId)){
+            Map rdata = redisUtils.hmget(MAIN_HASH_DATA+playerId);
+            message.getData().setData(rdata);
+            message.setDesc("主页数据汇总");
+            message.setCode(ReturnStatus.SUCCESS.getStatus());
+        }
 
 
         RelationTree tree = treeService.getRelationTree(player.getPlayerId());
@@ -129,7 +144,7 @@ public class DefaultServiceImpl implements DefaultService {
         Result result1 = salesService.getUsdtToMtRate(player.getPlayerId());
         BigDecimal rate = new BigDecimal(result1.getData().toString()).setScale(3);
 
-        Map<String, Object> data = new Hashtable<>();
+
 
         //消息数量 显示为小红点
         Result<Integer> integerResult = messageService.getUnReadCount(playerId);
@@ -138,6 +153,7 @@ public class DefaultServiceImpl implements DefaultService {
             int count = integerResult.getData();
             messages = count > 0 ? true : false;
         }
+
         //公告
         data.put("notices", notices);
         //我的信息Player
@@ -148,10 +164,17 @@ public class DefaultServiceImpl implements DefaultService {
         data.put("messages", messages);
         //商会准入
         data.put("commerce", commerce);
+        //用户商会级别
         data.put("level", level);
         //data.put("invest",invests);
+        //商会折扣
         data.put("rate", rate);
+        //修改密码扣除mt额度
+        String taxStr = dictionaryService.getValByKey("player.change.tran.pwd.tax");
+        Integer tax = Integer.parseInt(taxStr);
+        data.put("tradePassResetFee",tax);
 
+        redisUtils.hmset(MAIN_HASH_DATA+playerId,data);
 
         message.getData().setData(data);
         message.setDesc("主页数据汇总");
@@ -172,6 +195,36 @@ public class DefaultServiceImpl implements DefaultService {
     @Override
     public String getAppVersion() {
         return redisUtils.getStr("APP_VERSION");
+    }
+
+    @Override
+    public Message version(Message message){
+        log.info("版本获取或设置");
+
+        String json = JsonUtil.parseObjToJson(message.getData().getData());
+        JSONObject jsonObject = JsonUtil.parseJsonToObj(json,JSONObject.class);
+        String version = jsonObject.getString("version");
+
+        RLock lock = redissonClient.getLock("version");
+
+        if (lock.tryLock()) {
+            lock.lock();
+            log.info("取得锁成功！");
+            if (StringUtils.isBlank(version)) {
+                message.setDesc("获取版本成功");
+                message.getData().setData(getAppVersion());
+            } else {
+                setAppVersion(version);
+                lock.unlock();
+                log.info("释放锁成功！");
+                message.setDesc("设置版本成功");
+                message.getData().setData("Success:" + getAppVersion());
+            }
+            return message;
+        }
+        message.setDesc("设置或获取版本不成功");
+        message.getData().setData(null);
+        return message;
     }
 
 }

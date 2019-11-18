@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -35,14 +36,17 @@ public class PlayerEarningServiceImpl  implements PlayerEarningService {
         return playerEarningMapper.selectPlayerEarningList(record);
     }
 
-    @LcnTransaction
-    @Transactional
     @Override
     public PlayerEarningResp getPlayerEarnByPlayerId(String playerId, Integer investId)throws BusinessException {
         PlayerEarning record = new PlayerEarning();
         record.setEarnPlayerId(playerId);
         record.setEarnInvestId(investId);
         return playerEarningMapper.getPlayerEarning(record);
+    }
+
+    @Override
+    public PlayerEarning getPlayerEarnByPlayerIdReload(String playerId, Integer investId) {
+        return playerEarningMapper.getPlayerEarningReload(playerId,investId);
     }
 
     @LcnTransaction
@@ -73,4 +77,24 @@ public class PlayerEarningServiceImpl  implements PlayerEarningService {
     public List<PlayerEarning> getPlayerEarningByAfterHours(Integer withdrewState, Integer afterHours) {
         return playerEarningMapper.getPlayerEarningByAfterHours(withdrewState, afterHours);
     }
+
+    @Override
+    public List<PlayerEarning> getPlayerEarningCanFallDown(String time) {
+        return playerEarningMapper.getPlayerEarningCanFallDown(time);
+    }
+
+    @Override
+    public int updateEarningWithRawStatus(Integer earnId, Integer status) {
+        return playerEarningMapper.updateEarningStatus(earnId,status);
+    }
+
+    @Override
+    public int updateEarningFallDown(Integer earnId, BigDecimal amount) {
+        return playerEarningMapper.updateFalldown(earnId,amount);
+    }
+    @Override
+    public int updateCurrentAmount(Integer earnId,BigDecimal amount,Integer status,String playerId) {
+        return playerEarningMapper.updateCurrentAmount(earnId,amount,status,playerId);
+    }
+
 }

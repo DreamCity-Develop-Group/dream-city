@@ -4,11 +4,16 @@ import com.codingapi.txlcn.tc.annotation.LcnTransaction;
 import com.dream.city.base.exception.BusinessException;
 import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.*;
+import com.dream.city.base.model.enu.AmountDynType;
+import com.dream.city.base.model.enu.TradeDetailType;
+import com.dream.city.base.model.enu.TradeStatus;
+import com.dream.city.base.model.enu.TradeType;
 import com.dream.city.base.model.mapper.*;
 import com.dream.city.base.model.resp.PlayerEarningResp;
 import com.dream.city.service.InvestAllowService;
 import com.dream.city.service.PlayerAccountService;
 import com.dream.city.service.RelationTreeService;
+import com.dream.city.service.SalesOrderService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -46,9 +51,16 @@ public class InvestServiceImpl implements InvestAllowService {
     PlayerEarningMapper earningMapper;
 
     @Autowired
+    TradeDetailMapper tradeDetailMapper;
+    @Autowired
+    PlayerTradeMapper playerTradeMapper;
+
+    @Autowired
     PlayerAccountService accountService;
     @Autowired
     RelationTreeService relationTreeService;
+    @Autowired
+    SalesOrderService salesOrderService;
 
 
     @LcnTransaction
@@ -130,6 +142,16 @@ public class InvestServiceImpl implements InvestAllowService {
         if (logRet) {
             accountMapper.updatePlayerAccount(accountPlayer);
         }
+        SalesOrder order = new SalesOrder();
+        order.setOrderPayAmount(amount);
+        order.setOrderPlayerBuyer(accountPlayer.getAccPlayerId());
+        salesOrderService.addPlayerTrade(order,
+                accountPlayer,
+                TradeType.LEVEL_EARN.getCode(),
+                TradeStatus.IN.getCode(),
+                AmountDynType.IN.getCode(),
+                "印记分成");
+        salesOrderService.addTradeDetail(order, 0, accountPlayer, TradeDetailType.LEVEL_EARN.getCode(), "印记分成");
 
     }
 

@@ -84,6 +84,7 @@ public class TradeServiceImpl implements TradeService {
         PlayerTradeReq tradeReq = new PlayerTradeReq();
         tradeReq.setPlayerId(accountReq.getAccPlayerId());
         Result<List<PlayerTradeResp>> tradeResult = tradeService.getTradeDetailList(tradeReq);
+
         Map<String,Object> data = new HashMap<>();
         List<Map<String,Object>> tradeDetailListResult = new ArrayList<>();
         if (tradeResult != null){
@@ -96,9 +97,9 @@ public class TradeServiceImpl implements TradeService {
                 for(PlayerTradeResp tradeResp: tradeDetailList){
                     dataMap = new HashMap<>();
                     dataMap.put("createTime",tradeResp.getCreateTime());
-                    dataMap.put("tradeDetailType",DataUtils.getTradeDetailType(tradeResp.getTradeDetailType()));
+                    dataMap.put("tradeDetailType",tradeResp.getTradeDetailType());
                     dataMap.put("tradeAmount",tradeResp.getTradeAmount());
-                    dataMap.put("tradeStatus",DataUtils.getTradeStatus(tradeResp.getTradeStatus()));
+                    dataMap.put("tradeStatus",tradeResp.getTradeStatus());
                     dataMap.put("usdtSurplus",tradeResp.getUsdtSurplus());
                     dataMap.put("mtSurplus",tradeResp.getMtSurplus());
                     tradeDetailListResult.add(dataMap);
@@ -180,6 +181,7 @@ public class TradeServiceImpl implements TradeService {
         PlayerAccountReq accountReq = DataUtils.getPlayerAccountReqFromMessage(msg);
         String playerId = accountReq.getAccPlayerId();
         PlayerResp player = null;
+
         if (StringUtils.isBlank(playerId)) {
             player = commonService.getPlayerByUserName(msg);
             playerId = player.getPlayerId();
@@ -330,13 +332,13 @@ public class TradeServiceImpl implements TradeService {
         resultMap.put("amount",accountReq.getAmount());
         resultMap.put("mt",0);
         resultMap.put("code",ReturnStatus.SUCCESS.getStatus());
-        resultMap.put("desc","转账失败");
+        resultMap.put("desc","转账成功");
 
         if (tradeResult != null){
             if (tradeResult.getSuccess()){
                 resultMap.put("amount",tradeResult.getData().getTradeAmount());
                 msg.getData().setCode(tradeResult.getCode());
-
+                //是否是内部转账
                 PlayerAccount receiverAccount = accountService.getPlayerAccountByAddr(addr);
                 //内部转账发消息
                 if (receiverAccount!=null){
@@ -357,10 +359,11 @@ public class TradeServiceImpl implements TradeService {
                         Optional<String> optional = redisUtils.get(RedisKeys.PLAYER_ONLINE_STATE_KEY + receiver.getPlayerName());
                         String clientId = null;
                         if (optional != null && optional.isPresent()){
-                            resultMap.put("code",ReturnStatus.TRANSFER_TO.getStatus());
                             clientId = optional.get();
                             message.setTarget(clientId);
+                            message.getData().setType("getIncome");
                             message.getData().setData(resultMap);
+                            message.getData().setCode(ReturnStatus.SUCCESS.getStatus());
                             redisUtils.publishMsg(PlAYER_UPGRADE, JSON.toJSONString(message));
                         }
                     }else {
@@ -390,7 +393,7 @@ public class TradeServiceImpl implements TradeService {
                     message.setId(0L);
                     message.setTitle("入账消息");
                     message.setContent("你收到一笔来自朋友的转账,额度："+amount+"，请查收！");
-                    message.setPlayerId(receiverAccount.getAccPlayerId());
+                    message.setPlayerId(addr);
                     message.setCreateTime(new Date());
                     boolean finished = commonService.sendMessage(message);
                     if(!finished){
