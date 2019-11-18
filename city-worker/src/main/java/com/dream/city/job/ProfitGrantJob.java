@@ -42,14 +42,16 @@ public class ProfitGrantJob extends QuartzJobBean {
     private PlayerEarningService playerEarningService;
 
     @Autowired
-    RelationTreeService relationTreeService;
+    private RelationTreeService relationTreeService;
+
+    @Autowired
+    RedisUtils redisUtils;
 
     private final String RULE_CURRENT = "PROFIT_GRANT";
     private final String PROFIT_QUEUE = "PROFIT_QUEUE";
     private final String SYSTEM_ACCOUNT = "SYSTEM_DC_ACCOUNT";
 
-    @Autowired
-    RedisUtils redisUtils;
+
 
 
     /**
@@ -78,9 +80,14 @@ public class ProfitGrantJob extends QuartzJobBean {
         int state = InvestStatus.MANAGEMENT.getStatus();
         invests.forEach(invest -> {
             rules.forEach(rule -> {
-                BigDecimal profitSum = new BigDecimal(redisUtils.lpop(PROFIT_QUEUE + "_" + invest.getInId()).toString());
+                Object obj = redisUtils.lpop(PROFIT_QUEUE + "_" + invest.getInId());
+                if (obj == null){
+                    log.info(new Date() + "，invest.getInId() = "+invest.getInId()+",  redisUtils.lpop 为null，中途退出");
+                    return;
+                }
+                BigDecimal profitSum = new BigDecimal(obj.toString());
                 switch (rule.getRuleOptPre()) {
-                    case "OPT_RATE":
+                        case "OPT_RATE":
                         switch (rule.getRuleFlag()) {
                             case "ALL_ORDERS":
                                 //1、所有玩家，40%
@@ -254,14 +261,19 @@ public class ProfitGrantJob extends QuartzJobBean {
             BigDecimal current = playerEarning.getEarnCurrent();
             BigDecimal subProfit = new BigDecimal(0);
             boolean isNotCanWithdraw = true;
-            //相加之后超过
-            if(current.add(everyOneProfit).compareTo(fullProfit)>0){
-                isNotCanWithdraw = false;
-                subProfit = fullProfit.subtract(current);
+            //掉落+已提取+当前收益+此次发放收益 之后大于等于 最大收益额
+            BigDecimal allProfit = current.add(everyOneProfit).
+                    add(playerEarning.getWithdrewTotal()).add(playerEarning.getDropTotal()).add(everyOneProfit);
+            if(allProfit.compareTo(fullProfit)>=0){
+                subProfit = allProfit.subtract(fullProfit);
                 playerEarning.setEarnCurrent(current.add(subProfit));
-                playerEarning.setIsWithdrew(2);//设置为可提取状态
             }else{
                 playerEarning.setEarnCurrent(current.add(everyOneProfit));
+            }
+
+            if(playerEarning.getEarnCurrent().compareTo(BigDecimal.ONE)>=0){
+                isNotCanWithdraw = false;
+                playerEarning.setIsWithdrew(2);//设置为可提取状态
             }
             if (isNotCanWithdraw){
                 //插入日志记录
@@ -272,24 +284,27 @@ public class ProfitGrantJob extends QuartzJobBean {
                 earnIncomeLog.setInAmount(everyOneProfit);
                 playerEarningService.addEarnLog(earnIncomeLog);
             }else {
-                //将剩余的收益加到平台
-                BigDecimal remainProfit = everyOneProfit.subtract(subProfit);
-                PlayerAccount account = accountService.getPlayerAccount(SYSTEM_ACCOUNT);
-                account.setAccUsdt(account.getAccUsdt().add(remainProfit));
-                account.setAccMtAvailable(account.getAccUsdtAvailable().add(remainProfit));
-                accountService.updateProfitToAccount(account);
+                if(subProfit.compareTo(BigDecimal.ZERO)>0) {
+                    //将剩余的收益加到平台
+                    BigDecimal remainProfit = everyOneProfit.subtract(subProfit);
+                    PlayerAccount account = accountService.getPlayerAccount(SYSTEM_ACCOUNT);
+                    account.setAccUsdt(account.getAccUsdt().add(remainProfit));
+                    account.setAccMtAvailable(account.getAccUsdtAvailable().add(remainProfit));
+                    accountService.updateProfitToAccount(account);
 
-                PlayerAccountLog accountLog = new PlayerAccountLog();
-                accountLog.setId(0L);
-                accountLog.setAddress(account.getAccAddr());
-                accountLog.setAmountMt(new BigDecimal(0));
-                accountLog.setAmountUsdt(remainProfit);
-                accountLog.setPlayerId(SYSTEM_ACCOUNT);
-                accountLog.setType(1);
-                accountLog.setDesc("收入账户多余的额度");
-                accountLog.setCreateTime(new Date());
 
-                accountService.addAccountLog(accountLog);
+                    PlayerAccountLog accountLog = new PlayerAccountLog();
+                    accountLog.setId(0L);
+                    accountLog.setAddress(account.getAccAddr());
+                    accountLog.setAmountMt(new BigDecimal(0));
+                    accountLog.setAmountUsdt(remainProfit);
+                    accountLog.setPlayerId(SYSTEM_ACCOUNT);
+                    accountLog.setType(1);
+                    accountLog.setDesc("收入账户多余的额度");
+                    accountLog.setCreateTime(new Date());
+
+                    accountService.addAccountLog(accountLog);
+                }
             }
         }
 

@@ -102,7 +102,9 @@ public class InvestController {
         InvestAllow allow = investService.getInvestAllowByPlayerId(playerId);
         boolean allowed = Boolean.FALSE;
         if (allow == null) {
+            //加入许可
             investService.addInvestAllow(playerId, amount);
+            //分配收益
             Result result = investService.allocationToPlayer(playerId,amount);
             return result;
         } else {

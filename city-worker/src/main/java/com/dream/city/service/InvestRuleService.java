@@ -14,4 +14,6 @@ public interface InvestRuleService {
     List<InvestRule> getInvestRuleByKey(Integer key);
 
     RuleItem getInvestRuleItemByKey(String rule_current);
+
+    List<InvestRule> getInvestRuleByItemKey(Integer itemId);
 }

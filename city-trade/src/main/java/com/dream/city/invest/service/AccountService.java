@@ -53,6 +53,7 @@ public interface AccountService {
     List<PlayerAccount> getPlatformAccounts(PlayerAccountReq record);
 
     PlayerAccount getPlayerAccountByPlayerId(String playerId);
+    PlayerAccount getPlayerAccountByAddr(String addr);
 
 
     int addAccountLog(PlayerAccountLog accountLog);

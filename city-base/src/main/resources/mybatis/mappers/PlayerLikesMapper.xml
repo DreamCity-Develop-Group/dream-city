@@ -27,6 +27,48 @@
     where liked_id = #{likedId,jdbcType=INTEGER}
   </delete>
 
+  <insert id="insert" parameterType="com.dream.city.base.model.entity.PlayerLikes" >
+    insert into player_likes
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="likedId != null" >
+        liked_id,
+      </if>
+      <if test="likedPlayerId != null" >
+        liked_player_id,
+      </if>
+      <if test="likedInvestId != null" >
+        liked_invest_id,
+      </if>
+      <if test="likedSetTotal != null" >
+        liked_set_total,
+      </if>
+      <if test="likedGetTotal != null" >
+        liked_get_total,
+      </if>
+      create_time,
+      update_time,
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="likedId != null" >
+        #{likedId,jdbcType=INTEGER},
+      </if>
+      <if test="likedPlayerId != null" >
+        #{likedPlayerId,jdbcType=VARCHAR},
+      </if>
+      <if test="likedInvestId != null" >
+        #{likedInvestId,jdbcType=INTEGER},
+      </if>
+      <if test="likedSetTotal != null" >
+        #{likedSetTotal,jdbcType=INTEGER},
+      </if>
+      <if test="likedGetTotal != null" >
+        #{likedGetTotal,jdbcType=INTEGER},
+      </if>
+      now(),
+      now(),
+    </trim>
+  </insert>
+
   <insert id="insertSelective" parameterType="com.dream.city.base.model.req.PlayerLikesReq" >
     insert into player_likes
     <trim prefix="(" suffix=")" suffixOverrides="," >
@@ -68,6 +110,8 @@
       now(),
     </trim>
   </insert>
+
+
   <update id="updateByPrimaryKeySelective" parameterType="com.dream.city.base.model.req.PlayerLikesReq" >
     update player_likes
     <set >
@@ -132,6 +176,27 @@
       and likedInvestId = #{likedInvestId,jdbcType=INTEGER}
     </if>
     order by updateTime desc
+  </select>
+
+  <select id="getLikes" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from player_likes
+    where 1=1 and liked_player_id = #{playerId,jdbcType=VARCHAR}
+  </select>
+
+  <update id="updateByPrimaryKey" parameterType="com.dream.city.base.model.entity.PlayerLikes">
+    update player_likes
+    set player_id = #{playerId,jdbcType=VARCHAR},
+      likes = #{likes,jdbcType=INTEGER},
+      create_date = #{createDate,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="getInvestLikes" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from player_likes
+    where 1=1 and liked_player_id = #{playerId,jdbcType=VARCHAR}
   </select>
 
 </mapper>

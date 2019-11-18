@@ -1,11 +1,10 @@
 package com.dream.city.controller;
 
 import com.dream.city.base.model.Result;
-import com.dream.city.base.model.entity.Player;
-import com.dream.city.base.model.entity.PlayerAccount;
-import com.dream.city.base.model.entity.RelationTree;
-import com.dream.city.base.model.entity.SalesOrder;
+import com.dream.city.base.model.entity.*;
+import com.dream.city.base.model.enu.OrderState;
 import com.dream.city.base.model.enu.ReturnStatus;
+import com.dream.city.base.utils.KeyGenerator;
 import com.dream.city.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -15,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -36,6 +36,7 @@ public class SalesOrderController {
     @Autowired
     InvestRuleService ruleService;
 
+    final int REFUSE_ORDER_STATE = 11;
 
     /**
      * 获取订单
@@ -88,7 +89,7 @@ public class SalesOrderController {
     public Result getSalesNum(@RequestParam("playerId") String playerId) {
         List<SalesOrder> orders = salesOrderService.selectSalesOrderUnSend(playerId);
         if (orders.size() > 0) {
-            return Result.result(true, "成功",ReturnStatus.SUCCESS.getStatus(),orders.size());
+            return Result.result(true, "成功", ReturnStatus.SUCCESS.getStatus(), orders.size());
         }
         return Result.result(false, ReturnStatus.FAILED.getStatus());
     }
@@ -103,9 +104,9 @@ public class SalesOrderController {
     public Result getSalesOvertime(@RequestParam("playerId") String playerId) {
         List<SalesOrder> orders = salesOrderService.selectSalesOrderOvertime(playerId);
         if (orders.size() > 0) {
-            return Result.result(true, "成功",ReturnStatus.SUCCESS.getStatus(), orders.size());
+            return Result.result(true, "成功", ReturnStatus.SUCCESS.getStatus(), orders.size());
         }
-        return Result.result(false, "失败",ReturnStatus.FAILED.getStatus());
+        return Result.result(false, "失败", ReturnStatus.FAILED.getStatus());
     }
 
     /**
@@ -130,16 +131,16 @@ public class SalesOrderController {
     @RequestMapping("/player/buy/mt")
     public Result playerBuyMtCreate(@RequestParam("amount") BigDecimal buyAmount, @RequestParam("playerId") String playerId) {
         if (StringUtils.isBlank(playerId)) {
-            return Result.result(false,"参数错误", ReturnStatus.INVALID.getStatus());
+            return Result.result(false, "参数错误", ReturnStatus.INVALID.getStatus());
         }
         if (buyAmount.compareTo(new BigDecimal(0.00)) < 0) {
-            return Result.result(false,"购买额度不能小于0", ReturnStatus.INVALID.getStatus());
+            return Result.result(false, "购买额度不能小于0", ReturnStatus.INVALID.getStatus());
         }
         //支付比率 USDT 和 MT
         BigDecimal rate = salesOrderService.getUsdtToMtRate(playerId);
 
         Map<String, String> data = new HashMap<>();
-        data.put("empty", "yes");
+
         //如果额度不足
         PlayerAccount playerAccount = playerAccountService.getPlayerAccount(playerId);
         BigDecimal payUsdt = buyAmount.multiply(rate);
@@ -149,7 +150,7 @@ public class SalesOrderController {
         //获取未完成的订单
         SalesOrder salesOrder = salesOrderService.getBuyerNoPayOrder(playerId);
         if (salesOrder != null) {
-            Result result = Result.result(false,ReturnStatus.NOT_FINISHED.getDesc(),ReturnStatus.NOT_FINISHED.getStatus(),data);
+            Result result = Result.result(false, ReturnStatus.NOT_FINISHED.getDesc(), ReturnStatus.NOT_FINISHED.getStatus(), data);
             return result;
         }
         //创建订单
@@ -180,7 +181,7 @@ public class SalesOrderController {
         } else {
             Result result = Result.result(
                     false,
-                    ReturnStatus.INVALID.getDesc()+":没有订单",
+                    ReturnStatus.INVALID.getDesc() + ":没有订单",
                     ReturnStatus.INVALID.getStatus()
             );
             return result;
@@ -203,7 +204,7 @@ public class SalesOrderController {
         String[] orders = ordersId.split("_");
         int size = orders.length;
         int i = 0;
-        Map<String,Boolean> ordersStatus = new HashMap<>();
+        Map<String, Boolean> ordersStatus = new HashMap<>();
         for (String order : orders) {
             SalesOrder salesOrder = salesOrderService.getSalesOrder(order);
             BigDecimal amount = salesOrder.getOrderAmount();
@@ -211,19 +212,19 @@ public class SalesOrderController {
             amountMt = amountMt.add(amount);
             //额度检测
             if (availbleMt.compareTo(amountMt) < 0) {
-                ordersStatus.put(order,Boolean.FALSE);
+                ordersStatus.put(order, Boolean.FALSE);
                 //break;
             } else {
                 i++;
                 salesOrders.add(salesOrder);
-                ordersStatus.put(order,Boolean.TRUE);
+                ordersStatus.put(order, Boolean.TRUE);
             }
         }
 
 
         //额度检测
         if (i == 0) {
-            return new Result(false, "可用MT额度不足，请及时备货", ReturnStatus.NOT_ENOUGH.getStatus());
+            return Result.result(false, "可用MT额度不足，请及时备货", ReturnStatus.NOT_ENOUGH.getStatus());
         }
         //修改订单状态和修改玩家账户额度
         Result result = salesOrderService.sendOrderMt(salesOrders);
@@ -236,8 +237,80 @@ public class SalesOrderController {
                     ReturnStatus.SUCCESS.getStatus(),
                     ordersStatus);
         } else {
-            return new Result(false, "发货失败", ReturnStatus.NOT_ENOUGH.getStatus());
+            return Result.result(false, "发货失败", ReturnStatus.NOT_ENOUGH.getStatus());
         }
+    }
+
+    /**
+     * 卖家发货,单条或者多条，遍历货单ID
+     */
+    @RequestMapping("/player/seller/refuse")
+    public Result refuseSellerSend(@RequestParam("playerId") String playerId, @RequestParam("orderId") String orderId) {
+        if (StringUtils.isBlank(playerId) || null == orderId || StringUtils.isBlank(orderId)) {
+            return new Result(false, "参数错误", ReturnStatus.INVALID.getStatus());
+        }
+
+        SalesRefuseOrder refuseOrder = salesOrderService.getRefuseOrder(playerId,orderId);
+
+        SalesOrder salesOrder = salesOrderService.getSalesOrder(orderId);
+
+        if (Objects.isNull(refuseOrder) && salesOrder.getOrderState()!= REFUSE_ORDER_STATE){
+
+            //将订单交给其上级处理，当前订单设置为已经拒绝
+            RelationTree parent = treeService.getByPlayer(playerId);
+            salesOrder.setOrderState(OrderState.REFUSE.getStatus());
+            salesOrderService.updateOrder(salesOrder);
+
+
+
+            SalesOrder salesOrder1 = new SalesOrder();
+            //构造新的订单
+            String orderId1 = KeyGenerator.generateOrderID();
+            salesOrder1.setId(0);
+            salesOrder1.setOrderId(orderId1);
+            salesOrder1.setOrderAmount(salesOrder.getOrderAmount());
+            salesOrder1.setOrderBuyType(salesOrder.getOrderBuyType());
+            salesOrder1.setOrderPayType(salesOrder.getOrderPayType());
+            salesOrder1.setOrderPayAmount(salesOrder.getOrderPayAmount());
+            //设置为其上级
+            salesOrder1.setOrderPlayerSeller(parent.getTreeParentId());
+            salesOrder1.setOrderPlayerBuyer(salesOrder.getOrderPlayerBuyer());
+
+            salesOrder1.setOrderState(OrderState.PAY.getStatus());
+            salesOrder1.setCreateTime(new Timestamp(System.currentTimeMillis()));
+            salesOrder1.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+            salesOrderService.addOrder(salesOrder1);
+
+            //生成新的拒绝订单记录
+            refuseOrder = new SalesRefuseOrder();
+            refuseOrder.setRefuseId(0);
+            refuseOrder.setRefuseOrderOld(orderId);
+            refuseOrder.setRefuseOrderNew(orderId1);
+            refuseOrder.setRefusePlayerSeller(salesOrder.getOrderPlayerSeller());
+            refuseOrder.setRefusePlayerBuyer(salesOrder.getOrderPlayerBuyer());
+            refuseOrder.setCreateTime(new Timestamp(System.currentTimeMillis()));
+            refuseOrder.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+            salesOrderService.addRefuseOrder(refuseOrder);
+
+
+            //统计拒绝次数
+            int ruleReject = 3;
+            int rejectTimes = salesOrderService.selectSalesSellerRejectTimes(playerId, parent.getTreeParentId(), OrderState.REFUSE.getStatus());
+            if (rejectTimes >= ruleReject) {
+                CityBusiness businessRelation = new CityBusiness();
+                businessRelation.setBusinessId(0);
+                businessRelation.setBusinessEnabled(1);
+                businessRelation.setBusinessPlayerId(salesOrder.getOrderPlayerBuyer());
+                businessRelation.setBusinessParentId(parent.getTreeParentId());
+                treeService.addCityBusiness(businessRelation);
+            }
+
+            return Result.result(true, "拒绝订单成功", ReturnStatus.SUCCESS.getStatus());
+        }else{
+            log.error("已经拒绝订单成功");
+            return Result.result(true, "已经拒绝订单成功", ReturnStatus.SUCCESS.getStatus());
+        }
+
     }
 
     /**
@@ -272,22 +345,5 @@ public class SalesOrderController {
         return new Result("sucess", ReturnStatus.SUCCESS.getStatus(), orders);
     }
 
-    /**
-     * 账户创建
-     *
-     * @param playerId
-     * @param address
-     * @return
-     */
-    @RequestMapping("/account/create")
-    public Result createAccount(@RequestParam("playerId") String playerId, @RequestParam("address") String address) {
-        accountService.createAccount(playerId, address);
-        PlayerAccount account = accountService.getPlayerAccount(playerId);
-        if (null != account) {
-            return Result.result(true, "玩家账户开设成功", ReturnStatus.SUCCESS.getStatus(), account);
-        }
-
-        return Result.result(false, "玩家账户开设失败", ReturnStatus.FAILED.getStatus(), null);
-    }
 
 }

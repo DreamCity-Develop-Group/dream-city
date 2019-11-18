@@ -24,4 +24,5 @@ public interface PlayerTradeMapper {
 
     Integer updateByPrimaryKeySelective(PlayerTrade record);
 
+    PlayerTrade getPlayerTradeByOrderId();
 }

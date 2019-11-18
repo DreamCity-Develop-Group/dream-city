@@ -41,7 +41,9 @@
     <result column="player_name" property="playerName" jdbcType="VARCHAR" />
     <result column="verify_user_id" property="verifyEmpId" jdbcType="VARCHAR" />
     <result column="user_name" property="verifyUserName" jdbcType="VARCHAR" />
+    <result column="verify_id" property="verifyId" jdbcType="INTEGER" />
     <result column="verify_status" property="verifyStatus" jdbcType="VARCHAR" />
+    <result column="verify_to_address" property="verifyToAddress" jdbcType="VARCHAR" />
     <result column="verify_time" property="verifyTime" jdbcType="TIMESTAMP" />
     <result column="verify_desc" property="verifyDesc" jdbcType="VARCHAR" />
     <result column="trade_desc" property="tradeDesc" jdbcType="VARCHAR" />
@@ -55,14 +57,18 @@
   </sql>
 
   <select id="getTradeDetailList" resultMap="BaseResultMapExT" parameterType="com.dream.city.base.model.req.PlayerTradeReq" >
-    SELECT d.id detail_id, d.trade_id, d.verify_id, d.order_id, d.player_id, d.trade_detail_type, d.trade_amount, d.descr detail_descr, d.create_time detail_time,d.usdt_surplus,d.mt_surplus,
-      t.personal_tax,t.enterprise_tax,t.trade_type,t.trade_status,p.player_name,
+    SELECT d.id detail_id, d.trade_id, d.verify_id, d.order_id, d.player_id, d.trade_detail_type, d.trade_amount,
+           d.descr detail_descr, d.create_time detail_time,d.usdt_surplus,d.mt_surplus,
+           t.personal_tax,t.enterprise_tax,t.trade_type,t.trade_status,p.player_name,
       (SELECT u.name FROM user u,trade_verify v WHERE d.verify_id=v.verify_id and v.verify_user_id= u.id) user_name,
       (SELECT v.verify_status FROM trade_verify v WHERE d.verify_id = v.verify_id) verify_status,
+      (SELECT v.verify_to_address FROM trade_verify v WHERE d.verify_id = v.verify_id) verify_to_address,
       (SELECT v.create_time FROM trade_verify v WHERE d.verify_id = v.verify_id) verify_time,
       (SELECT o.order_name FROM invest_order o WHERE d.order_id=o.order_id) order_name,
       (SELECT o.order_num FROM invest_order o WHERE d.order_id=o.order_id) order_num
-    FROM trade_detail d LEFT JOIN player_trade t ON d.trade_id = t.trade_id LEFT JOIN city_player p ON d.player_id = p.player_id
+    FROM trade_detail d
+    LEFT JOIN player_trade t ON d.trade_id = t.trade_id
+    LEFT JOIN city_player p ON d.player_id = p.player_id
     WHERE d.trade_id = t.trade_id and d.player_id = p.player_id and d.trade_detail_type != 'recharge'
     <if test="detailId != null" >
       and d.id = #{detailId,jdbcType=INTEGER}
@@ -78,9 +84,6 @@
     </if>
     <if test="playerNick != null and playerNick != ''" >
       and p.player_nick= #{playerNick,jdbcType=VARCHAR}
-    </if>
-    <if test="verifyStatus != null and verifyStatus != ''" >
-      and v.verify_status= #{verifyStatus,jdbcType=VARCHAR}
     </if>
     <if test="tradeDetailType != null and tradeDetailType != ''" >
       and d.trade_detail_type= #{tradeDetailType,jdbcType=VARCHAR}
@@ -211,5 +214,15 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <select id="getTradeVerifyDetailList" resultMap="BaseResultMapExT" parameterType="com.dream.city.base.model.req.PlayerTradeReq" >
+    SELECT
+    v.verify_id,v.verify_status,v.verify_to_address,v.verify_desc ,v.update_time verify_time,
+    d.trade_player_id player_id,d.trade_amount
+    FROM trade_verify v
+    LEFT JOIN player_trade d
+    ON v.verify_trade_id = d.trade_id
+    WHERE	 v.verify_status='PASS'
+  </select>
 
 </mapper>

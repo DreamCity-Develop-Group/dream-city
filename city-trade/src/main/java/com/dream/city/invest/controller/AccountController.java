@@ -1,6 +1,7 @@
 package com.dream.city.invest.controller;
 
 import com.dream.city.base.model.Result;
+import com.dream.city.base.model.entity.Player;
 import com.dream.city.base.model.entity.PlayerAccount;
 import com.dream.city.base.model.enu.ReturnStatus;
 import com.dream.city.base.model.req.PlayerAccountReq;
@@ -151,5 +152,11 @@ public class AccountController {
     @RequestMapping("/getByPlayerId")
     public PlayerAccount getByPlayerId(@RequestParam("playerId")String playerId){
         return accountService.getPlayerAccountByPlayerId(playerId);
+    }
+
+    @RequestMapping("/getPlayerAccountByAddr")
+    public PlayerAccount getPlayerAccountByAddr(@RequestParam("addr")String addr){
+        PlayerAccount account = accountService.getPlayerAccountByAddr(addr);
+        return account;
     }
 }

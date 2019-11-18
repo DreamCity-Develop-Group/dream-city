@@ -27,7 +27,7 @@ public class CitySetApplicationTests {
     @Test
     public void addNotices(){
         List<Notice> notices = noticeMapper.getGameNotices(1);
-        HashMap<String,Notice> noticesMap = new HashMap<>();
+        Map<String,Object> noticesMap = new HashMap<>();
         for (Notice notice: notices){
             noticesMap.put("notice-"+notice.getNoticeId(),notice);
         }

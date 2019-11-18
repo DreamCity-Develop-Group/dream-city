@@ -9,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
+
 /**
  * @author Wvv
  */
@@ -29,7 +31,11 @@ public class MessageReceiver {
 
         com.dream.city.base.model.Message myMsg = JsonUtil.parseJsonToObj(msg, com.dream.city.base.model.Message.class);
         //Message msg = JsonUtil.parseJsonToObj(message,Message.class);
+        //消息重复标识
+        Integer current= Integer.getInteger(System.currentTimeMillis()+"");
+
         String type = myMsg.getData().getType();
+        myMsg.setCode(current);
 
         publishServer.pushToClient(myMsg);
         log.info("第一次推送信息");

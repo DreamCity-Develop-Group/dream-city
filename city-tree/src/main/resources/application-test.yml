@@ -1,4 +1,15 @@
 spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/dreamcity?serverTimezone=UTC&useUnicode=true&characterEncoding=UTF-8&transformedBitIsBoolean=true&autoReconnect=true&failOverReadOnly=false&allowMultiQueries=true&useSSL=false
+    username: dreamcity
+    password: Root@123
+    dbcp2:
+      initial-size: 5
+      min-idle: 5
+    tomcat:
+      max-active: 20
+      max-wait: 60000
   cache:
     type: redis
   redis:
@@ -14,27 +25,6 @@ spring:
         max-wait: -1
         max-idle: 100
         min-idle: 1
-
-
-  devtools:
-    restart:
-      #添加那个目录的文件需要restart
-      additional-paths: src/main/java
-      #排除那个目录的文件不需要restart
-      exclude: static/**
-
-  datasource:
-    url: jdbc:mysql://localhost:3306/dreamcity?serverTimezone=UTC&useUnicode=true&characterEncoding=UTF-8&transformedBitIsBoolean=true&autoReconnect=true&failOverReadOnly=false&allowMultiQueries=true&useSSL=false
-    username: dreamcity
-    password: Root@123
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    dbcp2:
-      initial-size: 5
-      min-idle: 5
-    tomcat:
-      max-active: 20
-      max-wait: 60000
-
 
 #eureka
 eureka:
@@ -63,3 +53,10 @@ auth:
 platform:
   account: 4E2EE556055042AB80E3D164E51DDD1A
 
+
+tx-lcn:
+  client:
+    manager-address: localhost:8070
+  springcloud:
+    loadbalance:
+      enabled: true

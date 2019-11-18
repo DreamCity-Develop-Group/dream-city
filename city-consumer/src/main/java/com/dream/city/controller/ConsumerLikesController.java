@@ -1,6 +1,7 @@
 package com.dream.city.controller;
 
 import com.dream.city.base.model.Message;
+import com.dream.city.base.model.enu.ReturnStatus;
 import com.dream.city.service.handler.LikeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -39,6 +40,7 @@ public class ConsumerLikesController {
         try {
             return likeService.canLikePlayerToday(msg);
         } catch (Exception e) {
+            msg.getData().setCode(ReturnStatus.FAILED.getStatus());
             return msg;
         }
     }
@@ -57,6 +59,7 @@ public class ConsumerLikesController {
         try {
             return likeService.canLikeInvestToday(msg);
         } catch (Exception e) {
+            msg.getData().setCode(ReturnStatus.FAILED.getStatus());
             return msg;
         }
     }
@@ -74,6 +77,7 @@ public class ConsumerLikesController {
         try {
             return likeService.playerLike(msg);
         } catch (Exception e) {
+            msg.getData().setCode(ReturnStatus.FAILED.getStatus());
             return msg;
         }
     }
@@ -104,6 +108,7 @@ public class ConsumerLikesController {
         try {
             return likeService.playerLikesCount(msg);
         } catch (Exception e) {
+            msg.getData().setCode(ReturnStatus.FAILED.getStatus());
             return msg;
         }
     }
@@ -120,6 +125,7 @@ public class ConsumerLikesController {
         try {
             return likeService.playerLikesList(msg);
         } catch (Exception e) {
+            msg.getData().setCode(ReturnStatus.FAILED.getStatus());
             return msg;
         }
     }

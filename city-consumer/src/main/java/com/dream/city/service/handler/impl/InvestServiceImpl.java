@@ -10,11 +10,15 @@ import com.dream.city.base.model.enu.ReturnStatus;
 import com.dream.city.base.model.req.CityInvestReq;
 import com.dream.city.base.model.resp.InvestResp;
 import com.dream.city.base.utils.DataUtils;
+import com.dream.city.base.utils.JsonUtil;
+import com.dream.city.base.utils.RedisUtils;
 import com.dream.city.service.consumer.ConsumerInvestService;
 import com.dream.city.service.consumer.ConsumerOrderService;
 import com.dream.city.service.consumer.ConsumerPropertyService;
 import com.dream.city.service.consumer.ConsumerTradeVerifyService;
 import com.dream.city.service.handler.InvestService;
+import com.dream.city.service.handler.OrderService;
+import com.dream.city.service.handler.PropertyService;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,9 +26,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Wvv
@@ -38,14 +41,14 @@ public class InvestServiceImpl implements InvestService {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    ConsumerTradeVerifyService verifyService;
+    private OrderService orderService;
     @Autowired
-    private ConsumerInvestService investService;
+    PropertyService propertyService;
     @Autowired
-    ConsumerPropertyService propertyService;
-    @Autowired
-    ConsumerOrderService orderService;
+    RedisUtils redisUtils;
 
+    final String INVERST_HASH_DATA = "INVERST_HASH_DATA_";
+    final long INVERST_HASH_DATA_EXPIRED= 60*10L;
 
     /**
      * 预约投资
@@ -58,7 +61,7 @@ public class InvestServiceImpl implements InvestService {
     @Override
     public Message playerInvest(Message msg) throws BusinessException {
         logger.info("预约投资", JSONObject.toJSONString(msg));
-        return investService.playerInvest(msg);
+        return orderService.playerInvest(msg);
     }
 
 
@@ -88,7 +91,7 @@ public class InvestServiceImpl implements InvestService {
     @Override
     public Message getInvest(Message msg) throws BusinessException {
         logger.info("查询订单", JSONObject.toJSONString(msg));
-        return investService.getPlayerInvestOrderById(msg);
+        return orderService.getPlayerInvestOrderById(msg);
     }
 
 
@@ -103,15 +106,46 @@ public class InvestServiceImpl implements InvestService {
     @Override
     public Message getInvestList(Message msg) throws BusinessException {
         logger.info("投资列表", JSONObject.toJSONString(msg));
+        String json = JsonUtil.parseObjToJson(msg.getData().getData());
+        JSONObject jsonObject = JsonUtil.parseJsonToObj(json,JSONObject.class);
+        String playerId = jsonObject.getString("playerId");
+        String friendId = jsonObject.getString("friendId");
+        Map<String, Object> dataResult = new Hashtable<>();
+
+        Map<String, Object> data = new Hashtable<>();
+
+        if (redisUtils.hasKey(INVERST_HASH_DATA+playerId) && StringUtils.isBlank(friendId)){
+            Map rdata = redisUtils.hmget(INVERST_HASH_DATA+playerId);
+            List list = (List)rdata.get("investList");
+            if (list.size()>0){
+                msg.getData().setData(rdata);
+                msg.setDesc("取出投资数据成功");
+                msg.setCode(ReturnStatus.SUCCESS.getStatus());
+                return msg;
+            }else{
+                redisUtils.del(INVERST_HASH_DATA+playerId);
+            }
+        }
+
         CityInvestReq invest = DataUtils.getInvestFromMessage(msg);
-        Result<List<Map<String, Object>>> result = propertyService.getPropertyLsit(invest);
-        Map<String, Object> dataResult = new HashMap<>();
-        dataResult.put("investList", result.getData());
+
         if (StringUtils.isNotBlank(invest.getFriendId())) {
             dataResult.put("playerId", invest.getFriendId());
+            invest.setPlayerId(invest.getFriendId());
         } else {
             dataResult.put("playerId", invest.getPlayerId());
+            invest.setPlayerId(invest.getPlayerId());
         }
+
+        Result<List<Map<String, Object>>> result = propertyService.getPropertyLsit(invest);
+
+        dataResult.put("investList", result.getData());
+
+        if(StringUtils.isBlank(friendId)){
+            redisUtils.hmset(INVERST_HASH_DATA+playerId,dataResult);
+            redisUtils.expire(INVERST_HASH_DATA+playerId,INVERST_HASH_DATA_EXPIRED);
+        }
+
         msg.getData().setData(dataResult);
         msg.setDesc(result.getMsg());
         msg.setCode(result.getSuccess() ? ReturnStatus.SUCCESS.getStatus() : ReturnStatus.ERROR.getStatus());

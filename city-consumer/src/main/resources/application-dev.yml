@@ -1,22 +1,14 @@
 spring:
-  devtools:
-    restart:
-      #添加那个目录的文件需要restart
-      additional-paths: src/main/java
-      #排除那个目录的文件不需要restart
-      exclude: static/**
-
   datasource:
     #driver-class-name: com.mysql.jdbc.Driver
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/dreamcity?serverTimezone=UTC&useUnicode=true&characterEncoding=UTF-8&transformedBitIsBoolean=true&autoReconnect=true&failOverReadOnly=false&allowMultiQueries=true&useSSL=false
     username: dreamcity
     password: Root@123
-
   cache:
     type: redis
   redis:
-    host: localhost
+    host: 127.0.0.1
     port: 6379
     database: 0
     password: 123456
@@ -28,10 +20,13 @@ spring:
         max-wait: -1
         max-idle: 300
         min-idle: 1
+
   cloud:
     loadbalancer:
       retry:
         enabled: true
+  jpa:
+    database-platform:
 
 #注册密码salt
 dreamcity:
@@ -43,13 +38,16 @@ dreamcity:
   platform:
     account:
       accIds: 4E2EE556055042AB80E3D164E51DDD1A
-
+  
+  wallet:
+    url: http://47.244.78.40:23333/v1/wallet/getWalletAddress?sign=7fa7133adcf511839a480780187d2be4&coinType=ETH&equipmentId=equipmentId&password=test&userId=0
+    signKey: cGFuaG06OTg2OTI1X19weqYW5obQada
 
 
 eureka:
   instance:
     hostname: localhost
-    instance-id: ${spring.application.name}
+    instance-id: ${spring.application.name}-${server.port}
   client:
     eureka-server-read-timeout-seconds: 10
     eureka-connection-idle-timeout-seconds: 5
@@ -60,3 +58,6 @@ eureka:
 tx-lcn:
   client:
     manager-address: localhost:8070
+  springcloud:
+    loadbalance:
+      enabled: true

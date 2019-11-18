@@ -1,6 +1,7 @@
 package com.dream.city.service.handler.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.codingapi.txlcn.tc.annotation.DTXPropagation;
 import com.codingapi.txlcn.tc.annotation.LcnTransaction;
 import com.dream.city.base.exception.BusinessException;
 import com.dream.city.base.model.Message;
@@ -15,6 +16,7 @@ import com.dream.city.base.model.resp.InvestResp;
 import com.dream.city.base.model.resp.PlayerResp;
 import com.dream.city.base.utils.DataUtils;
 import com.dream.city.base.utils.KeyGenerator;
+import com.dream.city.base.utils.RedisUtils;
 import com.dream.city.service.consumer.*;
 import com.dream.city.service.handler.CommonService;
 import com.dream.city.service.handler.OrderService;
@@ -40,6 +42,8 @@ import java.util.*;
 public class OrderServiceImpl implements OrderService {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    final String INVERST_HASH_DATA = "INVERST_HASH_DATA_";
+
     @Autowired
     private ConsumerOrderService orderService;
     @Autowired
@@ -61,12 +65,14 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     CommonService commonService;
+    @Autowired
+    RedisUtils redisUtils;
 
 
     @LcnTransaction
     @Transactional
     @Override
-    public Message playerInvest(Message msg) throws BusinessException {
+    public Message  playerInvest(Message msg) throws BusinessException {
         logger.info("预约投资:{}", msg);
         String desc = "";
         boolean success = Boolean.FALSE;
@@ -115,9 +121,9 @@ public class OrderServiceImpl implements OrderService {
                 desc = "项目投资已结束";
             }
             //4限额
-        /*if (orderReq.getOrderAmount().compareTo(invest.getInLimit())>0){
-            desc = "超过项目投资限额，投资限额为：" + invest.getInLimit();
-        }*/
+            /*if (orderReq.getOrderAmount().compareTo(invest.getInLimit())>0){
+                desc = "超过项目投资限额，投资限额为：" + invest.getInLimit();
+            }*/
             Result<PlayerAccount> playerAccountResult = accountService.getPlayerAccount(player.getPlayerId());
             PlayerAccount playerAccount = DataUtils.toJavaObject(playerAccountResult.getData(), PlayerAccount.class);
             //5USDT不足
@@ -130,19 +136,23 @@ public class OrderServiceImpl implements OrderService {
             }
 
             //返回数据
-            result.put("investId", "");
+            result.put("investId", "0");
+            result.put("inType",invest.getInType());
             result.put("usdtFreeze", BigDecimal.ZERO);
             result.put("mtFreeze", BigDecimal.ZERO);
             result.put("state", ReturnStatus.INVEST_SUBSCRIBE.getStatus());
 
             //生成订单
-            Result<InvestOrder> orderResult = this.orderCreate(invest, player.getPlayerId(), orderRepeat, desc);
+            Result<InvestOrder> orderResult = orderCreate(invest, player.getPlayerId(), orderRepeat, desc);
             InvestOrder order = null;
             if (orderResult != null && orderResult.getData() != null) {
                 order = orderResult.getData();
                 result.put("investId", order.getOrderInvestId());
+                result.put("state", ReturnStatus.INVEST_SUBSCRIBED.getStatus());
+                result.put("inType", invest.getInType());
 
                 PlayerEarning insertEarningReq = new PlayerEarning();
+                insertEarningReq.setEarnId(0);
                 insertEarningReq.setIsWithdrew(0);
                 insertEarningReq.setEarnMax(invest.getInLimit().multiply(BigDecimal.valueOf(Double.parseDouble(String.valueOf(invest.getInEarning())))));
                 insertEarningReq.setEarnCurrent(BigDecimal.ZERO);
@@ -163,7 +173,8 @@ public class OrderServiceImpl implements OrderService {
             //总税金
             BigDecimal inTax = invest.getPersonalInTax().add(invest.getEnterpriseIntax()).add(invest.getInQuotaTax());
             if (order != null && order.getOrderId() != null) {
-                updatePlayerAccountResult = this.deductPlayerAccountAmount(orderAmount, inTax, playerAccount);
+                //TODO 投资成功，冻结USDT，暂时不冻结MT，待第一次提取时扣除相应的税金
+                updatePlayerAccountResult = deductPlayerAccountAmount(orderAmount, inTax, playerAccount);
                 success = updatePlayerAccountResult.getSuccess();
                 desc = updatePlayerAccountResult.getMsg();
             } else {
@@ -237,7 +248,7 @@ public class OrderServiceImpl implements OrderService {
                 //定额得税
                 if (trade.getQuotaTax().compareTo(BigDecimal.ZERO) > 0) {
                     tradeDetail.setTradeAmount(trade.getQuotaTax());
-                    tradeDetail.setMtSurplus(playerAccount.getAccMt().subtract(trade.getEnterpriseTax().add(trade.getPersonalTax()).add(trade.getQuotaTax())));
+                    //tradeDetail.setMtSurplus(playerAccount.getAccMt().subtract(trade.getEnterpriseTax().add(trade.getPersonalTax()).add(trade.getQuotaTax())));
                     tradeDetail.setTradeDetailType(TradeDetailType.MT_INVEST_QUOTA_TAX.getCode());
                     tradeDetail.setDescr(TradeDetailType.MT_INVEST_QUOTA_TAX.getDesc());
                     tradeService.insertTradeDetail(tradeDetail);
@@ -245,9 +256,13 @@ public class OrderServiceImpl implements OrderService {
 
                 success = Boolean.TRUE;
                 desc = "预约投资成功";
+                if (redisUtils.hasKey(INVERST_HASH_DATA+player.getPlayerId())){
+                    //清除缓存,让客户端更新
+                    redisUtils.del(INVERST_HASH_DATA+player.getPlayerId());
+                }
                 msg.getData().setCode(ReturnStatus.SUCCESS.getStatus());
                 result.put("usdtFreeze", trade.getTradeAmount());
-                result.put("mtFreeze", invest.getPersonalInTax().add(invest.getEnterpriseIntax()).add(invest.getInQuotaTax()));
+                //result.put("mtFreeze", invest.getPersonalInTax().add(invest.getEnterpriseIntax()).add(invest.getInQuotaTax()));
                 result.put("state", ReturnStatus.INVEST_SUBSCRIBED.getStatus());
             } else {
                 success = Boolean.FALSE;
@@ -260,6 +275,7 @@ public class OrderServiceImpl implements OrderService {
 
         msg.setDesc(desc);
         msg.getData().setData(result);
+        msg.getData().setCode(ReturnStatus.SUCCESS.getStatus());
         return msg;
     }
 
@@ -329,7 +345,7 @@ public class OrderServiceImpl implements OrderService {
      * @param desc
      * @return
      */
-    @LcnTransaction
+    @LcnTransaction(propagation = DTXPropagation.REQUIRED)
     @Transactional
     @Override
     public Result<InvestOrder> orderCreate(InvestResp invest, String orderPayerId, int orderRepeat, String desc) throws BusinessException {
@@ -339,7 +355,7 @@ public class OrderServiceImpl implements OrderService {
             recordReq.setOrderInvestId(invest.getInId());
             recordReq.setOrderPayerId(orderPayerId);
             //已预约
-            recordReq.setOrderState(InvestStatus.SUBSCRIBED.name());
+            recordReq.setOrderState(InvestStatus.SUBSCRIBED.getStatus());
             recordReq.setOrderRepeat(orderRepeat);
             recordReq.setOrderAmount(invest.getInLimit());
             recordReq.setOrderName(invest.getInName());
@@ -381,10 +397,10 @@ public class OrderServiceImpl implements OrderService {
             playerAccount.setAccUsdt(playerAccount.getAccUsdt().subtract(orderAmount));
             playerAccount.setAccUsdtAvailable(playerAccount.getAccUsdtAvailable().subtract(orderAmount));
             playerAccount.setAccUsdtFreeze(playerAccount.getAccUsdtFreeze().add(orderAmount));
-            //投资冻结税金MT
-            playerAccount.setAccMt(playerAccount.getAccUsdt().subtract(inTax));
-            playerAccount.setAccMtAvailable(playerAccount.getAccMtAvailable().subtract(inTax));
-            playerAccount.setAccMtFreeze(playerAccount.getAccMtFreeze().add(inTax));
+            //投资冻结税金MT，目前不扣除
+            playerAccount.setAccMt(playerAccount.getAccMt());//.subtract(inTax)
+            playerAccount.setAccMtAvailable(playerAccount.getAccMtAvailable());//.subtract(inTax)
+            playerAccount.setAccMtFreeze(playerAccount.getAccMtFreeze());//.add(inTax)
 
             Result<Integer> updatePlayerAccountResult = accountService.updatePlayerAccount(playerAccount);
 

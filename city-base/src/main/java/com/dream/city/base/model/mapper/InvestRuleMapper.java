@@ -35,6 +35,7 @@ public interface InvestRuleMapper {
             @Result(property = "ruleId", column = "rule_id", id = true),
             @Result(property = "ruleFlag", column = "rule_flag"),
             @Result(property = "ruleOpt", column = "rule_opt"),
+            @Result(property = "ruleOptPre", column = "rule_opt_pre"),
             @Result(property = "ruleName", column = "rule_name"),
             @Result(property = "ruleDesc", column = "rule_desc"),
             @Result(property = "ruleItem", column = "rule_item"),
@@ -96,7 +97,9 @@ public interface InvestRuleMapper {
             "</script>"})
     void setRuleState(@Param("ruleList") List<InvestRule> ruleList);
 
-    @Select("select * from `invest_rule` where 1=1 and rule_invest_id = #{investId} and rule_state=#{state}")
+    //@Select("select * from `invest_rule` where 1=1 and rule_invest_id = #{investId} and rule_state=#{state}")
+    @Select("select * from `invest_rule` where 1=1 and rule_id = #{investId} ")
+    @ResultMap("InvestRuleBaseMap")
     List<InvestRule> getInvestRuleByKey(Integer key);
 
     @Select("select * from `invest_rule` where 1=1 ")
@@ -104,7 +107,7 @@ public interface InvestRuleMapper {
     List<InvestRule> selectRules();
 
 
-    @Select("select * from `invest_rule` where 1=1 and rule_item=#{itemId} ")
+    @Select("select * from `invest_rule` where 1=1 and rule_item=#{itemId} order by rule_level asc")
     @ResultMap("InvestRuleBaseMap")
     List<InvestRule> getInvestRuleByItem(Integer itemId);
 }

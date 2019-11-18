@@ -168,5 +168,14 @@ public class CommonServiceImpl implements CommonService {
         return false;
     }
 
+    @LcnTransaction
+    @Transactional
+    @Override
+    public boolean sendMessage(CityMessage message) throws BusinessException {
+
+        Result result = massegeService.insertMessage(message);
+        return result.getSuccess();
+    }
+
 
 }

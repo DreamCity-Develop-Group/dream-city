@@ -2,7 +2,7 @@ package com.dream.city.service.consumer;
 
 import com.dream.city.base.model.Page;
 import com.dream.city.base.model.Result;
-import com.dream.city.base.model.entity.Likes;
+import com.dream.city.base.model.entity.PlayerLikes;
 import com.dream.city.base.model.req.FriendsReq;
 import com.dream.city.base.model.resp.FriendsResp;
 import com.github.pagehelper.PageInfo;
@@ -57,5 +57,5 @@ public interface ConsumerFriendsService {
      * @param playerId
      */
     @RequestMapping("/to/friend/main")
-    Result<List<Likes>> getInvestLikes(@RequestParam("playerId") String playerId);
+    Result<List<PlayerLikes>> getInvestLikes(@RequestParam("playerId") String playerId);
 }

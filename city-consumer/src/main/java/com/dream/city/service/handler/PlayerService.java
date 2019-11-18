@@ -3,6 +3,8 @@ package com.dream.city.service.handler;
 import com.dream.city.base.exception.BusinessException;
 import com.dream.city.base.model.Message;
 
+import java.net.URISyntaxException;
+
 public interface PlayerService {
 
     /**
@@ -93,7 +95,7 @@ public interface PlayerService {
      *                }
      * @return
      */
-    Message reg(Message message);
+    Message reg(Message message) throws URISyntaxException;
 
 
     /**

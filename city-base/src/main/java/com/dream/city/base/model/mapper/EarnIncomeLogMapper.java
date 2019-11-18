@@ -22,7 +22,7 @@ public interface EarnIncomeLogMapper {
             @Result(property = "createTime", column = "create_time"),
     })
 
-    @Insert("insert into earn_income_log values(#{earnId},#{inInvestId},#{inPlayerId},#{inAmount})")
+    @Insert("insert into earn_income_log values(#{inLogId},#{inInvestId},#{inPlayerId},#{inAmount},#{createTime})")
     void add(EarnIncomeLog earnIncomeLog);
     /**
      *查找当前玩家当前项目的收益

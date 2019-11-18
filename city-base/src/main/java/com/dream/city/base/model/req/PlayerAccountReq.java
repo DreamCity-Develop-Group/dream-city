@@ -5,6 +5,7 @@ import lombok.Data;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author wvv
@@ -16,7 +17,7 @@ public class PlayerAccountReq implements Serializable {
     private Integer accId;
 
     /** 平台账号id */
-    private String platformAccIds;
+    private List<String> platformAccIds;
 
     /** 账户玩家 */
     private String accPlayerId;
@@ -30,7 +31,11 @@ public class PlayerAccountReq implements Serializable {
      * 玩家账户地址
      */
     private String accAddr;
-    private BigDecimal money ;
+
+    /**
+     * 金额
+     */
+    private BigDecimal amount;
 
     /**
      * 玩家账户密码
@@ -39,7 +44,7 @@ public class PlayerAccountReq implements Serializable {
     /**
      * 交易密码
      */
-    private String oldpwshop;
+    private String tradePass;
 
     /**
      * 交易类型（充值:recharge,转账:transfer,提现:withdraw,购买mt:buy_mt,投资invest)

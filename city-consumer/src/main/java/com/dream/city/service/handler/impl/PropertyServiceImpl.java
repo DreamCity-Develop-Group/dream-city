@@ -24,10 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Wvv
@@ -42,9 +39,11 @@ public class PropertyServiceImpl implements PropertyService {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    private ConsumerPropertyService propertyService;
+    private ConsumerPropertyService consumerPropertyService;
     @Autowired
     ConsumerInvestService investService;
+    @Autowired
+    PropertyService propertyService;
 
 
     @LcnTransaction
@@ -85,12 +84,34 @@ public class PropertyServiceImpl implements PropertyService {
                     resultMap = new HashMap<>();
                     //物业投资按钮
                     int status = ReturnStatus.INVEST_SUBSCRIBE.getStatus();
+
                     logger.info("物业状态",invest.getOrderState());
-                    if (StringUtils.isBlank(invest.getOrderState())){
+                    if (Objects.isNull(invest.getOrderState())){
                         //预约
                         status = ReturnStatus.INVEST_SUBSCRIBE.getStatus();
                     }else {
-                        if(InvestStatus.SUBSCRIBE.name().equalsIgnoreCase(invest.getOrderState())){
+                        String string= InvestStatus.SUBSCRIBE.name();
+                        int code = InvestStatus.SUBSCRIBE.getStatus();
+                        int state = invest.getOrderState();
+
+                        if (state == InvestStatus.SUBSCRIBE.getStatus()){
+                            //预约
+                            status = ReturnStatus.INVEST_SUBSCRIBE.getStatus();
+                        }else if(state == InvestStatus.SUBSCRIBED.getStatus()){
+                            //已预约
+                            status = ReturnStatus.INVEST_SUBSCRIBED.getStatus();
+                        }else if (state == InvestStatus.MANAGEMENT.getStatus()){
+                            //经营中
+                            status = ReturnStatus.INVEST_MANAGEMENT.getStatus();
+                        }else if(state == InvestStatus.EXTRACT.getStatus()){
+                            //可提取
+                            status = ReturnStatus.INVEST_EXTRACT.getStatus();
+                        }else {
+                            //预约
+                            status = ReturnStatus.INVEST_SUBSCRIBE.getStatus();
+                        }
+
+                        /*if(InvestStatus.SUBSCRIBE.name().equalsIgnoreCase(invest.getOrderState())){
                             //预约
                             status = ReturnStatus.INVEST_SUBSCRIBE.getStatus();
                         }else if(InvestStatus.SUBSCRIBED.name().equalsIgnoreCase(invest.getOrderState())){
@@ -103,7 +124,7 @@ public class PropertyServiceImpl implements PropertyService {
                         if(InvestStatus.EXTRACT.name().equalsIgnoreCase(invest.getOrderState())){
                             //可提取
                             status = ReturnStatus.INVEST_EXTRACT.getStatus();
-                        }
+                        }*/
                     }
                     if(invest.getIsWithdrew() != null && invest.getIsWithdrew() == 2){
                         //可提取
@@ -125,9 +146,9 @@ public class PropertyServiceImpl implements PropertyService {
                     resultMap.put("state", status);
                     resultMap.put("openState", invest.getIsValid());
                     resultMap.put("inType", invest.getInType());
-                    resultMap.put("expectIncome", invest.getInLimit()
-                            .multiply(BigDecimal.valueOf(Long.parseLong(String.valueOf(invest.getInEarning())))));
+                    resultMap.put("expectIncome", invest.getInLimit().multiply(invest.getInEarning()));
 
+                    resultMap.put("likeCount",0);
                     String resultTime = "9:30";
                     if (invest.getVerifyTime() != null){
                         resultTime = DateUtils.date2Str(invest.getVerifyTime(),"HH:mm");
@@ -158,7 +179,7 @@ public class PropertyServiceImpl implements PropertyService {
         logger.info("查询物业", JSONObject.toJSONString(msg));
 
         CityInvestReq investReq = DataUtils.getInvestFromMessage(msg);
-        Result result = propertyService.getProperty(investReq);
+        Result result = consumerPropertyService.getProperty(investReq);
         msg.getData().setData(JSON.toJSONString(result.getData()));
         msg.setDesc(result.getMsg());
         return msg;
@@ -176,7 +197,7 @@ public class PropertyServiceImpl implements PropertyService {
         logger.info("物业列表", JSONObject.toJSONString(msg));
 
         CityInvestReq invest = DataUtils.getInvestFromMessage(msg);
-        Result result = propertyService.getPropertyLsit(invest);
+        Result result = getPropertyLsit(invest);
         msg.getData().setData(JSON.toJSONString(result.getData()));
         msg.setDesc(result.getMsg());
         return msg;

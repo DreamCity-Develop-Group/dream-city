@@ -12,10 +12,14 @@ public class NoticeResp implements Serializable {
 
     private Integer noticeId;
 
+    private String title;
+
     private String noticeContent;
 
     private Integer noticeState;
 
     private String sendTime;
+
+    private String createTime;
 
 }

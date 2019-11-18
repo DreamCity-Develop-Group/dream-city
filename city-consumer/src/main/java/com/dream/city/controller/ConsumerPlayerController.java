@@ -1,6 +1,7 @@
 package com.dream.city.controller;
 
 import com.dream.city.base.model.*;
+import com.dream.city.base.model.enu.ReturnStatus;
 import com.dream.city.service.handler.PlayerService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -37,6 +38,7 @@ public class ConsumerPlayerController {
             return playerService.updatePlayerHeadImg(msg);
         }catch (Exception e){
             //throw new BusinessException("setplayertree");
+            msg.getData().setCode(ReturnStatus.FAILED.getStatus());
             return msg;
         }
     }
@@ -49,6 +51,7 @@ public class ConsumerPlayerController {
             return playerService.searchfriend(msg);
         }catch (Exception e){
             //throw new BusinessException("setplayertree");
+            msg.getData().setCode(ReturnStatus.FAILED.getStatus());
             return msg;
         }
     }
@@ -60,6 +63,7 @@ public class ConsumerPlayerController {
             return playerService.setTradePass(msg);
         }catch (Exception e){
             //throw new BusinessException("setplayertree");
+            msg.getData().setCode(ReturnStatus.FAILED.getStatus());
             return msg;
         }
     }
@@ -79,6 +83,7 @@ public class ConsumerPlayerController {
             return playerService.getCode(msg);
         }catch (Exception e){
             //throw new BusinessException("setplayertree");
+            msg.getData().setCode(ReturnStatus.FAILED.getStatus());
             return msg;
         }
     }
@@ -97,6 +102,7 @@ public class ConsumerPlayerController {
             return playerService.getUser(msg);
         }catch (Exception e){
             //throw new BusinessException("setplayertree");
+            msg.getData().setCode(ReturnStatus.FAILED.getStatus());
             return msg;
         }
     }
@@ -115,6 +121,7 @@ public class ConsumerPlayerController {
             return playerService.squareFriends(msg);
         }catch (Exception e){
             //throw new BusinessException("setplayertree");
+            msg.getData().setCode(ReturnStatus.FAILED.getStatus());
             return msg;
         }
     }
@@ -133,6 +140,7 @@ public class ConsumerPlayerController {
             return playerService.pwforget(msg);
         }catch (Exception e){
             //throw new BusinessException("setplayertree");
+            msg.getData().setCode(ReturnStatus.FAILED.getStatus());
             return msg;
         }
     }
@@ -150,6 +158,7 @@ public class ConsumerPlayerController {
             return playerService.resetLoginPass(msg);
         }catch (Exception e){
             //throw new BusinessException("setplayertree");
+            msg.getData().setCode(ReturnStatus.FAILED.getStatus());
             return msg;
         }
     }
@@ -167,6 +176,7 @@ public class ConsumerPlayerController {
             return playerService.resetTradePass(msg);
         }catch (Exception e){
             //throw new BusinessException("setplayertree");
+            msg.getData().setCode(ReturnStatus.FAILED.getStatus());
             return msg;
         }
     }
@@ -202,6 +212,7 @@ public class ConsumerPlayerController {
             return playerService.reg(msg);
         }catch (Exception e){
             //throw new BusinessException("setplayertree");
+            msg.getData().setCode(ReturnStatus.FAILED.getStatus());
             return msg;
         }
     }
@@ -222,6 +233,7 @@ public class ConsumerPlayerController {
             return playerService.login(msg);
         }catch (Exception e){
             //throw new BusinessException("setplayertree");
+            msg.getData().setCode(ReturnStatus.FAILED.getStatus());
             return msg;
         }
     }
@@ -241,6 +253,7 @@ public class ConsumerPlayerController {
             return playerService.codeLogin(msg);
         }catch (Exception e){
             //throw new BusinessException("setplayertree");
+            msg.getData().setCode(ReturnStatus.FAILED.getStatus());
             return msg;
         }
     }
@@ -259,6 +272,7 @@ public class ConsumerPlayerController {
             return playerService.exit(msg);
         }catch (Exception e){
             //throw new BusinessException("setplayertree");
+            msg.getData().setCode(ReturnStatus.FAILED.getStatus());
             return msg;
         }
     }
@@ -273,6 +287,7 @@ public class ConsumerPlayerController {
             return playerService.readMessage(msg);
         }catch (Exception e){
             //throw new BusinessException("setplayertree");
+            msg.getData().setCode(ReturnStatus.FAILED.getStatus());
             return msg;
         }
     }
@@ -284,6 +299,7 @@ public class ConsumerPlayerController {
             return playerService.getMessageList(msg);
         }catch (Exception e){
             //throw new BusinessException("setplayertree");
+            msg.getData().setCode(ReturnStatus.FAILED.getStatus());
             return msg;
         }
     }

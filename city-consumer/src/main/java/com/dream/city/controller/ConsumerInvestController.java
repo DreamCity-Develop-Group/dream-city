@@ -1,7 +1,9 @@
 package com.dream.city.controller;
 
 import com.dream.city.base.model.Message;
+import com.dream.city.base.model.enu.ReturnStatus;
 import com.dream.city.service.handler.InvestService;
+import com.dream.city.service.handler.PropertyService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
@@ -25,6 +27,8 @@ public class ConsumerInvestController {
 
     @Autowired
     InvestService investService;
+    @Autowired
+    PropertyService propertyService;
 
 
     /**
@@ -38,6 +42,7 @@ public class ConsumerInvestController {
         try {
             return investService.playerInvest(msg);
         }catch (Exception e){
+            msg.getData().setCode(ReturnStatus.FAILED.getStatus());
             return msg;
         }
     }
@@ -70,6 +75,7 @@ public class ConsumerInvestController {
         try {
             return investService.getInvest(msg);
         }catch (Exception e){
+            msg.getData().setCode(ReturnStatus.FAILED.getStatus());
             return msg;
         }
     }
@@ -86,45 +92,10 @@ public class ConsumerInvestController {
         try {
             return investService.getInvestList(msg);
         }catch (Exception e){
+            msg.getData().setCode(ReturnStatus.FAILED.getStatus());
             return msg;
         }
     }
-
-
-    /**
-     * 投资列表
-     * @param msg
-     * @return
-     */
-    /*@RequestMapping("/getInvestList")
-    public Message getInvestList(@RequestBody Message msg){
-        logger.info("查询投资列表", JSONObject.toJSONString(msg));
-        return orderHandleService.getPlayerInvestOrders(msg);
-    }*/
-
-
-
-
-
-    /**
-     * 用户取消下单
-     * @param msg
-     * @return
-     */
-    /*@RequestMapping("/orderCancel")
-    public Message orderCancel(@RequestBody Message msg){
-        logger.info("用户取消下单", JSONObject.toJSONString(msg));
-
-        //订单状态修改
-
-        //用户账户金额返回 解冻 退款
-
-        //用户账户流水
-
-        msg.getData().setData(JSON.toJSONString(""));
-        msg.setDesc("");
-        return msg;
-    }*/
 
 
 

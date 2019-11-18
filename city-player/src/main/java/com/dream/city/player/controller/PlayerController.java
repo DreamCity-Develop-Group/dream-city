@@ -90,7 +90,7 @@ public class PlayerController {
         PlayerResp playerExistByNick = playerService.getPlayerByName(null,nick);
         if (playerExistByNick != null){
             tip = "["+ nick +"]" + CityGlobal.Constant.REG_USER_NICK_EXIST;
-            return Result.result(false,tip,ReturnStatus.ACCOUNT_EXISTS.getStatus(),null);
+            return Result.result(false,tip,ReturnStatus.NICK_EXISTS.getStatus(),null);
         }
 
         /*if(StringUtils.isBlank(code)){
@@ -175,6 +175,10 @@ public class PlayerController {
                 result.setCode(ReturnStatus.ERROR_NOTEXISTS.getStatus());
                 tip.append(CityGlobal.Constant.USER_NOT_EXIT);
             }else {
+                //禁止登录用户
+                if (playerExists.getIsValid().equals("0")){
+                    return Result.result(false,"当前用户禁止登录",ReturnStatus.FAILED.getStatus());
+                }
                 playerId = playerExists.getPlayerId();
                 // 用户名
                 if (!playerExists.getPlayerName().equalsIgnoreCase(username)){
@@ -527,7 +531,6 @@ public class PlayerController {
     @RequestMapping("/getPlayerByPlayerId")
     public Player getPlayerByPlayerId(@RequestParam("playerId")String playerId){
         Player player = playerService.getPlayerByPlayerId(playerId);
-
 
         return player;
     }

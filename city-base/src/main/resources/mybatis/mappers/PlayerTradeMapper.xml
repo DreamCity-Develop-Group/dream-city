@@ -190,6 +190,8 @@
       now(),
     </trim>
   </insert>
+
+
   <update id="updateByPrimaryKeySelective" parameterType="com.dream.city.base.model.entity.PlayerTrade" >
     update player_trade
     <set >
@@ -210,5 +212,18 @@
     where trade_id = #{tradeId,jdbcType=INTEGER}
   </update>
 
+
+  <select id="getPlayerTradeByOrderId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    from player_trade
+    <where>
+      1=1
+      <if test="tradeOrderId != null" >
+        and trade_order_id = #{tradeOrderId,jdbcType=INTEGER}
+      </if>
+    </where>
+    order by update_time desc limit 1
+  </select>
 
 </mapper>

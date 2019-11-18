@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dream.city.base.model.mapper.CommerceRelationMapper" >
+  <resultMap id="TreeBaseResultMap" type="com.dream.city.base.model.entity.CommerceRelation" >
+    <id column="tree_id" property="treeId" jdbcType="INTEGER" />
+    <result column="tree_parent_id" property="treeParentId" jdbcType="VARCHAR" />
+    <result column="tree_player_id" property="treePlayerId" jdbcType="VARCHAR" />
+    <result column="tree_relation" property="treeRelation" jdbcType="VARCHAR" />
+    <result column="send_auto" property="sendAuto" jdbcType="VARCHAR" />
+    <result column="tree_level" property="treeLevel" jdbcType="INTEGER" />
+    <result column="tree_childs" property="treeChilds" jdbcType="INTEGER" />
+    <result column="tree_grandson" property="treeGrandson" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    tree_id, tree_parent_id, tree_player_id, tree_relation,send_auto,tree_level,tree_childs,tree_grandson,DATE_FORMAT(create_time,'%Y-%m-%d %h:%m:%s') create_time
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="TreeBaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    from city_commerce_relation
+    where tree_id = #{treeId,jdbcType=INTEGER}
+  </select>
+
+  <select id="getByPlayer" resultMap="TreeBaseResultMap" parameterType="java.lang.String" >
+    select
+    <include refid="Base_Column_List" />
+    from city_commerce_relation
+    where tree_player_id = #{treePlayerId,jdbcType=VARCHAR}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from city_commerce_relation
+    where tree_id = #{treeId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.dream.city.base.model.entity.CommerceRelation" >
+    insert IGNORE INTO city_commerce_relation (tree_id, tree_parent_id, tree_player_id,
+      tree_relation)
+    values (#{treeId,jdbcType=INTEGER}, #{treeParentId,jdbcType=INTEGER}, #{treePlayerId,jdbcType=INTEGER},
+      #{treeRelation,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.dream.city.base.model.entity.CommerceRelation" >
+    insert IGNORE INTO city_commerce_relation
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="treeId != null" >
+        tree_id,
+      </if>
+      <if test="treeParentId != null" >
+        tree_parent_id,
+      </if>
+      <if test="treePlayerId != null" >
+        tree_player_id,
+      </if>
+      <if test="treeRelation != null" >
+        tree_relation,
+      </if>
+      <if test="treeLevel != null" >
+        tree_level,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="treeId != null" >
+        #{treeId,jdbcType=INTEGER},
+      </if>
+      <if test="treeParentId != null" >
+        #{treeParentId,jdbcType=INTEGER},
+      </if>
+      <if test="treePlayerId != null" >
+        #{treePlayerId,jdbcType=INTEGER},
+      </if>
+      <if test="treeRelation != null" >
+        #{treeRelation,jdbcType=VARCHAR},
+      </if>
+      <if test="treeLevel != null" >
+        #{treeLevel,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.dream.city.base.model.entity.CommerceRelation" >
+    update city_commerce_relation
+    <set >
+      <if test="treeParentId != null" >
+        tree_parent_id = #{treeParentId,jdbcType=INTEGER},
+      </if>
+      <if test="treePlayerId != null" >
+        tree_player_id = #{treePlayerId,jdbcType=INTEGER},
+      </if>
+      <if test="treeRelation != null" >
+        tree_relation = #{treeRelation,jdbcType=VARCHAR},
+      </if>
+      <if test="treeLevel != null" >
+        tree_level = #{treeLevel,jdbcType=INTEGER},
+      </if>
+    </set>
+    where tree_id = #{treeId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.dream.city.base.model.entity.CommerceRelation" >
+    update city_commerce_relation
+    set tree_parent_id = #{treeParentId,jdbcType=INTEGER},
+      tree_player_id = #{treePlayerId,jdbcType=INTEGER},
+      tree_relation = #{treeRelation,jdbcType=VARCHAR},
+      tree_level = #{treeLevel,jdbcType=INTEGER}
+    where tree_id = #{treeId,jdbcType=INTEGER}
+  </update>
+</mapper>

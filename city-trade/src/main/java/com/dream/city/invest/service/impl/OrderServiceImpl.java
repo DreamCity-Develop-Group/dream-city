@@ -39,7 +39,7 @@ public class OrderServiceImpl implements OrderService {
     public int playerInvesting(Integer orderId) throws BusinessException {
         InvestOrder record = new InvestOrder();
         record.setOrderId(orderId);
-        record.setOrderState(InvestStatus.MANAGEMENT.name());
+        record.setOrderState(InvestStatus.MANAGEMENT.getStatus());
         Integer integer = orderMapper.updateByPrimaryKeySelective(record);
         return (integer ==null || integer == 0)?0:integer;
     }
@@ -48,7 +48,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
     public int investOrderInvalid(InvestOrder record)  throws BusinessException{
-        record.setOrderState(InvestStatus.INVALID.name());
+        record.setOrderState(InvestStatus.INVALID.getStatus());
         Integer integer = orderMapper.updateByPrimaryKeySelective(record);
         return integer ==null?0:integer;
     }
@@ -57,7 +57,7 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     @Override
     public int investOrderCancel(InvestOrder record) throws BusinessException {
-        record.setOrderState(InvestStatus.CANCEL.name());
+        record.setOrderState(InvestStatus.CANCEL.getStatus());
         Integer integer = orderMapper.updateByPrimaryKeySelective(record);
         return integer ==null?0:integer;
     }

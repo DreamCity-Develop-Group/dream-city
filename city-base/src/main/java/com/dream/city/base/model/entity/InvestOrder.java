@@ -19,13 +19,14 @@ public class InvestOrder implements Serializable {
     private String orderPayerId;
 
     private String orderName;
+
     private String orderNum;
 
     /** 投资金额 */
     private BigDecimal orderAmount;
 
     /** 状态 */
-    private String orderState;
+    private Integer orderState;
 
     /** 是否复投 */
     private Integer orderRepeat;
@@ -76,15 +77,15 @@ public class InvestOrder implements Serializable {
         return orderPayerId;
     }
 
-    public void setOrderPayerId(String orderPayerId) {
-        this.orderPayerId = orderPayerId == null ? null : orderPayerId.trim();
+    public void setOrderPayerId(String orderPlayerId) {
+        this.orderPayerId = orderPlayerId == null ? null : orderPlayerId.trim();
     }
 
-    public String getOrderState() {
+    public Integer getOrderState() {
         return orderState;
     }
 
-    public void setOrderState(String orderState) {
+    public void setOrderState(Integer orderState) {
         this.orderState = orderState;
     }
 

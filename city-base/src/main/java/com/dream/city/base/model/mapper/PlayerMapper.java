@@ -59,11 +59,12 @@ public interface PlayerMapper {
             @Result(property = "playerInvite", column = "player_invite"),
             @Result(property = "playerLevel", column = "player_level"),
             @Result(property = "isValid", column = "is_valid"),
-            @Result(property = "createTime", column = "createtime"),
-            @Result(property = "updateTime", column = "updatetime")
+            @Result(property = "createTime", column = "create_time"),
+            @Result(property = "updateTime", column = "update_time")
     })
     @Select({"select * from `city_player` where is_valid = 1 and player_id = #{playerId}"})
-    Player getPlayer(String playerId);
+    //@ResultMap(value = "BasePlayerResultMap")
+    Player getPlayer(@Param("playerId") String playerId);
 
 
 

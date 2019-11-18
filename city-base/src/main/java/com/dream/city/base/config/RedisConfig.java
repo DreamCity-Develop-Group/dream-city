@@ -251,7 +251,9 @@ public class RedisConfig extends CachingConfigurerSupport {
 
     @Bean
     public Jedis jedis(){
-        return new Jedis(host,port);
+        Jedis jedis = new Jedis(host,port);
+        jedis.auth(password);
+        return jedis;
     }
 
     @Bean

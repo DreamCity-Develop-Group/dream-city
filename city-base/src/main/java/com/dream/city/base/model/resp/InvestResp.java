@@ -29,7 +29,7 @@ public class InvestResp implements Serializable {
     private Integer isWithdrew;
     private String inImg;
     /** 收益倍数 */
-    private Integer inEarning;
+    private BigDecimal inEarning;
     private Integer inType;
     private String isValid;
     /** 开始时间 */
@@ -37,7 +37,7 @@ public class InvestResp implements Serializable {
     /** 投资结束时间 */
     private Date inEnd;
 
-    private String orderState;
+    private Integer orderState;
 
     /** 玩家ID */
     private String playerId;

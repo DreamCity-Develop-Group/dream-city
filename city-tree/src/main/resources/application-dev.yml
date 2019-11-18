@@ -4,13 +4,27 @@ spring:
     url: jdbc:mysql://localhost:3306/dreamcity?serverTimezone=UTC&useUnicode=true&characterEncoding=UTF-8&transformedBitIsBoolean=true&autoReconnect=true&failOverReadOnly=false&allowMultiQueries=true&useSSL=false
     username: dreamcity
     password: Root@123
-
+    dbcp2:
+      initial-size: 5
+      min-idle: 5
+    tomcat:
+      max-active: 20
+      max-wait: 60000
+  cache:
+    type: redis
   redis:
-    database: 0
     host: localhost
     port: 6379
+    database: 0
     password: 123456
-
+    timeout: 0
+    ssl: false
+    jedis:
+      pool:
+        max-active: 200
+        max-wait: -1
+        max-idle: 100
+        min-idle: 1
 
 #eureka
 eureka:
@@ -23,9 +37,19 @@ eureka:
 
 
 
+#平台账户id，多个，都号隔开来自player_account表
+dreamcity:
+  #注册密码salt
+  register:
+    password:
+      salt: DREAM_CITY_890@#$%
+
+
 auth:
   secret: oKKLJOoasdl
 
+
+#平台账户id，多个，都号隔开来自player_account表
 platform:
   account: 4E2EE556055042AB80E3D164E51DDD1A
 
@@ -33,5 +57,7 @@ platform:
 tx-lcn:
   client:
     manager-address: localhost:8070
-
+  springcloud:
+    loadbalance:
+      enabled: true
 

@@ -3,6 +3,7 @@ package com.dream.city.service;
 import com.dream.city.base.model.entity.InvestOrder;
 import com.dream.city.base.model.entity.InvestRule;
 import com.dream.city.base.model.enu.InvestStatus;
+import com.dream.city.base.model.enu.ReturnStatus;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -40,6 +41,7 @@ public interface InvestOrderService {
      */
     void updateOrderState(InvestOrder order,InvestStatus status);
 
+
     /**
      * 找出所有成功的订单，计算所得到的资金总额度
      *
@@ -49,6 +51,10 @@ public interface InvestOrderService {
     List<InvestOrder> getInvestOrdersAmountByDayInterval(Integer inId, String start, String end);
 
     List<InvestOrder> getInvestOrdersByCurrent(Integer inId, int[] states,int start,int end);
+
+    List<InvestOrder> getInvestOrdersByCurrentReload(Integer inId, int states);
+
+    List<InvestOrder> getInvestOrdersByState(Integer state);
 
     /**
      * 查出符合条件的记录总数
@@ -60,6 +66,15 @@ public interface InvestOrderService {
     int getInvestOrdersSum(Integer investId, int[] states);
 
     /**
+     * 查出符合条件的记录总数
+     *
+     * @param investId
+     * @param states
+     * @return
+     */
+    int getInvestOrdersSumReload(Integer investId, int states);
+
+    /**
      * 第一次投资的订单
      *
      * @param inId
@@ -67,7 +82,35 @@ public interface InvestOrderService {
      */
     List<InvestOrder> getInvestOrdersFirstTime(Integer inId);
 
+    /**
+     * 第一次投资的订单
+     *
+     * @param inId
+     * @return
+     */
+    Integer getInvestOrdersFirstTimeCount(Integer inId);
+    /**
+     * 第一次投资的订单重写
+     *
+     * @param inId
+     * @return
+     */
+    List<InvestOrder> getInvestOrdersFirstTimeReload(Integer inId,Integer limit);
+
+
+
+    /**
+     * 点赞数 前 limit 的订单
+     *
+     * @param inId
+     * @return
+     */
+    List<InvestOrder>  getLikesGatherReload(Integer inId,Integer limit);
+
     List<InvestOrder> getInvestLongOrders(Integer investId,long longs);
+
+    List<InvestOrder> getInvestLongOrdersReload(Integer investId,Integer limit);//获取投资 时间最长的 前   limit  名 玩家
+
     List<InvestOrder> getInvestLongTimeOrders(List<InvestOrder> orders,long longs);
     List<InvestOrder> getOtherOrders(List<InvestOrder> investOrders, long other);
     List<InvestOrder> getRandomOrders(List<InvestOrder> orders, long required);

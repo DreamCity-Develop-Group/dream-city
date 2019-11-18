@@ -2,11 +2,19 @@ package com.dream.city.controller;
 
 import com.dream.city.base.model.Message;
 import com.dream.city.base.model.Result;
+import com.dream.city.base.model.enu.ReturnStatus;
+import com.dream.city.base.utils.RedisLock;
 import com.dream.city.service.handler.DefaultService;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 
 @Api(value = "API-Consumer Main Default Page", tags = "主页数据接口")
 @RestController
@@ -15,6 +23,8 @@ import org.springframework.web.bind.annotation.*;
 public class DefaultController {
     @Autowired
     DefaultService defaultService;
+    @Autowired
+    RedissonClient redisson;
 
 
 
@@ -48,8 +58,45 @@ public class DefaultController {
             return defaultService.enterMainPage(msg);
         }catch (Exception e){
             msg.setDesc(e.getMessage());
+            msg.getData().setCode(ReturnStatus.FAILED.getStatus());
             return msg;
         }
     }
 
+    @RequestMapping(value = "/version")
+    public Message version(@RequestBody Message msg) {
+        try {
+            return defaultService.version(msg);
+        }catch (Exception e){
+            msg.getData().setCode(ReturnStatus.FAILED.getStatus());
+            msg.setDesc(e.getMessage());
+            return msg;
+        }
+    }
+
+
+    @RequestMapping(value = "lock",
+            method = RequestMethod.POST,
+            consumes = "application/json;charset=UTF-8",
+            produces = "application/json;charset=UTF-8")
+    public Result<RLock> lock(@RequestBody Message message) {
+        return callR(redisson -> {
+            RLock lock = redisson.getLock(message.getData().getType());
+            lock.lock(Long.getLong(message.getData().getData().toString()).longValue(), TimeUnit.SECONDS);
+            return lock;
+        });
+    }
+
+
+    private <R> Result callR(Function<RedissonClient, R> function) {
+        Result result = new Result();
+        try {
+            long startTime = System.currentTimeMillis();
+            result = Result.result(false,function.apply(redisson));
+            log.info("CALLR METHOD USE TIME:{}", System.currentTimeMillis() - startTime);
+        } catch (Throwable e) {
+            System.out.println("callR error");
+        }
+        return result;
+    }
 }

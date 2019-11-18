@@ -156,14 +156,15 @@ public class RelationTreeController {
      */
     @RequestMapping("/account/create")
     public Result createAccount(@RequestParam("playerId")String playerId,@RequestParam("address")String address){
-        accountService.createAccount(playerId,address);
         PlayerAccount account = accountService.getPlayerAccount(playerId);
         if (null != account ){
-            return Result.result(true,"玩家账户开设成功",ReturnStatus.SUCCESS.getStatus(),account);
+            return Result.result(true,"玩家账户已经开设，无需重复开设",ReturnStatus.SUCCESS.getStatus(),account);
+        }else {
+            accountService.createAccount(playerId, address);
+            return Result.result(true, "玩家账户开设失败", ReturnStatus.SUCCESS.getStatus(), null);
         }
-
-        return Result.result(false,"玩家账户开设失败",ReturnStatus.SUCCESS.getStatus(),null);
     }
+
 
     /**
      * 自动发货功能

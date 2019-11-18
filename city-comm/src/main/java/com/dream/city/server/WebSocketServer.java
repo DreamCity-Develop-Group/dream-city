@@ -9,16 +9,20 @@ import com.dream.city.base.utils.JsonUtil;
 import com.dream.city.base.utils.RedisKeys;
 import com.dream.city.base.utils.RedisUtils;
 import com.dream.city.base.utils.SpringUtils;
+import com.dream.city.config.HttpSessionConfigurator;
+import com.dream.city.config.WebSocketConfig;
 import com.dream.city.service.HttpClientService;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.java_websocket.WebSocket;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
+import javax.servlet.http.HttpSession;
 import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
@@ -33,7 +37,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * topic :
  */
 
-@ServerEndpoint("/dream/city/{topic}/{name}")
+@ServerEndpoint(value = "/dream/city/{topic}/{name}",configurator = HttpSessionConfigurator.class)
 @Component
 public class WebSocketServer {
     @Value("${server.port}")
@@ -88,13 +92,22 @@ public class WebSocketServer {
      * @param session
      */
     @OnOpen
-    public void onOpen(Session session, @PathParam("topic") String topic, @PathParam("name") String name) {
+    public void onOpen(Session session, EndpointConfig config, @PathParam("topic") String topic, @PathParam("name") String name) {
         sid = session.getId();
         log.info(
                 "有新窗口[" + name +
                         "@" + topic + "]开始监听:" + sid +
                         ",当前在线人数为" + getOnlineCount()+"||"+getOnlinePlayerCount());
         this.session = session;
+
+        HttpSession httpSession= (HttpSession) config.getUserProperties().get(HttpSession.class.getName());
+        log.info("name is : "+ httpSession.getAttribute("name"));
+        //sessionMap.put(session.getId(), session);
+        log.info("the session is : "+session.getId());
+        log.info("session content is : "+session.getId());
+        log.info("httpSession  is : "+httpSession.getId());
+
+
         //加入set中
         webSocketSet.add(this);
         redisUtils.addOnlinePlayer("clientID_"+server+"_"+session.getId(),1);
@@ -129,13 +142,19 @@ public class WebSocketServer {
             //sendMessage(data);
             String redisKey = RedisKeys.LOGIN_USER_TOKEN + username;
             boolean token = redisUtils.hasKey(redisKey);
+            String newVersion  = redisUtils.hasKey("APP_VERSION")?redisUtils.getStr("APP_VERSION"):"1.0.0";
+            if(Objects.isNull(newVersion)){
+                newVersion = "1.0.0";
+            }
+            newVersion = newVersion.replace("\"","");
             String connect = token ? "重连成功" : "连接成功";
             log.info(connect);
-
+            Map version = new HashMap();
+            version.put("version",newVersion);
             Message message = new Message(
                     "server",
                     clientId,
-                    new MessageData("init", "socket", ReturnStatus.SUCCESS.getStatus()),
+                    new MessageData("init", "socket", version,ReturnStatus.SUCCESS.getStatus()),
                     connect,
                     new Date().toString()
             );
@@ -179,6 +198,7 @@ public class WebSocketServer {
         log.info("Message:" + message);
         //this.session.addMessageHandler(SocketMessageHandler.MessageHandler.handleTextMessage(this.session,message));
         publishService.publish(topic, message);
+        //TODO 这里要处理消息记录到=>player_message_log
         //根据sid 到服务上找对应的数据，=》校验 =》 推送数据到客户端
         try {
             //TODO 1、如果客户端发心跳包[ping&&XXXX],回复success：包括登录期间的ping和登录之前的连接检测
@@ -188,6 +208,22 @@ public class WebSocketServer {
                 String account = msgArray[1];
                 String heartBeat = "ping";
                 String tokenBeat = "token";
+                //账号为空
+                if (StringUtils.isBlank(account)){
+                    Message replay = new Message(
+                            "server",
+                            WebSocketServer.this.clientId,
+                            new MessageData(
+                                    "tokenCheck",
+                                    "messageCenter",
+                                    ReturnStatus.FAILED.getStatus()
+                            ),
+                            "账号异常",
+                            String.valueOf(System.currentTimeMillis())
+                    );
+
+                    sendInfo(replay);
+                }
 
                 if (heartBeat.equals(ping)) {
                     System.out.println("心跳消息接收...");

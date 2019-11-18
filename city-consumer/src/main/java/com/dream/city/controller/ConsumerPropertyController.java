@@ -1,6 +1,8 @@
 package com.dream.city.controller;
 
 import com.dream.city.base.model.Message;
+import com.dream.city.base.model.enu.ReturnStatus;
+import com.dream.city.service.handler.InvestService;
 import com.dream.city.service.handler.PropertyService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -25,6 +27,8 @@ public class ConsumerPropertyController {
 
     @Autowired
     private PropertyService propertyService;
+    @Autowired
+    InvestService investService;
 
 
 
@@ -39,6 +43,7 @@ public class ConsumerPropertyController {
         try {
             return propertyService.getProperty(msg);
         }catch (Exception e){
+            msg.getData().setCode(ReturnStatus.FAILED.getStatus());
             return msg;
         }
     }
@@ -52,8 +57,9 @@ public class ConsumerPropertyController {
     @RequestMapping("/getPropertyLsit")
     public Message getPropertyLsit(@RequestBody Message msg){
         try {
-            return propertyService.getProperty(msg);
+            return investService.getInvestList(msg);
         }catch (Exception e){
+            msg.getData().setCode(ReturnStatus.FAILED.getStatus());
             return msg;
         }
     }

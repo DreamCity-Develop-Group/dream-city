@@ -26,4 +26,16 @@ public class PlayerAccountLog implements Serializable {
     private int type;
     private String desc;
     private Date createTime;
+    public PlayerAccountLog(){super();}
+    public PlayerAccountLog(String playerId,String address, BigDecimal amountUsdt,BigDecimal amountMt, int type, String desc) {
+        this.playerId = playerId;
+        this.address = address;
+        this.amountUsdt = amountUsdt;
+        this.amountMt = amountMt;
+        this.type = type;
+        this.desc = desc;
+    }
+
+
+
 }

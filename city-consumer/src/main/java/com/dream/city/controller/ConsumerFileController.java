@@ -1,6 +1,7 @@
 package com.dream.city.controller;
 
 import com.dream.city.base.model.Message;
+import com.dream.city.base.model.enu.ReturnStatus;
 import com.dream.city.service.handler.FileService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +26,7 @@ public class ConsumerFileController {
         try {
             return fileService.deleteFileById(msg);
         }catch (Exception e){
+            msg.getData().setCode(ReturnStatus.FAILED.getStatus());
             return msg;
         }
     }
@@ -34,6 +36,7 @@ public class ConsumerFileController {
         try {
             return fileService.insertFile(msg);
         }catch (Exception e){
+            msg.getData().setCode(ReturnStatus.FAILED.getStatus());
             return msg;
         }
     }
@@ -43,6 +46,7 @@ public class ConsumerFileController {
         try {
             return fileService.getFileById(msg);
         }catch (Exception e){
+            msg.getData().setCode(ReturnStatus.FAILED.getStatus());
             return msg;
         }
     }
@@ -52,6 +56,7 @@ public class ConsumerFileController {
         try {
             return fileService.getFileList(msg);
         }catch (Exception e){
+            msg.getData().setCode(ReturnStatus.FAILED.getStatus());
             return msg;
         }
     }
@@ -61,6 +66,7 @@ public class ConsumerFileController {
         try {
             return fileService.updateFileById(msg);
         }catch (Exception e){
+            msg.getData().setCode(ReturnStatus.FAILED.getStatus());
             return msg;
         }
     }

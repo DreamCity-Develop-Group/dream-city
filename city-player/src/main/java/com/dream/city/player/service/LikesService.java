@@ -3,9 +3,7 @@ package com.dream.city.player.service;
 
 import com.dream.city.base.model.Page;
 import com.dream.city.base.model.Result;
-import com.dream.city.base.model.entity.Likes;
 import com.dream.city.base.model.entity.PlayerLikes;
-import com.dream.city.base.model.entity.PlayerLikesLog;
 import com.dream.city.base.model.req.PlayerLikesReq;
 import com.dream.city.base.model.resp.PlayerLikesResp;
 import com.github.pagehelper.PageInfo;
@@ -65,9 +63,11 @@ public interface LikesService {
      * @param playerId
      * @return
      */
-    List<Likes> getPlayerInvestLikes(String playerId);
+    List<PlayerLikes> getPlayerInvestLikes(String playerId);
 
     int getLikeCount(Integer likedId);
 
     void savePlayerLikesLog(PlayerLikesReq playerLikes);
+
+    Result like(String from, String to);
 }

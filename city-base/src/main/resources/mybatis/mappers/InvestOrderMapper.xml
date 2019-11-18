@@ -111,7 +111,7 @@
     SELECT IFNULL(COUNT(order_invest_id),0) FROM invest_order
     WHERE order_state != 'INVALID'
     <if test="orderState !=null and orderState !=''">
-      and  order_state in(#{orderState,jdbcType=VARCHAR})
+      and  order_state in(#{orderState,jdbcType=INTEGER})
     </if>
     <if test="orderInvestId !=null">
       and  order_invest_id = #{orderInvestId,jdbcType=INTEGER}

@@ -5,13 +5,11 @@ import com.dream.city.base.model.Result;
 import com.dream.city.base.model.entity.CityInvest;
 import com.dream.city.base.model.req.CityInvestReq;
 import com.dream.city.base.model.resp.InvestResp;
-import com.dream.city.service.consumer.impl.SalesServiceImpl;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * 物业/投资项

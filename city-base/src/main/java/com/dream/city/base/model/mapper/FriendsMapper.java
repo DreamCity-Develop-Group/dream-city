@@ -5,6 +5,8 @@ import com.dream.city.base.model.entity.Friends;
 import com.dream.city.base.model.req.FriendsReq;
 import com.dream.city.base.model.resp.FriendsResp;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Result;
+import org.apache.ibatis.annotations.Results;
 
 import java.util.List;
 
@@ -13,6 +15,16 @@ import java.util.List;
  */
 @Mapper
 public interface FriendsMapper {
+    @Results(id = "BaseFriendsResultMap", value = {
+            @Result(property = "id", column = "id", id = true),
+            @Result(property = "playerId", column = "player_id"),
+            @Result(property = "friendId", column = "friend_id"),
+            @Result(property = "agree", column = "agree"),
+            @Result(property = "invite", column = "invite"),
+            @Result(property = "isValid", column = "is_valid"),
+            @Result(property = "createTime", column = "create_time"),
+            @Result(property = "updateTime", column = "update_time")
+    })
 
     int deleteByPrimaryKey(Long id);
 
