@@ -25,13 +25,17 @@ public class EarnIncomeLog implements Serializable {
     /** 本次收益额度 */
     private BigDecimal inAmount;
 
+    private String inDec;
+
     private Date createTime;
     public EarnIncomeLog(){super();}
-    public EarnIncomeLog(Integer inInvestId, String inPlayerId, BigDecimal inAmount) {
+
+    public EarnIncomeLog(Integer inInvestId, String inPlayerId, BigDecimal inAmount,String inDec) {
         this.inLogId = 0;
         this.inInvestId = inInvestId;
         this.inPlayerId = inPlayerId;
         this.inAmount = inAmount;
+        this.inDec = inDec;
         this.createTime = new Date();
     }
 }

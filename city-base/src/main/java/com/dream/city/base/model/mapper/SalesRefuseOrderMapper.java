@@ -11,8 +11,6 @@ import java.util.List;
 @Mapper
 public interface SalesRefuseOrderMapper {
 
-
-
     SalesRefuseOrder getSalesRefuseOrderById(Integer id);
 
     List<SalesRefuseOrder> getSalesRefuseOrderList(SalesRefuseOrder record);
@@ -30,6 +28,7 @@ public interface SalesRefuseOrderMapper {
             @Result(property = "createTime", column = "createtime"),
             @Result(property = "updateTime", column = "updatetime")
     })
+
     @Select({"select * from `sales_refuse_order` where id = #{id}"})
     SalesRefuseOrder selectSalesRefuseOrderByPrimaryKey(Long key);
 
@@ -108,14 +107,11 @@ public interface SalesRefuseOrderMapper {
     List<SalesRefuseOrder> selectSalesSellerOrders(String playerId);
 
     /**
-     * 某卖家超时或拒绝的交易数量
-     * @param sellerId
-     * @param status
+     * 某卖家对应某个买家超时或拒绝的交易数量
+     * @param buyer
+     * @param seller
      * @return
      */
-    @Select("select count(*) from `sales_refuse_order` where order_state = #{status} and order_player_buyer = #{buyer_id} and order_player_seller = #{sellerId} ")
-    int selectSalesSellerRejectTimes(@Param("buyer_id") String buyer_id, @Param("sellerId") String sellerId, @Param("status") int status);
-
-    @Select("select count(*) from `sales_refuse_order` where 1=1 and order_player_buyer = #{buyer} and order_player_seller = #{seller} ")
+    @Select("select count(0) from `sales_refuse_order` where 1=1 and refuse_player_buyer = #{buyer} and refuse_player_seller = #{seller}")
     Integer selectSalesBuyerRefuseOrders(@Param("buyer") String buyer, @Param("seller") String seller);
 }

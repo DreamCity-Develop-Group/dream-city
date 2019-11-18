@@ -4,6 +4,7 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.Date;
 
 /**
  * @author Wvv
@@ -15,8 +16,8 @@ public class SalesRefuseOrder {
     private String refuseOrderNew;
     private String refusePlayerBuyer;
     private String refusePlayerSeller;
-    private Timestamp createTime;
-    private Timestamp updateTime;
+    private Date createTime;
+    private Date updateTime;
 
     public SalesRefuseOrder(){super();}
     public SalesRefuseOrder(String refuseOrderOld, String refuseOrderNew, String refusePlayerBuyer, String refusePlayerSeller) {
@@ -24,5 +25,6 @@ public class SalesRefuseOrder {
         this.refuseOrderNew = refuseOrderNew;
         this.refusePlayerBuyer = refusePlayerBuyer;
         this.refusePlayerSeller = refusePlayerSeller;
+        this.createTime = new Date();
     }
 }

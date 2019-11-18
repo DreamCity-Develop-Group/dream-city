@@ -6,6 +6,8 @@ import com.dream.city.base.model.entity.InvestOrder;
 import com.dream.city.base.model.entity.InvestRule;
 import com.dream.city.base.model.enu.InvestStatus;
 import com.dream.city.base.model.mapper.InvestOrderMapper;
+import com.dream.city.base.utils.CommDateUtil;
+import com.dream.city.base.utils.DateUtils;
 import com.dream.city.service.InvestOrderService;
 import com.dream.city.service.InvestService;
 import com.dream.city.service.PlayerLikesService;
@@ -13,6 +15,7 @@ import com.dream.city.service.RelationTreeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springside.modules.utils.time.DateUtil;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -293,14 +296,12 @@ public class InvestOrderServiceImpl implements InvestOrderService {
     /**
      * 设置 单个订单状态
      *
-     * @param order
      */
     @LcnTransaction
     @Transactional
     @Override
-    public void updateOrderState(InvestOrder order, InvestStatus status) throws BusinessException{
-        order.setOrderState(status.getStatus());
-        investOrderMapper.updateOrder(order);
+    public void updateOrderState(Integer orderId,Integer preStatus, Integer status) throws BusinessException{
+        investOrderMapper.updateOrderStatus(orderId,preStatus,status);
     }
 
 
@@ -365,8 +366,11 @@ public class InvestOrderServiceImpl implements InvestOrderService {
     @Transactional
     @Override
     public List<InvestOrder> getInvestOrdersAmountByDayInterval(Integer inId, String start, String end)throws BusinessException {
-        int state = 2;
-        List<InvestOrder> orders = investOrderMapper.getInvestOrdersAmountByDayInterval(inId, state,start, end);
+        Date startDate = DateUtil.addDays(CommDateUtil.formatDate(start,CommDateUtil.DATETIME_DEFAULT_FORMAT),1);
+        Date endDate = DateUtil.addDays(CommDateUtil.formatDate(end,CommDateUtil.DATETIME_DEFAULT_FORMAT),1);
+        start = CommDateUtil.getDateTimeFormat(startDate);
+        end = CommDateUtil.getDateTimeFormat(endDate);
+        List<InvestOrder> orders = investOrderMapper.getInvestOrdersAmountByDayInterval(inId, 2,start, end);
         return orders;
     }
 
@@ -411,8 +415,6 @@ public class InvestOrderServiceImpl implements InvestOrderService {
     @Transactional
     @Override
     public List<InvestOrder> getInvestOrdersFirstTime(Integer inId)throws BusinessException {
-        //有包含预约成功的
-        //预约中的
         int state = InvestStatus.MANAGEMENT.getStatus();
         List<InvestOrder> orders = investOrderMapper.getInvestOrdersNoRepeat(inId,state);
         return orders;
@@ -422,9 +424,6 @@ public class InvestOrderServiceImpl implements InvestOrderService {
     @Transactional
     @Override
     public Integer getInvestOrdersFirstTimeCount(Integer inId)throws BusinessException {
-        //有包含预约成功的
-        //预约中的
-        int state = InvestStatus.MANAGEMENT.getStatus();
         Integer count = investOrderMapper.getInvestOrdersNoRepeatCount(inId);
         return count;
     }

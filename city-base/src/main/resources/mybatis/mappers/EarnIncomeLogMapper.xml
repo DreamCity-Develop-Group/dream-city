@@ -6,10 +6,11 @@
     <result column="in_invest_id" property="inInvestId" jdbcType="INTEGER" />
     <result column="in_player_id" property="inPlayerId" jdbcType="VARCHAR" />
     <result column="amount" property="inAmount" jdbcType="DECIMAL" />
+    <result column="in_dec" property="inDec" jdbcType="VARCHAR" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
   </resultMap>
 
   <sql id="Base_Column_List" >
-    in_log_id, in_invest_id, in_player_id, amount, DATE_FORMAT(create_time,'%Y-%m-%d %h:%m:%s') create_time
+    in_log_id, in_invest_id, in_player_id, amount,in_dec, DATE_FORMAT(create_time,'%Y-%m-%d %h:%m:%s') create_time
   </sql>
 </mapper>

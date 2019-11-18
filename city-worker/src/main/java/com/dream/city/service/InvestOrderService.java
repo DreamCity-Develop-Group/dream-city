@@ -36,10 +36,11 @@ public interface InvestOrderService {
 
     /**
      * 设置订单状态
-     * @param order
+     * @param orderId
+     * @param preStatus
      * @param status
      */
-    void updateOrderState(InvestOrder order,InvestStatus status);
+    void updateOrderState(Integer orderId,Integer preStatus, Integer status);
 
 
     /**

@@ -10,5 +10,5 @@ public interface PlayerLikesService {
 
     List<String> getPlayerIdByInvestId(int investId);
 
-    List<String> getLikesPlayerByInvestId(int investId,String playerId);
+    List<String> getLikesPlayerByInvestId(String playerId,Integer limit);
 }

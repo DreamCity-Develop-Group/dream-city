@@ -93,25 +93,27 @@ public class OrderServiceImpl implements OrderService {
         Map<String, Object> result = new HashMap<>();
         try {
             InvestOrderReq orderReq = DataUtils.getInvestOrderReqFromMessage(msg);
-            Player player = null;
-            if (StringUtils.isNotBlank(orderReq.getPlayerId())) {
-                player = playerService.getPlayerByPlayerId(orderReq.getPlayerId());
-            }
-            if (player == null && StringUtils.isNotBlank(orderReq.getPayerName())) {
-                PlayerResp playerResp = commonService.getPlayerByStrUserName(orderReq.getPayerName());
-                if (playerResp != null) {
-                    player = DataUtils.toJavaObject(playerResp, Player.class);
-                }
-            }
-            if (player == null) {
+            if (StringUtils.isBlank(orderReq.getPlayerId())&&StringUtils.isNotBlank(orderReq.getPayerName())) {
                 msg.setCode(ReturnStatus.ERROR.getStatus());
                 msg.setDesc("找不到玩家账号");
                 return msg;
             }
+            Player player = playerService.getPlayerByPlayerId(orderReq.getPlayerId());
+            if (Objects.isNull(player)) {
+                PlayerResp playerResp = commonService.getPlayerByStrUserName(orderReq.getPayerName());
+                if(Objects.isNull(playerResp)){
+                    msg.setCode(ReturnStatus.ERROR.getStatus());
+                    msg.setDesc("找不到玩家账号");
+                    return msg;
+                }
+                player = DataUtils.toJavaObject(playerResp, Player.class);
+            }
+
             //获取项目数据
             InvestResp invest = getInvestByIdOrinName(orderReq.getInvestId(), orderReq.getInName(), orderReq.getInType());
             orderReq.setOrderAmount(invest.getInLimit());
             orderReq.setPersonalInTax(invest.getPersonalInTax());
+
             //获取当前时间  后改为数据库时间 TODO
             Date investTime = new Date();
 
@@ -145,9 +147,9 @@ public class OrderServiceImpl implements OrderService {
                 desc = "USDT不足";
             }
             //6MT不足
-            if (BigDecimal.valueOf(Double.parseDouble(String.valueOf(invest.getPersonalInTax()))).compareTo(playerAccount.getAccMtAvailable()) > 0) {
+            /*if (BigDecimal.valueOf(Double.parseDouble(String.valueOf(invest.getPersonalInTax()))).compareTo(playerAccount.getAccMtAvailable()) > 0) {
                 desc = "MT不足";
-            }
+            }*/
 
             //返回数据
             result.put("investId", "0");
@@ -157,8 +159,17 @@ public class OrderServiceImpl implements OrderService {
             result.put("state", ReturnStatus.INVEST_SUBSCRIBE.getStatus());
 
             //生成订单
-            Result<InvestOrder> orderResult = orderCreate(invest, player.getPlayerId(), orderRepeat, desc);
             InvestOrder order = null;
+            Result<InvestOrder> orderResult = orderCreate(invest, player.getPlayerId(), orderRepeat, desc);
+            //冻结玩家的USDT
+            if (orderResult != null && orderResult.getData() != null) {
+                order = orderResult.getData();
+                /*playerAccount.setAccUsdtAvailable(playerAccount.getAccUsdtAvailable().subtract(invest.getInLimit()));
+                playerAccount.setAccUsdtFreeze(playerAccount.getAccUsdtFreeze().add(invest.getInLimit()));
+                //更新玩家账户
+                accountService.updatePlayerAccount(playerAccount);*/
+            }
+
             if (orderResult != null && orderResult.getData() != null) {
                 order = orderResult.getData();
                 result.put("investId", order.getOrderInvestId());
@@ -180,7 +191,7 @@ public class OrderServiceImpl implements OrderService {
                 earningService.insertEarning(insertEarningReq);
             }
 
-            //投资扣减用户账户金额
+            //投资扣减用户账户税金MT金额
             Result updatePlayerAccountResult = null;
             //交易金额
             BigDecimal orderAmount = orderReq.getOrderAmount();
@@ -400,10 +411,10 @@ public class OrderServiceImpl implements OrderService {
         if (orderAmount.compareTo(usdtAvailable) > 0) {
             msg = "USDT不足";
         }
-        //是否可扣税金
-        if (inTax.compareTo(mtAvailable) > 0) {
+        //是否可扣税金 这里不判断
+        /*if (inTax.compareTo(mtAvailable) > 0) {
             msg = "MT不足";
-        }
+        }*/
 
         boolean success = Boolean.FALSE;
         if (StringUtils.isBlank(msg)) {

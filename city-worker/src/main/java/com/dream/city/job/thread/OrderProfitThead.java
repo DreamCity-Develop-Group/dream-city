@@ -8,6 +8,7 @@ import com.dream.city.base.model.mapper.AccountMapper;
 import com.dream.city.base.model.mapper.PlayerAccountMapper;
 import com.dream.city.base.model.resp.PlayerEarningResp;
 import com.dream.city.base.utils.JSONHelper;
+import com.dream.city.service.InvestOrderService;
 import com.dream.city.service.InvestService;
 import com.dream.city.service.PlayerAccountService;
 import com.dream.city.service.PlayerEarningService;
@@ -35,16 +36,18 @@ public class OrderProfitThead implements Runnable {
     private PlayerAccountMapper playerAccountMapper;
     private PlayerEarningService playerEarningService;
     private PlayerAccountService accountService;
-
+    private String profitType;
 
     public OrderProfitThead(BigDecimal everyOneProfit, InvestOrder order,InvestService investService,PlayerAccountMapper playerAccountMapper,
-                            PlayerAccountService accountService,PlayerEarningService playerEarningService, CountDownLatch endGate) {
+                            PlayerAccountService accountService,PlayerEarningService playerEarningService,String profitType, CountDownLatch endGate) {
         this.playerAccountMapper = playerAccountMapper;
         this.playerEarningService = playerEarningService;
+
         this.accountService = accountService;
         this.investService = investService;
         this.everyOneProfit = everyOneProfit;
         this.order = order;
+        this.profitType = profitType;
         this.endGate = endGate;
     }
 
@@ -106,7 +109,7 @@ public class OrderProfitThead implements Runnable {
             log.info("OrderProfitThead=========================================================everyOneProfit:{}",everyOneProfit);
             playerEarningService.updateCurrentAmount(playerEarning.getEarnId(),everyOneProfit,status,playerEarning.getEarnPlayerId());
                 //插入日志记录
-            EarnIncomeLog earnIncomeLog = new EarnIncomeLog(order.getOrderInvestId(),order.getOrderPayerId(),everyOneProfit);
+            EarnIncomeLog earnIncomeLog = new EarnIncomeLog(order.getOrderInvestId(),order.getOrderPayerId(),everyOneProfit,profitType+"收益");
             playerEarningService.addEarnLog(earnIncomeLog);
             if(subProfit.compareTo(BigDecimal.ZERO)>0) {
                 //将剩余的收益加到平台

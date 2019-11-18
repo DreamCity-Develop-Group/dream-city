@@ -53,6 +53,9 @@ public class DefaultController {
             case "SalesOrderJob":
                 workerService.addJob(SalesOrderJob.class,"job-"+name,"test","0/5 * * * * ?");
                 break;
+            case "OrderOverTimeJob":
+                workerService.addJob(OrderOverTimeJob.class,"job-"+name,"test","0/30 * * * * ?");
+                break;
                 //收益分配任务
             case "ProfitGrantJob":
                 workerService.addJob(ProfitGrantJob.class,"job-"+name,"test","0/5 * * * * ?");

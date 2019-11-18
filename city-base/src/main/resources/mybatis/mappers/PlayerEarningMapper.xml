@@ -22,7 +22,7 @@
   </resultMap>
 
   <sql id="Base_Column_List" >
-    earn_id, order_id, earn_player_id, earn_max,  is_withdrew,earn_personal_tax,earn_enterprise_tax,earn_current,earn_quota_tax,withdrew_total,withdrew_times
+    earn_id, order_id, earn_player_id, earn_max,  is_withdrew,earn_personal_tax,earn_enterprise_tax,earn_current,earn_pre_profit,earn_quota_tax,withdrew_total,withdrew_times
     ,DATE_FORMAT(create_time,'%Y-%m-%d %h:%m:%s') create_time, DATE_FORMAT(update_time,'%Y-%m-%d %h:%m:%s') update_time,earn_invest_id,in_type,drop_total
   </sql>
 
@@ -58,7 +58,7 @@
     <result column="player_name" property="playerName" jdbcType="VARCHAR" />
   </resultMap>
   <select id="getPlayerEarning" resultMap="ExtResultMap"  parameterType="com.dream.city.base.model.entity.PlayerEarning" >
-    select e.*,i.in_name,i.in_type,i.in_limit,i.in_end,earn_current,withdrew_total,drop_total
+    select e.*,i.in_name,i.in_type,i.in_limit,i.in_end,earn_current,earn_pre_profit,withdrew_total,drop_total
     from player_earning e,city_invest i
     where e.earn_invest_id = i.in_id
     <if test="earnId != null">
